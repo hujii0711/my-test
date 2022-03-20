@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript ProtoType2!!</title>
+<script>
+var superObj1 = {superVal : "super"};
+var subObj1 = {subVal : "sub"};
+
+// 자바스크립트에서는 객체(인스턴스)를 직접 다른 객체의 자식으로 만들 수 있다.
+subObj1.__proto__ = superObj1; //subObj는 다른 객체의 자식이됨. 유연하나 위험하고 정식은 아니나 정식처럼 쓰고 있다.
+console.log("subObj1.subVal=======", subObj1.subVal);
+console.log("subObj1.superVal=======", subObj1.superVal);
+subObj1.superVal = "sub";
+console.log("subObj1.superVal2=======", superObj1.superVal);//subObj내부에 superVal을 찾아보고 없으면 __proto__에서 찾아서 있으면 뿌림
+//prototype과 __proto__는 다름
+
+var superObj2 = {superVal : "super"};
+var subObj2 = Object.create(superObj2); //새로운 객체를 만드는데 그 객체는 superObj를 부모로 하는 객체이다. __proto__와 결과는 동일하나 __proto__를 사용하는 것보다 이렇게 사용하는 것을 권장
+subObj2.subVal = "sub";
+console.log("subObj2.subVal=======", subObj2.subVal);
+console.log("subObj2.superVal=======", subObj2.superVal);
+console.log("subObj2.superVal2=======", superObj2.superVal);
+console.log("결국 같은거냐=======", subObj2.__proto__ === superObj2); //true
+</script>
+</head>
+<body>
+</body>
+</html>

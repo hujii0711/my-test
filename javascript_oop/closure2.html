@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript closure2!!</title>
+<script>
+function addFactory(init){
+	function add(num){
+		return init + num;
+		// init의 closure scope
+		// num은 local scope
+	}
+	return add;
+}
+
+let a = addFactory(1); //a는 add 함수
+console.log(a)
+console.log(a(1));
+console.log(a(2));
+
+let b = addFactory(1);
+console.log(b(1));
+console.log(b(2));
+  
+</script>
+</head>
+<body>
+</body>
+</html>
