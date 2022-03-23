@@ -12,6 +12,7 @@
 
 function Func(){
     this.aaa = "AAA";
+    //this.sum = function(){console.log("SUM")};
 }
 
 Func.prototype.bbb = function(){console.log("bbb!!!")}
@@ -23,14 +24,19 @@ console.log("[CASE3] inst.constructor======", inst.constructor);
 console.log("[CASE4] Object.getPrototypeOf(inst)======", Object.getPrototypeOf(inst));
 console.log("[CASE5] inst.hasOwnProperty('prototype')======", inst.hasOwnProperty('prototype'));
 console.log("############################1###############################");
+console.log("[!!!] inst.__proto__.constructor======", inst.__proto__.constructor);
 
 console.log("Func======", Func);
+console.log("Func()======", Func());
+console.log("Func.prototype.constructor======", Func.prototype.constructor);
 console.log("[CASE1] Func.__proto__======", Func.__proto__);
 console.log("[CASE2] Func.prototype======", Func.prototype);
 console.log("[CASE3] Func.constructor======", Func.constructor);
 console.log("[CASE4] Object.getPrototypeOf(Func)======", Object.getPrototypeOf(Func));
 console.log("[CASE5] Func.hasOwnProperty('prototype')======", Func.hasOwnProperty('prototype'));
 console.log("#############################2##############################");
+console.log("[!!!] Func.prototype.constructor======", Func.prototype.constructor);
+console.log("Func()======", Func());
 
 //[CASE1] inst.__proto__ = [CASE2] Func.prototype
 //{bbb: ƒ, constructor: ƒ}
@@ -82,6 +88,10 @@ console.log("#############################2##############################");
 //모든 객체는 [[Prototype]]이라는 내부 슬롯(자바스크립트 엔진의 내부 로직)을 갖으며, 상속을 구현하는 프로토타입 객체를 가리킨다.
 //하지만 [[Prototype]] 내부 슬롯에는 직접 접근이 불가하다. 이는 프로토타입 체인의 단방향을 지키기 위해서다. 만약 직접 접근가능하다면, 
 //서로가 서로의 프로토타입이 되면서 프로토타입 체인이 무한으로 돈다. 따라서 __proto__ 프로퍼티로만 접근할 수 있다.
+
+//__proto__
+//모든 객체는 __proto__를 통해 자신의 프로토타입([[Prototype]] 내부 슬롯)에 접근할 수 있다.
+//ES6에서 __proto__를 표준으로 채택되었다. 하지만 여전히 코드 내에서 __proto__보다는 Object.getPrototypeOf()의 사용을 권장한다.
 
 // function sum(arg1, arg2){
 //     return arg1+arg2;
