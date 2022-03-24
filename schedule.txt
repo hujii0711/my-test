@@ -7,7 +7,6 @@
 - 생활코딩: OAuth
 - 생활코딩: 자바스크립트 Facebook Login
 - 생활코딩: 자바스크립트 Google Login
-- 생활코딩: p5.js(지)
 - 생활코딩: 정규표현식
 
 * 완료
@@ -25,6 +24,7 @@
 - 생활코딩: HTTP(완)
 - 생활코딩: lowdb(완)
 - 생활코딩: Home server(완)
+- 생활코딩: p5.js(완)
 
 * 추후
 - 생활코딩: 인터넷(HTTPS와 SSL 포함) (AWS 이후) 
