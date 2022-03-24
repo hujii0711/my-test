@@ -1,0 +1,29 @@
+1. CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스) - YouTube
+https://www.youtube.com/watch?v=0Emq5FypiMM
+
+2. 비쥬얼 스튜디오 코드 설치 및 웹개발을 위한 필수 익스텐션 10개 추천 | 프론트엔드 개발자 입문편: HTML, CSS, Javascript - YouTube
+https://www.youtube.com/watch?v=bS9yTI2fC0w
+
+3. 자바스크립트 4. 코딩의 기본 operator, if, for loop 코드리뷰 팁 | 프론트엔드 개발자 입문편 (JavaScript ES6) - YouTube
+https://www.youtube.com/watch?v=YBjufjBaxHo
+
+4 .자바스크립트 최신 문법 (ES6, ES11) | 모르면 후회 하는 최신 문법과 사용법 정리 🐶 - YouTube
+https://www.youtube.com/watch?v=36HrZHzPeuY
+
+5. 타입스크립트 + 객체지향 프로그래밍 강의 (두마리 토끼를 잡아요 🐰🐰) - YouTube
+https://www.youtube.com/watch?v=ZZib1YpxNdg&t=18s
+
+6. 함수형프로그래밍이 대세다?! (함수형 vs 객체지향) - YouTube
+https://www.youtube.com/watch?v=4ezXhCuT2mw
+
+7. API란? 개념 정리와 포트폴리오에 유용한 대박 사이트 공유 🙌 - YouTube
+https://www.youtube.com/watch?v=ogT267HvNuQ
+
+8. 코딩 잘하는 팁 세가지 (이걸 알면 코드가 깔끔해 진다) - YouTube
+https://www.youtube.com/watch?v=jafa3cqoAVM
+
+9. 노드로 배우는 백엔드 개발 입문 강의 | Rest APIs, 데이터베이스 외 🚀 풀스택 가좌아 - YouTube
+https://www.youtube.com/watch?v=waePYqd8LiM
+
+10. CI/CD 5분 개념 정리 (현업에서 쓰는 개발 프로세스) - YouTube
+https://www.youtube.com/watch?v=0Emq5FypiMM

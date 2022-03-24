@@ -24,7 +24,7 @@ class App extends Component {
   }
   getReadContent() {
 
-    return this.state.contents.filter(elem => elem.id === this.state.selected_content_id);// 정상
+    return this.state.contents.filter(elem => elem.id === this.state.selected_content_id)[0];// 정상
     //return this.state.contents.filter(elem => {return elem.id === this.state.selected_content_id});// 정상
 
     // for(var i = 0; this.state.contents.length; i++){
@@ -35,14 +35,16 @@ class App extends Component {
     // } // 정상
 
     // var data = this.state.contents.filter(function(elem){
-    //   return elem.id === this.state.selected_content_id;
+    //      return elem.id === this.state.selected_content_id;
     // });
-    // return data; // 에러
+    // console.log("data====", data)
+    // return data[0]; // 에러
 
-    // var data = this.state.contents.filter(elem => 
-    //   {return elem.id === this.state.selected_content_id}
-    // );
-    // return data; // 정상
+    //  var data = this.state.contents.filter(elem => 
+    //    {return elem.id === this.state.selected_content_id}
+    //  );
+    //  console.log("data========", data)
+    //  return data[0]; // 정상
 
     // var find = function(){
     //   return this.state.contents.filter(elem => elem.id === this.state.selected_content_id);
@@ -82,14 +84,12 @@ class App extends Component {
         function(_id, _title, _desc) {
           // 배열의 불변성 유지
           var _contents = Array.from(this.state.contents);
-          var i = 0;
-          while(i < _contents.length) {
-            if(_contents[i].id === _id) {
-              _contents[i] = {id:_id, title:_title, desc:_desc};
-              break;
+          _contents.forEach((elem, idx) => {
+            if(elem.id === _id){
+              _contents[idx] = {id:_id, title:_title, desc:_desc};
+              return false;
             }
-            i = i + 1;
-          }
+          });
           this.setState({
             contents:_contents,
             mode:'read'
@@ -99,6 +99,8 @@ class App extends Component {
     return _article;
   }
   render() {
+    // this는 render안에서 this는 컴포넌트 자신을 가리킨다.
+    // bind(this)를 제외하면 this는 undefined이다. 
     console.log('App render');
     return (
       <div className="App">
@@ -116,19 +118,18 @@ class App extends Component {
               selected_content_id:Number(id)
             });
           }.bind(this)}          
-          data={this.state.contents}></TOC>
+          data={this.state.contents}>
+        </TOC>
         <Control onChangeMode={function(_mode) {
           if(_mode === 'delete') {
             if(window.confirm('really?')) {
               var _contents = Array.from(this.state.contents);
-              var i = 0;
-              while(i < _contents.length) {
-                if(_contents[i].id === this.state.selected_content_id) {
-                  _contents.splice(i,1);
-                  break;
+              _contents.forEach((elem, idx) => {
+                if(elem.id === this.state.selected_content_id){
+                  _contents.splice(idx, 1);
+                  return false;
                 }
-                i = i + 1;
-              }
+              });
               this.setState({
                 mode:'welcome',
                 contents:_contents
