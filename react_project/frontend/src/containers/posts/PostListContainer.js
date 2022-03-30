@@ -1,12 +1,15 @@
 import React, { useEffect } from 'react';
 import qs from 'qs';
-import { withRouter } from 'react-router-dom';
+//import { withRouter } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PostList from '../../components/posts/PostList';
 import { listPosts } from '../../modules/posts';
 
-const PostListContainer = ({ location }) => {
+const PostListContainer = () => {
   const dispatch = useDispatch();
+  const location = useLocation();
+
   const { posts, error, loading, user } = useSelector(
     ({ posts, loading, user }) => ({
       posts: posts.posts,
@@ -32,4 +35,5 @@ const PostListContainer = ({ location }) => {
   );
 };
 
-export default withRouter(PostListContainer);
+//export default withRouter(PostListContainer);
+export default PostListContainer;

@@ -3,11 +3,14 @@ import { useDispatch, useSelector } from 'react-redux';
 import { changeField, initializeForm, register } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 import { check } from '../../modules/user';
-import { withRouter } from 'react-router-dom';
+//import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
-const RegisterForm = ({ history }) => {
+const RegisterForm = () => {
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
     form: auth.register,
     auth: auth.auth,
@@ -73,14 +76,15 @@ const RegisterForm = ({ history }) => {
   // user 값이 잘 설정되었는지 확인
   useEffect(() => {
     if (user) {
-      history.push('/'); // 홈 화면으로 이동
+      //history.push('/'); // 홈 화면으로 이동
+      navigate("/");
       try {
         localStorage.setItem('user', JSON.stringify(user));
       } catch (e) {
         console.log('localStorage is not working');
       }
     }
-  }, [history, user]);
+  }, [navigate, user]);
 
   return (
     <AuthForm
@@ -93,4 +97,5 @@ const RegisterForm = ({ history }) => {
   );
 };
 
-export default withRouter(RegisterForm);
+//export default withRouter(RegisterForm);
+export default RegisterForm;

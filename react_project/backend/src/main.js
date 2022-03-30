@@ -14,7 +14,7 @@ import jwtMiddleware from './lib/jwtMiddleware';
 const { PORT, MONGO_URI } = process.env;
 
 mongoose
-  .connect(MONGO_URI, { useNewUrlParser: true, useFindAndModify: false })
+  .connect(MONGO_URI) //, { useNewUrlParser: true, useFindAndModify: false } 두번째 인자 삭제 moogoose 6이상
   .then(() => {
     console.log('Connected to MongoDB');
   })

@@ -1,13 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+//import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { changeField, initializeForm, login } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
 import { check } from '../../modules/user';
 
-const LoginForm = ({ history }) => {
+const LoginForm = () => {
   const [error, setError] = useState(null);
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
     form: auth.login,
     auth: auth.auth,
@@ -51,16 +54,18 @@ const LoginForm = ({ history }) => {
     }
   }, [auth, authError, dispatch]);
 
-  useEffect(() => {
+  useEffect(() => {   
     if (user) {
-      history.push('/');
+      //history.push('/');
+      navigate('/');
       try {
         localStorage.setItem('user', JSON.stringify(user));
       } catch (e) {
         console.log('localStorage is not working');
       }
     }
-  }, [history, user]);
+  //}, [history, user]);
+  }, [navigate, user]);
 
   return (
     <AuthForm
@@ -73,4 +78,5 @@ const LoginForm = ({ history }) => {
   );
 };
 
-export default withRouter(LoginForm);
+//export default withRouter(LoginForm);
+export default LoginForm;

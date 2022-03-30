@@ -1,11 +1,14 @@
 import React, { useEffect } from 'react';
 import WriteActionButtons from '../../components/write/WriteActionButtons';
 import { useSelector, useDispatch } from 'react-redux';
-import { withRouter } from 'react-router-dom';
+//import { withRouter } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { writePost, updatePost } from '../../modules/write';
 
 const WriteActionButtonsContainer = ({ history }) => {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  
   const { title, body, tags, post, postError, originalPostId } = useSelector(
     ({ write }) => ({
       title: write.title,
@@ -41,12 +44,13 @@ const WriteActionButtonsContainer = ({ history }) => {
   useEffect(() => {
     if (post) {
       const { _id, user } = post;
-      history.push(`/@${user.username}/${_id}`);
+      //history.push(`/@${user.username}/${_id}`);
+      navigate(`/@${user.username}/${_id}`)
     }
     if (postError) {
       console.log(postError);
     }
-  }, [history, post, postError]);
+  }, [navigate, post, postError]);
   return (
     <WriteActionButtons
       onPublish={onPublish}
@@ -56,4 +60,5 @@ const WriteActionButtonsContainer = ({ history }) => {
   );
 };
 
-export default withRouter(WriteActionButtonsContainer);
+//export default withRouter(WriteActionButtonsContainer);
+export default WriteActionButtonsContainer;
