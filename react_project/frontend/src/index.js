@@ -13,18 +13,17 @@ import { tempSetUser, check } from './modules/user';
 import { HelmetProvider } from 'react-helmet-async';
 
 const sagaMiddleware = createSagaMiddleware();
-const store = createStore(
-  rootReducer,
-  composeWithDevTools(applyMiddleware(sagaMiddleware)),
-);
+const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(sagaMiddleware)));
 
 function loadUser() {
   try {
     const user = localStorage.getItem('user');
     if (!user) return; // 로그인 상태가 아니라면 아무것도 안함
 
-    store.dispatch(tempSetUser(user));
-    store.dispatch(check());
+    // 액션 개체를 dispatch
+    store.dispatch(tempSetUser(user)); //{type: 'user/TEMP_SET_USER', payload: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'}
+    store.dispatch(check());//{type: 'user/CHECK'}
+    console.log("store.getState=====",store.getState())
   } catch (e) {
     console.log('localStorage is not working');
   }
@@ -43,7 +42,5 @@ ReactDOM.render(
   </Provider>,
   document.getElementById('root'),
 );
-
-serviceWorker.unregister();
 
 serviceWorker.unregister();
