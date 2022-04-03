@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-//import { withRouter } from 'react-router-dom';
 import { useNavigate } from 'react-router-dom';
 import { changeField, initializeForm, login } from '../../modules/auth';
 import AuthForm from '../../components/auth/AuthForm';
@@ -64,7 +63,6 @@ const LoginForm = () => {
         console.log('localStorage is not working');
       }
     }
-  //}, [history, user]);
   }, [navigate, user]);
 
   return (

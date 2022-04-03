@@ -1,7 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import createRequestSaga, {
-  createRequestActionTypes,
-} from '../lib/createRequestSaga';
+import createRequestSaga, { createRequestActionTypes } from '../lib/createRequestSaga';
 import * as postsAPI from '../lib/api/posts';
 import { takeLatest } from 'redux-saga/effects';
 
@@ -13,10 +11,17 @@ const [
 
 export const listPosts = createAction(
   LIST_POSTS,
-  ({ tag, username, page }) => ({ tag, username, page }),
+  function(data){ 
+    //console.log("data============", data); //{ page: undefined, tag: undefined, username: undefined }
+    const { tag, username, page } = data;
+    return { tag, username, page };
+  }
+  //
+  //({ tag, username, page }) => ({ tag, username, page }),
 );
 
 const listPostsSaga = createRequestSaga(LIST_POSTS, postsAPI.listPosts);
+
 export function* postsSaga() {
   yield takeLatest(LIST_POSTS, listPostsSaga);
 }

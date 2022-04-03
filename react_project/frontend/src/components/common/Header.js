@@ -43,6 +43,8 @@ const UserInfo = styled.div`
 `;
 
 const Header = ({ user, onLogout }) => {
+  //console.log("Header >>>>> user==========", user);
+  //console.log("Header >>>>> onLogout==========", onLogout);
   return (
     <>
       <HeaderBlock>

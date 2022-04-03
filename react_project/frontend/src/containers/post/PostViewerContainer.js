@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-//import { withRouter } from 'react-router-dom';
 import { useNavigate, useParams } from 'react-router-dom';
 import { readPost, unloadPost } from '../../modules/post';
 import PostViewer from '../../components/post/PostViewer';
@@ -60,5 +59,4 @@ const PostViewerContainer = () => {
   );
 };
 
-//export default withRouter(PostViewerContainer);
 export default PostViewerContainer;

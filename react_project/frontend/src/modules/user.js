@@ -16,7 +16,7 @@ export const logout = createAction(LOGOUT); // user/LOGOUT
 
 const checkSaga = createRequestSaga(CHECK, authAPI.check);
 
-function checkFailureSaga() {
+const checkFailureSaga = function() {
   try {
     localStorage.removeItem('user'); // localStorage 에서 user 제거하고
   } catch (e) {
@@ -24,7 +24,7 @@ function checkFailureSaga() {
   }
 }
 
-function* logoutSaga() {
+const logoutSaga = function* () {
   try {
     yield call(authAPI.logout); // logout API 호출
     localStorage.removeItem('user'); // localStorage 에서 user 제거
@@ -46,7 +46,7 @@ const initialState = {
 
 //첫번째 파라미터로는 액션에 따라 실행할 함수들을 가지고있는 객체
 //두번째 파라미터로는 상태의 기본 값 (initialState)
-export default handleActions(
+const user = handleActions(
   {
     //우리의 액션타입에는 접두사가 들어가있기 때문에 그냥 TEMP_SET_USER: 를 하면 안되고, [TEMP_SET_USER]: 로 해주어야합니다.
     //var action = {type: 'user/TEMP_SET_USER', payload: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'};
@@ -54,7 +54,8 @@ export default handleActions(
     //var {payload : user} = action; //console.log(user); ==> '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'
 
     [TEMP_SET_USER]: function(state, {payload : user}) { 
-      console.log("state====", state); // {user: null, checkError: null};
+      console.log("user.js >>>>> handleActions[TEMP_SET_USER] >>>>> state====", state); // {user: null, checkError: null};
+      // return에 새로운 state
       return ({...state, user}); // {user: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}', checkError: null}
     },
     
@@ -68,10 +69,16 @@ export default handleActions(
       user: null,
       checkError: error
     }),
-    [LOGOUT]: state => ({
-      ...state,
-      user: null
-    }),
+    [LOGOUT]: state => { 
+      console.log("user.js >>>>> handleActions[LOGOUT] >>>>> state====", state);
+      return {...state, user: null}
+    }
   },
   initialState,
 );
+
+export default user;
+//const { user } = useSelector(({ user }) => {
+  //  console.log(user);
+  //  return { user: user.user };
+  //});

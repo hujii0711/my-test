@@ -1,7 +1,6 @@
 import React from 'react';
 import Pagination from '../../components/posts/Pagination';
 import { useSelector } from 'react-redux';
-//import { withRouter } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import qs from 'qs';
 
@@ -32,5 +31,4 @@ const PaginationContainer = () => {
   );
 };
 
-//export default withRouter(PaginationContainer);
 export default PaginationContainer;
