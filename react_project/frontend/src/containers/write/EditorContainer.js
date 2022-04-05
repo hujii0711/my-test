@@ -9,9 +9,15 @@ const EditorContainer = () => {
     title: write.title,
     body: write.body,
   }));
-  const onChangeField = useCallback(payload => dispatch(changeField(payload)), [
-    dispatch,
-  ]);
+
+  const onChangeField = useCallback(function(payload) { 
+    console.log("EditorContainer >>>>>> payload========", payload);
+    return dispatch(changeField(payload));
+  }, [dispatch]);
+
+  // const onChangeField = useCallback(payload => dispatch(changeField(payload)), [
+  //   dispatch,
+  // ]);
   // 언마운트될 때 초기화
   useEffect(() => {
     return () => {

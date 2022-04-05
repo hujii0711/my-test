@@ -19,11 +19,11 @@ function loadUser() {
   try {
     const user = localStorage.getItem('user');
     if (!user) return; // 로그인 상태가 아니라면 아무것도 안함
-
-    // 액션 개체를 dispatch
+    console.log("index.js >>>>> loadUser >>>>> store.getState1=====",store.getState())
+    // 액션 객체를 dispatch
     store.dispatch(tempSetUser(user)); //{type: 'user/TEMP_SET_USER', payload: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'}
     store.dispatch(check());//{type: 'user/CHECK'}
-    console.log("index.js >>>>> loadUser >>>>> store.getState=====",store.getState())
+    console.log("index.js >>>>> loadUser >>>>> store.getState2=====",store.getState())
   } catch (e) {
     console.log('localStorage is not working');
   }
