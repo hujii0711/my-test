@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import { Route, Routes} from 'react-router-dom';
 import PostListPage from './pages/PostListPage';
 import LoginPage from './pages/LoginPage';
@@ -8,6 +8,9 @@ import PostPage from './pages/PostPage';
 import { Helmet } from 'react-helmet-async';
 
 const App = () => {
+  useEffect(() => {
+    console.log("App_effect!!!!")
+  });
   return (
       <>
         <Helmet>
