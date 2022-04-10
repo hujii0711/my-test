@@ -26,6 +26,9 @@ const PostViewerContainer = () => {
   useEffect(() => {
     dispatch(readPost(postId));
     // 언마운트될 때 리덕스에서 포스트 데이터 없애기
+    // 포스트 페이지를 벗어날 때 리덕스 상태의 데이터를 비우는 것
+    // 만약 데이터를 비우지 않으면 나중에 사용자가 특정 포스트를 읽은 뒤 목록으로 돌아가서 또다른 포스트를 읽을 때 아주 짧은 시간 동안 이전에
+    // 불러왔던 포스트가 나타나는 깜빡임 현상이 발생함
     return () => {
       dispatch(unloadPost());
     };

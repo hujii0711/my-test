@@ -58,6 +58,8 @@ const PostItem = ({ post }) => {
   );
 };
 
+// showWriteButton props를 현재 로그인 중인 사용자의 정보를 지니고 있는 user 객체로 설정해 주었다.
+// 이렇게 하면 user 객체가 유효할 때, 즉 사용자가 로그인 중일 때문 포스트를 작성하는 버튼이 나타난다.
 const PostList = ({ posts, loading, error, showWriteButton }) => {
   // 에러 발생 시
   if (error) {

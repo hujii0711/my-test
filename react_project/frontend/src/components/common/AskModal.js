@@ -33,6 +33,10 @@ const AskModalBlock = styled.div`
   }
 `;
 
+//인접 형제 결합자
+//+ 결합자는 인접 형제, 즉 첫 번째 요소의 바로 뒤에 위치하면서 같은 부모를 공유하는 두 번째 요소를 선택합니다.
+//구문: A + B
+//예제: h2 + p는 <h2> 바로 뒤에 위치하는 <p> 요소와 일치합니다.
 const StyledButton = styled(Button)`
   height: 2rem;
   & + & {

@@ -60,6 +60,7 @@ const TagListBlock = styled.div`
 `;
 
 // React.memo를 사용하여 tag 값이 바뀔 때만 리렌더링되도록 처리
+// 해당 컴포넌트가 받아 오는 props가 실제로 바뀌었을 때만 리렌더링 해준다.
 const TagItem = React.memo(({ tag, onRemove, onChangeTags }) => (
   <Tag onClick={() => onRemove(tag)}>#{tag}</Tag>
 ));
@@ -72,7 +73,8 @@ const TagList = React.memo(({ tags, onRemove }) => (
     ))}
   </TagListBlock>
 ));
-
+// TagList와 TagItem 컴포넌트를 분리시켜 주면 input 값이 바뀌어도 TagList 컴포넌트가 리렌더링되지 않는다.
+// 태그 목록에 변화가 생겨도 이미 렌더링 중인 TagItem들은 리렌더링되지 않고, 실제로 추가되거나 삭제되는 태그에만 영향을 미친다.
 const TagBox = ({ tags, onChangeTags }) => {
   const [input, setInput] = useState('');
   const [localTags, setLocalTags] = useState([]);
@@ -82,6 +84,9 @@ const TagBox = ({ tags, onChangeTags }) => {
       if (!tag) return; // 공백이라면 추가하지 않음
       if (localTags.includes(tag)) return; // 이미 존재한다면 추가하지 않음
       const nextTags = [...localTags, tag];
+      // setLocalTags를 호출해야 하는 상황에서 onChangeTags도 함께 호출 함
+      // props로 받아온 tags가 바뀔 때 setLocalTag를 호출해 주었다. 이로써 TagBox 컴포넌트 내부에서 상태가 바뀌면 리덕스 스토어에도 반영되고
+      // 리덕스 스토어에 있는 값이 바뀌면 TagBox 컴포넌트 내부의 상태도 바뀌게 된다.
       setLocalTags(nextTags);
       onChangeTags(nextTags);
     },

@@ -50,6 +50,7 @@ const Footer = styled.div`
   }
 `;
 
+// styled 함수 : 새로운 컴포넌트 이름으로 정의 하는 것
 const ButtonWithMarginTop = styled(Button)`
   margin-top: 1rem;
 `;
@@ -104,6 +105,7 @@ const AuthForm = ({ type, form, onChange, onSubmit, error }) => {
         <ButtonWithMarginTop cyan fullWidth style={{ marginTop: '1rem' }}>
           {text}
         </ButtonWithMarginTop>
+        {/* <Button cyan fullWidth style={{marginTop: '1rem'}}>로그인</Button> */}
       </form>
       <Footer>
         {type === 'login' ? (

@@ -1,10 +1,15 @@
 import Post from '../../models/post';
 import mongoose from 'mongoose';
 import Joi from 'joi';
+//sanitize-html : HTML 필터링
+// 이 라이브러리는 HTML을 작성하고 보여 주어야 하는 서비스에서 매우 유용하다. 단순히 HTML을 제거하는 기능 뿐만 아니라
+// 특정 HTML만 허용하는 기능도 있기 때문에 글쓰기 API에서 사용하면 손쉽게 악성 스크립트 삽입을 막을 수 있다.
 import sanitizeHtml from 'sanitize-html';
 
 const { ObjectId } = mongoose.Types;
 
+// sanitize-html은 HTML의 특정 태그와 특정 속성만 허용할 수 있다.
+// HTML을 필터링할 때 허용할 것을 설정
 const sanitizeOption = {
   allowedTags: [
     'h1',

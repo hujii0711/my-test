@@ -21,6 +21,7 @@ const WriteActionButtonsContainer = ({ history }) => {
 
   // 포스트 등록
   const onPublish = () => {
+    // originalPostId값이 존재하면 writePost 대신 updatePost 액션 생성 함수를 사용하도록 수정
     if (originalPostId) {
       dispatch(updatePost({ title, body, tags, id: originalPostId }));
       return;
@@ -51,6 +52,7 @@ const WriteActionButtonsContainer = ({ history }) => {
     }
   }, [navigate, post, postError]);
   return (
+    // isEdit라는 props를 전달하여 originalPostId 값의 존재 유무에 따라 버튼 이름을 포스트 수정 또는 포스트 등록으로 설정해줌
     <WriteActionButtons
       onPublish={onPublish}
       onCancel={onCancel}

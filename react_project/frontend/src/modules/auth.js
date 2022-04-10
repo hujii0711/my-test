@@ -56,6 +56,7 @@ const initialState = {
   authError: null
 };
 
+// 앞으로 만들 컨테이너 컴포넌트에서는 useDispatch, useSelector함수를 사용하여 컴포넌트를 리덕스와 연동시킨다.
 const auth = handleActions(
   {
     [CHANGE_FIELD]: (state, { payload: { form, key, value } }) =>

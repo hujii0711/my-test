@@ -37,9 +37,10 @@ const WhiteBox = styled.div`
   background: white;
   border-radius: 2px;
 `;
-
+//AuthTemplate 컴포넌트는 children으로 받아 온 내용을 보여 주기만 하는 역할
 const AuthTemplate = ({ children }) => {
   return (
+    // 각 컴포넌트의 최상위 컴포넌트를 선언할때 이름 뒤에 Block이라는 단어를 붙임(내부 규칙)
     <AuthTemplateBlock>
       <WhiteBox>
         <div className="logo-area">

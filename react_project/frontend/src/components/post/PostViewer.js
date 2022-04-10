@@ -56,6 +56,8 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
         <Tags tags={tags} />
       </PostHead>
       {actionButtons}
+      {/* 리액트에서는 <div>{html}</div>와 같이 HTML을 그대로 렌더링하는 형태로 JSX를 작성하면 HTML태그가 적용되지 않고 일반 텍스트 형태로 
+      나타나 버린다. 따라서 HTML을 적용하고 싶다면 dangerouslySetInnerHTML이라는 props를 설정해주어야 한다. */}
       <PostContent dangerouslySetInnerHTML={{ __html: body }} />
     </PostViewerBlock>
   );

@@ -47,10 +47,13 @@ const StyledButton = styled.button`
   ${buttonStyle}
 `;
 
+// StyledLink라는 컴포넌트를 새로 만들었다.
 const StyledLink = styled(Link)`
   ${buttonStyle}
 `;
 
+// StyleButton과 똑같은 스타일을 사용하므로, 기존에 사용하던 스타일을 buttonStyle이라는 값에 담아서 재사용했다.
+// 그리고 Button 컴포넌트 내부에서 props.to 값에 따라 StyleLink를 사용할지, StyleButton을 사용할지 정하도록 설정
 const Button = props => {
   return props.to ? (
     <StyledLink {...props} cyan={props.cyan ? 1 : 0} />
