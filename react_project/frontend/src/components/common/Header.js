@@ -13,6 +13,7 @@ const HeaderBlock = styled.div`
 
 /**
  * Responsive 컴포넌트의 속성에 스타일을 추가해서 새로운 컴포넌트 생성
+ * Responsive 컴포넌트 속성 그대로 승계 받고 추가적인 Wrapper 컴포넌트의 속성 추가
  */
 const Wrapper = styled(Responsive)`
   height: 4rem;
@@ -32,9 +33,11 @@ const Wrapper = styled(Responsive)`
 
 /**
  * 헤더가 fixed로 되어 있기 때문에 페이지의 컨텐츠가 4rem 아래 나타나도록 해주는 컴포넌트
+ * em 단위는 상위 요소 크기의 몇 배인지로 크기를 정합니다
+ * rem 단위는 문서의 최상위 요소, 즉 html 요소의 크기의 몇 배인지로 크기를 정합니다.
  */
 const Spacer = styled.div`
-  height: 4rem;
+  height: 4rem; 
 `;
 
 const UserInfo = styled.div`
@@ -43,8 +46,7 @@ const UserInfo = styled.div`
 `;
 
 const Header = ({ user, onLogout }) => {
-  //console.log("Header >>>>> user==========", user);
-  //console.log("Header >>>>> onLogout==========", onLogout);
+
   return (
     <>
       <HeaderBlock>

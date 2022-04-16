@@ -69,6 +69,7 @@ const Editor = ({ title, body, onChangeField }) => {
   // 따라서 useRef를 사용하여 mount 상태에 따라 작업을 처리하도록 설정한다.
   // useEffect의 두 번째 파라미터에 비어 있는 배열을 넣으면 해결할 수 있다.
   // 하지만 ESLint 규칙은 useEffect에서 사용하는 모든 외부 값을 두 번째 파라미터에 넣는 배열안에 포함시킬 것을 권장하고 있음
+  // componentDidMount, componentDidUpdate 중 componentDidUpdate만 수행되게 하는 코드
   useEffect(() => {
     if (mounted.current) return;
     mounted.current = true;
