@@ -16,6 +16,7 @@ function createBulkTodos() {
 }
 
 const App = () => {
+  //const [todos, setTodos] = useState(createBulkTodos()); //리렌더링 할때 마다 createBulkTodos 호출
   const [todos, setTodos] = useState(createBulkTodos);
 
   // 고유 값으로 사용 될 id
