@@ -4,6 +4,7 @@ const { User, Domain } = require('../models');
 
 const router = express.Router();
 
+// 주소가 '/'로 시작하면 routes/index.js를 호출
 router.get('/', async (req, res, next) => {
   try {
     const user = await User.findOne({

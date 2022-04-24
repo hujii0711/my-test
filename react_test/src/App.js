@@ -1,12 +1,14 @@
 import React from 'react';
-import TicTacToe from './TicTacToe';
+import CounterContainer from './containers/CounterContainer';
+import SampleContainer from './containers/SampleContainer';
 
 const App = () => {
-
   return (
-      <>
-        <TicTacToe/>  
-      </>
+    <div>
+      {/* <CounterContainer /> */}
+      <SampleContainer/>
+    </div>
   );
 };
+
 export default App;

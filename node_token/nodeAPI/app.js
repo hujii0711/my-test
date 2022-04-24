@@ -26,6 +26,7 @@ nunjucks.configure('views', {
   express: app,
   watch: true,
 });
+
 //sequelize.sync()는 Sequelize가 초기화 될 때 DB에 필요한 테이블을 생성하는 함수입니다.
 //예를 들면 quiz라는 모델이 있다면 CREATE TABLE IF NOT EXISTS `Quizzes`로 시작하는 SQL을 실행하여 모델로 정의된 테이블을 생성합니다.
 sequelize.sync({ force: false })
@@ -49,7 +50,7 @@ app.use(session({
   cookie: {
     httpOnly: true,
     secure: false,
-  },
+  }
 }));
 app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
 app.use(passport.session());// passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
@@ -59,12 +60,15 @@ app.use('/auth', authRouter);
 app.use('/post', postRouter);
 app.use('/user', userRouter);
 
+// #. 404 처리 라우터
+// 404 응답은 익스프레스는 모든 미들웨어 함수 및 라우터를 실행했으며 이들 중 어느 것도 응답하지 않았다는 것을 나타낸다.
 app.use((req, res, next) => {
   const error =  new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;
   next(error);
 });
 
+// #. 에러 처리 라우터
 app.use((err, req, res, next) => {
   res.locals.message = err.message;
   res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};

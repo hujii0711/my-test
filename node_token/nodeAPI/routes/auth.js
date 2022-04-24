@@ -6,7 +6,7 @@ const User = require('../models/user');
 
 const router = express.Router();
 
-// 회원 가입 라우터
+// #. 회원 가입 라우터
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
@@ -27,14 +27,14 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
   }
 });
 
-// 로그인 라우터
+// #. 로그인 라우터
 router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => { // 로컬 로그인 전략 수행
     if (authError) {
       console.error(authError);
       return next(authError);
     }
-    if (!user) {
+    if (!user) { // 회원정보 없으면 user에 null을 반환
       return res.redirect(`/?loginError=${info.message}`);
     }
     // 로그인 전략이 성공하면 req.login 메서드를 호출한다.
@@ -49,12 +49,15 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
+
+// #. 로그아웃 라우터
 router.get('/logout', isLoggedIn, (req, res) => {
   // req.logout 메서드는 req.user 객체를 제거
+  console.log("/logout 콜백")
   req.logout();
   // req.session.destroy 메서드는 req.session 객체의 내용을 제거
   req.session.destroy();
-  res.redirect('/');
+  res.redirect('/'); 
 });
 
 router.get('/kakao', passport.authenticate('kakao'));

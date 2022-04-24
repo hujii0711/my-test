@@ -3,6 +3,7 @@
 // 로그인한 상태여야 다음 미들웨어 호출 : 자신의 프로필 확인
 exports.isLoggedIn = (req, res, next) => {
   // 로그인 여부를 isAuthenticated 메서드를 통해 파악할 수 있다.
+  console.log("isLoggedIn >>>>>>> req.isAuthenticated()=======", req.isAuthenticated());
   if (req.isAuthenticated()) { //PassPort는 req 객체에 isAuthenticated 메서드를 추가하여 로그인 중이면 true, 아니면 false를 줌
     next(); // 다음 미들웨어로 넘어갈 수 있다.
   } else {
@@ -12,6 +13,7 @@ exports.isLoggedIn = (req, res, next) => {
 
 // 로그인한 상태가 아니여야 다음 미들웨어 호출 : 회원가입 페이지
 exports.isNotLoggedIn = (req, res, next) => {
+  console.log("isNotLoggedIn >>>>>>> req.isAuthenticated()=======", req.isAuthenticated());
   if (!req.isAuthenticated()) { 
     next(); // 로그인한 상태가 아니라면 다음 미들웨어로 넘어갈 수 있다.
   } else {
