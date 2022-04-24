@@ -19,10 +19,15 @@ const app = express();
 passportConfig(); // 패스포트 설정
 app.set('port', process.env.PORT || 8001);
 app.set('view engine', 'html');
+
+// configure의 첫 번째 인수로 views 폴더의 경로를 넣고, 두 번째 인수로 옵션을 넣습니다.
+//이때 express 속성에 app 객체를 연결합니다. watch 옵션이 true이면 HTML 파일이 변경될 때 템플릿 엔진을 다시 렌더링합니다.
 nunjucks.configure('views', {
   express: app,
   watch: true,
 });
+//sequelize.sync()는 Sequelize가 초기화 될 때 DB에 필요한 테이블을 생성하는 함수입니다.
+//예를 들면 quiz라는 모델이 있다면 CREATE TABLE IF NOT EXISTS `Quizzes`로 시작하는 SQL을 실행하여 모델로 정의된 테이블을 생성합니다.
 sequelize.sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결 성공');
