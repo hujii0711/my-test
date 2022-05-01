@@ -15,7 +15,7 @@ router.post('/token', async (req, res) => {
   const { clientSecret } = req.body;
   try {
     const domain = await Domain.findOne({
-      where: { clientSecret },
+      where: { clientSecret }, // 클라이언트의 비밀키로 도메인이 등록된 것인지 여부를 확인
       include: {
         model: User,
         attribute: ['nick', 'id'],
@@ -27,6 +27,8 @@ router.post('/token', async (req, res) => {
         message: '등록되지 않은 도메인입니다. 먼저 도메인을 등록하세요',
       });
     }
+
+    // 등록된 도메인이라면 토큰을 발급해서 응답
     //jwt.sign({}, "", {});
     // 토큰은 jwt.sign 메서드로 발급 받을 수 있다.
     // 첫번째 인자: 토큰의 내용

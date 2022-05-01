@@ -44,8 +44,8 @@ router.post('/token', apiLimiter, async (req, res) => {
       id: domain.User.id,
       nick: domain.User.nick,
     }, process.env.JWT_SECRET, {
-      expiresIn: '30m', // 30분
-      issuer: 'nodebird',
+      expiresIn: '1m', // 30분
+      issuer: 'Kim Hyung Jun',
     });
     return res.json({
       code: 200,
