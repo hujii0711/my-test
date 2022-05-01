@@ -10,6 +10,7 @@ router.use(deprecated);
 
 // 전달받은 클라이언트 비밀키로 도메인이 등록된 것인지를 확인
 // 등록되지 않은 도메인이라면 에러 메시지로 응답하고, 등록된 도메인이라면 토큰을 발급해서 응답한다.
+// 토큰은 jwt.sign 메서드로 발급 받을 수 있다.
 router.post('/token', async (req, res) => {
   const { clientSecret } = req.body;
   try {
@@ -31,12 +32,18 @@ router.post('/token', async (req, res) => {
     // 첫번째 인자: 토큰의 내용
     // 두번째 인자: 토큰의 비밀키
     // 세번째 인자: 토큰의 설정
-    const token = jwt.sign({
+    const token = jwt.sign(
+    //토큰의 내용
+    { 
       id: domain.User.id,
       nick: domain.User.nick,
-    }, process.env.JWT_SECRET, {
-      expiresIn: '1m', // 1분 (발급된지 1분이 지나면 토큰이 만료되므로 만료되었다면 토큰을 재발급 받아야 한다.)
-      issuer: 'nodebird',
+    },
+    //토큰의 설정
+    process.env.JWT_SECRET,
+    //토큰의 설정
+    { 
+      expiresIn: '1m', // 유효기간 : 1분 (발급된지 1분이 지나면 토큰이 만료되므로 만료되었다면 토큰을 재발급 받아야 한다.)
+      issuer: 'Kim Hyung Jun', // 발급자 정보
     });
     return res.json({
       code: 200,

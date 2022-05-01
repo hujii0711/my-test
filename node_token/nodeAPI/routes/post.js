@@ -4,7 +4,7 @@ const path = require('path');
 const fs = require('fs');
 
 const { Post, Hashtag } = require('../models');
-const { isLoggedIn } = require('./middlewares');
+const { isLoggedIn } = require('./global/loginCheck');
 
 const router = express.Router();
 

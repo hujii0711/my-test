@@ -19,6 +19,11 @@ exports.isNotLoggedIn = (req, res, next) => {
 
 exports.verifyToken = (req, res, next) => {
   try {
+    //jwt.verify 메서드로 토큰을 검증할 수 있다.
+    //req.headers.authorization : 토큰(요청 헤더에 저장된 토큰 정보)
+    //process.env.JWT_SECRET : 비밀키
+    //인증에 성공한 경우 토큰의 내용을 반환한다. 토큰의 내용은 사용자의 아이디와 닉네임, 발급자, 유효기간 등이다.
+    //위의 내용을 req.decoded에 대입하여 다음 미들웨어에서 쓸 수 있도록 한다.
     req.decoded = jwt.verify(req.headers.authorization, process.env.JWT_SECRET);
     return next();
   } catch (error) {

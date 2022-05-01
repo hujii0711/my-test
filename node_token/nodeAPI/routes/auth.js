@@ -1,12 +1,12 @@
 const express = require('express');
 const passport = require('passport');
 const bcrypt = require('bcrypt');
-const { isLoggedIn, isNotLoggedIn } = require('./middlewares');
+const { isLoggedIn, isNotLoggedIn } = require('./global/loginCheck');
 const User = require('../models/user');
 
 const router = express.Router();
 
-// #. 회원 가입 라우터
+// #. 회원 가입 라우터 /auth/join
 router.post('/join', isNotLoggedIn, async (req, res, next) => {
   const { email, nick, password } = req.body;
   try {
@@ -27,7 +27,7 @@ router.post('/join', isNotLoggedIn, async (req, res, next) => {
   }
 });
 
-// #. 로그인 라우터
+// #. 로그인 라우터 /auth/login
 router.post('/login', isNotLoggedIn, (req, res, next) => {
   passport.authenticate('local', (authError, user, info) => { // 로컬 로그인 전략 수행
     if (authError) {
@@ -50,7 +50,7 @@ router.post('/login', isNotLoggedIn, (req, res, next) => {
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
 
-// #. 로그아웃 라우터
+// #. 로그아웃 라우터 /auth/logout
 router.get('/logout', isLoggedIn, (req, res) => {
   // req.logout 메서드는 req.user 객체를 제거
   console.log("/logout 콜백")

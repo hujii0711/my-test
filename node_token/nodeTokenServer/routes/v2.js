@@ -23,6 +23,7 @@ router.use(async (req, res, next) => {
 });
 
 router.post('/token', apiLimiter, async (req, res) => {
+  console.log("req.body=====", req.body)
   const { clientSecret } = req.body;
   try {
     const domain = await Domain.findOne({
@@ -32,6 +33,7 @@ router.post('/token', apiLimiter, async (req, res) => {
         attribute: ['nick', 'id'],
       },
     });
+    console.log("domain=====", domain)
     if (!domain) {
       return res.status(401).json({
         code: 401,

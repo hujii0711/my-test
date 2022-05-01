@@ -12,7 +12,7 @@ module.exports = class Domain extends Sequelize.Model {
         allowNull: false,
       },
       clientSecret: {
-        type: Sequelize.UUID,
+        type: Sequelize.UUID, //API를 사용할 때 필요한 비밀키
         allowNull: false,
       },
     }, {

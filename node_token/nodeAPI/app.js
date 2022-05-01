@@ -7,17 +7,18 @@ const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const passport = require('passport');
 
-dotenv.config();
+dotenv.config({ path: "config/.env" }); //.env 설치 파일 경로 명시
 const pageRouter = require('./routes/page');
 const authRouter = require('./routes/auth');
 const postRouter = require('./routes/post');
 const userRouter = require('./routes/user');
-const { sequelize } = require('./models');
+//폴더 내의 index.js 파일은 require 시 이름을 생략할 수 있다
+const { sequelize } = require('./models'); //require('./models')는 require('./models/index.js')와 같음
 const passportConfig = require('./passport');
 
 const app = express();
 passportConfig(); // 패스포트 설정
-app.set('port', process.env.PORT || 8001);
+app.set('port', process.env.PORT || 8000);
 app.set('view engine', 'html');
 
 // configure의 첫 번째 인수로 views 폴더의 경로를 넣고, 두 번째 인수로 옵션을 넣습니다.
@@ -27,8 +28,9 @@ nunjucks.configure('views', {
   watch: true,
 });
 
-//sequelize.sync()는 Sequelize가 초기화 될 때 DB에 필요한 테이블을 생성하는 함수입니다.
-//예를 들면 quiz라는 모델이 있다면 CREATE TABLE IF NOT EXISTS `Quizzes`로 시작하는 SQL을 실행하여 모델로 정의된 테이블을 생성합니다.
+//시퀄라이즈를 통해 익스프레스 앱과 MySQL을 연결해야 합니다.
+//db.sequelize를 불러와서 sync 메서드를 사용해 서버 실행 시 MySQL과 연동되도록 했습니다. 내부에 force: false 옵션이 있는데, 이 옵션을 true로
+//설정하면 서버 실행 시마다 테이블을 재생성합니다. 테이블을 잘못 만든 경우에 true로 설정하면 됩니다.
 sequelize.sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결 성공');
