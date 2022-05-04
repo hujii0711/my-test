@@ -9,7 +9,7 @@ const CounterContainer = ({ number, increase, decrease }) => {
   );
 };
 
-// 1유형
+// 3 유형
 // 두번째 파라미터를 아예 객체 형태로 넣어 주면 connect 함수가 내부적으로 bindActionCreators 작업을 대신 해준다.
 // export default connect(
 //   state => ({
@@ -21,7 +21,7 @@ const CounterContainer = ({ number, increase, decrease }) => {
 //   }
 // )(CounterContainer);
 
-// 2유형
+// 2 유형
 export default connect(
   state => ({
     number: state.counter.number
@@ -32,7 +32,7 @@ export default connect(
   })
 )(CounterContainer);
 
-// 3 유형
+// 1 유형
 // const mapStateToProps = (state) => ({ // state: 현재 스토어가 지니고 있는 상태
 //   _number : state.counter.number
 // });

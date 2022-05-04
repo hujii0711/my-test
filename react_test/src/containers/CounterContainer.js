@@ -4,7 +4,7 @@ import { increaseAsync, decreaseAsync } from '../modules/counter';
 import Counter from '../components/Counter';
 
 const CounterContainer = ({ number, increaseAsync, decreaseAsync }) => {
-  console.log("2222222222 CounterContainer >>>>> number, increaseAsync, decreaseAsync======", number, increaseAsync, decreaseAsync );
+
   return (
     <Counter
       number={number}

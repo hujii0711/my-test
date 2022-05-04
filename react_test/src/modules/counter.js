@@ -1,5 +1,5 @@
 import { createAction, handleActions } from 'redux-actions';
-import { delay, put, takeLatest, select, takeEvery, throttle } from 'redux-saga/effects';
+import { delay, put, takeLatest, select } from 'redux-saga/effects';
 
 const INCREASE = 'counter/INCREASE';
 const DECREASE = 'counter/DECREASE';
@@ -29,10 +29,10 @@ function* decreaseSaga() {
 
 // redux-saga 에서는 제너레이터 함수를 "사가" 라고 부릅니다.
 export function* counterSaga() {
-  console.log("1111111 counter.js >>>> counterSaga ======",increaseSaga)
   // takeEvery 는 들어오는 모든 액션에 대하여 특정 작업을 처리해줍니다.
-  yield takeEvery(INCREASE_ASYNC, increaseSaga); // 모든 INCREASE_ASYNC 액션을 처리
+  //yield takeEvery(INCREASE_ASYNC, increaseSaga); // 모든 INCREASE_ASYNC 액션을 처리
   //yield throttle(3000, INCREASE_ASYNC, increaseSaga);
+  yield takeLatest(INCREASE_ASYNC, increaseSaga);
   // takeLatest 는 만약 기존에 진행중이던 작업이 있다면 취소처리 하고 가장 마지막으로 실행된 작업만을 수행합니다.
   yield takeLatest(DECREASE_ASYNC, decreaseSaga);// 가장 마지막으로 디스패치된 DECREASE_ASYNC 액션만을 처리
 }

@@ -1,14 +1,16 @@
 import { call, put } from 'redux-saga/effects';
 import { startLoading, finishLoading } from '../modules/loading';
 
-export default function createRequestSaga(type, request) {
+export default function createRequestSaga(type, requestApi) {
+  
   const SUCCESS = `${type}_SUCCESS`;
   const FAILURE = `${type}_FAILURE`;
 
   return function*(action) {
     yield put(startLoading(type)); // 로딩 시작
     try {
-      const response = yield call(request, action.payload);
+      const response = yield call(requestApi, action.payload);
+      console.log("createRequestSaga >>>>> response=====", response);
       yield put({
         type: SUCCESS,
         payload: response.data
