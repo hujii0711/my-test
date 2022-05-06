@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GIF 채팅방</title>
+</head>
+<body>
+<div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+  const socket = io.connect('http://localhost:8005', {
+    path: '/socket.io', // 이 부분이 서버의 path 옵션과 일치해야 통신이 가능
+    //Socket.io는 먼저 폴링 방식으로 서버와 연결한다. 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드 함
+    // 웹 소켓을 지원하지 않는 브라우저에서 폴링 방식으로 먼저 연결하는데 사용
+    transports: ['websocket'], //처음 연결부터 웹 소켓만 사용하고 싶을 때 사용
+  });
+  socket.on('news', function (data) { // 서버에서 보내는 news이벤트를 받기 위해 new 이벤트 리스너 붙임
+    console.log(data);
+    socket.emit('reply', 'Hello Node.JS');// emit 메서드로 다시 서버에게 답장한다.
+  });
+</script>
+</body>
+</html>
