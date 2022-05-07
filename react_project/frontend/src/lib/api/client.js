@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // axios 인스턴스를 생성
-const client = axios.create();
+const api = axios.create();
 
 /*
   글로벌 설정 예시:
@@ -25,4 +25,4 @@ const client = axios.create();
   })  
 */
 
-export default client;
+export default api;

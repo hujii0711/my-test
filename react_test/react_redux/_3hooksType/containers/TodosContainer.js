@@ -2,7 +2,7 @@ import React, {useCallback} from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { changeInput, insert, toggle, remove } from '../modules/todos';
 import Todos from '../components/Todos';
-//mport useActions from '../lib/useActions';
+//import useActions from '../lib/useActions';
 
 const TodosContainer = () => {
 

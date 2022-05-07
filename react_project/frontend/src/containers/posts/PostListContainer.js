@@ -19,7 +19,7 @@ const PostListContainer = () => {
 
   // const { posts, error, loading, user } = useSelector(
   //   //({ posts, loading, user }) => {
-  //   (p_state) => { //스토에 담긴 전역 state
+  //   (p_state) => { //스토어에 담긴 전역 state
   //     const { posts, loading, user } = p_state;
 
   //     const state = {
@@ -37,13 +37,12 @@ const PostListContainer = () => {
     //만약 ignoreQueryPrefix : true 처리를 해야 ?표시가 없는 온전한 객체로 받을수 있다.
     //const { tag, username, page } = qs.parse(location.search);
     const { tag, username, page } = qs.parse(location.search, { ignoreQueryPrefix: true });
-    console.log("PostListContainer >>>>> useEffect >>>>>> { tag, username, page } =========", { tag, username, page });
+    dispatch(listPosts({ tag, username, page }));
     //payload:
     //  page: undefined
     //  tag: undefined
     //  username: undefined
     //type: "posts/LIST_POSTS"
-    dispatch(listPosts({ tag, username, page }));
     
   }, [dispatch, location.search]); // 특정 값이 업데이트될 때만 실행하고 싶을 때
 

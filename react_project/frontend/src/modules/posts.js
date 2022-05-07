@@ -4,20 +4,18 @@ import * as postsAPI from '../lib/api/posts';
 import { takeLatest } from 'redux-saga/effects';
 
 const [
-  LIST_POSTS,
-  LIST_POSTS_SUCCESS,
-  LIST_POSTS_FAILURE,
+  LIST_POSTS, //posts/LIST_POSTS
+  LIST_POSTS_SUCCESS, //posts/LIST_POSTS_SUCCESS
+  LIST_POSTS_FAILURE, //posts/LIST_POSTS_FAILURE
 ] = createRequestActionTypes('posts/LIST_POSTS');
 
 export const listPosts = createAction(
   LIST_POSTS,
-  function(data){ 
-    //console.log("data============", data); //{ page: undefined, tag: undefined, username: undefined }
-    const { tag, username, page } = data;
-    return { tag, username, page };
-  }
-  //
-  //({ tag, username, page }) => ({ tag, username, page }),
+  ({ tag, username, page }) => ({ tag, username, page })
+  // function(data){ 
+  //   const { tag, username, page } = data;
+  //   return { tag, username, page };
+  // }
 );
 
 const listPostsSaga = createRequestSaga(LIST_POSTS, postsAPI.listPosts);

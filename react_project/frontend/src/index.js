@@ -17,13 +17,15 @@ const store = createStore(rootReducer, composeWithDevTools(applyMiddleware(sagaM
 
 function loadUser() {
   try {
-    const user = localStorage.getItem('user');
-    if (!user) return; // 로그인 상태가 아니라면 아무것도 안함
-    console.log("index.js >>>>> loadUser >>>>> store.getState1=====",store.getState())
+    const user = localStorage.getItem('user'); //{"_id":"62416b85e94c502434280b75","username":"test"}
+    if (!user) {
+      return;
+    }
+    console.log("index.js >>>>> store.getState=====",store.getState());
     // 액션 객체를 dispatch
-    store.dispatch(tempSetUser(user)); //{type: 'user/TEMP_SET_USER', payload: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'}
-    store.dispatch(check());//{type: 'user/CHECK'}
-    console.log("index.js >>>>> loadUser >>>>> store.getState2=====",store.getState())
+    store.dispatch(tempSetUser(user)); 
+    store.dispatch(check());
+    
   } catch (e) {
     console.log('localStorage is not working');
   }

@@ -22,16 +22,6 @@ const SampleContainer = ({post, users, loadingPost, loadingUsers, getPost, getUs
       }
     };
     fn();
-
-    // try {
-    //   getPost(1);
-    //   console.log("dispatch>>> getPost=====");
-    //   getUsers();
-    //   console.log("dispatch>>> getUsers=====");
-    // } catch (e) {
-    //   console.log(e); // 에러 조회
-    // }
-
   }, [getPost, getUsers]);
   return (
     <Sample
@@ -42,6 +32,7 @@ const SampleContainer = ({post, users, loadingPost, loadingUsers, getPost, getUs
     />
   );
 };
+
 // export default connect(
 //   state => ({
 //     number: state.counter.number
