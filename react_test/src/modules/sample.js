@@ -10,13 +10,14 @@ const GET_POST_SUCCESS = 'sample/GET_POST_SUCCESS';
 const GET_USERS = 'sample/GET_USERS';
 const GET_USERS_SUCCESS = 'sample/GET_USERS_SUCCESS';
 
-export const getPost = createAction(GET_POST, id => id);
-export const getUsers = createAction(GET_USERS);
+export const getPostAction = createAction(GET_POST, id => id);
+export const getUsersAction = createAction(GET_USERS);
 
-const getPostSaga = createRequestSaga(GET_POST, api.getPost);
-const getUsersSaga = createRequestSaga(GET_USERS, api.getUsers);
+const getPostSaga = createRequestSaga(GET_POST, api.getPost); //getPostAction이 dispatch될 때 호출 됨
+const getUsersSaga = createRequestSaga(GET_USERS, api.getUsers);//getUsersAction이 dispatch될 때 호출 됨
 
 export function* sampleSaga() {
+  console.log("sample.js [1] >>>>> sampleSaga!");
   yield takeLatest(GET_POST, getPostSaga);
   yield takeLatest(GET_USERS, getUsersSaga);
 }

@@ -33,16 +33,6 @@ const SampleContainer = ({post, users, loadingPost, loadingUsers, getPost, getUs
   );
 };
 
-// export default connect(
-//   state => ({
-//     number: state.counter.number
-//   }),
-//   dispatch => ({
-//     increase : () => dispatch(increase()),
-//     decrease : () => dispatch(decrease()),
-//   })
-// )(CounterContainer);
-
 export default connect(
   function({sample, loading}){
     //-console.log("sample=====", sample);
