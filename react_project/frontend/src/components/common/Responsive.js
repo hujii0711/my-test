@@ -17,8 +17,8 @@ const ResponsiveBlock = styled.div`
 `;
 
 const Responsive = ({ children, ...rest }) => {
-  //console.log("children====", children)
-  //console.log("...rest====", ...rest)
+  //Responsive(1, 2, 3);  ...rest : 2, 3
+  //Responsive(1, 2, 3, 4);  ...rest : 2, 3, 4
   // style, className, onClick, onMouseMove 등의 props를 사용할 수 있도록
   // ...rest를 사용하여 ResponsiveBlock에게 전달
   return <ResponsiveBlock {...rest}>{children}</ResponsiveBlock>;

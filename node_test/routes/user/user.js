@@ -12,6 +12,8 @@ router.use((req, res, next) => {
 // 라우터 호출 후 다음 미들웨어 실행
 router.get('/nextTest', function (req, res, next) {
     console.log('next1');
+    //throw new Error("aaa"); // app.js 에러처리 라우터 호출
+    //next(err);// app.js 에러처리 라우터 호출
     next();
 }, (req, res) => { // next() 호출시 실행
     console.log('next2');
@@ -24,7 +26,6 @@ router.get('/nextTest', function (req, res, next) {
 router.get('/select', async(req, res) => { // /user/select
     try {
         const users = await User.findAll();
-        console.log("users=====", users);
         res.json(users);
     } catch (err) {
         console.error(err);
