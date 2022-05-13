@@ -13,7 +13,6 @@ const EditorContainer = () => {
   //onChangeField 함수는 useCallback으로 감싸주었는데, 이는 Editor 컴포넌트에서 사용할 useEffect에서 onChangeField를 사용할 것이기 때문.
   //onChangeField를 useCallback으로 감싸 주어야만 나중에 Editor에서 사용할 useEffect가 컴포넌트가 화면에 나타났을때 딱 한번만 실행된다.
   const onChangeField = useCallback(function(payload) { 
-    console.log("EditorContainer >>>>>> payload========", payload);
     return dispatch(changeField(payload));
   }, [dispatch]);
 

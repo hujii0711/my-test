@@ -21,7 +21,7 @@ function loadUser() {
     if (!user) {
       return;
     }
-    console.log("index.js >>>>> store.getState=====",store.getState());
+    //console.log("index.js >>>>> store.getState=====",store.getState());
     // 액션 객체를 dispatch
     store.dispatch(tempSetUser(user)); 
     store.dispatch(check());

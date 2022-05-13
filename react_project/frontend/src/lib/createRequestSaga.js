@@ -7,14 +7,16 @@ export const createRequestActionTypes = (type) => {
   return [type, SUCCESS, FAILURE];
 };
 
-export default function createRequestSaga(type, request) {
+// posts.js에서 const listPostsSaga = createRequestSaga(LIST_POSTS, postsAPI.listPosts);
+export default function createRequestSaga(type, requestApi) {
   const SUCCESS = `${type}_SUCCESS`;
   const FAILURE = `${type}_FAILURE`;
 
-  return function*(action) {
+  return function*(action) { //action : createAction(LIST_POSTS, action); 두번째 인자의 액션 객체 값
     yield put(startLoading(type)); // 로딩 시작
     try {
-      const response = yield call(request, action.payload);
+      const response = yield call(requestApi, action.payload);
+      // dispatch({ type : 'LIST_POSTS_SUCCESS', payload : response.data, meta : response })
       yield put({
         type: SUCCESS,
         payload: response.data,

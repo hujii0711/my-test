@@ -5,11 +5,14 @@ import { useLocation } from 'react-router-dom';
 import qs from 'qs';
 
 const PaginationContainer = () => {
-  const { lastPage, posts, loading } = useSelector(({ posts, loading }) => ({
-    lastPage: posts.lastPage,
-    posts: posts.posts,
-    loading: loading['posts/LIST_POSTS'],
-  }));
+
+  const { lastPage, posts, loading } = useSelector(({ posts, loading }) => {
+    return {
+      lastPage: posts.lastPage,
+      posts: posts.posts,
+      loading: loading['posts/LIST_POSTS'],
+    }
+  });
 
   const location = useLocation();
 
@@ -17,9 +20,7 @@ const PaginationContainer = () => {
   if (!posts || loading) return null;
 
   // page가 없으면 1을 기본값으로 사용
-  const { tag, username, page = 1 } = qs.parse(location.search, {
-    ignoreQueryPrefix: true,
-  });
+  const { tag, username, page = 1 } = qs.parse(location.search, { ignoreQueryPrefix: true });
 
   return (
     <Pagination

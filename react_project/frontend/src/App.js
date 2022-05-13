@@ -9,7 +9,7 @@ import { Helmet } from 'react-helmet-async';
 
 const App = () => {
   useEffect(() => {
-    console.log("App_effect!!!!")
+    //console.log("App_effect!!!!");
   });
   return (
       <>
