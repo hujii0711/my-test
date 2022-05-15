@@ -3,6 +3,7 @@
 - 동영상 캡처 정리 (회사)
 - AWS
 - TypeScript
+- express 라우터 응용 소스 확인
 
-node 로컬용 서버 --> 생활코딩 Proxy
-node 개발용 서버 --> 생활코딩 Proxy
+- node 로컬용 서버 --> 생활코딩 Proxy
+- node 개발용 서버 --> 생활코딩 Proxy
