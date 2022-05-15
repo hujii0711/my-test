@@ -4,7 +4,8 @@ const { sequelize } = require('./models');
 const app = express();
 app.set('port', process.env.PORT || 5001);
 
-sequelize.sync({ force: false })
+sequelize
+  .sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결 성공');
   })
@@ -22,7 +23,7 @@ app.use('/user', userRouter);
 
 // 404 에러 라우터
 app.use((req, res, next) => {
-  const error =  new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
+  const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;
   next(error);
 });

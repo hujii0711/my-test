@@ -1,1 +1,8 @@
-- 코딩앙마 유투브 다운로드 : TypeScript, Next.js, Jest
+- 지하철: webpack, babel 관련 동영상 보기
+         Next.js, Jest
+- 동영상 캡처 정리 (회사)
+- AWS
+- TypeScript
+
+node 로컬용 서버 --> 생활코딩 Proxy
+node 개발용 서버 --> 생활코딩 Proxy
