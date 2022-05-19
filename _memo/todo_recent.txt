@@ -7,3 +7,8 @@
 
 - node 로컬용 서버 --> 생활코딩 Proxy
 - node 개발용 서버 --> 생활코딩 Proxy
+
+- 지하철 동영상 목록 추출
+https://www.youtube.com/watch?v=LqiP8HDDue8 (리액트 네이티브)
+https://www.youtube.com/watch?v=rStkgoCbfkU
+https://www.youtube.com/watch?v=UMQ2lxRrK7o

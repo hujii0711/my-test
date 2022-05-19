@@ -1,12 +1,10 @@
-import React from "react";
-import CounterContainer from "./containers/CounterContainer";
-import SampleContainer from "./containers/SampleContainer";
+import React from 'react';
+import StyledComponent from './StyledComponent';
 
 const App = () => {
   return (
     <div>
-      <CounterContainer />
-      <SampleContainer />
+      <StyledComponent />
     </div>
   );
 };
