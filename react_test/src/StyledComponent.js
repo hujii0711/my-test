@@ -3,14 +3,13 @@ import styled, { css } from 'styled-components';
 
 const sizes = {
   desktop: 1024,
-  tablet: 768
+  tablet: 768,
 };
 
 // 위에있는 size 객체에 따라 자동으로 media 쿼리 함수를 만들어줍니다.
 // 참고: https://www.styled-components.com/docs/advanced#media-templates
-const media = Object.keys(sizes).reduce(function(acc, label) {
-  acc[label] = function(...rest) {
-    console.log("...rest====", ...rest);
+const media = Object.keys(sizes).reduce((acc, label) => {
+  acc[label] = (...rest) => {
     css`@media (max-width: ${sizes[label] / 16}em) {
       ${css(...rest)};
     }`;
@@ -31,7 +30,6 @@ const Box = styled.div`
   ${media.desktop`width: 768px;`}
   ${media.tablet`width: 100%;`};
 `
-console.log("Box!!!");
 ;
 
 const Button = styled.button`
@@ -66,7 +64,6 @@ const Button = styled.button`
   & + button {
     margin-left: 1rem;
   }`
-  console.log("Button!!!");
 ;
 
 const StyledDiv = styled.div`
@@ -101,6 +98,8 @@ const ChildStyleDiv = styled(StyledDiv)`
 `;
 
 const WapperDiv = styled.div`
+  padding: 10px;
+  border : 3px solid #000000;
 `;
 
 const StyledComponent = () => (
