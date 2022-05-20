@@ -56,22 +56,31 @@ const user = handleActions(
     [TEMP_SET_USER]: function(state, {payload : user}) { 
       //console.log("user.js >>>>> handleActions[TEMP_SET_USER] >>>>> state====", state); // {user: null, checkError: null};
       // return에 새로운 state
-      return ({...state, user}); // {user: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}', checkError: null}
+      return {
+        ...state, 
+        user
+      } // {user: '{"_id":"6243f7ebd7d840a059415f06","username":"test"}', checkError: null}
     },
     
-    [CHECK_SUCCESS]: (state, { payload: user }) => ({
-      ...state,
-      user,
-      checkError: null
-    }),
-    [CHECK_FAILURE]: (state, { payload: error }) => ({
-      ...state,
-      user: null,
-      checkError: error
-    }),
+    [CHECK_SUCCESS]: (state, { payload: user }) => {
+      return {
+        ...state,
+        user,
+        checkError: null
+      }
+    },
+    [CHECK_FAILURE]: (state, { payload: error }) => {
+      return {
+        ...state,
+        user: null,
+        checkError: error
+      }
+    },
     [LOGOUT]: state => { 
-      console.log("user.js >>>>> handleActions[LOGOUT] >>>>> state====", state);
-      return {...state, user: null}
+      return {
+        ...state, 
+        user: null
+      }
     }
   },
   initialState,

@@ -7,8 +7,16 @@ import Button from './Button';
 const HeaderBlock = styled.div`
   position: fixed;
   width: 100%;
-  background: white;
+  background-color: #1F85DE;
+  border : 2px solid #fff;
   box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.08);
+  &:hover {
+    background-color: #fed136;
+  }
+  /*&:after {
+    display : inline-block;
+    content : 'HeaderBlock';
+  }*/
 `;
 
 /**
@@ -20,10 +28,13 @@ const Wrapper = styled(Responsive)`
   display: flex;
   align-items: center;
   justify-content: space-between; /* 자식 엘리먼트 사이에 여백을 최대로 설정 */
+  background-color: #2fbe76;
+  border-radius: 10px;
   .logo {
     font-size: 1.125rem;
     font-weight: 800;
     letter-spacing: 2px;
+    color: #fff;
   }
   .right {
     display: flex;
@@ -51,8 +62,8 @@ const Header = ({ user, onLogout }) => {
     <>
       <HeaderBlock>
         <Wrapper>
-          <Link to="/" className="logo">
-            REACTERS
+          <Link to="/" className="logo">{/* Wrapper 컴포넌트에서 만든 class 사용 가능 */}
+            Hello React
           </Link>
           {user ? (
             <div className="right">

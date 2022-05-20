@@ -9,6 +9,7 @@ import { Link } from 'react-router-dom';
 
 const PostListBlock = styled(Responsive)`
   margin-top: 3rem;
+  background-color: orange;
 `;
 
 const WritePostButtonWrapper = styled.div`
@@ -21,6 +22,7 @@ const PostItemBlock = styled.div`
   padding-top: 3rem;
   padding-bottom: 3rem;
   /* 맨 위 포스트는 padding-top 없음 */
+  background-color:red;
   &:first-child {
     padding-top: 0;
   }

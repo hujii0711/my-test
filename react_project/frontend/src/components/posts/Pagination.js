@@ -6,11 +6,16 @@ import Button from '../common/Button';
 const PaginationBlock = styled.div`
   width: 320px;
   margin: 0 auto;
+  margin-top: 10px;
   display: flex;
   justify-content: space-between;
   margin-bottom: 3rem;
 `;
-const PageNumber = styled.div``;
+const PageNumber = styled.div`
+  color : #212529;
+  font-weight: bold;
+  font-size: 15px;
+`;
 
 const buildLink = ({ username, tag, page }) => {
   const query = qs.stringify({ tag, page });

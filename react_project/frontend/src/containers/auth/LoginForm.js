@@ -11,12 +11,13 @@ const LoginForm = () => {
   const navigate = useNavigate();
   
   const { form, auth, authError, user } = useSelector(({ auth, user }) => ({
+    //dispatch 할 때마다 상태값 수시로 변경
     form: auth.login,
     auth: auth.auth,
     authError: auth.authError,
     user: user.user,
   }));
-
+  
   // onChange, onSubmit 함수를 구현하여 필요한 액션을 디스패치 하도록 구현
   // 인풋 변경 이벤트 핸들러
   const onChange = e => {

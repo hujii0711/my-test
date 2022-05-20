@@ -59,37 +59,49 @@ const initialState = {
 // 앞으로 만들 컨테이너 컴포넌트에서는 useDispatch, useSelector함수를 사용하여 컴포넌트를 리덕스와 연동시킨다.
 const auth = handleActions(
   {
-    [CHANGE_FIELD]: (state, { payload: { form, key, value } }) =>
-      produce(state, draft => {
+    [CHANGE_FIELD]: (state, { payload: { form, key, value } }) => {
+      return produce(state, draft => {
         draft[form][key] = value; // 예: state.register.username을 바꾼다
-      }),
-    [INITIALIZE_FORM]: (state, { payload: form }) => ({
-      ...state,
-      [form]: initialState[form],
-      authError: null // 폼 전환 시 회원 인증 에러 초기화
-    }),
+      })
+    },  
+
+    [INITIALIZE_FORM]: (state, { payload: form }) => {
+      return {
+        ...state,
+        [form]: initialState[form],
+        authError: null // 폼 전환 시 회원 인증 에러 초기화
+      }
+    },
     // 회원가입 성공
-    [REGISTER_SUCCESS]: (state, { payload: auth }) => ({
-      ...state,
-      authError: null,
-      auth
-    }),
+    [REGISTER_SUCCESS]: (state, { payload: auth }) => {
+      return {
+        ...state,
+        authError: null,
+        auth
+      }
+    },
     // 회원가입 실패
-    [REGISTER_FAILURE]: (state, { payload: error }) => ({
-      ...state,
-      authError: error
-    }),
+    [REGISTER_FAILURE]: (state, { payload: error }) => {
+      return {
+        ...state,
+        authError: error
+      }
+    },
     // 로그인 성공
-    [LOGIN_SUCCESS]: (state, { payload: auth }) => ({
-      ...state,
-      authError: null,
-      auth
-    }),
+    [LOGIN_SUCCESS]: (state, { payload: auth }) => {
+      return {
+        ...state,
+        authError: null,
+        auth
+      }
+    },
     // 로그인 실패
-    [LOGIN_FAILURE]: (state, { payload: error }) => ({
-      ...state,
-      authError: error
-    })
+    [LOGIN_FAILURE]: (state, { payload: error }) => {
+      return {
+        ...state,
+        authError: error
+      }
+    }
   },
   initialState
 );

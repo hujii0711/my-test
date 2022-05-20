@@ -1,10 +1,10 @@
 import React from 'react';
-import StyledComponent from './StyledComponent';
+import ImmerTest from './ImmerTest';
 
 const App = () => {
   return (
     <div>
-      <StyledComponent />
+      <ImmerTest />
     </div>
   );
 };
