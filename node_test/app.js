@@ -6,6 +6,7 @@ const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 const passport = require('passport');
+const {tokenRenewal} = require('./lib/customMiddleware/tokenConfig');
 
 dotenv.config({ path: 'config/.env' });
 
@@ -54,6 +55,9 @@ app.use(
 app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
 app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
 
+// 모든 라우터에 수행되는 미들웨이 순서 주의!
+app.use(tokenRenewal);
+
 app.use('/', indexRouter);
 app.use('/post', postRounter);
 app.use('/user', userRouter);
@@ -62,16 +66,25 @@ app.use('/user', userRouter);
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;
-  next(error);
+  res.status(error.status).send(error.message);
+   //next(error); --> 에러 처리 라우터로 전송
 });
 
 // #. 에러 처리 라우터
 app.use((err, req, res, next) => {
-  res.locals.message = err.message;
-  res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
-  res.status(err.status || 500);
-  //res.render('error');
-  res.send('에러 처리 라우터');
+  console.log("에러 처리 라우터!!!!!!!!!!!!!");
+  //res.locals.message = err.message;
+  //res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
+  
+  if(err.status > 400){
+    console.log("err.status=====",err.status);
+    console.log("err.message=====",err.message);
+    res.status(err.status).send(err.message);
+  } else {
+    res.status(err.status || 500);
+    //res.render('error');
+    res.send('에러 처리 라우터');
+  }
 });
 
 app.listen(app.get('port'), () => {

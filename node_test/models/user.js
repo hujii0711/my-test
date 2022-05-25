@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize');
+const jwt = require('jsonwebtoken');
 
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
@@ -8,6 +9,14 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
           primaryKey: true,
+        },
+        userId :{
+          type: Sequelize.STRING,
+          allowNull: false,
+        },
+        userPwd :{
+          type: Sequelize.STRING,
+          allowNull: false,
         },
         name: {
           type: Sequelize.STRING,
@@ -35,16 +44,29 @@ module.exports = class User extends Sequelize.Model {
     //db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
   }
 
-  static findByUsername = (username) => {
-    return this.findAll({
-      attributes: ['name'],
+  static findByUserId = (userId) => {
+    return this.findOne({
+      attributes: ['id', 'userId', 'userPwd'],
       where: {
-        name: username,
-      },
+        userId: userId,
+      }, // 축약 : findByUserId({ where: { userId } });
+      raw : true 
     });
+    
   };
 
-  setPassword = (password) => {
-    return password;
+  static checkPassword = (userPwd) => {
+    return this.findOne({
+      attributes: ['userPwd'],
+      where: {
+        userPwd: userPwd,
+      },
+      raw : true
+    });
   };
+  
+  //static serialize = function() {
+  //  const data = this.toJSON();
+  //  return data;
+  //};
 };
