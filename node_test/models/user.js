@@ -9,6 +9,7 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
           primaryKey: true,
+          //autoIncrement: true, // 자동증가 여부
         },
         userId :{
           type: Sequelize.STRING,

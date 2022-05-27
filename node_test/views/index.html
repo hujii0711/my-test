@@ -73,6 +73,24 @@
           console.error(err);
         }
       };
+
+      async function logout(){
+        try{
+          var resp = await axios.get('/user/logout');
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function goRegister(){
+        try{
+          //await axios.get('/user/goRegister');
+          location.href = "/user/goRegister";
+        }catch(err){
+          console.error(err);
+        }
+      };
     </script>
   </head>
   <body>
@@ -92,6 +110,8 @@
           <button id="user-btn" type="submit" class="btn" onclick="getUserInfo()">사용자정보</button>
           <button id="token-btn" type="submit" class="btn" onclick="geneToken()">토큰생성</button>
           <button id="valid-btn" type="submit" class="btn" onclick="validToken()">토큰검증</button>
+          <button id="logout-btn" type="submit" class="btn" onclick="logout()">로그아웃</button>
+          <button id="register-btn" type="submit" class="btn" onclick="goRegister()">회원가입</button>
         </form>
       </div>
       <footer>

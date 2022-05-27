@@ -1,10 +1,9 @@
 const express = require('express');
-const { userInfo } = require('./userFunc');
 const tokenConfig = require('../../lib/customMiddleware/tokenConfig');
-const { isNotLoggedIn } = require('../../lib/customMiddleware/loginCheck');
+const { isNotLoggedIn } = require('../../lib/bak/loginCheck');
 const User = require('../../models/user');
+const path = require('path');
 const router = express.Router();
-const passport = require('passport');
 
 // user 로 호출되는 모든 라우터 실행전에 호출되는 미들웨어
 router.use((req, res, next) => {
@@ -12,42 +11,76 @@ router.use((req, res, next) => {
   next();
 });
 
-// 로그인 라우터 isNotLoggedIn, 
-router.post('/login', isNotLoggedIn, async (req, res, next) => {
-  console.log("로그인 수행 순서 > /login 라우터 호출 ::: 1");
+router.post('/register', async (req, res, next) => {
+  
+  console.log("/register 라우터 실행!!!====")
+  const { userId, userPwd, name } = req.body;
 
-  // 로컬 로그인 전략 수행
-  passport.authenticate('local', (authError, user, info) => {
+  // userId이 이미 존재하는지 확인
+  const exists = await User.findByUserId(userId);
+  if (exists) {
+    const error = new Error("사용자가 이미 존재합니다.");
+    next(error);
+  }
 
-    if (authError) { //localStrategy ---> done(error);
-      console.error(authError);
-      return next(authError);
-    }
+  // 저장
+  const user = await User.create({
 
-    if (!user) {  //localStrategy ---> done(null, false, { message: '가입되지 않은 회원입니다.' });
-      return res.redirect(`/?loginError=${info.message}`);
-    }
-    // 로그인 전략이 성공하면 req.login 메서드를 호출한다.
-    // Passport는 req 객체에 login과 logout 메서드를 추가한다.
-    // req.login은 passport.serializeUser를 호출한다. req.login에서 제공하는 user 객체가 serializeUser롤 넘어가게 된다.
-    console.log("로그인 수행 순서 > localStrategy 전략 수행 결과::: 3");
+    id: 3,
+    userId : userId,
+    userPwd : userPwd,
+    name: name,
+    profile: '개발자',
+  });
 
-    return req.login(user, (loginError) => {
-
-      console.log("로그인 수행 순서 > req.login 호출 후 serializeUser 수행 결과 ::: 5");
-      if (loginError) { // passport.serializeUser() 내부의 done(); 함수 수행시
-        console.error("loginError============", loginError);
-        return next(loginError);
-      }
-      return res.redirect('/');
-    });
-  })(req, res, next);
+  // 토큰은 따로 발급하지 않음
+  res.render('index', { title: 'JWT Token GET' });
+  //res.redirect('/');
 });
 
-// 세션의 사용자 정보 취득
-router.post('/getUserInfo', async (req, res, next) => {
-  console.log("/getUserInfo 라우터 실행#######################", req.user);
-  res.json(req.user);
+// 로그인 라우터 isNotLoggedIn, 
+router.post('/login', async (req, res, next) => {
+  console.log("로그인 수행 순서 > /login 라우터 호출 ::: 1");
+
+  const { userId, userPwd } = req.body;
+
+  try {
+    const userData = await User.findByUserId(userId);
+
+    // 계정이 존재하지 않으면 에러 처리
+    if (!userData) {
+      const error = new Error("사용자가 존재하지 않습니다.");
+      next(error);
+    }
+
+    //사용자가 있는 경우
+    if (userData) {
+      // 비밀번호 체크
+      if(userData.userPwd !== userPwd){
+        console.log("비밀번호가 일치하지 않습니다.");
+        const error = new Error("비밀번호가 일치하지 않습니다.");
+        next(error);
+      }
+    }
+
+    const token = tokenConfig.generateToken(userData.id, userData.userId);
+    
+    res.cookie('access_token', token, {
+      maxAge: 1000 * 60,  // 1분
+      httpOnly: true,
+    });
+    res.json({
+      code: 200,
+      message: '토큰이 발급되었습니다',
+      token,
+    });
+    //get요청외에는 바로 페이지 전화 불가
+    //res.render('main');
+    //res.redirect('/success');
+    //res.sendFile(path.join(__dirname, '../../views/main.html')); 
+  } catch (e) {
+    next(e);
+  }
 });
 
 // 토큰발급 라우터
@@ -71,6 +104,24 @@ router.post('/geneToken', async (req, res, next) => {
   }
 });
 
+// 로그아웃 라우터
+router.get('/logout', async (req, res, next) => {
+  console.log("/logout 라우터 실행!!!====")
+  //res.cookie('access_token');
+  //req.logout();
+  //req.session.destroy();
+  res.cookie('access_token');
+  res.json({message : "로그아웃 되었습니다."});
+});
+
+// 회원가입 페이지 이동 라우터
+router.get('/goRegister', async (req, res, next) => {
+  console.log("/goRegister 라우터 실행!!!====")
+  res.render('register', { title: '회원가입' });
+});
+
+
+
 // 추후 미들웨어나 모듈로 변경
 router.post('/validToken', async (req, res, next) => {
   console.log("/validToken 라우터 실행!!!====");
@@ -93,16 +144,13 @@ router.get('/select', async (req, res) => {
   //http://localhost:5001/user/select/aa ---> req.params===={ id: 'aa' }
   //http://localhost:5001/user/select?aaa=111&bbb=222 ---> req.query==== { aaa: '111', bbb: '222' }
   try {
-    // const userInfo_ = userInfo;
-    // console.log('userInfo_=====', userInfo_());
-    // userInfo_().then((result) => {
-    //   console.log('result-----', result);
-    // });
+
     const users = await User.findAll({
       attributes: ['name', 'profile'],
       where: {
         id: 1,
       },
+      raw : true
     });
 
     // User.findAll({
@@ -114,18 +162,18 @@ router.get('/select', async (req, res) => {
     //   console.log('result-----', result);
     // });
 
-    const { username, password } = { username: '김형준', password: 1234 };
+    //const { username, password } = { username: '김형준', password: 1234 };
 
     // static메소드로 인스턴스 생성없이 바로 가져오기
-    const name = await User.findByUsername(username);
-    console.log('name====', name);
+    //const name = await User.findByUsername(username);
+    //console.log('name====', name);
 
     // 인스턴스 생성하여 가져오기
-    const user = new User();
-    const pwd = await user.setPassword(password);
-    console.log('pwd====', pwd);
+    //const user = new User();
+    //const pwd = await user.setPassword(password);
+    //console.log('pwd====', pwd);
 
-    res.json(name);
+    res.json(users);
   } catch (err) {
     console.error(err);
     next(err);
@@ -143,7 +191,9 @@ router.get('/insert', async (req, res) => {
       name: '김해주',
       profile: '개발자',
     });
+
     res.status(201).json(user);
+
   } catch (err) {
     console.error(err);
     next(err);

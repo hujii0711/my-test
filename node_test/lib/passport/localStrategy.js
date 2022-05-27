@@ -18,8 +18,10 @@ module.exports = () => {
         try {
           const exUser = await User.findByUserId(userId);
           console.log("로그인 수행 순서 > LocalStrategy User.findByUserId 수행 결과::: 2");
+          // 계정이 존재하는지 체크
           if (exUser) {
             //const result = await bcrypt.compare(password, exUser.password); // 사용자의 비밀번호 비교
+            // 비밀번호 체크
             if(exUser.userPwd === userPwd){
               done(null, exUser); // 
             } else {

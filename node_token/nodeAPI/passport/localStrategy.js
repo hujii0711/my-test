@@ -1,6 +1,6 @@
 const passport = require('passport');
 const LocalStrategy = require('passport-local').Strategy; // 로그인 전략을 구현하는 Strategy 생성자
-const bcrypt = require('bcrypt');
+const bcrypt = require('bcryptjs');
 
 const User = require('../models/user');
 //LocalStrategy({}, callbackFunc)

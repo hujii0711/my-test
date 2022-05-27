@@ -8,6 +8,14 @@ router.get('/', (req, res) => {
   res.render('index', { title: 'JWT Token GET' });
 });
 
+router.get('/success', (req, res) => {
+  console.log("success");
+  //res.render('main', { title: 'MAIN' });
+  //res.sendFile('public/index1.html');
+  //router post 방식은 res.render로 페이지 전환 불가
+  res.sendFile(path.join(__dirname, '/views/main.html'));
+});
+
 router.post('/', (req, res) => {
   res.render('index', { title: 'JWT Token POST' });
 });

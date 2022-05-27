@@ -2,10 +2,10 @@ const express = require('express');
 const cookieParser = require('cookie-parser');
 const morgan = require('morgan');
 const path = require('path');
-const session = require('express-session');
+//const session = require('express-session');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
-const passport = require('passport');
+//const passport = require('passport');
 const {tokenRenewal} = require('./lib/customMiddleware/tokenConfig');
 
 dotenv.config({ path: 'config/.env' });
@@ -15,10 +15,10 @@ const postRounter = require('./routes/post/post');
 const userRouter = require('./routes/user/user');
 
 const { sequelize } = require('./models');
-const passportConfig = require('./lib/passport');
+//const passportConfig = require('./lib/passport');
 
 const app = express();
-passportConfig(); // 패스포트 설정
+//passportConfig(); // 패스포트 설정
 app.set('port', process.env.PORT || 5000);
 app.set('view engine', 'html');
 
@@ -41,22 +41,22 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
-app.use(
-  session({
-    resave: false,
-    saveUninitialized: false,
-    secret: process.env.COOKIE_SECRET,
-    cookie: {
-      httpOnly: true,
-      secure: false,
-    },
-  })
-);
-app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
-app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
+//app.use(
+//  session({
+//    resave: false,
+//    saveUninitialized: false,
+//    secret: process.env.COOKIE_SECRET,
+//    cookie: {
+//      httpOnly: true,
+//      secure: false,
+//    },
+//  })
+//);
+//app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
+//app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
 
 // 모든 라우터에 수행되는 미들웨이 순서 주의!
-app.use(tokenRenewal);
+//app.use(tokenRenewal);
 
 app.use('/', indexRouter);
 app.use('/post', postRounter);
@@ -75,10 +75,9 @@ app.use((err, req, res, next) => {
   console.log("에러 처리 라우터!!!!!!!!!!!!!");
   //res.locals.message = err.message;
   //res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
-  
+  console.log("err.message=====",err.message);
+  console.log("err.status=====",err.status);
   if(err.status > 400){
-    console.log("err.status=====",err.status);
-    console.log("err.message=====",err.message);
     res.status(err.status).send(err.message);
   } else {
     res.status(err.status || 500);

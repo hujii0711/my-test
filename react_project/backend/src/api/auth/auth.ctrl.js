@@ -62,7 +62,7 @@ export const register = async ctx => {
 export const login = async ctx => {
   const { username, password } = ctx.request.body;
 
-  // username, password 가 없으면 에러 처리
+  // username, password 가 없으면 에러 처리 --> 화면에서 유효성 체크할 사항
   if (!username || !password) {
     ctx.status = 401; // Unauthorized
     return;
