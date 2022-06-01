@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize');
-const jwt = require('jsonwebtoken');
 
 module.exports = class User extends Sequelize.Model {
   static init(sequelize) {
@@ -9,13 +8,13 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.INTEGER,
           allowNull: false,
           primaryKey: true,
-          //autoIncrement: true, // 자동증가 여부
+          autoIncrement: true, // 자동증가 여부
         },
-        userId :{
+        userId: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        userPwd :{
+        userPwd: {
           type: Sequelize.STRING,
           allowNull: false,
         },
@@ -51,9 +50,8 @@ module.exports = class User extends Sequelize.Model {
       where: {
         userId: userId,
       }, // 축약 : findByUserId({ where: { userId } });
-      raw : true 
+      raw: true,
     });
-    
   };
 
   static checkPassword = (userPwd) => {
@@ -62,10 +60,10 @@ module.exports = class User extends Sequelize.Model {
       where: {
         userPwd: userPwd,
       },
-      raw : true
+      raw: true,
     });
   };
-  
+
   //static serialize = function() {
   //  const data = this.toJSON();
   //  return data;

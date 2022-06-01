@@ -36,13 +36,15 @@ const sanitizeOption = {
 
 //ctx는 Context의 줄임말로 웹 요청과 응답에 관한 정보를 지니고 있습니다.
 export const getPostById = async (ctx, next) => {
+  //http://localhost:3000/@test/62416b96e94c502434280b7c
+  //<Link to={`/@${user.username}/${_id}`}>{title}</Link>
   const { id } = ctx.params;
   if (!ObjectId.isValid(id)) {
     ctx.status = 400; // Bad Request
     return;
   }
   try {
-    const post = await Post.findById(id);
+    const post = await Post.findById(id); // 빌트인
     // 포스트가 존재하지 않을 때
     if (!post) {
       ctx.status = 404; // Not Found
@@ -138,7 +140,7 @@ export const list = async (ctx) => {
       .skip((page - 1) * 10)
       .lean()
       .exec();
-    const postCount = await Post.countDocuments(query).exec();
+    const postCount = await Post.countDocuments(query).exec(); // 빌트인
     ctx.set('Last-Page', Math.ceil(postCount / 10));
     ctx.body = posts.map((post) => ({
       ...post,
@@ -162,7 +164,7 @@ export const read = async (ctx) => {
 export const remove = async (ctx) => {
   const { id } = ctx.params;
   try {
-    await Post.findByIdAndRemove(id).exec();
+    await Post.findByIdAndRemove(id).exec(); // 빌트인
     ctx.status = 204; // No Content (성공은 했지만 응답할 데이터는 없음)
   } catch (e) {
     ctx.throw(500, e);
@@ -201,6 +203,7 @@ export const update = async (ctx) => {
   }
   try {
     const post = await Post.findByIdAndUpdate(id, nextData, {
+      //빌트인
       new: true, // 이 값을 설정하면 업데이트된 데이터를 반환합니다.
       // false 일 때에는 업데이트 되기 전의 데이터를 반환합니다.
     }).exec();

@@ -6,13 +6,13 @@ const path = require('path');
 const nunjucks = require('nunjucks');
 const dotenv = require('dotenv');
 //const passport = require('passport');
-const {tokenRenewal} = require('./lib/customMiddleware/tokenConfig');
+const { tokenRenewal } = require('./lib/customMiddleware/tokenConfig');
 
 dotenv.config({ path: 'config/.env' });
 
 const indexRouter = require('./routes');
-const postRounter = require('./routes/post/post');
-const userRouter = require('./routes/user/user');
+const postRounter = require('./routes/posts/post');
+const userRouter = require('./routes/users/user');
 
 const { sequelize } = require('./models');
 //const passportConfig = require('./lib/passport');
@@ -59,25 +59,25 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 //app.use(tokenRenewal);
 
 app.use('/', indexRouter);
-app.use('/post', postRounter);
-app.use('/user', userRouter);
+app.use('/posts', postRounter);
+app.use('/users', userRouter);
 
 // 404 응답은 익스프레스는 모든 미들웨어 함수 및 라우터를 실행했으며 이들 중 어느 것도 응답하지 않았다는 것을 나타낸다.
 app.use((req, res, next) => {
   const error = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
   error.status = 404;
   res.status(error.status).send(error.message);
-   //next(error); --> 에러 처리 라우터로 전송
+  //next(error); --> 에러 처리 라우터로 전송
 });
 
 // #. 에러 처리 라우터
 app.use((err, req, res, next) => {
-  console.log("에러 처리 라우터!!!!!!!!!!!!!");
+  console.log('에러 처리 라우터!!!!!!!!!!!!!');
   //res.locals.message = err.message;
   //res.locals.error = process.env.NODE_ENV !== 'production' ? err : {};
-  console.log("err.message=====",err.message);
-  console.log("err.status=====",err.status);
-  if(err.status > 400){
+  console.log('err.message=====', err.message);
+  console.log('err.status=====', err.status);
+  if (err.status > 400) {
     res.status(err.status).send(err.message);
   } else {
     res.status(err.status || 500);
