@@ -32,7 +32,7 @@
             userId: document.getElementById("join-id").value,
             userPwd: document.getElementById("join-password").value
           };
-          var resp = await axios.post('/user/login', formData);
+          var resp = await axios.post('/users/login', formData);
           console.log(resp.data);
         }catch(err){
           console.error(err);
@@ -41,7 +41,7 @@
 
       async function getUserInfo(){
         try{
-          var resp = await axios.post('/user/getUserInfo');
+          var resp = await axios.post('/users/getUserInfo');
           console.log(resp.data);
         }catch(err){
           console.error(err);
@@ -54,7 +54,7 @@
             userId: document.getElementById("join-id").value,
             userPwd: document.getElementById("join-password").value
           };
-          var resp = await axios.post('/user/geneToken', formData);
+          var resp = await axios.post('/users/geneToken', formData);
           console.log(resp.data);
         }catch(err){
           console.error(err);
@@ -67,7 +67,7 @@
             userId: document.getElementById("join-id").value,
             userPwd: document.getElementById("join-password").value
           };
-          var resp = await axios.post('/user/validToken', formData);
+          var resp = await axios.post('/users/validToken', formData);
           console.log(resp.data);
         }catch(err){
           console.error(err);
@@ -76,7 +76,7 @@
 
       async function logout(){
         try{
-          var resp = await axios.get('/user/logout');
+          var resp = await axios.get('/users/logout');
           console.log(resp.data);
         }catch(err){
           console.error(err);
@@ -86,7 +86,7 @@
       async function goRegister(){
         try{
           //await axios.get('/user/goRegister');
-          location.href = "/user/goRegister";
+          location.href = "/users/goRegister";
         }catch(err){
           console.error(err);
         }
@@ -107,11 +107,11 @@
           </div>
           <button id="test-btn" type="submit" class="btn" onclick="basicSubmitTest()">서버통신</button>
           <button id="login-btn" type="submit" class="btn" onclick="login()">로그인</button>
-          <button id="user-btn" type="submit" class="btn" onclick="getUserInfo()">사용자정보</button>
-          <button id="token-btn" type="submit" class="btn" onclick="geneToken()">토큰생성</button>
-          <button id="valid-btn" type="submit" class="btn" onclick="validToken()">토큰검증</button>
           <button id="logout-btn" type="submit" class="btn" onclick="logout()">로그아웃</button>
           <button id="register-btn" type="submit" class="btn" onclick="goRegister()">회원가입</button>
+           <!--<button id="user-btn" type="submit" class="btn" onclick="getUserInfo()">사용자정보</button>
+          <button id="token-btn" type="submit" class="btn" onclick="geneToken()">토큰생성</button>
+          <button id="valid-btn" type="submit" class="btn" onclick="validToken()">토큰검증</button> -->
         </form>
       </div>
       <footer>

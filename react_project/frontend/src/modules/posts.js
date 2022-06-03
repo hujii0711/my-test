@@ -36,6 +36,8 @@ const posts = handleActions(
     [LIST_POSTS_SUCCESS]: (state, action) => {
       const posts = action.payload;
       const response = action.meta;
+      console.log("posts=====", posts);
+      console.log("response=====", response);
       return {
         ...state,
         posts,

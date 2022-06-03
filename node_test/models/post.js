@@ -10,10 +10,6 @@ module.exports = class Post extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true, // 자동증가 여부
         },
-        userName: {
-          type: Sequelize.STRING(20),
-          allowNull: false,
-        },
         title: {
           type: Sequelize.STRING,
           allowNull: false,
@@ -22,16 +18,19 @@ module.exports = class Post extends Sequelize.Model {
           type: Sequelize.STRING(3000),
           allowNull: false,
         },
-        // tags: {
-        //   type: Sequelize.ARRAY(Sequelize.DECIMAL),
-        //   allowNull: false,
-        //   defaultValue: [],
-        // },
+        tags: {
+           type: Sequelize.JSON,
+           allowNull: true,
+        },
         publishedDate: {
           type: Sequelize.DATE,
           allowNull: false,
           defaultValue: Sequelize.NOW,
         },
+        user: {
+          type: Sequelize.STRING(30),
+          allowNull: false,
+        }
       },
       {
         sequelize,
@@ -45,4 +44,9 @@ module.exports = class Post extends Sequelize.Model {
       }
     );
   }
+  static findAllPost= () => {
+    return this.findAll({
+      raw: true,
+    });
+  };
 };

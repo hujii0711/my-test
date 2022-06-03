@@ -5,6 +5,7 @@ const router = express.Router();
 // put, patch, delete를 넣으면 get으로만 받는다.
 
 router.get('/', (req, res) => {
+  console.log("/ 라우터");
   res.render('index', { title: 'JWT Token GET' });
 });
 

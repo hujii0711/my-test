@@ -13,10 +13,16 @@
           const formData = {
             userId: document.getElementById("join-id").value,
             userPwd: document.getElementById("join-password").value,
-            name: document.getElementById("join-name").value
+            userName: document.getElementById("join-name").value
           };
-          var resp = await axios.post('/user/register', formData);
-          console.log(resp.data);
+
+          const resp = await axios.post('/users/register', formData);
+          const code = resp.data.code;
+
+          if(code === "success"){
+            alert(resp.data.message);
+          }
+
         }catch(err){
           console.error(err);
         }

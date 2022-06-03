@@ -11,7 +11,7 @@ module.exports = () => {
 
   passport.deserializeUser(async (userId, done) => {
     try{
-      const user = await User.findByUserId(userId);
+      const user = await User.findByUserInfo(userId);
       console.log("로그인 수행 순서 > deserializeUser 수행 결과 ::: 6");
       done(null, user);
     } catch(err) {

@@ -49,124 +49,6 @@ router.post('/login', async (req, res, next) => {
   })(req, res, next);
 });
 
-// 세션의 사용자 정보 취득
-router.post('/getUserInfo', async (req, res, next) => {
-  console.log('/getUserInfo 라우터 실행#######################', req.user);
-  res.json(req.user);
-});
-
-// 토큰발급 라우터
-router.post('/geneToken', async (req, res, next) => {
-  console.log('/geneToken 라우터 실행!!!====');
-  const { userId } = req.body;
-
-  try {
-    const userData = await User.findByUserId(userId);
-    const token = tokenConfig.generateToken(userData.id, userData.userId);
-    res.cookie('access_token', token, {
-      maxAge: 1000 * 60, // 1분
-      httpOnly: true,
-    });
-    res.json({
-      code: 200,
-      message: '토큰이 발급되었습니다',
-      token,
-    });
-  } catch (e) {}
-});
-
-// 로그아웃 라우터
-router.get('/logout', async (req, res, next) => {
-  console.log('/logout 라우터 실행!!!====');
-  //res.cookie('access_token');
-  //req.logout();
-  //req.session.destroy();
-  res.cookie('access_token');
-  res.json({ message: '로그아웃 되었습니다.' });
-});
-
-// 회원가입 페이지 이동 라우터
-router.get('/goRegister', async (req, res, next) => {
-  console.log('/goRegister 라우터 실행!!!====');
-  res.render('register', { title: '회원가입' });
-});
-
-// 추후 미들웨어나 모듈로 변경
-router.post('/validToken', async (req, res, next) => {
-  console.log('/validToken 라우터 실행!!!====');
-  try {
-    const token = tokenConfig.verifyToken(req);
-    console.log('validToken >>>>>> token====', token);
-    res.json({
-      code: 200,
-      message: '토큰이 검증되었습니다',
-      token,
-    });
-  } catch (e) {
-    //ctx.throw(500, e);
-  }
-});
-
-// 조회: GET
-router.get('/select', async (req, res) => {
-  // /user/select
-  //http://localhost:5001/user/select/aa ---> req.params===={ id: 'aa' }
-  //http://localhost:5001/user/select?aaa=111&bbb=222 ---> req.query==== { aaa: '111', bbb: '222' }
-  try {
-    const users = await User.findAll({
-      attributes: ['name', 'profile'],
-      where: {
-        id: 1,
-      },
-      raw: true,
-    });
-
-    // User.findAll({
-    //   attributes: ['name', 'profile'],
-    //   where: {
-    //     id: 1,
-    //   },
-    // }).then((result) => {
-    //   console.log('result-----', result);
-    // });
-
-    //const { username, password } = { username: '김형준', password: 1234 };
-
-    // static메소드로 인스턴스 생성없이 바로 가져오기
-    //const name = await User.findByUsername(username);
-    //console.log('name====', name);
-
-    // 인스턴스 생성하여 가져오기
-    //const user = new User();
-    //const pwd = await user.setPassword(password);
-    //console.log('pwd====', pwd);
-
-    res.json(users);
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
-
-// 등록 : POST
-router.get('/insert', async (req, res) => {
-  // /user/insert
-  try {
-    const user = await User.create({
-      id: 1,
-      userId: 'hj',
-      userPwd: '1234',
-      name: '김해주',
-      profile: '개발자',
-    });
-
-    res.status(201).json(user);
-  } catch (err) {
-    console.error(err);
-    next(err);
-  }
-});
-
 // 수정 : PUT
 router.get('/update', async (req, res) => {
   // /user/update
@@ -208,6 +90,103 @@ router.post('/', (req, res) => {
   // /user
   console.log('user Router___POST');
   res.send('user Router___POST');
+});
+
+// 토큰발급 라우터
+router.post('/geneToken', async (req, res, next) => {
+  console.log('/geneToken 라우터 실행!!!====');
+  const { userId } = req.body;
+
+  try {
+    const userData = await User.findByUserInfo(userId);
+    const token = tokenConfig.generateToken(userData.id, userData.userId);
+    res.cookie('access_token', token, {
+      maxAge: 1000 * 60, // 1분
+      httpOnly: true,
+    });
+    res.status(200).json({
+      code: 200,
+      message: '토큰이 발급되었습니다',
+      token,
+    });
+  } catch (e) {}
+});
+
+// 임시 : 추후 미들웨어나 모듈로 변경
+router.post('/validToken', async (req, res, next) => {
+  console.log('/validToken 라우터 실행!!!====');
+  try {
+    const token = tokenConfig.verifyToken(req);
+    console.log('validToken >>>>>> token====', token);
+    res.json({
+      code: 200,
+      message: '토큰이 검증되었습니다',
+      token,
+    });
+  } catch (e) {
+    //ctx.throw(500, e);
+  }
+});
+
+// 임시
+router.get('/insert', async (req, res) => {
+  // /user/insert
+  try {
+    const hashPwd = await bcrypt.hash('1234', 10);
+    const user = await User.create({
+      //id 컬럼은 자동증가 설정됨
+      userId: 'hj',
+      userPwd: hashPwd,
+      name: '김해주',
+      profile: '개발자',
+    });
+
+    res.status(201).json(user);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// 임시
+router.get('/select', async (req, res) => {
+  try {
+    // 비밀번호 검증
+    // const users = await User.findAll({
+    //   attributes: ['userPwd'],
+    //   where: {
+    //     id: 4,
+    //   },
+    //   raw: true,
+    // });
+    const users = await User.findOne({
+      attributes: ['userPwd', 'name'],
+      where: {
+        id: 4,
+      },
+    });
+    console.log('users1======', users);
+    console.log('users2======', users.toJSON());
+    //const hashedPassword = users[0].userPwd;
+    //const result = await bcrypt.compare('1234', hashedPassword);
+
+    res.json(users);
+  } catch (err) {
+    console.error(err);
+    next(err);
+  }
+});
+
+// 임시: 토큰의 사용자 정보 취득
+router.post('/getUserInfo', tokenConfig.verifyToken, async (req, res, next) => {
+  console.log('/getUserInfo 라우터 실행#######################', req.tokenUserInfo);
+  res.json(req.tokenUserInfo);
+});
+
+// 임시: 회원가입 페이지 이동 라우터
+router.get('/goRegister', async (req, res, next) => {
+  console.log('/goRegister 라우터 실행!!!====');
+  res.render('register', { title: '회원가입' });
 });
 
 // const User = require('../../models/user');

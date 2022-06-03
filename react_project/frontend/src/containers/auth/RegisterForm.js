@@ -71,7 +71,7 @@ const RegisterForm = () => {
 
     if (auth) {
       console.log('회원가입 성공');
-      console.log(auth);
+      console.log("state_auth====", auth);
       dispatch(check());
     }
   }, [auth, authError, dispatch]);

@@ -10,22 +10,36 @@ module.exports = class User extends Sequelize.Model {
           primaryKey: true,
           autoIncrement: true, // 자동증가 여부
         },
-        userId: {
+        username: {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        userPwd: {
+        hashedPassword:{
           type: Sequelize.STRING,
           allowNull: false,
-        },
-        name: {
-          type: Sequelize.STRING,
-          allowNull: false,
-        },
-        profile: {
-          type: Sequelize.TEXT,
-          allowNull: false,
-        },
+        }
+        // id: {
+        //   type: Sequelize.INTEGER,
+        //   allowNull: false,
+        //   primaryKey: true,
+        //   autoIncrement: true, // 자동증가 여부
+        // },
+        // userId: {
+        //   type: Sequelize.STRING(30),
+        //   allowNull: false,
+        // },
+        // userPwd: {
+        //   type: Sequelize.STRING,
+        //   allowNull: false,
+        // },
+        // userName: {
+        //   type: Sequelize.STRING(20),
+        //   allowNull: false,
+        // },
+        // profile: {
+        //   type: Sequelize.STRING(30),
+        //   allowNull: false,
+        // },
       },
       {
         sequelize,
@@ -44,25 +58,21 @@ module.exports = class User extends Sequelize.Model {
     //db.User.hasMany(db.Comment, { foreignKey: 'commenter', sourceKey: 'id' });
   }
 
-  static findByUserId = (userId) => {
+  static findByUserInfo= (userId) => {
     return this.findOne({
-      attributes: ['id', 'userId', 'userPwd'],
-      where: {
-        userId: userId,
-      }, // 축약 : findByUserId({ where: { userId } });
+      attributes: ['username'],
+      where: { username },
       raw: true,
     });
   };
 
-  static checkPassword = (userPwd) => {
-    return this.findOne({
-      attributes: ['userPwd'],
-      where: {
-        userPwd: userPwd,
-      },
-      raw: true,
-    });
-  };
+  // static checkPassword = (userPwd) => {
+  //   return this.findOne({
+  //     attributes: ['userPwd'],
+  //     where: { userPwd },
+  //     raw: true,
+  //   });
+  // };
 
   //static serialize = function() {
   //  const data = this.toJSON();
