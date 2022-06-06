@@ -1,23 +1,27 @@
 const express = require('express');
-const tokenConfig = require('../../lib/customMiddleware/tokenConfig');
-const checkLoggedIn = require('../../lib/customMiddleware/checkLoggedIn');
+const {
+  generateToken,
+  checkLoggedIn,
+} = require('../../lib/customMiddleware/tokenConfig');
 const User = require('../../models/user');
 const router = express.Router();
 const bcrypt = require('bcryptjs');
-
-/***********************************************
- * auth.post('/register', authCtrl.register);
- * auth.post('/login', authCtrl.login);
- * auth.get('/check', authCtrl.check);
- * auth.post('/logout', authCtrl.logout);
- ***********************************************/
-// user 로 호출되는 모든 라우터 실행전에 호출되는 미들웨어
-// router.use((req, res, next) => {
-//   console.log('/user 라우터의 공통 실행 미들웨어!!!!!!');
-//   next();
-// });
+const Joi = require('joi');
 
 router.post('/register', async (req, res, next) => {
+  const schema = Joi.object().keys({
+    username: Joi.string().alphanum().min(3).max(20).required(),
+    password: Joi.string().required(),
+  });
+
+  //const result = schema.validate(req.body);
+  const result = await schema.validateAsync(req.body);
+
+  if (result.error) {
+    const error = new Error('회원 가입 validation을 통과하지 못했습니다.');
+    next(error);
+  }
+
   const { username, password } = req.body;
 
   // userId이 이미 존재하는지 확인
@@ -36,7 +40,7 @@ router.post('/register', async (req, res, next) => {
     hashedPassword: hashPwd,
   });
 
-  const token = tokenConfig.generateToken(userData.id, userData.username);
+  const token = generateToken(userData.id, userData.username);
 
   res.cookie('access_token', token, {
     maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
@@ -79,7 +83,7 @@ router.post('/login', async (req, res, next) => {
     }
 
     // 로그인 성공 이후 토큰 생성
-    const token = tokenConfig.generateToken(userData.id, userData.username);
+    const token = generateToken(userData.id, userData.username);
 
     res.cookie('access_token', token, {
       maxAge: 1000 * 60 * 60 * 24 * 7, // 7일
@@ -102,10 +106,9 @@ router.get('/check', async (req, res, next) => {
   const tokenUserInfo = req.tokenUserInfo;
   if (!tokenUserInfo) {
     const error = new Error('로그인이 수행되지 않았습니다.');
-    return next(error);
-    //return next();
+    next(error);
   }
-  //req.body = tokenUserInfo;
+
   res.status(200).json({
     code: 'success',
     message: '로그인이 정상적으로 수행되었습니다.',
@@ -123,12 +126,7 @@ router.get('/check', async (req, res, next) => {
 
 // 로그아웃 라우터
 router.post('/logout', checkLoggedIn, async (req, res, next) => {
-  console.log('/logout 라우터 실행!!!====');
-  //res.cookie('access_token');
-  //req.logout();
-  //req.session.destroy();
   res.clearCookie('access_token', '', { httpOnly: true });
-  //res.cookie('access_token','',{maxAge:0});
   res.status(200).json({
     code: 'success',
     message: '로그아웃이 정상 수행되었습니다.',

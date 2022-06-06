@@ -46,16 +46,21 @@ app.use('/api/auth', userRouter);
 
 // #. 등록되지 않은 라우터 처리
 app.use((req, res, next) => {
+  console.error('등록되지 않은 라우터 처리__404!!!!!!!!!!!!!');
   const err = new Error(`${req.method} ${req.url} 라우터가 없습니다.`);
-  res.status(404).send(err.message);
+  res.status(400).json({
+    code: 'fail',
+    message: err.message,
+  });
 });
 
 // #. 에러 처리 라우터
 app.use((err, req, res, next) => {
-  console.log('에러 처리 라우터!!!!!!!!!!!!!');
-  //console.log('err======', err);
-  console.log('err.message=====', err.message);
-  res.status(500).send('에러 처리 라우터');
+  console.error('에러 처리 라우터__500!!!!!!!!!!!!!');
+  res.status(500).json({
+    code: 'fail',
+    message: err.message,
+  });
 });
 
 app.listen(app.get('port'), () => {

@@ -5,9 +5,9 @@ import { changeField } from '../../modules/write';
 
 const TagBoxContainer = () => {
   const dispatch = useDispatch();
-  const tags = useSelector(state => state.write.tags);
+  const tags = useSelector((state) => state.write.tags);
 
-  const onChangeTags = nextTags => {
+  const onChangeTags = (nextTags) => {
     dispatch(
       changeField({
         key: 'tags',
@@ -16,7 +16,12 @@ const TagBoxContainer = () => {
     );
   };
 
-  return <TagBox onChangeTags={onChangeTags} tags={tags} />;
+  const _tags = tags.reduce((accVal, curVal) => {
+    accVal.push(curVal.key);
+    return accVal;
+  }, []);
+
+  return <TagBox onChangeTags={onChangeTags} tags={_tags} />;
 };
 
 export default TagBoxContainer;

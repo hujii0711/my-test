@@ -44,9 +44,4 @@ module.exports = class Post extends Sequelize.Model {
       }
     );
   }
-  static findAllPost = () => {
-    return this.findAll({
-      raw: true,
-    });
-  };
 };

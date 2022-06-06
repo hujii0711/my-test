@@ -18,28 +18,6 @@ module.exports = class User extends Sequelize.Model {
           type: Sequelize.STRING,
           allowNull: false,
         },
-        // id: {
-        //   type: Sequelize.INTEGER,
-        //   allowNull: false,
-        //   primaryKey: true,
-        //   autoIncrement: true, // 자동증가 여부
-        // },
-        // userId: {
-        //   type: Sequelize.STRING(30),
-        //   allowNull: false,
-        // },
-        // userPwd: {
-        //   type: Sequelize.STRING,
-        //   allowNull: false,
-        // },
-        // userName: {
-        //   type: Sequelize.STRING(20),
-        //   allowNull: false,
-        // },
-        // profile: {
-        //   type: Sequelize.STRING(30),
-        //   allowNull: false,
-        // },
       },
       {
         sequelize,
@@ -65,17 +43,4 @@ module.exports = class User extends Sequelize.Model {
       raw: true,
     });
   };
-
-  // static checkPassword = (userPwd) => {
-  //   return this.findOne({
-  //     attributes: ['userPwd'],
-  //     where: { userPwd },
-  //     raw: true,
-  //   });
-  // };
-
-  //static serialize = function() {
-  //  const data = this.toJSON();
-  //  return data;
-  //};
 };

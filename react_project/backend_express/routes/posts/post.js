@@ -1,22 +1,12 @@
 const express = require('express');
 const Post = require('../../models/post');
 const sanitizeHtml = require('sanitize-html');
-const checkLoggedIn = require('../../lib/customMiddleware/checkLoggedIn');
+const { checkLoggedIn } = require('../../lib/customMiddleware/tokenConfig');
+const sequelize = require('sequelize');
+const Op = sequelize.Op;
 const router = express.Router();
+//const Joi = require('joi');
 
-/*********************************
-const posts = new Router();
-
-posts.get('/', postsCtrl.list);
-posts.post('/', checkLoggedIn, postsCtrl.write);
-
-const post = new Router(); // /api/posts/:id
-post.get('/', postsCtrl.read);
-post.delete('/', checkLoggedIn, postsCtrl.checkOwnPost, postsCtrl.remove);
-post.patch('/', checkLoggedIn, postsCtrl.checkOwnPost, postsCtrl.update);
-
-posts.use('/:id', postsCtrl.getPostById, post.routes());
-*************************************/
 const sanitizeOption = {
   allowedTags: [
     'h1',
@@ -87,34 +77,60 @@ router.get('/', async (req, res, next) => {
   const page = parseInt(req.query.page || '1', 10);
 
   if (page < 1) {
-    const error = new Error('pageIndex는 1이상이어야 합니다.');
-    next(error);
+    const err = new Error('pageIndex는 1이상이어야 합니다.');
+    next(err);
   }
 
-  // const { tag, username } = req.query;
-
-  // const query = {
-  //   ...(username ? { 'user.username': username } : {}),
-  //   ...(tag ? { tags: tag } : {}),
-  // };
-
+  const { tag, username } = req.query;
+  //req.url====== /api/posts?tag=1231231235
+  //req.query========= { tag: '1231231235', username: 'test' }
   try {
-    const posts = await Post.findAllPost();
-    // const posts = await Post.findAllPost({
-    //   offset : (page - 1) * 10,
-    //   limit: 10
-    //   order: [['id', 'DESC']]
-    // });
+    const posts = await Post.findAll({
+      offset: (page - 1) * 10,
+      limit: 10,
+      order: [['id', 'DESC']],
+      where: tag
+        ? sequelize.where(
+            sequelize.fn('JSON_SEARCH', sequelize.col('tags'), 'all', tag),
+            {
+              [Op.ne]: null,
+            }
+          )
+        : {},
+      raw: true,
+    });
 
-    // const posts = await Post.find(query)
-    //   .sort({ _id: -1 })
-    //   .limit(10)
-    //   .skip((page - 1) * 10)
-    //   .lean()
-    //   .exec();
-    // const postCount = await Post.countDocuments(query).exec(); //현재 조건에 맞는 컬럼(도큐먼트)의 갯수
-    // res.set('Last-Page', Math.ceil(postCount / 10));
-    res.set('Last-Page', 1);
+    // req.query에 tag가 있는 경우
+    if (tag) {
+      const countAll = await Post.findAll({
+        attributes: [[sequelize.fn('COUNT', sequelize.col('*')), 'count']],
+        //JSON_SEARCH 는 JSON에서 검색 할 때 사용한다. 데이터의 위치를 반환.
+        //두 번째 인자로 ‘one’인 경우에는 최초 검색위치, ‘all’인 경우에는 모든위치를 반환한다.
+        where: sequelize.where(
+          sequelize.fn('JSON_SEARCH', sequelize.col('tags'), 'all', tag),
+          {
+            [Op.ne]: null,
+          }
+        ),
+        raw: true,
+      });
+      res.set('Last-Page', countAll.count ? Math.ceil(countAll.count / 10) : 1);
+    }
+
+    // req.query에 username 있는 경우
+    if (username) {
+      const countAll = await Post.findAll({
+        attributes: [[sequelize.fn('COUNT', sequelize.col('*')), 'count']],
+        where: {
+          username: {
+            [Op.like]: '%' + username + '%',
+          },
+        },
+        raw: true,
+      });
+      res.set('Last-Page', countAll.count ? Math.ceil(countAll.count / 10) : 1);
+    }
+
     const data = posts.map((post) => ({
       ...post,
       body: removeHtmlAndShorten(post.body),
@@ -131,13 +147,30 @@ router.get('/', async (req, res, next) => {
 
 // 글작성 라우터
 router.post('/', checkLoggedIn, async (req, res, next) => {
-  const { title, body } = req.body;
+  // const schema = Joi.object().keys({
+  //   title: Joi.string().required(), // required() 가 있으면 필수 항목
+  //   body: Joi.string().required(),
+  // });
+
+  // const result = await schema.validateAsync(req.body);
+
+  // if (result.error) {
+  //   const error = new Error('글 작성 validation을 통과하지 못했습니다.');
+  //   next(error);
+  // }
+
+  const { title, body, tags } = req.body;
+
+  const _tags = tags.reduce((accVal, curVal) => {
+    accVal.push({ key: curVal });
+    return accVal;
+  }, []);
 
   try {
     const post = await Post.create({
       title: title,
       body: sanitizeHtml(body, sanitizeOption),
-      //tags: tags
+      tags: _tags,
       username: req.tokenUserInfo.username,
     });
 
@@ -169,23 +202,28 @@ router
   .patch(checkOwnPost, async (req, res, next) => {
     const { id } = req.params;
     const nextData = { ...req.body }; // 객체를 복사하고
+
     // body 값이 주어졌으면 HTML 필터링
     if (nextData.body) {
       nextData.body = sanitizeHtml(nextData.body);
     }
     try {
-      const post = await Post.update(
-        { body: nextData.body },
+      const update = await Post.update(
+        {
+          title: nextData.title,
+          body: nextData.body,
+        },
         { where: { id } }
       );
-      if (!post) {
+
+      if (!update) {
         const err = new Error('수정 도중 에러가 발생하였습니다.');
         next(err);
       }
       res.status(200).json({
         code: 'success',
         message: '포스트가 정상적으로 수정되었습니다.',
-        resp: post,
+        resp: { id, username: req.tokenUserInfo.username },
       });
     } catch (err) {
       next(err);

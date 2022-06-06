@@ -20,9 +20,9 @@ const Tags = ({ tags }) => {
   return (
     <TagsBlock>
       {tags &&
-        tags.map((tag) => (
-          <Link className="tag" to={`/?tag=${tag}`} key={tag}>
-            #{tag}
+        tags.map((elem) => (
+          <Link className="tag" to={`/?tag=${elem.key}`} key={elem.key}>
+            #{elem.key}
           </Link>
         ))}
     </TagsBlock>

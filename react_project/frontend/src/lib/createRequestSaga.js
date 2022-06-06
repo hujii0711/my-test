@@ -18,6 +18,7 @@ export default function createRequestSaga(type, requestApi) {
     try {
       const response = yield call(requestApi, action.payload);
       // dispatch({ type : 'LIST_POSTS_SUCCESS', payload : response.data, meta : response })
+      console.log('createRequestSaga >>>>> type======', type);
       console.log('createRequestSaga >>>>> response======', response);
       yield put({
         type: SUCCESS,

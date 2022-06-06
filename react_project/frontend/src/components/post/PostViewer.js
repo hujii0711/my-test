@@ -40,6 +40,7 @@ const PostViewer = ({ post, error, loading, actionButtons }) => {
   }
 
   const { title, body, username, publishedDate, tags } = post;
+
   return (
     <PostViewerBlock>
       <Helmet>
