@@ -7,7 +7,7 @@ import { writePost, updatePost } from '../../modules/write';
 const WriteActionButtonsContainer = ({ history }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  
+
   const { title, body, tags, post, postError, originalPostId } = useSelector(
     ({ write }) => ({
       title: write.title,
@@ -43,9 +43,9 @@ const WriteActionButtonsContainer = ({ history }) => {
   // 성공 혹은 실패시 할 작업
   useEffect(() => {
     if (post) {
-      const { _id, user } = post;
+      const { id, username } = post;
       //history.push(`/@${user.username}/${_id}`);
-      navigate(`/@${user.username}/${_id}`)
+      navigate(`/@${username}/${id}`);
     }
     if (postError) {
       console.log(postError);

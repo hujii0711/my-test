@@ -22,7 +22,7 @@ const PostItemBlock = styled.div`
   padding-top: 3rem;
   padding-bottom: 3rem;
   /* 맨 위 포스트는 padding-top 없음 */
-  background-color:red;
+  background-color: red;
   &:first-child {
     padding-top: 0;
   }
@@ -44,17 +44,14 @@ const PostItemBlock = styled.div`
 `;
 
 const PostItem = ({ post }) => {
-  const { publishedDate, user, tags, title, body, _id } = post;
+  const { publishedDate, username, title, body, id } = post;
   return (
     <PostItemBlock>
       <h2>
-        <Link to={`/@${user.username}/${_id}`}>{title}</Link>
+        <Link to={`/@${username}/${id}`}>{title}</Link>
       </h2>
-      <SubInfo
-        username={user.username}
-        publishedDate={new Date(publishedDate)}
-      />
-      <Tags tags={tags} />
+      <SubInfo username={username} publishedDate={new Date(publishedDate)} />
+      {/* <Tags tags={tags} /> */}
       <p>{body}</p>
     </PostItemBlock>
   );
@@ -80,8 +77,8 @@ const PostList = ({ posts, loading, error, showWriteButton }) => {
       {/*  로딩 중 아니고, 포스트 배열이 존재할 때만 보여줌 */}
       {!loading && posts && (
         <div>
-          {posts.map(post => (
-            <PostItem post={post} key={post._id} />
+          {posts.map((post) => (
+            <PostItem post={post} key={post.id} />
           ))}
         </div>
       )}
