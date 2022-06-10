@@ -25,7 +25,6 @@ function loadUser() {
     // 액션 객체를 dispatch
     store.dispatch(tempSetUser(user)); 
     store.dispatch(check());
-    
   } catch (e) {
     console.log('localStorage is not working');
   }

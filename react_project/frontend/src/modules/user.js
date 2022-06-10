@@ -53,7 +53,7 @@ const user = handleActions(
     //var {payload} = action; //console.log(payload); ==> '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'
     //var {payload : user} = action; //console.log(user); ==> '{"_id":"6243f7ebd7d840a059415f06","username":"test"}'
 
-    [TEMP_SET_USER]: function(state, {payload : user}) { 
+    [TEMP_SET_USER]: function(state, { payload: user }) { 
       //console.log("user.js >>>>> handleActions[TEMP_SET_USER] >>>>> state====", state); // {user: null, checkError: null};
       // return에 새로운 state
       return {

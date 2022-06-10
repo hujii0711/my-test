@@ -6,12 +6,13 @@ export const writePost = ({ title, body, tags }) =>
 
 export const readPost = (id) => api.get(`/api/posts/${id}`);
 
-export const listPosts = ({ page, username, tag }) => {
+export const listPostsServer = ({ page, username, tag }) => {
   const queryString = qs.stringify({
     page,
     username,
     tag,
   });
+  console.log('listPostsServer >>>>> queryString======', queryString);
   return api.get(`/api/posts?${queryString}`);
 };
 

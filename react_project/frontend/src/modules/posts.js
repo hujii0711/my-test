@@ -8,15 +8,16 @@ import { takeLatest } from 'redux-saga/effects';
 const [LIST_POSTS, LIST_POSTS_SUCCESS, LIST_POSTS_FAILURE] =
   createRequestActionTypes('posts/LIST_POSTS');
 
-export const listPosts = createAction(
+//같은 형태 : dispatch({type: "posts/LIST_POSTS", tag : tag, username : username, page : page});
+//PostListContainer.js에서 call : dispatch(listPostsAction({ tag, username, page }));
+export const listPostsAction = createAction(
   LIST_POSTS, //posts/LIST_POSTS
   ({ tag, username, page }) => {
-    //PostListContainer.js에서 call : dispatch(listPosts({ tag, username, page }));
     return { tag, username, page };
   },
 );
 
-const listPostsSaga = createRequestSaga(LIST_POSTS, postsAPI.listPosts); //return function*(){}
+const listPostsSaga = createRequestSaga(LIST_POSTS, postsAPI.listPostsServer);
 
 export function* postsSaga() {
   yield takeLatest(LIST_POSTS, listPostsSaga);
@@ -34,16 +35,29 @@ const initialState = {
 // console.log(awesome_name); // 10
 // console.log(dumb); // 20
 // console.log({...rest}); // {a3: 30, a4: 40}
+// const aaa = {
+//   posts: null,
+//   error: null,
+//   lastPage: null,
+// };
+// const bbb = {
+//   ...aaa,
+//   posts : 1,
+//   lastPage: 2
+// };
+// console.log(bbb); //{posts: 1, lastPage: 2, error: null}
+
 const posts = handleActions(
   {
     //createRequestSaga에서 // dispatch({ type : 'LIST_POSTS_SUCCESS', payload : response.data, meta : response })
-    [LIST_POSTS_SUCCESS]: (state, action) => {
-      const posts = action.payload;
+    [LIST_POSTS_SUCCESS]: (state, action) => { 
+      const payload = action.payload;
       const response = action.meta;
-
+      console.log("handleActions >>>>> payload===", payload);
+      console.log("handleActions >>>>> response===", response);
       return {
         ...state,
-        posts,
+        posts : payload,
         lastPage: parseInt(response.headers['last-page'], 10), // 문자열을 숫자로 변환
       };
     },

@@ -99,7 +99,7 @@ router.get('/', async (req, res, next) => {
         : {},
       raw: true,
     });
-
+    res.set('Last-Page', page ? Math.ceil(page / 10) : 1);
     // req.query에 tag가 있는 경우
     if (tag) {
       const countAll = await Post.findAll({
