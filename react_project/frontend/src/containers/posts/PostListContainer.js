@@ -4,10 +4,15 @@ import { useLocation } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import PostList from '../../components/posts/PostList';
 import { listPostsAction } from '../../modules/posts';
+//import { listPostsServer } from '../../lib/api/posts';
+//import { useQuery } from 'react-query';
 
 const PostListContainer = () => {
   const dispatch = useDispatch();
   const location = useLocation();
+
+  //const result = useQuery('posts', listPostsServer);
+  //console.log('result------', result);
 
   // 현재 state 값의 특정 값만 조회
   // const { posts, error, loading, user } = useSelector(
@@ -19,18 +24,17 @@ const PostListContainer = () => {
   //   }),
   // );
   // store의 state값을 사용자 동작에 따라 수시로 변경되어진 전역 state를 상태 선택 함수를 통해 특정한 state만을 선별하여 가져오는 거 같음
-  const { posts, error, loading, user } = useSelector(
-    function(state) { //스토어에 담긴 전역 state
-      const { posts, loading, user } = state;
-      const newState = {
-        posts: posts.posts,
-        error: posts.error,
-        loading: loading['posts/LIST_POSTS'],
-        user: user.user
-      }
-      return newState;
-    }
-  );
+  const { posts, error, loading, user } = useSelector(function (state) {
+    //스토어에 담긴 전역 state
+    const { posts, loading, user } = state;
+    const newState = {
+      posts: posts.posts,
+      error: posts.error,
+      loading: loading['posts/LIST_POSTS'],
+      user: user.user,
+    };
+    return newState;
+  });
 
   useEffect(() => {
     //qs: URL 쿼리 --> 객체로 반환
@@ -39,7 +43,12 @@ const PostListContainer = () => {
     const { tag, username, page } = qs.parse(location.search, {
       ignoreQueryPrefix: true,
     });
-    console.log('PostListContainer >>>>> useEffect >>>>> tag, username, page======', tag, username, page);
+    console.log(
+      'PostListContainer >>>>> useEffect >>>>> tag, username, page======',
+      tag,
+      username,
+      page,
+    );
     // 디스패치는 액션을 발생 시키는 것이다.
     // dispatch(action)의 형태로 액션 객체를 파라미터로 넣어서 호출한다.
     // 이 함수가 호출되면 스토어는 리듀서 함수를 실행시켜서 새로운 상태를 만들어 준다.
