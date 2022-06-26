@@ -9,6 +9,7 @@ export default function useAuthLoadEffect() {
   useEffect(() => {
     const fn = async () => {
       const auth = await authStorage.get();
+      console.log('useAuthLoadEffect(authStorage) >>>> auth=======', auth);
       if (!auth) {
         return;
       }

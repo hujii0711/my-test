@@ -24,7 +24,7 @@ function WriteScreen() {
   const cachedArticle = useMemo(
     () =>
       params.articleId
-        ? queryClient.getQueryData<Article>(['article', params.articleId])
+        ? queryClient.getQueryData<Article>(['article', params.articleId]) // 캐시 데이터 조회
         : null,
     [queryClient, params.articleId],
   );
@@ -33,6 +33,8 @@ function WriteScreen() {
 
   const {mutate: write} = useMutation(writeArticle, {
     onSuccess: article => {
+      // 캐시 데이터 업데이트
+      // API 재요청 없이 데이터를 업데이트(API를 새로 요청할 때는 invalidate 한다.)
       queryClient.setQueryData<InfiniteData<Article[]>>('articles', data => {
         if (!data) {
           return {

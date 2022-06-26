@@ -11,6 +11,7 @@ export type MainTabParamList = {
   Articles: undefined;
   UserMenu: undefined;
 };
+
 export type MainTabNavigationScreenParams =
   NavigatorScreenParams<MainTabParamList>;
 
@@ -18,6 +19,7 @@ export type MainTabNavigationProp = CompositeNavigationProp<
   RootStackNavigationProp,
   BottomTabNavigationProp<MainTabParamList>
 >;
+
 export type MainTabRouteProp = RouteProp<RootStackParamList, 'MainTab'>;
 
 /* RootStack */
