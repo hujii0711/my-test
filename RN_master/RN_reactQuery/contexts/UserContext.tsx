@@ -17,7 +17,6 @@ export function UserContextProvider({children}: {children: React.ReactNode}) {
 // Context를 추후 더 편하게 사용할 수 있도록 만든 Hook 입니다.
 export function useUserState() {
   const userState = useContext(UserContext);
-  console.log('useUserState >>>>> userState&& -----', userState);
   if (!userState) {
     throw new Error('UserContext is not used');
   }
