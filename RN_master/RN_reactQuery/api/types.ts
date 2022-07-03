@@ -49,3 +49,13 @@ export type AuthError = AxiosError<{
   message: AuthErrorData;
   data: AuthErrorData;
 }>;
+
+///components/Articles.tsx 타입 김형준 생성
+export interface ArticlesProps {
+  articles: Article[];
+  showWriteButton?: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage(): void;
+  refresh(): void;
+  isRefreshing: boolean;
+}

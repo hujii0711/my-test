@@ -14,6 +14,29 @@ import AskDialog from '../components/AskDialog';
 import {Comment} from '../api/types';
 import CommentModal from '../components/CommentModal';
 
+// type ArticleScreenRouteProp = Readonly<{
+//   key: string;
+//   name: "Article";
+//   path?: string | undefined;
+// }> & Readonly<{
+//   params: Readonly<{
+//       id: number;
+//   }>;
+// }>
+
+// type RootStackParamList = {
+//   MainTab: MainTabNavigationScreenParams;
+//   Article: {
+//       id: number;
+//   };
+//   Register: undefined;
+//   Login: undefined;
+//   MyArticles: undefined;
+//   Write: {
+//       articleId?: number;
+//   };
+// }
+
 type ArticleScreenRouteProp = RouteProp<RootStackParamList, 'Article'>;
 
 function ArticleScreen() {
@@ -25,13 +48,19 @@ function ArticleScreen() {
 
   const {bottom} = useSafeAreaInsets();
   const [currentUser] = useUserState();
+
   const {mutate: modify} = useMutation(modifyComment, {
     onSuccess: comment => {
+      // 데이터 캐시 업데이트(queryClient이 뒤부분에 선언되어 있으나 오류가 안나는 이유??)
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
         comments
           ? comments.map(c => (c.id === selectedCommentId ? comment : c))
           : [],
       );
+      // 방금 데이터 캐시한 값 조회
+      const tmpCache =
+        queryClient.getQueryData<Comment[]>(['comments', id]) ?? [];
+      console.log('tmpCache [3]====', tmpCache);
     },
   });
 
@@ -41,6 +70,7 @@ function ArticleScreen() {
   const [modifying, setModifying] = useState(false);
 
   const queryClient = useQueryClient();
+
   const {mutate: remove} = useMutation(deleteComment, {
     onSuccess: () => {
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
@@ -49,11 +79,17 @@ function ArticleScreen() {
     },
   });
 
+  /**********************************
+   * 댓글 삭제 : <CommentItem/>
+   **********************************/
   const onRemove = (commentId: number) => {
     setSelectedCommentId(commentId);
     setAskRemoveComment(true);
   };
 
+  /**********************************
+   * 댓글 삭제 확인: <AskDialog/>
+   **********************************/
   const onConfirmRemove = () => {
     setAskRemoveComment(false);
     remove({
@@ -61,19 +97,35 @@ function ArticleScreen() {
       articleId: id,
     });
   };
+
+  /**********************************
+   * 댓글 삭제 취소: <AskDialog/>
+   **********************************/
   const onCancelRemove = () => {
     setAskRemoveComment(false);
   };
 
+  /**********************************
+   * 댓글 수정: <CommentItem/>
+   **********************************/
   const onModify = (commentId: number) => {
     setSelectedCommentId(commentId);
     setModifying(true);
   };
+
+  /**********************************
+   * 댓글 관련 모달 수정 취소: <CommentModal/>
+   **********************************/
   const onCancelModify = () => {
     setModifying(false);
   };
+
+  /**********************************
+   * 댓글 관련 모달 수정: <CommentModal/>
+   **********************************/
   const onSubmitModify = (message: string) => {
     setModifying(false);
+    console.log('ArticleScreen >>>> onSubmitModify [1]');
     modify({
       id: selectedCommentId!,
       articleId: id,

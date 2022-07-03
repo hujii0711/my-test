@@ -18,14 +18,14 @@ export async function getArticles({
       id_gt: prevCursor,
     },
   });
-  console.log(
-    JSON.stringify({
-      _sort: 'id:DESC',
-      _limit: limit,
-      id_lt: cursor,
-      id_gt: prevCursor,
-    }),
-  );
+  // console.log(
+  //   JSON.stringify({
+  //     _sort: 'id:DESC',
+  //     _limit: limit,
+  //     id_lt: cursor,
+  //     id_gt: prevCursor,
+  //   }),
+  // );
   return response.data;
 }
 

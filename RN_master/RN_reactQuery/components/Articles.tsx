@@ -6,26 +6,17 @@ import {
   ActivityIndicator,
   RefreshControl,
 } from 'react-native';
-import {Article} from '../api/types';
+import {ArticlesProps} from '../api/types';
 import ArticleItem from './ArticleItem';
 import WriteButton from './WriteButton';
 
-export interface ArticlesProps {
-  articles: Article[];
-  showWriteButton?: boolean;
-  isFetchingNextPage: boolean;
-  fetchNextPage(): void;
-  refresh(): void;
-  isRefreshing: boolean;
-}
-
 function Articles({
-  articles,
-  showWriteButton,
-  isFetchingNextPage,
-  fetchNextPage,
-  refresh,
-  isRefreshing,
+  articles, // type []
+  showWriteButton, // type boolean
+  isFetchingNextPage, // type boolean
+  fetchNextPage, // type function void
+  refresh, // type function void
+  isRefreshing, // type boolean
 }: ArticlesProps) {
   // TODO: renderItem 구현 예정
   return (

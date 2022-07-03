@@ -26,6 +26,7 @@ export async function modifyComment(params: {
   id: number;
 }) {
   const {articleId, message, id} = params;
+  console.log('api >>>> modifyComment >>>> params [2]=====', params);
   const response = await client.put<Comment>(
     `/articles/${articleId}/comments/${id}`,
     {message},
