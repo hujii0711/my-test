@@ -1,7 +1,7 @@
 import * as dotenv from 'dotenv';
 dotenv.config();
 
-export const database = {
+export const databaseConfig = {
 
     development : {
         username : 'fujii0711',
