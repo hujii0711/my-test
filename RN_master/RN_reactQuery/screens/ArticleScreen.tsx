@@ -1,17 +1,18 @@
 import React, {useState} from 'react';
 import {StyleSheet, ActivityIndicator, FlatList} from 'react-native';
 import {RouteProp, useRoute} from '@react-navigation/core';
-import {RootStackParamList} from './types';
+import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {RootStackParamList} from './types';
 import {getArticle} from '../api/articles';
 import {deleteComment, getComments, modifyComment} from '../api/comments';
-import ArticleView from '../components/ArticleView';
-import {useSafeAreaInsets} from 'react-native-safe-area-context';
-import CommentItem from '../components/CommentItem';
+import {Comment} from '../api/types';
 import {useUserState} from '../contexts/UserContext';
+
+import ArticleView from '../components/ArticleView';
+import CommentItem from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
 import AskDialog from '../components/AskDialog';
-import {Comment} from '../api/types';
 import CommentModal from '../components/CommentModal';
 
 // type ArticleScreenRouteProp = Readonly<{
@@ -51,16 +52,23 @@ function ArticleScreen() {
 
   const {mutate: modify} = useMutation(modifyComment, {
     onSuccess: comment => {
-      // 데이터 캐시 업데이트(queryClient이 뒤부분에 선언되어 있으나 오류가 안나는 이유??)
+      // 캐시 데이터 조회
+      //const articles = queryClient.getQueryData<Article[]>('articles') ?? [];
+      // 캐시 데이터 업데이트
+      //queryClient.setQueryData('articles', articles.concat(article));
+
+      //setQueryData는 캐시 데이터를 업데이트하는 메서드입니다. setQueryData를 사용할 때는 위와 같이 데이터를 두 번째 인자로 넣어도 되고, //업데이터 함수 형태의 값을 인자로 넣을 수도 있습니다. 만약 업데이터 함수 형태를 인자로 넣는다면 getQueryData를 생략할 수 있습니다.
+      //데이터 캐시 업데이트(queryClient이 뒤부분에 선언되어 있으나 오류가 안나는 이유??)
+      //const comment_ = queryClient.getQueryData<Comment[]>(['comments', id]) ?? [];
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
         comments
           ? comments.map(c => (c.id === selectedCommentId ? comment : c))
           : [],
       );
+
       // 방금 데이터 캐시한 값 조회
-      const tmpCache =
-        queryClient.getQueryData<Comment[]>(['comments', id]) ?? [];
-      console.log('tmpCache [3]====', tmpCache);
+      //const tmpCache = queryClient.getQueryData<Comment[]>(['comments', id]) ?? [];
+      //console.log('tmpCache [3]====', tmpCache);
     },
   });
 
@@ -125,7 +133,6 @@ function ArticleScreen() {
    **********************************/
   const onSubmitModify = (message: string) => {
     setModifying(false);
-    console.log('ArticleScreen >>>> onSubmitModify [1]');
     modify({
       id: selectedCommentId!,
       articleId: id,

@@ -3,21 +3,23 @@ import {ActivityIndicator, StyleSheet} from 'react-native';
 import {useInfiniteQuery} from 'react-query';
 import {getArticles} from '../api/articles';
 import {Article} from '../api/types';
-import Articles from '../components/Articles';
 import {useUserState} from '../contexts/UserContext';
+
+import Articles from '../components/Articles';
 
 //리액트 쿼리에서 페이지네이션을 구현할 때는 useInfiniteQuery Hook을 사용합니다.
 //사용 방식은 useQuery와 비슷한데요. 차이점이 있다면 함수 부분에서 pageParam을 사용하고,
 //옵션 부분에서 getNextPageParam을 설정해줘야 합니다.
+//isFetchingNextPage, isFetchingPreviousPage, fetchNextPage, fetchPreviousPage 모두 <FlatList> 컴포넌트와 연관 있음
 function ArticlesScreen() {
   const {
     data, // {pageParams, pages } 타입을 가지고 있다.
     // pageParams : 각 페이지에서 사용된 파라미터 배열을 나타낸다.
     // pages : 각 페이지들을 배열 타입으로 나타낸다.(현재 pages는 Article[][] 타입이다.)
     isFetchingNextPage, //isFetchingNextPage: 다음 페이지를 불러오고 있는지 여부를 알려줍니다.
+    isFetchingPreviousPage, //isFetchingPreviousPage: 이전 페이지를 불러오고 있는지 여부를 알려줍니다.
     fetchNextPage, //fetchNextPage: 다음 페이지를 불러오는 함수입니다.
     fetchPreviousPage,
-    isFetchingPreviousPage, //isFetchingPreviousPage: 이전 페이지를 불러오고 있는지 여부를 알려줍니다.
   } = useInfiniteQuery(
     'articles',
     ({pageParam}) => getArticles({...pageParam}),

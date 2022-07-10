@@ -1,12 +1,12 @@
 import React from 'react';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {RootStackParamList} from './types';
+import useAuthLoadEffect from '../hooks/useAuthLoadEffect';
 import MainTab from './MainTab';
 import ArticleScreen from './ArticleScreen';
 import RegisterScreen from './RegisterScreen';
 import LoginScreen from './LoginScreen';
 import MyArticlesScreen from './MyArticlesScreen';
-import useAuthLoadEffect from '../hooks/useAuthLoadEffect';
 import WriteScreen from './WriteScreen';
 
 const Stack = createNativeStackNavigator<RootStackParamList>();

@@ -56,7 +56,7 @@ function WriteScreen() {
 
       // 업데이트 함수 형태의 값을 인자로 넣는 형태를 사용하여 getQueryData를 생략
       // 게시글 작성 후 처리 로직 변경
-      // 페이지네이션을 위해 useQuery 대신 useInfiniteQuery를 사용하면 기존에 작성한, 게시글을 작성하 후 반영하는 방법이 바뀐다.
+      // 페이지네이션을 위해 useQuery 대신 useInfiniteQuery를 사용하면 기존에 작성한, 게시글을 작성한 후 반영하는 방법이 바뀐다.
       // useInfiniteQuery를 사용할 때는 setQueryData 함수의 제네릭 부분에 <InfiniteData<Article[]>>을 넣어야 한다.
       // 그리고 {pageParams, pages} 객체를 반환해야 한다.
       queryClient.setQueryData<InfiniteData<Article[]>>('articles', data => {
