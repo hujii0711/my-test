@@ -50,7 +50,13 @@ function ArticleScreen() {
   const {bottom} = useSafeAreaInsets();
   const [currentUser] = useUserState();
 
+  //useMutation은 특정 함수에서 우리가 원하는 때에 직접 요청을 시작하는 형태로 작동한다.
   const {mutate: modify} = useMutation(modifyComment, {
+    // 반환값
+    // mutate: 요청을 시작하는 함수, {mutate: modify}는 mutate 함수를 write라는 이름으로 변경하여 구조 분해함
+    // data: 요청이 성공한 데이터
+    // error: 오류가 발생했을 때 오류 정보를 지닌다.
+    // isLoading, isError, isSuccess, isIdle 등이 있다.
     onSuccess: comment => {
       // 캐시 데이터 조회
       //const articles = queryClient.getQueryData<Article[]>('articles') ?? [];
@@ -58,13 +64,14 @@ function ArticleScreen() {
       //queryClient.setQueryData('articles', articles.concat(article));
 
       //setQueryData는 캐시 데이터를 업데이트하는 메서드입니다. setQueryData를 사용할 때는 위와 같이 데이터를 두 번째 인자로 넣어도 되고, //업데이터 함수 형태의 값을 인자로 넣을 수도 있습니다. 만약 업데이터 함수 형태를 인자로 넣는다면 getQueryData를 생략할 수 있습니다.
-      //데이터 캐시 업데이트(queryClient이 뒤부분에 선언되어 있으나 오류가 안나는 이유??)
-      //const comment_ = queryClient.getQueryData<Comment[]>(['comments', id]) ?? [];
+
+      // 캐시 키로 데이터를 조회한 후 그 데이터를 업데이터 함수를 사용하여 업데이트
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
         comments
           ? comments.map(c => (c.id === selectedCommentId ? comment : c))
           : [],
       );
+      //캐시 데이터를 업데이트 하는 이유는 댓글 수정하고 나서 댓글 데이터를 업데이트 하기 위함이다.
 
       // 방금 데이터 캐시한 값 조회
       //const tmpCache = queryClient.getQueryData<Comment[]>(['comments', id]) ?? [];
@@ -77,6 +84,7 @@ function ArticleScreen() {
   const [askRemoveComment, setAskRemoveComment] = useState(false);
   const [modifying, setModifying] = useState(false);
 
+  //데이터 캐시 업데이트(queryClient이 뒤부분에 선언되어 있으나 오류가 안나는 이유??)
   const queryClient = useQueryClient();
 
   const {mutate: remove} = useMutation(deleteComment, {
