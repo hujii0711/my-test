@@ -36,9 +36,9 @@ export function Sequelize() {
   Articles.initModel(sequelize);
   Users.initModel(sequelize);
   Comments.initModel(sequelize);
-  Articles.hasMany(Users, { foreignKey: 'user_id', sourceKey: 'id' });
+  //Articles.hasMany(Users, { foreignKey: 'user_id', sourceKey: 'id' });
   //Users.belongsTo(Articles, { foreignKey: 'user_id', targetKey: 'user_id' });
-  Articles.hasOne(Comments, { foreignKey: 'user_id', sourceKey: 'id' });
+  Articles.hasOne(Comments, { foreignKey: 'articles_ref', sourceKey: 'id' });
   //Foreign key 관계의 경우 관계를 만드는 상위 테이블은 Unique 하거나 Primary 이어야 합니다. 또한 같은 데이터 타입 이어야 합니다.
   return sequelize;
 };

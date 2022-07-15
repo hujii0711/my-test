@@ -44,3 +44,11 @@ export const deleteUsers = async (params: {id:number}) => {
     return data;
 };
 
+export const findByUserInfo = async (user_id : string) => {
+    return await Users.findOne({
+      attributes: ['id', 'user_id', 'user_name'],
+      where: { user_id },
+      raw: true,
+    });
+  };
+

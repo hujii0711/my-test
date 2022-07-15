@@ -1,32 +1,52 @@
 import { Articles } from '../../models/articles';
 import { Users } from '../../models/users';
 
-export const getListArticles = async (params: any) => {
-    console.log("ArticleService >>>> getListArticles >>>> params====", params);
+export const getJoinUser = async () => {
+    console.log("ArticleService >>>> getJoinUser!!!");
+    const data = await Articles.findAll({ include: Users, raw: true })
+    return data;
+};
+
+export const getArticles = async (params: any) => {
+    console.log("ArticleService >>>> getArticles >>>> params====", params);
+    const { id } = params;
     const data = await Articles.findAll({
         where: {
-            id : params
+            id
         },
         raw: true
     });
     return data;   
 };
 
-export const insertArticles = async (params: {title:string, contents:string}) => {
-    console.log("ArticleService >>>> insertArticles >>>> params====", params);
-    const { title, contents } = {...params};
-    
-    //const data = await Articles.create({
-    //    title,
-    //    contents,
-    //    user_id : "fujii0711"
-    //});
-    //return data;
+export const getArticle = async (id: string) => {
+    console.log("ArticleService >>>> getArticle >>>> id====", id);
+    const data = await Articles.findAll({
+        where: {
+            id
+        },
+        raw: true
+    });
+    return data;   
 };
 
-export const updateArticles = async (params: {id:number, title:string, contents:string}) => {
-    console.log("ArticleService >>>> updateArticles >>>> params====", params);
-    const { id, title, contents } = {...params};
+export const writeArticle = async (params: {title:string, contents:string}) => {
+    console.log("ArticleService >>>> writeArticle >>>> params====", params);
+    const { title, contents } = params;
+    const data = await Articles.create({
+        title,
+        contents,
+        user_id: "fujii0711",
+        user_name: "김형준"
+    });
+    return data;
+
+};
+
+export const modifyArticle = async (id: string, bodys: {title:string, contents:string}) => {
+    console.log("ArticleService >>>> modifyArticle >>>> id====", id);
+    console.log("ArticleService >>>> modifyArticle >>>> bodys====", bodys);
+    const {title, contents } = bodys;
     const data = await Articles.update(
         {
             title,
@@ -37,18 +57,10 @@ export const updateArticles = async (params: {id:number, title:string, contents:
     return data;
 };
 
-export const deleteArticles = async (params: {id:number}) => {
-    console.log("ArticleService >>>> deleteArticles >>>> params====", params);
-    const { id } = { ...params };
+export const deleteArticle = async (id: string) => {
+    console.log("ArticleService >>>> deleteArticle >>>> id====", id);
     const data = await Articles.destroy({
         where: { id },
     });
     return data;
 };
-
-export const getJoinUser = async () => {
-    console.log("ArticleService >>>> getJoinUser!!!");
-    const data = await Articles.findAll({ include: Users, raw: true })
-    return data;
-};
-

@@ -3,8 +3,8 @@ import {Users} from './users';
 
 
 interface ArticlesAttributes {
-  id: number;
-  title : string;
+  id?: number;
+  title? : string;
   contents? : string;
   user_id? : string;
   user_name? : string;

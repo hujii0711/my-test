@@ -1,6 +1,6 @@
 import express, { Request, Response, NextFunction } from "express";
 import cookieParser from "cookie-parser";
-//import morgan from "morgan";
+import morgan from "morgan";
 import path from "path";
 import { Sequelize } from "./models";
 import dotenv from "dotenv";
@@ -15,14 +15,14 @@ const port = process.env.PORT || 4001;
   try {
     await Sequelize().authenticate();
     console.log(`✅DB connection success.`);
-    await Sequelize().sync({ force: true });
+    await Sequelize().sync({ force: false });
     console.log("✅Success Create users Table");
   } catch (error) {
     console.log("❗️Error in Create users Table : ", error);
   }
 })();
 
-//app.use(morgan('dev'));
+app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));

@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction, Router } from "express";
 import * as UserController from '../../controller/users/user';
 
-export const path = '/user';
+export const path = 'user';
 export const router = Router();
 
 router.use('/', (req:Request, res:Response, next: NextFunction) => {

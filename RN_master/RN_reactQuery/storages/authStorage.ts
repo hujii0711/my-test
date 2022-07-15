@@ -17,11 +17,14 @@ const authStorage = {
     }
   },
   set(authResult: AuthResult) {
-    return AsyncStorage.setItem(key, JSON.stringify(authResult));
+    return AsyncStorage.setItem(key, JSON.stringify(authResult)); //{jwt: 2314sdf8435, user:{}}
   },
   clear() {
     return AsyncStorage.removeItem(key);
   },
 };
-
+// export interface AuthResult {
+//   jwt: string;
+//   user: User;
+// }
 export default authStorage;

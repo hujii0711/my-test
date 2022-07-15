@@ -2,13 +2,14 @@ import { Sequelize, DataTypes, Model, Association } from 'sequelize';
 import {Articles} from './articles';
 
 interface UsersAttributes {
-  id: number
-  user_id : number;
+  id?: number
+  user_id? : string;
   user_name? : string;
   email? : string;
   provider? : string;
   confirmed? : boolean;
   blocked? : string;
+  jwt? : string;
   created_at? : Date;
   updated_at? : Date;
 }
@@ -16,12 +17,13 @@ interface UsersAttributes {
 export class Users extends Model<UsersAttributes> implements UsersAttributes {
 
   public readonly id! : number;
-  public user_id! : number;
+  public user_id! : string;
   public user_name! : string;
   public email! : string;
   public provider! : string;
   public confirmed! : boolean;
   public blocked! : string;
+  public jwt! : string;
   public created_at! : Date;
   public updated_at! : Date;
 
@@ -36,28 +38,34 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
           autoIncrement: true, // 자동증가 여부
         },
         user_id : {
-          type : DataTypes.INTEGER,
-          allowNull: false
-        },
-        user_name : {
-            type : DataTypes.STRING(30),
-            allowNull: false
-        },
-        email : {
-            type : DataTypes.STRING(50),
-            allowNull : false
-        },
-        provider  : {
           type : DataTypes.STRING(30),
           allowNull: false
         },
+        user_name : {
+          type : DataTypes.STRING(30),
+          allowNull: false
+        },
+        email : {
+          type : DataTypes.STRING(50),
+          allowNull : false
+        },
+        provider  : {
+          type : DataTypes.STRING(30),
+          allowNull: false,
+          defaultValue: "local"
+        },
         confirmed : {
           type : DataTypes.BOOLEAN,
-          allowNull: false
+          allowNull: false,
+          defaultValue: true
         },
         blocked : {
           type : DataTypes.STRING(30),
           allowNull: true
+        },
+        jwt : {
+          type : DataTypes.STRING(500),
+          allowNull: false
         },
         created_at : {
             type : DataTypes.DATE,
@@ -87,7 +95,7 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
     return Users;
   }
 
-  public static associations: {
-    projects: Association<Users, Articles>;
-  };
+  //public static associations: {
+  //  projects: Association<Users, Articles>;
+  //};
 }
