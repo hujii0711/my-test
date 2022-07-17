@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import * as ArticleService from "../../service/articles/article";
-import {catchAsync} from "../../modules/error";
+import { catchAsync } from "../../modules/error";
 
 export const getJoinUser = catchAsync(async (req: Request, res: Response) => {
   const result = await ArticleService.getJoinUser();
@@ -24,6 +24,10 @@ export const getArticles = catchAsync(async (req: Request, res: Response) => {
   });
 });
 
+// var data= {"pageParams": [undefined], "pages": [[[Object]]]}
+// var user= {"blocked": null, "confirmed": true, "created_at": "2022-07-17T04:33:05.480Z", "email": "test@daum.net", "id": 3, "provider": "local", "role": {"description": "Default role given to authenticated user.", "id": 1, "name": "Authenticated", "type": "authenticated"}, "updated_at": "2022-07-17T04:33:05.487Z", "username": "test"};
+// var items= [{"body": "test2", "created_at": "2022-06-26T03:29:28.480Z", "id": 2, "published_at": "2022-06-26T03:29:28.470Z", "title": "test1", "updated_at": "2022-06-26T03:29:28.492Z", "user": {"blocked": null, "confirmed": true, "created_at": "2022-06-26T03:29:10.824Z", "email": "hujii0711@gmail.com", "id": 2, "provider": "local", "role": 1, "updated_at": "2022-06-26T03:29:10.831Z", "username": "fujii0711"}}];
+
 // /articles/:id | GET | getArticle | 글상세
 export const getArticle = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
@@ -40,7 +44,7 @@ export const getArticle = catchAsync(async (req: Request, res: Response) => {
 export const writeArticle = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
   const result = await ArticleService.writeArticle(body);
-
+  console.log("writeArticle >>> result =====", result);
   res.json({
     code: "success",
     message: "정상적으로 writeArticle 저장 되었습니다.",

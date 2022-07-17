@@ -22,7 +22,8 @@ export default function useRegister() {
     },
     onError: (error: AuthError) => {
       console.log(error.response?.data);
-      const message = error.response?.data?.data?.[0]?.messages[0].message ?? '회원가입 실패';
+      const message =
+        error.response?.data?.data?.[0]?.messages[0].message ?? '회원가입 실패';
       inform({
         title: '오류',
         message,

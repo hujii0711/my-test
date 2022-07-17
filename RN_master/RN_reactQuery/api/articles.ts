@@ -1,18 +1,15 @@
 import client from './client';
 import {Article} from './types';
 
-interface articlesParam {
-  limit?: number;
-  cursor?: number;
-  prevCursor?: number;
-}
-
 export async function getArticles({
   limit = 10,
   cursor,
   prevCursor,
-}: articlesParam) {
-  //limit = 10, cursor, prevCursor 초기값 undefined
+}: {
+  limit?: number;
+  cursor?: number;
+  prevCursor?: number;
+}) {
   const response = await client.get<Article[]>('/articles', {
     params: {
       _sort: 'id:DESC',
@@ -21,13 +18,14 @@ export async function getArticles({
       id_gt: prevCursor,
     },
   });
-  // console.log('getArticles >>> params=====', {
-  //   _sort: 'id:DESC',
-  //   _limit: limit,
-  //   id_lt: cursor,
-  //   id_gt: prevCursor,
-  // });
-  //console.log('getArticles=====', JSON.stringify({_sort: 'id:DESC', _limit: limit, id_lt: cursor, id_gt: prevCursor}));
+  console.log(
+    JSON.stringify({
+      _sort: 'id:DESC',
+      _limit: limit,
+      id_lt: cursor,
+      id_gt: prevCursor,
+    }),
+  );
   return response.data;
 }
 

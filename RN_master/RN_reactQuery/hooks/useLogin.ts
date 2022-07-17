@@ -21,7 +21,8 @@ export default function useLogin() {
       authStorage.set(data);
     },
     onError: (error: AuthError) => {
-      const message = error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
+      const message =
+        error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
       inform({
         title: '오류',
         message,

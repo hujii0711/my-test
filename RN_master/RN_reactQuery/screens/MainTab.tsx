@@ -1,9 +1,9 @@
 import React from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {MainTabParamList} from './types';
+import ArticlesScreen from './ArticlesScreen';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
-import ArticlesScreen from './ArticlesScreen';
 import UserMenuScreen from './UserMenuScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
