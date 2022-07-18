@@ -5,6 +5,7 @@ import path from "path";
 import { Sequelize } from "./models";
 import dotenv from "dotenv";
 import * as Api from "./routes";
+import session from "express-session";
 
 dotenv.config({ path: path.resolve(__dirname, "./config/.env") });
 const app = express();
@@ -27,8 +28,19 @@ app.use(express.static(path.join(__dirname, "public")));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(process.env.COOKIE_SECRET));
+// 라우터 전에 세션 설정 요함(순서 중요!)
+app.use(
+  session({
+    secret: process.env.COOKIE_SECRET ?? "fujii0711",
+    resave: false,
+    saveUninitialized: true,
+    // store 설정 없으면 기본 값은 MemoryStore
+    // Memory Store입니다. 메모리는 서버나 클라이언트를 껐다 키면 사라지는 휘발성
+    // 이를 대체할 수 있는 방법은 File Store
+    cookie: { maxAge: 86400000 }, // 24 hours (= 24 * 60 * 60 * 1000 ms)
+  }),
+);
 app.use(Api.path, Api.router);
-
 /*****************************************
  * 등록되지 않은 라우터 처리(400)
  *****************************************/
@@ -45,7 +57,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
  * 500 에러 처리 라우터
  *****************************************/
 app.use((err: any, req: Request, res: Response, next: NextFunction) => {
-  console.error("에러 처리 라우터__500!!!!!!!!!!!!!");
+  console.error("에러 처리 라우터__500__err.message", err.message);
   res.status(500).json({
     code: "fail",
     message: err.message,

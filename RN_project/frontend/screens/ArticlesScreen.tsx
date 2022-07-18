@@ -22,11 +22,18 @@ function ArticlesScreen() {
   } = useInfiniteQuery('articles', ({pageParam}) => getArticles({...pageParam}), {
     //lastPage: 가장 마지막으로 불러온 페이지를 가리킨다. Article[] 타입
     //allPages: 지금까지 불러온 모든 페이지를 가리킨다. Article[][] 타입
-    getNextPageParam: lastPage =>
-      lastPage.length === 10
-        ? {cursor: lastPage[lastPage.length - 1].id} // 마지막으로 불러온 항목을 cursor 파라미터로 사용
-        : // 가장 마지막으로 불러온 lastPage의 마지막 원소의 id값을 반환
-          undefined, // 더 이상 조회할 수 있는 데이터가 없을 때는 undefined를 반환
+    getNextPageParam: lastPage => {
+      if (lastPage.length === 10) {
+        console.log('getNextPageParam >>>> cursor====', lastPage[lastPage.length - 1].id);
+        return {
+          cursor: lastPage[lastPage.length - 1].id,
+          // 마지막으로 불러온 항목을 cursor 파라미터로 사용
+          // 가장 마지막으로 불러온 lastPage의 마지막 원소의 id값을 반환
+        };
+      } else {
+        return undefined; //// 더 이상 조회할 수 있는 데이터가 없을 때는 undefined를 반환
+      }
+    },
     // 따라서 이 코드에서 마지막으로 불러온 페이지에 항목이 10개 있으면 다음 페이지가 존재할 수 있으니
     // 마지막 항목의 id를 반환하고, 10개 미만이면 다음 페이지가 존재하지 않으니 undefined를 반환한다.
     // lastPage===== [{"body": "test2", "created_at": "2022-06-26T03:29:28.480Z", "id": 2, "published_at": "2022-06-26T03:29:28.470Z", "title": "test1", "updated_at": "2022-06-26T03:29:28.492Z", "user": {"blocked": null, "confirmed": true, "created_at": "2022-06-26T03:29:10.824Z", "email": "hujii0711@gmail.com", "id": 2, "provider": "local", "role": 1, "updated_at": "2022-06-26T03:29:10.831Z", "username": "fujii0711"}}]
@@ -47,6 +54,8 @@ function ArticlesScreen() {
 
   //useMemo로 감싸지 않으면 로딩 data가 변경되지 않았을 때도 다른 상태가 변할 때 불필요한 연산이 이뤄진다.
   const items = useMemo(() => {
+    console.log('items!!!!!!!!!!!!!!!!!!');
+
     if (!data) {
       //data는 useInfiniteQuery의 반환값
       //{"pageParams": [undefined], "pages": [[[Object]]]}
@@ -54,14 +63,15 @@ function ArticlesScreen() {
       // pages : 각 페이지들을 배열 타입으로 나타낸다.(현재 pages는 Article[][] 타입이다.)
       return null;
     }
+    console.log('data.pageParams==========', data.pageParams);
+    console.log('data.pages==========', data.pages);
     //as Article[]: Articles 컴포넌트는 props의 타입이 Article[]이기 때문에 Article[][]로 이뤄져 있는 data.pages를 Article[]로 명시해줘야 한다.
     return ([] as Article[]).concat(...data.pages);
   }, [data]);
 
   const [user] = useUserState();
-  console.log('data=====', data);
-  console.log('user=====', user);
-  console.log('items=====', items);
+  //console.log('data====', data);
+  //console.log('items====', items);
   if (!items) {
     return <ActivityIndicator size="large" style={styles.spinner} color="black" />;
   }

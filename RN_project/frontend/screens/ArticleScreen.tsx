@@ -67,9 +67,7 @@ function ArticleScreen() {
 
       // 캐시 키로 데이터를 조회한 후 그 데이터를 업데이터 함수를 사용하여 업데이트
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
-        comments
-          ? comments.map(c => (c.id === selectedCommentId ? comment : c))
-          : [],
+        comments ? comments.map(c => (c.id === selectedCommentId ? comment : c)) : [],
       );
       //캐시 데이터를 업데이트 하는 이유는 댓글 수정하고 나서 댓글 데이터를 업데이트 하기 위함이다.
 
@@ -79,8 +77,7 @@ function ArticleScreen() {
     },
   });
 
-  const [selectedCommentId, setSelectedCommentId] =
-    useState<number | null>(null);
+  const [selectedCommentId, setSelectedCommentId] = useState<number | null>(null);
   const [askRemoveComment, setAskRemoveComment] = useState(false);
   const [modifying, setModifying] = useState(false);
 
@@ -148,38 +145,31 @@ function ArticleScreen() {
     });
   };
 
-  const selectedComment = commentsQuery.data?.find(
-    comment => comment.id === selectedCommentId,
-  );
+  const selectedComment = commentsQuery.data?.find(comment => comment.id === selectedCommentId);
 
   // 둘 중 하나라도 준비되지 않은 데이터가 있으면 스피너 보여주기
   if (!articleQuery.data || !commentsQuery.data) {
-    return (
-      <ActivityIndicator size="large" style={styles.spinner} color="black" />
-    );
+    return <ActivityIndicator size="large" style={styles.spinner} color="black" />;
   }
 
-  const {title, body, published_at, user} = articleQuery.data;
-  const isMyArticle = currentUser?.id === user.id;
+  const {title, contents, published_at, user} = articleQuery.data;
+  const isMyArticle = currentUser?.user_id === user.user_id;
 
   return (
     <>
       <FlatList
         style={styles.flatList}
-        contentContainerStyle={[
-          styles.flatListContent,
-          {paddingBottom: bottom},
-        ]}
+        contentContainerStyle={[styles.flatListContent, {paddingBottom: bottom}]}
         data={commentsQuery.data}
         renderItem={({item}) => (
           <CommentItem
             id={item.id}
             message={item.message}
-            publishedAt={item.published_at}
-            username={item.user.username}
+            publishedAt={item.created_at}
+            username={item.user.user_id}
             onRemove={onRemove}
             onModify={onModify}
-            isMyComment={item.user.id === currentUser?.id}
+            isMyComment={item.user.user_id === currentUser?.user_id}
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -187,9 +177,9 @@ function ArticleScreen() {
           <>
             <ArticleView
               title={title}
-              body={body}
+              body={contents}
               publishedAt={published_at}
-              username={user.username}
+              username={user.user_name}
               id={id}
               isMyArticle={isMyArticle}
             />

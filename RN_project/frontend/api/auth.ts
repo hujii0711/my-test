@@ -43,18 +43,18 @@ export async function login(params: LoginParams) {
 
   // strapi 응답에 맞게 변환 작업
   const result = {
-    jwt: data[0].jwt,
+    jwt: data.jwt,
     user: {
-      id: data[0].id,
-      user_id: data[0].user_id,
-      user_name: data[0].user_name,
-      email: data[0].email,
-      password: data[0].password,
-      confirmed: data[0].confirmed,
-      provider: data[0].provider,
-      published_at: data[0].published_at,
-      created_at: data[0].created_at,
-      updated_at: data[0].updated_at,
+      id: data.id,
+      user_id: data.user_id,
+      user_name: data.user_name,
+      email: data.email,
+      password: data.password,
+      confirmed: data.confirmed,
+      provider: data.provider,
+      published_at: data.published_at,
+      created_at: data.created_at,
+      updated_at: data.updated_at,
     },
   };
   console.log('api >>> login >>> result ===', result);

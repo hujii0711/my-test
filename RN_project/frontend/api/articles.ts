@@ -1,5 +1,6 @@
 import client from './client';
 import {Article} from './types';
+import {useUserState} from '../contexts/UserContext';
 
 interface articlesParam {
   limit?: number;
@@ -9,21 +10,16 @@ interface articlesParam {
 
 export async function getArticles({limit = 10, cursor, prevCursor}: articlesParam) {
   //limit = 10, cursor, prevCursor 초기값 undefined
+  console.log('limit======', limit);
+  console.log('cursor======', cursor);
+  console.log('prevCursor======', prevCursor);
   const response = await client.get<Article[]>('/articles', {
     params: {
-      _sort: 'id:DESC',
       _limit: limit,
       id_lt: cursor,
       id_gt: prevCursor,
     },
   });
-  // console.log('getArticles >>> params=====', {
-  //   _sort: 'id:DESC',
-  //   _limit: limit,
-  //   id_lt: cursor,
-  //   id_gt: prevCursor,
-  // });
-  //console.log('getArticles=====', JSON.stringify({_sort: 'id:DESC', _limit: limit, id_lt: cursor, id_gt: prevCursor}));
 
   const data = response.data.resp;
 
@@ -47,7 +43,19 @@ export async function getArticles({limit = 10, cursor, prevCursor}: articlesPara
 
 export async function getArticle(id: number) {
   const response = await client.get<Article>(`/articles/${id}`);
-  return response.data;
+  const data = response.data.resp;
+
+  const result = {
+    id: data[0].id,
+    title: data[0].title,
+    contents: data[0].contents,
+    published_at: data[0].published_at,
+    user: {
+      user_name: data[0].user_name,
+      user_id: data[0].user_id,
+    },
+  };
+  return result;
 }
 
 export async function writeArticle(params: {title: string; body: string}) {
@@ -70,7 +78,19 @@ export async function writeArticle(params: {title: string; body: string}) {
 export async function modifyArticle(params: {id: number; title: string; body: string}) {
   const {id, title, body} = params;
   const response = await client.put<Article>(`/articles/${id}`, {title, body});
-  return response.data;
+  console.log('modifyArticle >>>> response.data-----', response.data);
+  const data = response.data;
+  const result = {
+    id,
+    title,
+    contents: body,
+    user: {
+      user_name: data.user_name,
+      user_id: data.user_id,
+    },
+  };
+
+  return result;
 }
 
 export async function deleteArticle(id: number) {

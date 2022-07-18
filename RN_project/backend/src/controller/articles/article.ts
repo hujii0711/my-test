@@ -30,6 +30,7 @@ export const getArticles = catchAsync(async (req: Request, res: Response) => {
 
 // /articles/:id | GET | getArticle | 글상세
 export const getArticle = catchAsync(async (req: Request, res: Response) => {
+  console.log("getArticle >>> 세션 정보 테스트 --------------", req.session.userInfo);
   const { id } = req.params;
   const body = await ArticleService.getArticle(id);
 
@@ -43,8 +44,10 @@ export const getArticle = catchAsync(async (req: Request, res: Response) => {
 // /articles | POST | writeArticle | 글쓰기
 export const writeArticle = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
-  const result = await ArticleService.writeArticle(body);
-  console.log("writeArticle >>> result =====", result);
+  const userInfo = req.session.userInfo;
+
+  const result = await ArticleService.writeArticle(body, userInfo);
+
   res.json({
     code: "success",
     message: "정상적으로 writeArticle 저장 되었습니다.",
@@ -57,6 +60,7 @@ export const modifyArticle = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
   const { id } = req.params;
   const result = await ArticleService.modifyArticle(id, body);
+  //const userInfo = req.session.userInfo;
 
   res.json({
     code: "success",

@@ -18,11 +18,19 @@ function ArticlesScreen() {
     'articles',
     ({pageParam}) => getArticles({...pageParam}),
     {
-      getNextPageParam: lastPage =>
-        lastPage.length === 10
-          ? {cursor: lastPage[lastPage.length - 1].id}
-          : undefined,
-
+      getNextPageParam: lastPage => {
+        if (lastPage.length === 10) {
+          console.log(
+            'getNextPageParam >>>> cursor====',
+            lastPage[lastPage.length - 1].id,
+          );
+          return {
+            cursor: lastPage[lastPage.length - 1].id,
+          };
+        } else {
+          return undefined;
+        }
+      },
       getPreviousPageParam: (_, allPages) => {
         const validPage = allPages.find(page => page.length > 0);
         if (!validPage) {
@@ -37,6 +45,8 @@ function ArticlesScreen() {
   );
 
   const items = useMemo(() => {
+    console.log('items!!!!!!!!!!!!!!!!!!');
+    console.log('data==========', data);
     if (!data) {
       return null;
     }

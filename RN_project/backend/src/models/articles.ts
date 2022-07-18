@@ -1,21 +1,9 @@
+import { types } from "joi";
 import { Sequelize, DataTypes, Model, Association } from "sequelize";
 import { Users } from "./users";
+import { ArticlesAttributes } from "./types";
 
-interface ArticlesAttributes {
-  id?: number;
-  title?: string;
-  contents?: string;
-  user_id?: string;
-  user_name?: string;
-  published_at?: Date;
-  created_at?: Date;
-  updated_at?: Date;
-}
-
-export class Articles
-  extends Model<ArticlesAttributes>
-  implements ArticlesAttributes
-{
+export class Articles extends Model<ArticlesAttributes> implements ArticlesAttributes {
   public readonly id!: number;
   public title!: string;
   public contents!: string;

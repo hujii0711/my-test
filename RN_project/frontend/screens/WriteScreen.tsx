@@ -28,7 +28,7 @@ function WriteScreen() {
 
   // 캐시된 데이터가 존재한다면 해당 데이터 정보를 초기값으로 사용
   const [title, setTitle] = useState(cachedArticle?.title ?? '');
-  const [body, setBody] = useState(cachedArticle?.body ?? '');
+  const [body, setBody] = useState(cachedArticle?.contents ?? '');
 
   // 추후 게시글을 수정할 때도 useMutation을 사용할 것이기 때문에, mutate 함수를 write라는 이름으로 변경하여 구조 분해함
   const {mutate: write} = useMutation(writeArticle, {

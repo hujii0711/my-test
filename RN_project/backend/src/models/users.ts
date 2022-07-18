@@ -1,19 +1,6 @@
 import { Sequelize, DataTypes, Model, Association } from "sequelize";
-import { Articles } from "./articles";
-
-interface UsersAttributes {
-  id?: number;
-  user_id?: string;
-  user_name?: string;
-  email?: string;
-  password?: string;
-  provider?: string;
-  confirmed?: boolean;
-  blocked?: string;
-  jwt?: string;
-  created_at?: Date;
-  updated_at?: Date;
-}
+//import { Articles } from "./articles";
+import { UsersAttributes } from "./types";
 
 export class Users extends Model<UsersAttributes> implements UsersAttributes {
   public readonly id!: number;
