@@ -1,10 +1,10 @@
 import { Router } from "express";
 
-import * as TestRouter from './tests/test';
-import * as ArticleRouter from './articles/article';
-import * as UserRouter from './users/user';
-import * as LoginRouter from './logins/login';
-import * as CommentRouter from './comments/comment';
+import * as TestRouter from './test/TestRoute';
+import * as ArticleRouter from './article/ArticleRoute';
+import * as UserRouter from './users/UserRoute';
+import * as LoginRouter from './login/LoginRoute';
+import * as CommentRouter from './comment/CommentRoute';
 
 export const router = Router();
 export const path = '';

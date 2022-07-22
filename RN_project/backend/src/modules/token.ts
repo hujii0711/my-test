@@ -1,5 +1,4 @@
 import jwt from "jsonwebtoken";
-import { findByUserInfo } from "../service/users/user";
 import { Request, Response, NextFunction } from "express";
 import path from "path";
 import dotenv from "dotenv";
