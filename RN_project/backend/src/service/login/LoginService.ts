@@ -6,7 +6,7 @@ export const register = async (params: { email: string; username: string; passwo
   console.log("LoginService >>>> register >>>> params====", params);
   // { email: 'test2@daum.net', username: 'fujii0711', password: '1234' }
   const payload = params;
-  const token = tokenConfig.generateToken(payload);
+  //const token = tokenConfig.generateToken(payload);
   // 아이디 또는 이메일 중복 제거 로직 필요
 
   // 비밀번호 암호화
@@ -16,7 +16,7 @@ export const register = async (params: { email: string; username: string; passwo
     user_name: payload.username,
     password: hash,
     email: payload.email,
-    jwt: token,
+    jwt: "no token",
   });
   return data;
 };

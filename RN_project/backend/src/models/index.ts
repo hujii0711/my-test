@@ -1,17 +1,18 @@
 import database from "sequelize";
-import { databaseConfig } from "../config/database";
+import { databaseConfig as db} from "../config/database";
 import { Users } from "./users";
 import { Articles } from "./articles";
 import { Tests } from "./tests";
 import { Comments } from "./comments";
+import env from "../modules/env";
 
 const sequelize = new database.Sequelize(
-  databaseConfig.development.dbname, //스키마 이름
-  databaseConfig.development.username,
-  databaseConfig.development.password,
+  db[env.node_env].dbname, //스키마 이름
+  db[env.node_env].username,
+  db[env.node_env].password,
   {
-    host: databaseConfig.development.host, //데이터베이스가 실행중인 호스트
-    port: databaseConfig.development.port,
+    host: db[env.node_env].host, //데이터베이스가 실행중인 호스트
+    port: db[env.node_env].port,
     dialect: "mysql", //어떤 SQL언어를 사용할 것인지 설정
     timezone: "+09:00", // DB에 저장할 때 시간 설정
     define: {

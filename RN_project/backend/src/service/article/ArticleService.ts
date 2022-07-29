@@ -22,8 +22,8 @@ export const getArticles = async (params: any) => {
   const data = await Articles.findAll({
     attributes: ["id", "title", "contents", "user_id", "user_name", "published_at", "created_at", "updated_at"],
     order: [["id", "DESC"]],
-    limit: Number(_limit),
-    offset: Number(_offset),
+    //limit: Number(_limit),
+    //offset: Number(_offset),
     raw: true,
   });
   return data;

@@ -1,15 +1,12 @@
-import * as dotenv from 'dotenv';
-dotenv.config();
+import env from "../modules/env";
 
 export const databaseConfig = {
 
-    development : {
-        username : 'fujii0711',
-        password :  'hj@1560813',
-        dbname :  'example',
-        host : 'localhost',
-        port : 3306,
-        dialect : "mysql"
-    }
-
+    [env.node_env]: {
+        host : env.database.host,
+        username : env.database.username,
+        password : env.database.password,
+        dbname :  env.database.dbname,
+        port : env.database.port,
+    },
 }

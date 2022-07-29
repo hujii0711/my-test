@@ -1,8 +1,17 @@
 import React from 'react';
 import {View, StyleSheet, FlatList, ActivityIndicator, RefreshControl} from 'react-native';
-import {ArticlesProps} from '../api/types';
+import {Article} from '../api/types';
 import ArticleItem from './ArticleItem';
 import WriteButton from './WriteButton';
+
+export interface ArticlesProps {
+  articles: Article[];
+  showWriteButton?: boolean;
+  isFetchingNextPage: boolean;
+  fetchNextPage(): void;
+  refresh(): void;
+  isRefreshing: boolean;
+}
 
 function Articles({
   articles, // type []

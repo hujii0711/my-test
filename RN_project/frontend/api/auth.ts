@@ -15,50 +15,50 @@ import {AuthResult, User} from './types';
 // };
 export async function register(params: RegisterParams) {
   const response = await client.post<AuthResult>('/auth/local/register', params);
-  const data = response.data.resp;
+  // const data = response.data.resp;
 
-  // strapi 응답에 맞게 변환 작업
-  const result = {
-    jwt: data.jwt,
-    user: {
-      id: data.id,
-      user_id: data.user_id,
-      user_name: data.user_name,
-      email: data.email,
-      password: data.password,
-      confirmed: data.confirmed,
-      provider: data.provider,
-      published_at: data.published_at,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-    },
-  };
-  console.log('api >>> register >>> result ===', result);
-  return result;
+  // // strapi 응답에 맞게 변환 작업
+  // const result = {
+  //   jwt: data.jwt,
+  //   user: {
+  //     id: data.id,
+  //     user_id: data.user_id,
+  //     user_name: data.user_name,
+  //     email: data.email,
+  //     password: data.password,
+  //     confirmed: data.confirmed,
+  //     provider: data.provider,
+  //     published_at: data.published_at,
+  //     created_at: data.created_at,
+  //     updated_at: data.updated_at,
+  //   },
+  // };
+  console.log('api >>> register >>> response ===', response);
+  return response.data;
 }
 
 export async function login(params: LoginParams) {
   const response = await client.post<AuthResult>('/auth/local', params);
-  const data = response.data.resp;
+  // const data = response.data.resp;
 
-  // strapi 응답에 맞게 변환 작업
-  const result = {
-    jwt: data.jwt,
-    user: {
-      id: data.id,
-      user_id: data.user_id,
-      user_name: data.user_name,
-      email: data.email,
-      password: data.password,
-      confirmed: data.confirmed,
-      provider: data.provider,
-      published_at: data.published_at,
-      created_at: data.created_at,
-      updated_at: data.updated_at,
-    },
-  };
-  console.log('api >>> login >>> result ===', result);
-  return result;
+  // // strapi 응답에 맞게 변환 작업
+  // const result = {
+  //   jwt: data.jwt,
+  //   user: {
+  //     id: data.id,
+  //     user_id: data.user_id,
+  //     user_name: data.user_name,
+  //     email: data.email,
+  //     password: data.password,
+  //     confirmed: data.confirmed,
+  //     provider: data.provider,
+  //     published_at: data.published_at,
+  //     created_at: data.created_at,
+  //     updated_at: data.updated_at,
+  //   },
+  // };
+  console.log('api >>> login >>> response ===', response);
+  return response.data;
 }
 
 export async function getLoginStatus() {

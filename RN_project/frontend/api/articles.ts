@@ -21,76 +21,77 @@ export async function getArticles({limit = 10, cursor, prevCursor}: articlesPara
     },
   });
 
-  const data = response.data.resp;
+  //const data = response.data.resp;
 
-  const result = data.reduce((acc, cur) => {
-    const sub = {
-      id: cur.id,
-      title: cur.title,
-      contents: cur.contents,
-      published_at: cur.published_at,
-      user: {
-        user_name: cur.user_name,
-        user_id: cur.user_id,
-      },
-    };
-    acc.push(sub);
-    return acc;
-  }, []);
+  // const result = data.reduce((acc, cur) => {
+  //   const sub = {
+  //     id: cur.id,
+  //     title: cur.title,
+  //     contents: cur.contents,
+  //     published_at: cur.published_at,
+  //     user: {
+  //       user_name: cur.user_name,
+  //       user_id: cur.user_id,
+  //     },
+  //   };
+  //   acc.push(sub);
+  //   return acc;
+  // }, []);
 
-  return result;
+  return response.data;
 }
 
 export async function getArticle(id: number) {
   const response = await client.get<Article>(`/articles/${id}`);
-  const data = response.data.resp;
+  // const data = response.data.resp;
 
-  const result = {
-    id: data[0].id,
-    title: data[0].title,
-    contents: data[0].contents,
-    published_at: data[0].published_at,
-    user: {
-      user_name: data[0].user_name,
-      user_id: data[0].user_id,
-    },
-  };
-  return result;
+  // const result = {
+  //   id: data[0].id,
+  //   title: data[0].title,
+  //   contents: data[0].contents,
+  //   published_at: data[0].published_at,
+  //   user: {
+  //     user_name: data[0].user_name,
+  //     user_id: data[0].user_id,
+  //   },
+  // };
+
+  return response.data;
 }
 
 export async function writeArticle(params: {title: string; body: string}) {
   const response = await client.post<Article>('/articles', params);
-  const data = response.data.resp;
+  // const data = response.data.resp;
 
-  const result = {
-    id: data.id,
-    title: data.title,
-    contents: data.contents,
-    published_at: data.published_at,
-    user: {
-      user_name: data.user_name,
-      user_id: data.user_id,
-    },
-  };
-  return result;
+  // const result = {
+  //   id: data.id,
+  //   title: data.title,
+  //   contents: data.contents,
+  //   published_at: data.published_at,
+  //   user: {
+  //     user_name: data.user_name,
+  //     user_id: data.user_id,
+  //   },
+  // };
+  return response.data;
 }
 
 export async function modifyArticle(params: {id: number; title: string; body: string}) {
   const {id, title, body} = params;
   const response = await client.put<Article>(`/articles/${id}`, {title, body});
   console.log('modifyArticle >>>> response.data-----', response.data);
-  const data = response.data;
-  const result = {
-    id,
-    title,
-    contents: body,
-    user: {
-      user_name: data.user_name,
-      user_id: data.user_id,
-    },
-  };
+  // const data = response.data;
+  // const result = {
+  //   id,
+  //   title,
+  //   contents: body,
+  //   user: {
+  //     user_name: data.user_name,
+  //     user_id: data.user_id,
+  //   },
+  // };
 
-  return result;
+  return response.data;
 }
 
 export async function deleteArticle(id: number) {
