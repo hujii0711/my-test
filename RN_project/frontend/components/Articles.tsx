@@ -29,8 +29,8 @@ function Articles({
         <ArticleItem
           id={item.id}
           title={item.title}
-          publishedAt={item.published_at}
-          username={item.user.user_name}
+          published_at={item.published_at}
+          user_name={item.user_name}
         />
       )}
       keyExtractor={item => item.id.toString()}

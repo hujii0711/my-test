@@ -1,7 +1,7 @@
-
 import passport from "passport";
 import local from "./localStrategy";
-import {Users} from '../../models/users';
+import { Users } from "../../models/users";
+import * as tokenConfig from "../token";
 
 // 전체 과정 요약
 // 1. 로그인 요청이 들어옴
@@ -19,22 +19,22 @@ import {Users} from '../../models/users';
 // 4. 라우터에서 request.user 객체 사용 가능
 
 const passportConfig = () => {
-
-  passport.serializeUser((user:any, done) => {
-    const {user_id} = user;
+  passport.serializeUser((user: any, done) => {
+    const { user_id } = user;
     done(null, user_id);
   });
 
   passport.deserializeUser(async (user_id: string, done) => {
-
-    try{
+    console.log("★★★★★★★★★★★★passport.deserializeUser★★★★★★★★★★★★");
+    try {
       const users = await Users.findOne({
-        attributes: ['id', 'user_id', 'user_name', 'email'],
+        attributes: ["id", "user_id", "user_name", "email"],
         where: { user_id },
         raw: true,
       });
+
       done(null, users);
-    } catch(err){
+    } catch (err) {
       done(err);
     }
   });

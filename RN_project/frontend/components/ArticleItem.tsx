@@ -6,11 +6,12 @@ import {MainTabNavigationProp} from '../screens/types';
 export interface ArticleItemProps {
   id: number;
   title: string;
-  publishedAt: string;
-  username: string;
+  published_at: string;
+  user_name: string;
 }
 
-function ArticleItem({id, title, publishedAt, username}: ArticleItemProps) {
+function ArticleItem({id, title, published_at, user_name}: ArticleItemProps) {
+  //console.log('ArticleItem-----', id, title, published_at, user_name);
   const navigation = useNavigation<MainTabNavigationProp>();
   const onPress = () => {
     navigation.navigate('Article', {
@@ -18,19 +19,16 @@ function ArticleItem({id, title, publishedAt, username}: ArticleItemProps) {
     });
   };
 
-  const formattedDate = new Date(publishedAt).toLocaleString();
+  const formattedDate = new Date(published_at).toLocaleString();
 
   return (
     <Pressable
-      style={({pressed}) => [
-        styles.block,
-        Platform.OS === 'ios' && pressed && styles.pressed,
-      ]}
+      style={({pressed}) => [styles.block, Platform.OS === 'ios' && pressed && styles.pressed]}
       onPress={onPress}
       android_ripple={{color: '#eeeeee'}}>
       <Text style={styles.title}>{title}</Text>
       <View style={styles.footer}>
-        <Text style={styles.smallText}>{username}</Text>
+        <Text style={styles.smallText}>{user_name}</Text>
         <Text style={styles.smallText}>{formattedDate}</Text>
       </View>
     </Pressable>

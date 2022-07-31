@@ -1,6 +1,5 @@
 import client from './client';
 import {Article} from './types';
-import {useUserState} from '../contexts/UserContext';
 
 interface articlesParam {
   limit?: number;
@@ -10,9 +9,10 @@ interface articlesParam {
 
 export async function getArticles({limit = 10, cursor, prevCursor}: articlesParam) {
   //limit = 10, cursor, prevCursor 초기값 undefined
-  console.log('limit======', limit);
-  console.log('cursor======', cursor);
-  console.log('prevCursor======', prevCursor);
+  //console.log('limit======', limit);
+  //console.log('cursor======', cursor);
+  //console.log('prevCursor======', prevCursor);
+
   const response = await client.get<Article[]>('/articles', {
     params: {
       _limit: limit,
@@ -37,14 +37,12 @@ export async function getArticles({limit = 10, cursor, prevCursor}: articlesPara
   //   acc.push(sub);
   //   return acc;
   // }, []);
-
   return response.data;
 }
 
 export async function getArticle(id: number) {
   const response = await client.get<Article>(`/articles/${id}`);
   // const data = response.data.resp;
-
   // const result = {
   //   id: data[0].id,
   //   title: data[0].title,
@@ -59,7 +57,7 @@ export async function getArticle(id: number) {
   return response.data;
 }
 
-export async function writeArticle(params: {title: string; body: string}) {
+export async function writeArticle(params: {title: string; contents: string}) {
   const response = await client.post<Article>('/articles', params);
   // const data = response.data.resp;
 
@@ -76,10 +74,9 @@ export async function writeArticle(params: {title: string; body: string}) {
   return response.data;
 }
 
-export async function modifyArticle(params: {id: number; title: string; body: string}) {
-  const {id, title, body} = params;
-  const response = await client.put<Article>(`/articles/${id}`, {title, body});
-  console.log('modifyArticle >>>> response.data-----', response.data);
+export async function modifyArticle(params: {id: number; title: string; contents: string}) {
+  const {id, title, contents} = params;
+  const response = await client.put<Article>(`/articles/${id}`, {title, contents});
   // const data = response.data;
   // const result = {
   //   id,

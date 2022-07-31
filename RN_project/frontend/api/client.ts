@@ -11,11 +11,11 @@ const client = axios.create({
 });
 
 export function applyToken(jwt: string) {
-  client.defaults.headers.Authorization = `Bearer ${jwt}`;
+  console.log('applyToken!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!');
+  client.defaults.headers.authorization = `${jwt}`;
 }
-
 export function clearToken() {
-  delete client.defaults.headers.Authorization;
+  delete client.defaults.headers.authorization;
 }
 
 export default client;

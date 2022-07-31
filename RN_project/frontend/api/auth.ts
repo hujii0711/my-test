@@ -33,7 +33,6 @@ export async function register(params: RegisterParams) {
   //     updated_at: data.updated_at,
   //   },
   // };
-  console.log('api >>> register >>> response ===', response);
   return response.data;
 }
 
@@ -57,7 +56,11 @@ export async function login(params: LoginParams) {
   //     updated_at: data.updated_at,
   //   },
   // };
-  console.log('api >>> login >>> response ===', response);
+  return response.data;
+}
+
+export async function logout() {
+  const response = await client.get('/auth/local/logout');
   return response.data;
 }
 

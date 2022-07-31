@@ -7,10 +7,10 @@ import env from "./modules/env";
 import * as Api from "./routes";
 import session from "express-session";
 import passport from "passport";
-import passportConfig from './modules/passport';
+import passportConfig from "./modules/passport";
 import logger from "./modules/logger";
-import rTracer from 'cls-rtracer';
-import {errorConverter, errorHandler, error400Handler} from './modules/error';
+import rTracer from "cls-rtracer";
+import { errorConverter, errorHandler, error400Handler } from "./modules/error";
 
 const app = express();
 passportConfig(); // 패스포트 설정
@@ -20,9 +20,9 @@ const port = env.port;
 (async () => {
   try {
     await Sequelize().authenticate();
-    logger.info('✅DB connection success.');
-    await Sequelize().sync({ force:false });
-    logger.info('✅Success Create users Table');
+    logger.info("✅DB connection success.");
+    await Sequelize().sync({ force: false });
+    logger.info("✅Success Create users Table");
   } catch (error) {
     logger.info("❗️Error in Create users Table : ", error);
   }
@@ -56,23 +56,24 @@ app.use(
     // cookie를 이용하여 세션을 관리해준다. 이때 maxAge 속성을 사용하여 이 쿠키가 얼마나 지속이 될것 인지 설정하는 부분
     cookie: {
       maxAge: env.max_age.session, // 1 hours (24 hours= 24 * 60 * 60 * 1000 ms)
-      httpOnly : true
+      httpOnly: true,
     },
   }),
 );
 
 app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
-app.use(passport.session());// passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
+app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
 app.use(rTracer.expressMiddleware());
 
 /*****************************************
  * 클라이언트의 모든 요청 로그 남김
  *****************************************/
 app.use((req: Request, res: Response, next: NextFunction) => {
-	const { method, path, url, query, headers: { cookie }, body } = req;
-	const request = { method, path, cookie, body, url, query };
-	logger.info({ request });
-	next();
+  const { method, path, url, query, headers, body, user } = req;
+  const request = { method, path, headers, body, url, query, user };
+  //logger.info({ request });
+  console.log("모든 라우터 요청에 대한 request=====", request);
+  next();
 });
 
 app.use(Api.path, Api.router);
@@ -92,8 +93,8 @@ app.use(errorConverter);
 app.use(errorHandler);
 
 app.listen(port, () => {
-	console.log(`##################################################################################`);
-	console.log(`======= ENV: ${env.node_env} =============`);
-	console.log(`🚀 App listening on the port ${port}`);
-	console.log(`##################################################################################`);
+  console.log(`##################################################################################`);
+  console.log(`======= ENV: ${env.node_env} =============`);
+  console.log(`🚀 App listening on the port ${port}`);
+  console.log(`##################################################################################`);
 });

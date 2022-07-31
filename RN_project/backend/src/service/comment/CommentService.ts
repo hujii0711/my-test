@@ -37,7 +37,7 @@ export const modifyComment = async (message: string, articles_ref: string, id: s
 
   // 정상 업데이트 된 경우 해당 id 값으로 조회된 댓글 정보를 리턴
   if (data[0] > 0) {
-    const searchData = await Comments.findAll({
+    const searchData = await Comments.findOne({
       attributes: ["id", "message", "user_id", "articles_ref", "created_at", "updated_at"],
       where: {
         id,

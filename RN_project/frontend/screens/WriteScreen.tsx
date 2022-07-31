@@ -28,7 +28,7 @@ function WriteScreen() {
 
   // 캐시된 데이터가 존재한다면 해당 데이터 정보를 초기값으로 사용
   const [title, setTitle] = useState(cachedArticle?.title ?? '');
-  const [body, setBody] = useState(cachedArticle?.contents ?? '');
+  const [contents, setContents] = useState(cachedArticle?.contents ?? '');
 
   // 추후 게시글을 수정할 때도 useMutation을 사용할 것이기 때문에, mutate 함수를 write라는 이름으로 변경하여 구조 분해함
   const {mutate: write} = useMutation(writeArticle, {
@@ -104,11 +104,11 @@ function WriteScreen() {
   const navigation = useNavigation<RootStackNavigationProp>();
   const onSubmit = useCallback(() => {
     if (params.articleId) {
-      modify({id: params.articleId, title, body}); //title, body는 사용자가 입력한 state값
+      modify({id: params.articleId, title, contents}); //title, contents 사용자가 입력한 state값
     } else {
-      write({title, body});
+      write({title, contents});
     }
-  }, [write, modify, title, body, params.articleId]);
+  }, [write, modify, title, contents, params.articleId]);
 
   useEffect(() => {
     navigation.setOptions({
@@ -133,11 +133,11 @@ function WriteScreen() {
         <TextInput placeholder="제목" style={styles.input} value={title} onChangeText={setTitle} />
         <TextInput
           placeholder="내용"
-          style={[styles.input, styles.body]}
+          style={[styles.input, styles.contents]}
           multiline
           textAlignVertical="top"
-          value={body}
-          onChangeText={setBody}
+          value={contents}
+          onChangeText={setContents}
         />
       </KeyboardAvoidingView>
     </SafeAreaView>
@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     borderRadius: 4,
   },
-  body: {
+  contents: {
     paddingTop: 12,
     paddingBottom: 12,
     marginTop: 16,

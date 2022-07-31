@@ -24,7 +24,7 @@ function ArticlesScreen() {
     //allPages: 지금까지 불러온 모든 페이지를 가리킨다. Article[][] 타입
     getNextPageParam: lastPage => {
       if (lastPage.length === 10) {
-        console.log('getNextPageParam >>>> cursor====', lastPage[lastPage.length - 1].id);
+        //console.log('getNextPageParam >>>> cursor====', lastPage[lastPage.length - 1].id);
         return {
           cursor: lastPage[lastPage.length - 1].id,
           // 마지막으로 불러온 항목을 cursor 파라미터로 사용
@@ -54,7 +54,7 @@ function ArticlesScreen() {
 
   //useMemo로 감싸지 않으면 로딩 data가 변경되지 않았을 때도 다른 상태가 변할 때 불필요한 연산이 이뤄진다.
   const items = useMemo(() => {
-    console.log('items!!!!!!!!!!!!!!!!!!');
+    //console.log('items!!!!!!!!!!!!!!!!!!');
 
     if (!data) {
       //data는 useInfiniteQuery의 반환값
@@ -63,8 +63,8 @@ function ArticlesScreen() {
       // pages : 각 페이지들을 배열 타입으로 나타낸다.(현재 pages는 Article[][] 타입이다.)
       return null;
     }
-    console.log('data.pageParams==========', data.pageParams);
-    console.log('data.pages==========', data.pages);
+    //console.log('data.pageParams==========', data.pageParams);
+    //console.log('data.pages==========', data.pages);
     //as Article[]: Articles 컴포넌트는 props의 타입이 Article[]이기 때문에 Article[][]로 이뤄져 있는 data.pages를 Article[]로 명시해줘야 한다.
     return ([] as Article[]).concat(...data.pages);
   }, [data]);
@@ -72,6 +72,7 @@ function ArticlesScreen() {
   const [user] = useUserState();
   //console.log('data====', data);
   //console.log('items====', items);
+  //console.log('user====', user);
   if (!items) {
     return <ActivityIndicator size="large" style={styles.spinner} color="black" />;
   }

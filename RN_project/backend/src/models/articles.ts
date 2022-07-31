@@ -1,4 +1,3 @@
-import { types } from "joi";
 import { Sequelize, DataTypes, Model, Association } from "sequelize";
 import { Users } from "./users";
 import { ArticlesAttributes } from "./types";

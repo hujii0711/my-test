@@ -152,8 +152,8 @@ function ArticleScreen() {
     return <ActivityIndicator size="large" style={styles.spinner} color="black" />;
   }
 
-  const {title, contents, published_at, user} = articleQuery.data;
-  const isMyArticle = currentUser?.user_id === user.user_id;
+  const {title, contents, published_at, user_id, user_name} = articleQuery.data;
+  const isMyArticle = currentUser?.user_id === user_id;
 
   return (
     <>
@@ -166,10 +166,10 @@ function ArticleScreen() {
             id={item.id}
             message={item.message}
             publishedAt={item.created_at}
-            username={item.user.user_id}
+            username={item.user_id}
             onRemove={onRemove}
             onModify={onModify}
-            isMyComment={item.user.user_id === currentUser?.user_id}
+            isMyComment={item.user_id === currentUser?.user_id}
           />
         )}
         keyExtractor={item => item.id.toString()}
@@ -177,9 +177,9 @@ function ArticleScreen() {
           <>
             <ArticleView
               title={title}
-              body={contents}
+              contents={contents}
               publishedAt={published_at}
-              username={user.user_name}
+              username={user_name}
               id={id}
               isMyArticle={isMyArticle}
             />
