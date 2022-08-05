@@ -4,7 +4,7 @@ import {useNavigation} from '@react-navigation/core';
 import {MainTabNavigationProp} from '../screens/types';
 
 export interface ArticleItemProps {
-  id: number;
+  id?: number;
   title: string;
   published_at: string;
   user_name: string;
@@ -14,9 +14,7 @@ function ArticleItem({id, title, published_at, user_name}: ArticleItemProps) {
   //console.log('ArticleItem-----', id, title, published_at, user_name);
   const navigation = useNavigation<MainTabNavigationProp>();
   const onPress = () => {
-    navigation.navigate('Article', {
-      id,
-    });
+    navigation.navigate('Article', {id});
   };
 
   const formattedDate = new Date(published_at).toLocaleString();

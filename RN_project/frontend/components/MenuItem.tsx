@@ -9,10 +9,13 @@ export interface MenuItemProps {
 function MenuItem({name, onPress}: MenuItemProps) {
   return (
     <Pressable
-      style={({pressed}) => [
-        styles.block,
-        Platform.OS === 'ios' && pressed && styles.pressed,
-      ]}
+      style={({pressed}) => {
+        return [styles.block, Platform.OS === 'ios' && pressed && styles.pressed];
+      }}
+      // [
+      //   styles.block,
+      //   Platform.OS === 'ios' && pressed && styles.pressed,
+      // ]}
       onPress={onPress}
       android_ripple={{color: '#eeeeee'}}>
       <Text>{name}</Text>

@@ -63,12 +63,37 @@ function ArticleScreen() {
       // 캐시 데이터 업데이트
       //queryClient.setQueryData('articles', articles.concat(article));
 
+      // 보충)
+      // const short = (comments) => comments ? comments.filter(c => c.id !== selectedCommentId) : []
+      // console.log("short===", short(comments));
+
+      // const long = function(comments) {
+      //   if(comments){
+      //     return comments.filter(function(c){
+      //       return c.id !== selectedCommentId;
+      //     });
+      //   } else {
+      //     return [];
+      //   }
+      // }
+      // console.log("long===", long(comments));
       //setQueryData는 캐시 데이터를 업데이트하는 메서드입니다. setQueryData를 사용할 때는 위와 같이 데이터를 두 번째 인자로 넣어도 되고, //업데이터 함수 형태의 값을 인자로 넣을 수도 있습니다. 만약 업데이터 함수 형태를 인자로 넣는다면 getQueryData를 생략할 수 있습니다.
 
       // 캐시 키로 데이터를 조회한 후 그 데이터를 업데이터 함수를 사용하여 업데이트
+      // export async function modifyComment(params: {articleId: number; message: string; id: number})
       queryClient.setQueryData<Comment[]>(['comments', id], comments =>
         comments ? comments.map(c => (c.id === selectedCommentId ? comment : c)) : [],
       );
+
+      // queryClient.setQueryData<Comment[]>(['comments', id], function (comments) {
+      //   if (comments) {
+      //     return comments.map(function (c) {
+      //       return c.id === selectedCommentId ? comment : c;
+      //     });
+      //   } else {
+      //     return [];
+      //   }
+      // });
       //캐시 데이터를 업데이트 하는 이유는 댓글 수정하고 나서 댓글 데이터를 업데이트 하기 위함이다.
 
       // 방금 데이터 캐시한 값 조회

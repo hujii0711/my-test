@@ -4,7 +4,6 @@ import env from './env';
 import ApiError from './api.error';
 import logger from './logger';
 import httpStatus from 'http-status';
-import * as LoginController from '../controller/login/LoginController';
 
 //export const getSeochoHistory = catchAsync(async (req: Request<{ type: string }, {}, {}, { page: string, listSize: string }
 export const generateToken = (id: number, userId: string, email: string) => {
@@ -63,15 +62,18 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     };
 
     // 토큰 3.5일 미만 남으면 재발급
+    // 앱 처음 진입시에 asyncStorage의 jwt가 유효한지 조사하여
+    // 유효: 자동 로그인
+    // 무효: 다시 로그인 유도
     const now = Math.floor(Date.now() / 1000);
     if (decoded.exp - now < 60 * 60 * 24 * 3.5) {
       const newToken = generateToken(decoded.id, decoded.user_id, decoded.email);
+
+      //웹소캣으로 asyncStorage의 jwt에 set
       res.cookie('access_token', newToken, {
         maxAge: env.max_age.token_cookie, //30일
         httpOnly: true,
       });
-      // 다시 로그인하여 글 목록 화면으로 이동 ---> UI AsyncStorage 연동하는 방법
-      LoginController.login(decoded.id, decoded.user_id, decoded.email);
     }
     next();
   } catch (err) {

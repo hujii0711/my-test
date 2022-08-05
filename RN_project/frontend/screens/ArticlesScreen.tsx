@@ -19,6 +19,7 @@ function ArticlesScreen() {
     fetchNextPage, //다음 페이지를 불러오는 함수입니다.
     fetchPreviousPage,
     //hasNextPage //다음 페이지의 존재 유무를 알려준다. 만약 getNextPageParam에서 undefined를 반환했다면 이 값을 false가 된다.
+    //pageParam : {limit = 10, cursor, prevCursor}
   } = useInfiniteQuery('articles', ({pageParam}) => getArticles({...pageParam}), {
     //lastPage: 가장 마지막으로 불러온 페이지를 가리킨다. Article[] 타입
     //allPages: 지금까지 불러온 모든 페이지를 가리킨다. Article[][] 타입

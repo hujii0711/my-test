@@ -15,8 +15,8 @@ import {AuthResult, User} from './types';
 // };
 export async function register(params: RegisterParams) {
   const response = await client.post<AuthResult>('/auth/local/register', params);
+  return response.data;
   // const data = response.data.resp;
-
   // // strapi 응답에 맞게 변환 작업
   // const result = {
   //   jwt: data.jwt,
@@ -33,11 +33,11 @@ export async function register(params: RegisterParams) {
   //     updated_at: data.updated_at,
   //   },
   // };
-  return response.data;
 }
 
 export async function login(params: LoginParams) {
   const response = await client.post<AuthResult>('/auth/local', params);
+  return response.data;
   // const data = response.data.resp;
 
   // // strapi 응답에 맞게 변환 작업
@@ -56,7 +56,6 @@ export async function login(params: LoginParams) {
   //     updated_at: data.updated_at,
   //   },
   // };
-  return response.data;
 }
 
 export async function logout() {

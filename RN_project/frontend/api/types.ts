@@ -26,12 +26,13 @@ export interface Article {
 
 export interface Comment {
   id: number;
-  user_id: string;
-  user_name: string;
-  message: string;
-  published_at: string;
-  created_at: string;
-  updated_at: string;
+  user_id?: string;
+  user_name?: string;
+  message?: string;
+  published_at?: string;
+  created_at?: string;
+  updated_at?: string;
+  articleId?: number;
 }
 
 export interface AuthResult {
