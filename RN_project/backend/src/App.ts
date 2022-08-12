@@ -1,16 +1,18 @@
-import express, { Request, Response, NextFunction } from "express";
-import cookieParser from "cookie-parser";
-import morgan from "morgan";
-import path from "path";
-import { Sequelize } from "./models";
-import env from "./modules/env";
-import * as Api from "./routes";
-import session from "express-session";
-import passport from "passport";
-import passportConfig from "./modules/passport";
-import logger from "./modules/logger";
-import rTracer from "cls-rtracer";
-import { errorConverter, errorHandler, error400Handler } from "./modules/error";
+import express, { Request, Response, NextFunction } from 'express';
+import cookieParser from 'cookie-parser';
+import morgan from 'morgan';
+import path from 'path';
+import { Sequelize } from './models';
+import env from './modules/env';
+import * as Api from './routes';
+import session from 'express-session';
+import passport from 'passport';
+import passportConfig from './modules/passport';
+import logger from './modules/logger';
+import rTracer from 'cls-rtracer';
+import { errorConverter, errorHandler, error400Handler } from './modules/error';
+import { uploadFolder } from './modules/multer';
+import webSocket from './modules/socket';
 
 const app = express();
 passportConfig(); // 패스포트 설정
@@ -20,16 +22,16 @@ const port = env.port;
 (async () => {
   try {
     await Sequelize().authenticate();
-    logger.info("✅DB connection success.");
+    logger.info('✅DB connection success.');
     await Sequelize().sync({ force: false });
-    logger.info("✅Success Create users Table");
+    logger.info('✅Success Create users Table');
   } catch (error) {
-    logger.info("❗️Error in Create users Table : ", error);
+    logger.info('❗️Error in Create users Table : ', error);
   }
 })();
 
-app.use(morgan("dev"));
-app.use(express.static(path.join(__dirname, "public")));
+app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser(env.cookie.secret));
@@ -46,7 +48,7 @@ app.use(cookieParser(env.cookie.secret));
 // ※ 해당 설정으로 인해 라우터 호출마다 세션은 자동으로 갱신되어 유효기간도 연장된다.
 app.use(
   session({
-    name: "sessionData",
+    name: 'sessionData',
     secret: env.cookie.secret,
     resave: false,
     saveUninitialized: true,
@@ -64,6 +66,7 @@ app.use(
 app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
 app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
 app.use(rTracer.expressMiddleware());
+uploadFolder(); //파일업로드 폴더 생성
 
 /*****************************************
  * 클라이언트의 모든 요청 로그 남김
@@ -72,7 +75,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const { method, path, url, query, headers, body, user } = req;
   const request = { method, path, headers, body, url, query, user };
   //logger.info({ request });
-  console.log("모든 라우터 요청에 대한 request=====", request);
+  console.log('모든 라우터 요청에 대한 request=====', request);
   next();
 });
 
@@ -92,9 +95,11 @@ app.use(errorConverter);
  *****************************************/
 app.use(errorHandler);
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`##################################################################################`);
   console.log(`======= ENV: ${env.node_env} =============`);
   console.log(`🚀 App listening on the port ${port}`);
   console.log(`##################################################################################`);
 });
+
+webSocket(server); //웹소켓 연동

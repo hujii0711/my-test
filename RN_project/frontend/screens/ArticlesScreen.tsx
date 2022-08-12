@@ -3,8 +3,8 @@ import {ActivityIndicator, StyleSheet} from 'react-native';
 import {useInfiniteQuery} from 'react-query';
 import {getArticles} from '../api/articles';
 import {Article} from '../api/types';
-import {useUserState} from '../contexts/UserContext';
-
+import {useSelector} from 'react-redux';
+import {User} from '../api/types';
 import Articles from '../components/Articles';
 
 //리액트 쿼리에서 페이지네이션을 구현할 때는 useInfiniteQuery Hook을 사용합니다.
@@ -70,7 +70,7 @@ function ArticlesScreen() {
     return ([] as Article[]).concat(...data.pages);
   }, [data]);
 
-  const [user] = useUserState();
+  const user = useSelector((state: {users: User}) => state.users);
   //console.log('data====', data);
   //console.log('items====', items);
   //console.log('user====', user);

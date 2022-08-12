@@ -45,3 +45,13 @@ export const deleteArticle = catchAsync(async (req: Request, res: Response) => {
   const result = await ArticleService.deleteArticle(id);
   res.json(result).status(httpStatus.OK);
 });
+
+// /articles/upload | POST | fileUpload | 파일업로드
+export const fileUpload = catchAsync(async (req: Request, res: Response) => {
+  //이제 프론트의 axios로부터 post 요청을 받을 코드를 작성합니다.
+  //프론트에서 formData에서 정해주었던 이름으로 img를 받습니다.
+  //그리고 Storage 옵션에서 정해준 fileName을 다시 프론트로 보내줍니다.
+
+  console.log(req.file); //req.file을 통해 여러가지 요청 결과를 확인할 수 있습니다.
+  res.send('ok');
+});

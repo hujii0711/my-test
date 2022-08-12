@@ -7,13 +7,13 @@ import {RootStackParamList} from './types';
 import {getArticle} from '../api/articles';
 import {deleteComment, getComments, modifyComment} from '../api/comments';
 import {Comment} from '../api/types';
-import {useUserState} from '../contexts/UserContext';
-
+import {useSelector} from 'react-redux';
 import ArticleView from '../components/ArticleView';
 import CommentItem from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
 import AskDialog from '../components/AskDialog';
 import CommentModal from '../components/CommentModal';
+import {User} from '../api/types';
 
 // type ArticleScreenRouteProp = Readonly<{
 //   key: string;
@@ -48,7 +48,7 @@ function ArticleScreen() {
   const commentsQuery = useQuery(['comments', id], () => getComments(id));
 
   const {bottom} = useSafeAreaInsets();
-  const [currentUser] = useUserState();
+  const currentUser = useSelector((state: {users: User}) => state.users);
 
   //useMutation은 특정 함수에서 우리가 원하는 때에 직접 요청을 시작하는 형태로 작동한다.
   const {mutate: modify} = useMutation(modifyComment, {

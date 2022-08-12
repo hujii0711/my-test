@@ -1,7 +1,11 @@
 import {useEffect} from 'react';
 import {applyToken} from '../api/client';
-import {useUserState} from '../contexts/UserContext';
 import authStorage from '../storages/authStorage';
+import {useSelector, useDispatch} from 'react-redux';
+import {setAction} from '../redux/users/reducers';
+import {User} from '../api/types';
+//import io from 'socket.io-client';
+
 // const result = {
 //   jwt: 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9c',
 //   user: {
@@ -17,7 +21,10 @@ import authStorage from '../storages/authStorage';
 //   },
 // };
 export default function useAuthLoadEffect() {
-  const [, setUser] = useUserState();
+  const users = useSelector((state: {users: User}) => state.users);
+  console.log('useAuthLoadEffect >>>> users====', users);
+
+  const dispatch = useDispatch();
 
   useEffect(() => {
     const fn = async () => {
@@ -26,9 +33,21 @@ export default function useAuthLoadEffect() {
       if (!auth) {
         return;
       }
-      setUser(auth.user);
+      dispatch(setAction(auth.user)); //setUser(auth.user);
       applyToken(auth.jwt);
     };
+
+    // const socket = io('http://localhost:4000/', {
+    //   path: '/socket.io',
+    //   transports: ['websocket'],
+    // });
+
+    // socket.on('news', function (data) {
+    //   console.log(data);
+    //   socket.emit('reply', 'Hello Node.JS');
+    // });
+
+    // socket.emit('roomjoin', '');
     fn();
-  }, [setUser]);
+  }, [users]); //setUser
 }

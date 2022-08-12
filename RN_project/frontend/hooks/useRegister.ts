@@ -2,20 +2,21 @@ import {useMutation} from 'react-query';
 import {register} from '../api/auth';
 import {AuthError} from '../api/types';
 import {useNavigation} from '@react-navigation/core';
-import {useUserState} from '../contexts/UserContext';
 import {RootStackNavigationProp} from '../screens/types';
 import {applyToken} from '../api/client';
 import authStorage from '../storages/authStorage';
 import useInform from './useInform';
+import {useDispatch} from 'react-redux';
+import {setAction} from '../redux/users/reducers';
 
 export default function useRegister() {
-  const [, setUser] = useUserState();
+  const dispatch = useDispatch();
   const navigation = useNavigation<RootStackNavigationProp>();
   const inform = useInform();
 
   const mutation = useMutation(register, {
     onSuccess: data => {
-      setUser(data.user);
+      dispatch(setAction(data.user));
       navigation.pop();
       applyToken(data.jwt);
       authStorage.set(data);
