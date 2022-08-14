@@ -1,34 +1,11 @@
-// import { hello, add } from "./util";
+import { hello, add } from "./utils";
 import "./style.css";
 import "./header.css";
-import List from "./List";
-import logo from "./images/angma.jpg";
+import logo from "./image/test.png";
 
-// const text = hello("<h1>나는 코딩앙마!!~~</h1>");
-// const num = add(1, 2);
+const text = hello("<p>나는 코딩앙마~~</p>");
+const num = add(1, 2);
 const img = `<img src="${logo}" alt="코딩앙마" />`;
 
-const users = [
-  {
-    id: 1,
-    name: "블랙 위도우",
-  },
-  {
-    id: 2,
-    name: "아이언맨",
-  },
-  {
-    id: 3,
-    name: "헐크",
-  },
-  {
-    id: 4,
-    name: "스파이더맨",
-  },
-  {
-    id: 5,
-    name: "캡틴 아메리카",
-  },
-];
-
-document.getElementById("root").appendChild(List({ userList: users }));
+const arrowFunc = () => 1 + 1;
+document.getElementById("root").innerHTML = img + text + num;

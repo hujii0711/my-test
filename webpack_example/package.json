@@ -1,5 +1,5 @@
 {
-  "name": "webpack_extension",
+  "name": "webpack_total",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
@@ -12,16 +12,23 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/cli": "^7.18.10",
+    "@babel/core": "^7.18.10",
+    "@babel/plugin-transform-runtime": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
+    "babel-loader": "^8.2.5",
     "clean-webpack-plugin": "^4.0.0",
     "css-loader": "^6.7.1",
     "file-loader": "^6.2.0",
-    "mini-css-extract-plugin": "^2.6.0",
+    "html-webpack-plugin": "^5.5.0",
+    "mini-css-extract-plugin": "^2.6.1",
     "style-loader": "^3.3.1",
-    "webpack": "^5.72.1",
-    "webpack-cli": "^4.9.2",
-    "webpack-dev-server": "^4.9.0"
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-dev-server": "^4.10.0",
+    "webpack-merge": "^5.8.0"
   },
   "dependencies": {
-    "html-webpack-plugin": "^5.5.0"
+    "@babel/runtime-corejs3": "^7.18.9"
   }
 }
