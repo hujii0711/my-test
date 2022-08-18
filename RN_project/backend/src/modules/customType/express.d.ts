@@ -35,9 +35,10 @@ declare global {
         iat?: number | undefined;
         jti?: string | undefined;
       };
-      headers: {
-        authorization: string;
-      };
+      //headers: {
+      //  authorization: string;
+      //  returntype: string;
+      //};
       tokenUserInfo: {
         id: string;
         user_id: string;

@@ -7,7 +7,7 @@ import httpStatus from 'http-status';
 
 //export const getSeochoHistory = catchAsync(async (req: Request<{ type: string }, {}, {}, { page: string, listSize: string }
 export const generateToken = (id: number, userId: string, email: string) => {
-  console.log('########### 토큰 생성 ###########');
+  console.log('########### modules > token.ts > generateToken() ###########');
   try {
     const payload = { id, userId, email };
     const options = { expiresIn: env.max_age.token }; // 유효기간 30일
@@ -34,18 +34,18 @@ export const generateToken = (id: number, userId: string, email: string) => {
 //catchAsync(async (req: Request<{ type: string }, {}, {}, { page: string, listSize: string }
 
 export const verifyToken = (req: Request, res: Response, next: NextFunction) => {
-  console.log('########### 선택적 라우터 공용 : 토큰 검증 및 만료 임박시 재발급 ###########');
+  console.log('########### modules > token.ts > verifyToken() ###########');
   try {
     //jwt.verify 메서드로 토큰을 검증할 수 있다.
     //req.headers.authorization : 토큰(요청 헤더에 저장된 토큰 정보)
     //위의 내용을 req.decoded에 대입하여 다음 미들웨어에서 쓸 수 있도록 한다.
 
-    const token = req.headers.authorization ?? req.cookies.access_token;
-    console.log('verifyToken >>>> token======', token);
+    const token = req.headers.authorization ?? '';
+    console.log('verifyToken >>>> token=====', token);
 
     // 토큰이 없는 경우
     if (!token) {
-      res.clearCookie('access_token');
+      //res.clearCookie('access_token');
       throw new ApiError(httpStatus.UNAUTHORIZED, '토큰이 존재하지 않습니다.');
       // 추후 로그인 화면으로 이동
     }
@@ -69,11 +69,14 @@ export const verifyToken = (req: Request, res: Response, next: NextFunction) => 
     if (decoded.exp - now < 60 * 60 * 24 * 3.5) {
       const newToken = generateToken(decoded.id, decoded.user_id, decoded.email);
 
-      //웹소캣으로 asyncStorage의 jwt에 set
-      res.cookie('access_token', newToken, {
-        maxAge: env.max_age.token_cookie, //30일
-        httpOnly: true,
-      });
+      // 클라이언트 새로운 token 정보 emit
+      const socket = req.app.get('io');
+      socket.emit('newToken', newToken);
+
+      //res.cookie('access_token', newToken, {
+      //  maxAge: env.max_age.token_cookie, //30일
+      //  httpOnly: true,
+      //});
     }
     next();
   } catch (err) {

@@ -13,7 +13,7 @@ import CommentItem from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
 import AskDialog from '../components/AskDialog';
 import CommentModal from '../components/CommentModal';
-import {User} from '../api/types';
+import {RootState} from '../redux';
 
 // type ArticleScreenRouteProp = Readonly<{
 //   key: string;
@@ -48,8 +48,10 @@ function ArticleScreen() {
   const commentsQuery = useQuery(['comments', id], () => getComments(id));
 
   const {bottom} = useSafeAreaInsets();
-  const currentUser = useSelector((state: {users: User}) => state.users);
 
+  const {users: currentUser} = useSelector(({userReducer}) => ({
+    users: userReducer.users,
+  }));
   //useMutation은 특정 함수에서 우리가 원하는 때에 직접 요청을 시작하는 형태로 작동한다.
   const {mutate: modify} = useMutation(modifyComment, {
     // 반환값

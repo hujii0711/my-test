@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {View, StyleSheet, FlatList, ActivityIndicator, RefreshControl} from 'react-native';
 import {Article} from '../api/types';
 import ArticleItem from './ArticleItem';
@@ -68,4 +68,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default Articles;
+export default memo(Articles);

@@ -7,7 +7,7 @@ import {applyToken} from '../api/client';
 import authStorage from '../storages/authStorage';
 import useInform from './useInform';
 import {useDispatch} from 'react-redux';
-import {setAction} from '../redux/users/reducers';
+import {userSelect} from '../redux/users/reducers';
 
 export default function useRegister() {
   const dispatch = useDispatch();
@@ -16,7 +16,7 @@ export default function useRegister() {
 
   const mutation = useMutation(register, {
     onSuccess: data => {
-      dispatch(setAction(data.user));
+      dispatch(userSelect(data.user));
       navigation.pop();
       applyToken(data.jwt);
       authStorage.set(data);

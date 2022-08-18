@@ -6,7 +6,7 @@ export default function useInform() {
     if (Platform.OS === 'ios') {
       Alert.alert(title ?? '알림', message);
     } else {
-      ToastAndroid.show(message, ToastAndroid.SHORT);
+      ToastAndroid.show(message, ToastAndroid.LONG);
     }
   }, []);
 

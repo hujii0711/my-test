@@ -75,11 +75,12 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   const { method, path, url, query, headers, body, user } = req;
   const request = { method, path, headers, body, url, query, user };
   //logger.info({ request });
-  console.log('모든 라우터 요청에 대한 request=====', request);
+  console.log('All router request=====', request);
   next();
 });
 
 app.use(Api.path, Api.router);
+
 /*****************************************
  * 등록되지 않은 라우터 처리(400)
  *****************************************/
@@ -87,6 +88,7 @@ app.use(error400Handler);
 
 /*****************************************
  * 500 에러 처리 변환 라우터
+ * new ApiError() 전처리
  *****************************************/
 app.use(errorConverter);
 
@@ -102,4 +104,4 @@ const server = app.listen(port, () => {
   console.log(`##################################################################################`);
 });
 
-webSocket(server); //웹소켓 연동
+webSocket(server, app); //웹소켓 연동

@@ -1,0 +1,188 @@
+"interceptors.request >>>> config===="{
+   "adapter":[
+      "Function xhrAdapter"
+   ],
+   "baseURL":"http://10.0.2.2:4000",
+   "headers":{
+      "common":{
+         "Accept":"application/json, text/plain, */*"
+      },
+      "delete":{
+         
+      },
+      "get":{
+         
+      },
+      "head":{
+         
+      },
+      "patch":{
+         "Content-Type":"application/x-www-form-urlencoded"
+      },
+      "post":{
+         "Content-Type":"application/x-www-form-urlencoded"
+      },
+      "put":{
+         "Content-Type":"application/x-www-form-urlencoded"
+      }
+   },
+   "maxBodyLength":-1,
+   "maxContentLength":-1,
+   "method":"get",
+   "params":{
+      "_limit":10,
+      "id_gt":"undefined",
+      "id_lt":"undefined"
+   },
+   "timeout":30000,
+   "transformRequest":[
+      [
+         "Function transformRequest"
+      ]
+   ],
+   "transformResponse":[
+      [
+         "Function transformResponse"
+      ]
+   ],
+   "url":"/articles",
+   "validateStatus":[
+      "Function validateStatus"
+   ],
+   "xsrfCookieName":"XSRF-TOKEN",
+   "xsrfHeaderName":"X-XSRF-TOKEN"
+}"
+
+----------------------------------------------------------------------------------------------------------------
+interceptors.response >>>> response===="{
+   "config":{
+      "adapter":[
+         "Function xhrAdapter"
+      ],
+      "baseURL":"http://10.0.2.2:4000",
+      "data":"undefined",
+      "headers":{
+         "Accept":"application/json, text/plain, */*"
+      },
+      "maxBodyLength":-1,
+      "maxContentLength":-1,
+      "method":"get",
+      "params":{
+         "_limit":10,
+         "id_gt":"undefined",
+         "id_lt":"undefined"
+      },
+      "timeout":30000,
+      "transformRequest":[
+         [
+            "Function transformRequest"
+         ]
+      ],
+      "transformResponse":[
+         [
+            "Function transformResponse"
+         ]
+      ],
+      "url":"/articles",
+      "validateStatus":[
+         "Function validateStatus"
+      ],
+      "xsrfCookieName":"XSRF-TOKEN",
+      "xsrfHeaderName":"X-XSRF-TOKEN"
+   },
+   "data":[
+      {
+         "contents":"test1233456",
+         "created_at":"2022-07-31T04:53:05.000Z",
+         "id":1,
+         "published_at":"2022-07-31T04:53:05.000Z",
+         "title":"test1",
+         "updated_at":"2022-07-31T04:53:05.000Z",
+         "user_id":"fujii0711",
+         "user_name":"fujii0711"
+      }
+   ],
+   "headers":{
+      "connection":"keep-alive",
+      "content-length":"219",
+      "content-type":"application/json; charset=utf-8",
+      "date":"Sun, 14 Aug 2022 07:16:13 GMT",
+      "etag":"W/\"db-hG3ryP9xjKEDf+bDMakXVVZDtKo\"",
+      "keep-alive":"timeout=5",
+      "set-cookie":[
+         "sessionData=s%3A73W2yClKprGEVWQmppGJ7YSaimgLzp_G.Dhiev3rOZVEU06UbaVVn2FX38FjIdytTJZ%2Fi6QDnwJ0; Path=/; Expires=Sun, 14 Aug 2022 08:05:32 GMT; HttpOnly"
+      ],
+      "x-powered-by":"Express"
+   },
+   "request":{
+      "DONE":4,
+      "HEADERS_RECEIVED":2,
+      "LOADING":3,
+      "OPENED":1,
+      "UNSENT":0,
+      "_aborted":false,
+      "_cachedResponse":"undefined",
+      "_hasError":false,
+      "_headers":{
+         "accept":"application/json, text/plain, */*"
+      },
+      "_incrementalEvents":false,
+      "_lowerCaseResponseHeaders":{
+         "connection":"keep-alive",
+         "content-length":"219",
+         "content-type":"application/json; charset=utf-8",
+         "date":"Sun, 14 Aug 2022 07:16:13 GMT",
+         "etag":"W/\"db-hG3ryP9xjKEDf+bDMakXVVZDtKo\"",
+         "keep-alive":"timeout=5",
+         "set-cookie":"sessionData=s%3A73W2yClKprGEVWQmppGJ7YSaimgLzp_G.Dhiev3rOZVEU06UbaVVn2FX38FjIdytTJZ%2Fi6QDnwJ0; Path=/; Expires=Sun, 14 Aug 2022 08:05:32 GMT; HttpOnly",
+         "x-powered-by":"Express"
+      },
+      "_method":"GET",
+      "_perfKey":"network_XMLHttpRequest_http://10.0.2.2:4000/articles?_limit=10",
+      "_performanceLogger":{
+         "_closed":false,
+         "_extras":[
+            "Object"
+         ],
+         "_pointExtras":[
+            "Object"
+         ],
+         "_points":[
+            "Object"
+         ],
+         "_timespans":[
+            "Object"
+         ]
+      },
+      "_requestId":null,
+      "_response":"[{\"id\":1,\"title\":\"test1\",\"contents\":\"test1233456\",\"user_id\":\"fujii0711\",\"user_name\":\"fujii0711\",\"published_at\":\"2022-07-31T04:53:05.000Z\",\"created_at\":\"2022-07-31T04:53:05.000Z\",\"updated_at\":\"2022-07-31T04:53:05.000Z\"}]",
+      "_responseType":"",
+      "_sent":true,
+      "_subscriptions":[
+         
+      ],
+      "_timedOut":false,
+      "_trackingName":"unknown",
+      "_url":"http://10.0.2.2:4000/articles?_limit=10",
+      "readyState":4,
+      "responseHeaders":{
+         "Connection":"keep-alive",
+         "Content-Length":"219",
+         "Content-Type":"application/json; charset=utf-8",
+         "Date":"Sun, 14 Aug 2022 07:16:13 GMT",
+         "ETag":"W/\"db-hG3ryP9xjKEDf+bDMakXVVZDtKo\"",
+         "Keep-Alive":"timeout=5",
+         "Set-Cookie":"sessionData=s%3A73W2yClKprGEVWQmppGJ7YSaimgLzp_G.Dhiev3rOZVEU06UbaVVn2FX38FjIdytTJZ%2Fi6QDnwJ0; Path=/; Expires=Sun, 14 Aug 2022 08:05:32 GMT; HttpOnly",
+         "X-Powered-By":"Express"
+      },
+      "responseURL":"http://10.0.2.2:4000/articles?_limit=10",
+      "status":200,
+      "timeout":30000,
+      "upload":{
+         
+      },
+      "withCredentials":true
+   },
+   "status":200,
+   "statusText":"undefined"
+}

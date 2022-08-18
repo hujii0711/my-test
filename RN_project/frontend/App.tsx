@@ -1,10 +1,13 @@
-import React from 'react';
-import {NavigationContainer} from '@react-navigation/native';
-import RootStack from './screens/RootStack';
+import * as React from 'react';
+import {Provider} from 'react-redux';
+import {legacy_createStore as createStore} from 'redux';
 import {QueryClient, QueryClientProvider} from 'react-query';
-import withReduxStore from './withReduxStore';
-import store from './redux';
+import {NavigationContainer} from '@react-navigation/native';
+//import {ReactQueryDevtools} from 'react-query/devtools';
+import RootStack from './screens/RootStack';
+import reducers from './redux';
 
+const store = createStore(reducers);
 const queryClient = new QueryClient();
 
 const App = () => {
@@ -13,12 +16,14 @@ const App = () => {
       QueryClientProvider는 리액트 쿼리에서 캐시를 관리할 때 사용하는 QueryClient 인스턴스를 자식 컴포넌트에서 사용할 수 있게 해준다.*/
   }
   return (
-    <QueryClientProvider client={queryClient}>
-      <NavigationContainer>
-        <RootStack />
-      </NavigationContainer>
-    </QueryClientProvider>
+    <Provider store={store}>
+      <QueryClientProvider client={queryClient}>
+        <NavigationContainer>
+          <RootStack />
+        </NavigationContainer>
+      </QueryClientProvider>
+    </Provider>
   );
 };
 
-export default withReduxStore(App, store);
+export default App;

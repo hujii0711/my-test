@@ -11,6 +11,7 @@ import {Article} from '../api/types';
 type WriteScreenRouteProp = RouteProp<RootStackParamList, 'Write'>;
 
 function WriteScreen() {
+  console.log('WriteScreen intro!!!');
   const {top} = useSafeAreaInsets();
 
   // useQueryClient Hook은 이전에 App 컴포넌트에서 QueryClientProvider에 넣었던 queryClient를 사용할 수 있게 해줍니다.
@@ -55,7 +56,7 @@ function WriteScreen() {
       // useInfiniteQuery를 사용할 때는 setQueryData 함수의 제네릭 부분에 <InfiniteData<Article[]>>을 넣어야 한다.
       // 그리고 {pageParams, pages} 객체를 반환해야 한다.
       queryClient.setQueryData<InfiniteData<Article[]>>('articles', data => {
-        console.log('setQueryData >>>> data=====', data);
+        //console.log('setQueryData >>>> data=====', data);
         if (!data) {
           return {
             //useInfiniteQuery의 반환값 data의 구조 분해된 객체키

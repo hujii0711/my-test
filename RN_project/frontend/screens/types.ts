@@ -1,19 +1,15 @@
 import {BottomTabNavigationProp} from '@react-navigation/bottom-tabs';
-import {
-  CompositeNavigationProp,
-  NavigatorScreenParams,
-  RouteProp,
-} from '@react-navigation/core';
+import {CompositeNavigationProp, NavigatorScreenParams, RouteProp} from '@react-navigation/core';
 import {NativeStackNavigationProp} from '@react-navigation/native-stack';
 
 /* MainTab */
 export type MainTabParamList = {
   Articles: undefined;
   UserMenu: undefined;
+  FileUpload: undefined;
 };
 
-export type MainTabNavigationScreenParams =
-  NavigatorScreenParams<MainTabParamList>;
+export type MainTabNavigationScreenParams = NavigatorScreenParams<MainTabParamList>;
 
 export type MainTabNavigationProp = CompositeNavigationProp<
   RootStackNavigationProp,
@@ -34,6 +30,6 @@ export type RootStackParamList = {
   Write: {
     articleId?: number;
   };
+  FileUpload: undefined;
 };
-export type RootStackNavigationProp =
-  NativeStackNavigationProp<RootStackParamList>;
+export type RootStackNavigationProp = NativeStackNavigationProp<RootStackParamList>;

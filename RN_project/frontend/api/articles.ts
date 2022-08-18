@@ -2,21 +2,28 @@ import client from './client';
 import {Article} from './types';
 
 interface articlesParam {
-  limit?: number;
   cursor?: number;
   prevCursor?: number;
 }
 
-export async function getArticles({limit = 10, cursor, prevCursor}: articlesParam) {
-  //limit = 10, cursor, prevCursor 초기값 undefined
-  //console.log('limit======', limit);
-  //console.log('cursor======', cursor);
-  //console.log('prevCursor======', prevCursor);
+export async function getArticles({cursor = 0, prevCursor = 0}: articlesParam) {
+  console.log('api > getArticles() > cursor======', cursor);
+  console.log('api > getArticles() > prevCursor======', prevCursor);
 
+  const offset = cursor + prevCursor;
   const response = await client.get<Article[]>('/articles', {
-    params: {_limit: limit, id_lt: cursor, id_gt: prevCursor},
+    params: {offset},
+    headers: {returnType: 'list'},
   });
   return response.data;
+
+  //try {
+  //} catch (err) {
+  //  console.log('interceptor.response를 통해 요청 응답코드가 200이 아니면 catch문을 타게됨!!!');
+  //  return [];
+  //return errorCallbackList(err);
+  //}
+
   //const data = response.data.resp;
 
   // const result = data.reduce((acc, cur) => {
@@ -36,7 +43,9 @@ export async function getArticles({limit = 10, cursor, prevCursor}: articlesPara
 }
 
 export async function getArticle(id: number) {
-  const response = await client.get<Article>(`/articles/${id}`);
+  const response = await client.get<Article>(`/articles/${id}`, {
+    headers: {returnType: 'map'},
+  });
   return response.data;
   // const data = response.data.resp;
   // const result = {
@@ -52,7 +61,8 @@ export async function getArticle(id: number) {
 }
 
 export async function writeArticle(params: {title: string; contents: string}) {
-  const response = await client.post<Article>('/articles', params);
+  const config = {headers: {returnType: 'map'}};
+  const response = await client.post<Article>('/articles', params, config);
   return response.data;
   // const data = response.data.resp;
   // const result = {
@@ -69,7 +79,8 @@ export async function writeArticle(params: {title: string; contents: string}) {
 
 export async function modifyArticle(params: {id: number; title: string; contents: string}) {
   const {id, title, contents} = params;
-  const response = await client.put<Article>(`/articles/${id}`, {title, contents});
+  const config = {headers: {returnType: 'map'}};
+  const response = await client.put<Article>(`/articles/${id}`, {title, contents}, config);
   return response.data;
   // const data = response.data;
   // const result = {
@@ -84,6 +95,7 @@ export async function modifyArticle(params: {id: number; title: string; contents
 }
 
 export async function deleteArticle(id: number) {
-  await client.delete<Article>(`/articles/${id}`);
+  const config = {headers: {returnType: 'map'}};
+  await client.delete<Article>(`/articles/${id}`, config);
   return null; // 응답 결과가 없기 때문에 null 반환
 }

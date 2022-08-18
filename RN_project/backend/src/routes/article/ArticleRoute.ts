@@ -17,7 +17,7 @@ router.use('/', (req: Request, res: Response, next: NextFunction) => {
 // /articles/:id | PUT | modifyArticle | 글수정
 // /articles/:id | DELETE | deleteArticle | 글삭제
 
-router.get('/articles', verifyToken, ArticleController.getArticles); //글목록
+router.get('/articles', ArticleController.getArticles); //글목록
 router.get('/articles/:id', verifyToken, ArticleController.getArticle); //글상세
 router.post('/articles', verifyToken, ArticleController.writeArticle); //글쓰기
 router.put('/articles/:id', verifyToken, ArticleController.modifyArticle); //글수정
@@ -26,3 +26,9 @@ router.get('/join', ArticleController.getJoinUser);
 router.post('/upload', upload.single('image'), ArticleController.fileUpload);
 
 export default router;
+
+// router.route('/sub') //한개 url로 REST 재활용 [ /test/sub ]
+//     .get(TestController.getListTests)
+//     .post(TestController.insertTests)
+//     .put(TestController.updateTests)
+//     .delete(TestController.deleteTests)

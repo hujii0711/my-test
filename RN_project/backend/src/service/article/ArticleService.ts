@@ -1,37 +1,31 @@
-import { Articles } from "../../models/articles";
-import { Users } from "../../models/users";
+import { Articles } from '../../models/articles';
+import { Users } from '../../models/users';
+import { Sequelize } from 'sequelize';
 
 export const getJoinUser = async () => {
-  console.log("ArticleService >>>> getJoinUser!!!");
+  console.log('ArticleService >>>> getJoinUser!!!');
   const data = await Articles.findAll({ include: Users, raw: true });
   return data;
 };
 
 export const getArticles = async (params: any) => {
-  const { _limit, id_lt, id_gt } = params;
+  const { offset } = params; ////{offset:0}
 
-  let _offset: number = 0;
-  if (id_lt && !id_gt) {
-    _offset = id_lt;
-  } else if (!id_lt && id_gt) {
-    _offset = id_gt;
-  }
-
-  // select * from A limit 1, 10 === select * from A limit 10 offset 1
+  // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
   const data = await Articles.findAll({
-    attributes: ["id", "title", "contents", "user_id", "user_name", "published_at", "created_at", "updated_at"],
-    order: [["id", "DESC"]],
-    //limit: Number(_limit),
-    //offset: Number(_offset),
+    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
+    order: [['id', 'DESC']],
+    limit: 10,
+    offset: Number(offset),
     raw: true,
   });
   return data;
 };
 
 export const getArticle = async (id: string) => {
-  console.log("ArticleService >>>> getArticle >>>> id====", id);
+  console.log('ArticleService >>>> getArticle >>>> id====', id);
   const data = await Articles.findOne({
-    attributes: ["id", "title", "contents", "user_id", "user_name", "published_at", "created_at", "updated_at"],
+    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
     where: {
       id,
     },
@@ -40,15 +34,15 @@ export const getArticle = async (id: string) => {
   return data;
 };
 
-export const writeArticle = async (params: { title: string; body: string }, userInfo: any) => {
-  console.log("ArticleService >>>> writeArticle >>>> params====", params);
-  console.log("ArticleService >>>> writeArticle >>>> userInfo====", userInfo);
-  const { title, body } = params;
+export const writeArticle = async (params: { title: string; contents: string }, userInfo: any) => {
+  console.log('ArticleService >>>> writeArticle >>>> params====', params);
+  console.log('ArticleService >>>> writeArticle >>>> userInfo====', userInfo);
+  const { title, contents } = params;
   const { user_id, user_name } = userInfo;
 
   const data = await Articles.create({
     title,
-    contents: body,
+    contents,
     user_id,
     user_name,
   });
@@ -57,8 +51,8 @@ export const writeArticle = async (params: { title: string; body: string }, user
 };
 
 export const modifyArticle = async (id: string, bodys: { title: string; contents: string }) => {
-  console.log("ArticleService >>>> modifyArticle >>>> id====", id);
-  console.log("ArticleService >>>> modifyArticle >>>> bodys====", bodys);
+  console.log('ArticleService >>>> modifyArticle >>>> id====', id);
+  console.log('ArticleService >>>> modifyArticle >>>> bodys====', bodys);
   const { title, contents } = bodys;
   const data = await Articles.update(
     {
@@ -70,7 +64,7 @@ export const modifyArticle = async (id: string, bodys: { title: string; contents
   // 정상 업데이트 된 경우 해당 id 값으로 조회된 게시글 정보를 리턴
   if (data[0] > 0) {
     const searchData = await Articles.findOne({
-      attributes: ["id", "title", "contents", "user_id", "user_name", "published_at", "created_at", "updated_at"],
+      attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
       where: {
         id,
       },
@@ -83,7 +77,7 @@ export const modifyArticle = async (id: string, bodys: { title: string; contents
 };
 
 export const deleteArticle = async (id: string) => {
-  console.log("ArticleService >>>> deleteArticle >>>> id====", id);
+  console.log('ArticleService >>>> deleteArticle >>>> id====', id);
   const data = await Articles.destroy({
     where: { id },
   });

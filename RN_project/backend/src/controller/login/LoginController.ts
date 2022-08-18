@@ -43,19 +43,18 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
         user,
         jwt: token, //로그인이후 UI에 넘겨줄 token
       };
-
+      console.log('로그인 이후 result=====', result);
       // 쿠키 생성
-      res.cookie('access_token', token, {
-        maxAge: env.max_age.token_cookie, //30일
-        httpOnly: true,
-      });
-
+      //res.cookie('access_token', token, {
+      //  maxAge: env.max_age.token_cookie, //30일
+      //  httpOnly: true,
+      //});
+      //res.clearCookie('access_token');
       res.json(result).status(httpStatus.OK);
 
       // 로그인 이후 생성되는 데이터
       //req.user
       //req.session
-      //req.cookies
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });

@@ -5,6 +5,7 @@ import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 
 import ArticlesScreen from './ArticlesScreen';
 import UserMenuScreen from './UserMenuScreen';
+import FileUploadScreen from './FileUploadScreen';
 
 const Tab = createBottomTabNavigator<MainTabParamList>();
 
@@ -19,9 +20,7 @@ function MainTab() {
         component={ArticlesScreen}
         options={{
           title: '게시글 목록',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="article" color={color} size={size} />
-          ),
+          tabBarIcon: ({color, size}) => <MaterialIcons name="article" color={color} size={size} />,
         }}
       />
       <Tab.Screen
@@ -29,9 +28,15 @@ function MainTab() {
         component={UserMenuScreen}
         options={{
           title: '사용자 메뉴',
-          tabBarIcon: ({color, size}) => (
-            <MaterialIcons name="person" color={color} size={size} />
-          ),
+          tabBarIcon: ({color, size}) => <MaterialIcons name="person" color={color} size={size} />,
+        }}
+      />
+      <Tab.Screen
+        name="FileUpload"
+        component={FileUploadScreen}
+        options={{
+          title: '파일업로드',
+          tabBarIcon: ({color, size}) => <MaterialIcons name="person" color={color} size={size} />,
         }}
       />
     </Tab.Navigator>

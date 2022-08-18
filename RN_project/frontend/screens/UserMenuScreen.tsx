@@ -5,18 +5,19 @@ import {useNavigation} from '@react-navigation/core';
 import MenuItem from '../components/MenuItem';
 import {RootStackNavigationProp} from './types';
 import {useSelector, useDispatch} from 'react-redux';
-import {setAction} from '../redux/users/reducers';
+import {userDelete} from '../redux/users/reducers';
 import {clearToken} from '../api/client';
 import authStorage from '../storages/authStorage';
 import {useMutation} from 'react-query';
 import {AuthError} from '../api/types';
 import useInform from '../hooks/useInform';
-import {User} from '../api/types';
 
 function UserMenuScreen() {
   const navigation = useNavigation<RootStackNavigationProp>();
   const inform = useInform();
-  const user = useSelector((state: {users: User}) => state.users);
+  const {users: user} = useSelector(({userReducer}) => ({
+    users: userReducer.users,
+  }));
   const dispatch = useDispatch();
 
   const onLogin = () => navigation.navigate('Login');
@@ -24,7 +25,7 @@ function UserMenuScreen() {
   const onRegister = () => navigation.navigate('Register');
 
   const onLogout = () => {
-    dispatch(setAction(null)); //setUser(null);
+    dispatch(userDelete());
     clearToken();
     authStorage.clear();
     logoutServer();
