@@ -17,7 +17,19 @@
       // 요청 실패 시 특정 작업 수행
       return Promise.reject(error);
     }
-  })  
+  })
+
+  axiosInstance.interceptors.request.use(
+    async (config: any) => {
+        const token = await AsyncStorage.getItem('token')
+        config.headers["Content-Type"] = "application/json; charset=utf-8"
+        config.headers["Authorization"] = `Bearer ${token}`
+        return config;
+    },
+    err => {
+        return Promise.reject(err)
+    }
+  )
 */
 import axios from 'axios';
 import {Alert, Platform, ToastAndroid} from 'react-native';
