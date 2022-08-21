@@ -36,7 +36,9 @@ function MainTab() {
         component={FileUploadScreen}
         options={{
           title: '파일업로드',
-          tabBarIcon: ({color, size}) => <MaterialIcons name="person" color={color} size={size} />,
+          tabBarIcon: ({color, size}) => (
+            <MaterialIcons name="add-circle" color={color} size={size} />
+          ),
         }}
       />
     </Tab.Navigator>

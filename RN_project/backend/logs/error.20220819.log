@@ -1,0 +1,80 @@
+2022-08-19 16:04:36 <error> (error.ts:35) 2f852c60-1f8d-11ed-8976-07ee1d390ada [
+  ApiError: 토큰이 갱신 도중 오류가 발생하였습니다.
+      at verifyToken (C:\_git\RN_project\backend\src\modules\token.ts:84:11)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:284:15
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:365:14)
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:376:14)
+      at Function.process_params (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:421:3)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:280:10) {
+    statusCode: 401,
+    isFatal: false
+  }
+]
+2022-08-19 16:39:51 <error> (error.ts:35) 1bd69f50-1f92-11ed-8976-07ee1d390ada [
+  ApiError: 토큰이 갱신 도중 오류가 발생하였습니다.
+      at verifyToken (C:\_git\RN_project\backend\src\modules\token.ts:84:11)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:284:15
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:365:14)
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:376:14)
+      at Function.process_params (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:421:3)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:280:10) {
+    statusCode: 401,
+    isFatal: false
+  }
+]
+2022-08-19 16:39:55 <error> (error.ts:35) 1e533810-1f92-11ed-8976-07ee1d390ada [
+  ApiError: 토큰이 갱신 도중 오류가 발생하였습니다.
+      at verifyToken (C:\_git\RN_project\backend\src\modules\token.ts:84:11)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:284:15
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:365:14)
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:376:14)
+      at Function.process_params (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:421:3)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:280:10) {
+    statusCode: 401,
+    isFatal: false
+  }
+]
+2022-08-19 16:39:57 <error> (error.ts:35) 1fd51d20-1f92-11ed-8976-07ee1d390ada [
+  ApiError: 토큰이 갱신 도중 오류가 발생하였습니다.
+      at verifyToken (C:\_git\RN_project\backend\src\modules\token.ts:84:11)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:284:15
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:365:14)
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:376:14)
+      at Function.process_params (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:421:3)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:280:10) {
+    statusCode: 401,
+    isFatal: false
+  }
+]
+2022-08-19 16:44:37 <error> (error.ts:35) c6be25f0-1f92-11ed-8976-07ee1d390ada [
+  ApiError: 토큰이 갱신 도중 오류가 발생하였습니다.
+      at verifyToken (C:\_git\RN_project\backend\src\modules\token.ts:84:11)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:144:13)
+      at Route.dispatch (C:\_git\RN_project\backend\node_modules\express\lib\router\route.js:114:3)
+      at Layer.handle [as handle_request] (C:\_git\RN_project\backend\node_modules\express\lib\router\layer.js:95:5)
+      at C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:284:15
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:365:14)
+      at param (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:376:14)
+      at Function.process_params (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:421:3)
+      at next (C:\_git\RN_project\backend\node_modules\express\lib\router\index.js:280:10) {
+    statusCode: 401,
+    isFatal: false
+  }
+]

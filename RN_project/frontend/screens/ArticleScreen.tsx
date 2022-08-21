@@ -13,7 +13,6 @@ import CommentItem from '../components/CommentItem';
 import CommentInput from '../components/CommentInput';
 import AskDialog from '../components/AskDialog';
 import CommentModal from '../components/CommentModal';
-import {RootState} from '../redux';
 
 // type ArticleScreenRouteProp = Readonly<{
 //   key: string;
