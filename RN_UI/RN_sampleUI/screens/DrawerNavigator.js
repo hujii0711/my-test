@@ -72,3 +72,126 @@ const DrawerNavigator = () => {
 };
 
 export default DrawerNavigator;
+
+// import * as React from 'react';
+// import { View, Text, Button } from 'react-native';
+// import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+// import {
+//   createDrawerNavigator,
+//   DrawerContentScrollView,
+//   DrawerItemList,
+//   DrawerItem,
+// } from '@react-navigation/drawer';
+
+// function Custom({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Feed Screen</Text>
+//       <Button
+//         title="Open drawer"
+//         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+//       />
+//       <Button
+//         title="Toggle drawer"
+//         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+//       />
+//     </View>
+//   );
+// }
+
+// function Feed({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Feed Screen</Text>
+//       <Button
+//         title="Open drawer"
+//         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
+//       />
+//       <Button
+//         title="Toggle drawer"
+//         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
+//       />
+//     </View>
+//   );
+// }
+
+// function Notifications() {
+//   return (
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Notifications Screen</Text>
+//     </View>
+//   );
+// }
+
+// function CustomDrawerContent(props) {
+//   return (
+//     <DrawerContentScrollView {...props}>
+//       <DrawerItemList {...props} />
+//       <DrawerItem
+//         style={{
+//           borderWidth: 1,
+//           borderRadius: 0,
+//           height: 100,
+//           borderColor: "black",
+//           backgroundColor: 'pink',
+//         }}
+//         label="Close drawer1"
+//         onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())}
+//       />
+//       <DrawerItem
+//         label="Toggle drawer"
+//         onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())}
+//       />
+//     </DrawerContentScrollView>
+//   );
+// }
+
+// const Drawer = createDrawerNavigator();
+
+// function MyDrawer() {
+//   return (
+//     <Drawer.Navigator
+//       useLegacyImplementation
+//       initialRouteName="Feed"
+//       //backBehavior​="order"
+//       drawerContent={(props) => <CustomDrawerContent {...props} />}
+//       screenOptions={{
+//         //drawerActiveBackgroundColor: 'red', //활성화된 항목의 배경색
+//         //drawerActiveTintColor: 'white', //비활성화된 항목의 텍스트 색상
+//         headerShown: true, // 기본값 true(숨김X)
+//         drawerStyle: {
+//           backgroundColor: '#c6cbef',
+//         },
+//       }}
+//     >
+//       <Drawer.Screen name="Custom" component={Custom}
+//       options={{
+//         title: "커스텀",
+//         drawerActiveBackgroundColor: 'red', //활성화된 항목의 배경색
+//         drawerActiveTintColor: 'white', //비활성화된 항목의 텍스트 색상
+//         //drawerInactiveBackgroundColor​ : "green",
+//         headerShown: true, // 기본값 true(숨김X)
+
+//         //drawerLabelStyle​ : {
+//         //}
+//       }}/>
+//       <Drawer.Screen name="Feed" component={Feed}
+//       options={{
+//         title: "테스트",
+//         drawerActiveBackgroundColor: 'red', //활성화된 항목의 배경색
+//         drawerActiveTintColor: 'white', //비활성화된 항목의 텍스트 색상
+//         //drawerInactiveBackgroundColor​ : "green",
+//         headerShown: true, // 기본값 true(숨김X)
+//       }}/>
+//       <Drawer.Screen name="Notifications" component={Notifications} />
+//     </Drawer.Navigator>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <MyDrawer />
+//     </NavigationContainer>
+//   );
+// }

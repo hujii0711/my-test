@@ -207,3 +207,130 @@ const styles = StyleSheet.create({
 });
 
 export default MainTab;
+
+// import * as React from 'react';
+// import { Button, View, Text, StyleSheet} from 'react-native';
+// import { NavigationContainer } from '@react-navigation/native';
+// import { createStackNavigator } from '@react-navigation/stack';
+// import { getHeaderTitle } from '@react-navigation/elements';
+
+// function HomeScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button
+//         title="Go to Profile"
+//         onPress={() => navigation.navigate('Profile')}
+//       />
+//     </View>
+//   );
+// }
+
+// function ProfileScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button
+//         title="Go to Notifications"
+//         onPress={() => navigation.navigate('Notifications')}
+//       />
+//       <Button title="Go back" onPress={() => navigation.goBack()} />
+//     </View>
+//   );
+// }
+
+// function NotificationsScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button
+//         title="Go to Settings"
+//         onPress={() => navigation.navigate('Settings')}
+//       />
+//       <Button title="Go back" onPress={() => navigation.goBack()} />
+//     </View>
+//   );
+// }
+
+// function SettingsScreen({ navigation }) {
+//   return (
+//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+//       <Button title="Go back" onPress={() => navigation.goBack()} />
+//     </View>
+//   );
+// }
+
+// function MyBackButton({ navigation, title}) {
+//   return (
+//     <View style={styles.container}>
+//       <View style={styles.top}>
+//         <Text>뒤로</Text>
+//       </View>
+//       <View style={styles.middle}>
+//         <Text>{title}</Text>
+//       </View>
+//       <View style={styles.bottom}>
+//         <Text>검색</Text>
+//       </View>
+//       <View style={styles.bottom}>
+//         <Text>가입</Text>
+//       </View>
+//     </View>
+//   );
+// }
+
+// const Stack = createStackNavigator();
+
+// function MyStack() {
+//   return (
+//     <Stack.Navigator>
+//       <Stack.Screen name="Home" component={HomeScreen}
+//         options={() => ({
+//         title: 'Awesome app',
+//         header: ({ navigation, route, options, back }) => {
+//           const title_ = getHeaderTitle(options, route.name);
+//           return <MyBackButton title = {title_}/>
+//         }
+//       })}
+//       />
+//       <Stack.Screen name="Notifications" component={NotificationsScreen} />
+//       <Stack.Screen name="Profile" component={ProfileScreen} />
+//       <Stack.Screen name="Settings" component={SettingsScreen} />
+//     </Stack.Navigator>
+//   );
+// }
+
+// export default function App() {
+//   return (
+//     <NavigationContainer>
+//       <MyStack />
+//     </NavigationContainer>
+//   );
+// }
+
+// const styles = StyleSheet.create({
+//   container: {
+//     flex: 1,
+//     flexDirection : "row",
+//     justifyContent: 'space-between', //가로 정렬
+//     backgroundColor: 'orange',
+//     padding: 5,
+//     margin: 5,
+//     height: 30,
+//   },
+//   top: {
+//     flex: 0.1,
+//     backgroundColor: 'grey',
+//     borderWidth: 1,
+//     height: 30,
+//   },
+//   middle: {
+//     flex: 0.5,
+//     backgroundColor: 'beige',
+//     borderWidth: 1,
+//     height: 30,
+//   },
+//   bottom: {
+//     flex: 0.1,
+//     height: 30,
+//     backgroundColor: 'pink',
+//     borderWidth: 1,
+//   },
+// });
