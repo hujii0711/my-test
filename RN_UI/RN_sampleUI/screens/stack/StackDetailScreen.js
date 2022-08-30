@@ -9,9 +9,9 @@ const StackDetailScreen = () => {
   // 동적으로 헤더 이름 변경하기
   useEffect(() => {
     navigation.setOptions({
-      title: `StackDetailScreen_${route.params.id}`,
+      title: `StackDetailScreen`,
     });
-  }, [navigation, route.params.id]);
+  }, [navigation]);
 
   return (
     <View style={styles.container}>

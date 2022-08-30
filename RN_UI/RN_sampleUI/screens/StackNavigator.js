@@ -1,89 +1,91 @@
-import React from 'react';
-import {createStackNavigator} from '@react-navigation/stack';
-import StackDetail from './stack/StackDetailScreen';
-import MainTab from './tab/MainTab';
-import {Text, TouchableOpacity, View} from 'react-native';
-import {useNavigation} from '@react-navigation/native';
+//----------------------------------------------------------------------------------------------------- exmple1
+// import React from 'react';
+// import {createStackNavigator} from '@react-navigation/stack';
+// import StackDetail from './stack/StackDetailScreen';
+// import MainTab from './tab/MainTab';
+// import {Text, TouchableOpacity, View} from 'react-native';
+// import {useNavigation} from '@react-navigation/native';
 
-/*
-Stack.Screen 옵션
-options={{
-  title: '홈',
-  // Header 블록에 대한 스타일
-  headerStyle: {
-    backgroundColor: '#29b6f6',
-  },
-  // Header의 텍스트, 버튼들 색상
-  headerTintColor: '#ffffff',
-  // 타이틀 텍스트의 스타일
-  headerTitleStyle: {
-    fontWeight: 'bold',
-    fontSize: 20,
-  },
-  headerLeft: ({onPress}) => (
-      <TouchableOpacity onPress={onPress}>
-          <Text>Left</Text>
-      </TouchableOpacity>
-  ),
-  headerTitle: ({children}) => (
-      <View>
-          <Text>{children}</Text>
-      </View>
-  ),
-  headerRight: () => (
-      <View>
-          <Text>Right</Text>
-      </View>
-  ),
-  headerBackVisible : true // 뒤로가기 버튼 보일지 여부
-}}
+// /*
+// Stack.Screen 옵션
+// options={{
+//   title: '홈',
+//   // Header 블록에 대한 스타일
+//   headerStyle: {
+//     backgroundColor: '#29b6f6',
+//   },
+//   // Header의 텍스트, 버튼들 색상
+//   headerTintColor: '#ffffff',
+//   // 타이틀 텍스트의 스타일
+//   headerTitleStyle: {
+//     fontWeight: 'bold',
+//     fontSize: 20,
+//   },
+//   headerLeft: ({onPress}) => (
+//       <TouchableOpacity onPress={onPress}>
+//           <Text>Left</Text>
+//       </TouchableOpacity>
+//   ),
+//   headerTitle: ({children}) => (
+//       <View>
+//           <Text>{children}</Text>
+//       </View>
+//   ),
+//   headerRight: () => (
+//       <View>
+//           <Text>Right</Text>
+//       </View>
+//   ),
+//   headerBackVisible : true // 뒤로가기 버튼 보일지 여부
+// }}
 
-*/
-const Stack = createStackNavigator();
+// */
+// const Stack = createStackNavigator();
 
-const StackNavigator = () => {
-  const navigation = useNavigation();
-  const HeaderLeftClick = () => {
-    console.log('뒤로!!');
-    navigation.goBack();
-  };
+// const StackNavigator = () => {
+//   const navigation = useNavigation();
+//   const HeaderLeftClick = () => {
+//     console.log('뒤로!!');
+//     navigation.goBack();
+//   };
 
-  return (
-    <Stack.Navigator>
-      {/* 헤더 뒤로가기는 메뉴 이동이 있을 때 활성화되고 최초 screen인 경우에도 비활성화 된다. */}
-      <Stack.Screen
-        name="MainTab"
-        component={MainTab}
-        options={{
-          title: 'MAIN',
-        }}
-      />
-      <Stack.Screen
-        name="StackDetail"
-        component={StackDetail}
-        options={{
-          headerShown: true,
-          headerBackVisible: true, // 뒤로가기 버튼 보일지 여부
-          headerStyle: {
-            backgroundColor: '#29b6f6',
-          },
-          headerTintColor: '#ffffff', // Header의 텍스트, 버튼들 색상
-          headerTitleStyle: {
-            fontSize: 13, // 타이틀 텍스트의 스타일
-          },
-          headerLeft: () => (
-            <TouchableOpacity onPress={HeaderLeftClick}>
-              <Text>Left</Text>
-            </TouchableOpacity>
-          ),
-        }}
-      />
-    </Stack.Navigator>
-  );
-};
+//   return (
+//     <Stack.Navigator>
+//       {/* 헤더 뒤로가기는 메뉴 이동이 있을 때 활성화되고 최초 screen인 경우에도 비활성화 된다. */}
+//       <Stack.Screen
+//         name="MainTab"
+//         component={MainTab}
+//         options={{
+//           title: 'MAIN',
+//         }}
+//       />
+//       <Stack.Screen
+//         name="StackDetail"
+//         component={StackDetail}
+//         options={{
+//           headerShown: true,
+//           headerBackVisible: true, // 뒤로가기 버튼 보일지 여부
+//           headerStyle: {
+//             backgroundColor: '#29b6f6',
+//           },
+//           headerTintColor: '#ffffff', // Header의 텍스트, 버튼들 색상
+//           headerTitleStyle: {
+//             fontSize: 13, // 타이틀 텍스트의 스타일
+//           },
+//           headerLeft: () => (
+//             <TouchableOpacity onPress={HeaderLeftClick}>
+//               <Text>Left</Text>
+//             </TouchableOpacity>
+//           ),
+//         }}
+//       />
+//     </Stack.Navigator>
+//   );
+// };
 
-export {StackNavigator};
+// export {StackNavigator};
 
+//----------------------------------------------------------------------------------------------------- exmple2
 // import * as React from 'react';
 // import { View, Button, Text, Animated, StyleSheet, StatusBar } from 'react-native';
 // import {useSafeAreaInsets, SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
@@ -233,3 +235,172 @@ export {StackNavigator};
 //     </NavigationContainer>
 //   );
 // }
+
+//----------------------------------------------------------------------------------------------------- exmple3
+import * as React from 'react';
+import {
+  View,
+  Button,
+  Text,
+  Animated,
+  StyleSheet,
+  StatusBar,
+} from 'react-native';
+import {useNavigation, DrawerActions} from '@react-navigation/native';
+import {
+  useSafeAreaInsets,
+  SafeAreaProvider,
+  SafeAreaView,
+} from 'react-native-safe-area-context';
+import {createStackNavigator} from '@react-navigation/stack';
+import {getHeaderTitle} from '@react-navigation/elements';
+import Icon from 'react-native-vector-icons/MaterialIcons';
+import MainTab from './tab/MainTab';
+import StackDetail from './stack/StackDetailScreen';
+
+function Home({navigation}) {
+  return (
+    <>
+      <StatusBar backgroundColor="#de1f75" />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Home screen</Text>
+        <Button
+          title="Go to Profile"
+          onPress={() => navigation.navigate('Profile')}
+        />
+      </View>
+    </>
+  );
+}
+
+function Profile({navigation}) {
+  const {top} = useSafeAreaInsets();
+  return (
+    <>
+      <StatusBar backgroundColor="#de1f75" />
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center'}}>
+        <Text>Profile screen</Text>
+        <Button title="Go back" onPress={() => navigation.goBack()} />
+      </View>
+    </>
+  );
+}
+
+const forFade = ({current, next}) => {
+  const opacity = Animated.add(
+    current.progress,
+    next ? next.progress : 0,
+  ).interpolate({
+    inputRange: [0, 1, 2],
+    outputRange: [0, 1, 0],
+  });
+
+  return {
+    leftButtonStyle: {opacity},
+    rightButtonStyle: {opacity},
+    titleStyle: {opacity},
+    backgroundStyle: {opacity},
+  };
+};
+
+function MyBackButton({leftButton, title}) {
+  const {top} = useSafeAreaInsets();
+  const navigation = useNavigation();
+
+  console.log('MyBackButton >>>> leftButton=====', leftButton);
+  React.useEffect(() => {
+    console.log('MyBackButton!!!!!!');
+  }, [title]);
+
+  return (
+    <View style={[styles.container, {top: top}]}>
+      <View>
+        <Icon
+          name={leftButton ? 'chevron-left' : 'apps'}
+          size={24}
+          color="#ffffff"
+          onPress={
+            leftButton
+              ? leftButton
+              : () => {
+                  console.log('onPress');
+                  navigation.dispatch(DrawerActions.openDrawer());
+                }
+          }
+        />
+      </View>
+      <View style={styles.middle}>
+        <Text style={{fontSize: 20, color: '#ffffff', fontWeight: 'bold'}}>
+          {title}
+        </Text>
+      </View>
+      <View>
+        <Icon
+          name="search"
+          size={24}
+          color="#ffffff"
+          onPress={() => {
+            alert('검색창 열기');
+          }}
+        />
+      </View>
+      <View>
+        <Icon
+          name="login"
+          size={24}
+          color="#ffffff"
+          onPress={() => {
+            alert('로그인 열기');
+          }}
+        />
+      </View>
+    </View>
+  );
+}
+
+const Stack = createStackNavigator();
+
+function StackNavigator() {
+  return (
+    <SafeAreaProvider>
+      <SafeAreaView edges={['bottom']} style={{flex: 1}}>
+        <Stack.Navigator
+          initialRouteName="MainTab"
+          screenOptions={{
+            headerStyleInterpolator: forFade,
+            header: ({navigation, route, options, back}) => {
+              const title_ = getHeaderTitle(options, route.name);
+              console.log('title_======', title_);
+              return (
+                <MyBackButton
+                  leftButton={back ? navigation.goBack : undefined}
+                  title={title_}
+                />
+              );
+            },
+          }}>
+          <Stack.Screen name="MainTab" component={MainTab} />
+          <Stack.Screen name="Home" component={Home} />
+          <Stack.Screen name="Profile" component={Profile} />
+          <Stack.Screen name="StackDetail" component={StackDetail} />
+        </Stack.Navigator>
+      </SafeAreaView>
+    </SafeAreaProvider>
+  );
+}
+
+const styles = StyleSheet.create({
+  container: {
+    flexDirection: 'row',
+    justifyContent: 'space-between', //가로 정렬
+    backgroundColor: '#de1f75',
+    color: '#ffffff',
+    padding: 10,
+  },
+  middle: {
+    flex: 0.7,
+    height: 30,
+  },
+});
+
+export {StackNavigator};
