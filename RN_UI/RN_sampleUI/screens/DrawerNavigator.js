@@ -74,73 +74,102 @@ const DrawerNavigator = () => {
 export default DrawerNavigator;
 
 // import * as React from 'react';
-// import { View, Text, Button } from 'react-native';
-// import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+// import { View, Text } from 'react-native';
+// import { NavigationContainer, useNavigation } from '@react-navigation/native';
+// import { MaterialIcons } from '@expo/vector-icons';
+
 // import {
 //   createDrawerNavigator,
+//   useDrawerStatus,
 //   DrawerContentScrollView,
 //   DrawerItemList,
-//   DrawerItem,
+//   DrawerItem
 // } from '@react-navigation/drawer';
 
-// function Custom({ navigation }) {
+// function Feed() {
 //   return (
 //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
 //       <Text>Feed Screen</Text>
-//       <Button
-//         title="Open drawer"
-//         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-//       />
-//       <Button
-//         title="Toggle drawer"
-//         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-//       />
+//       <MaterialIcons name='article' size={24} color='#333'></MaterialIcons>
+//       <MaterialIcons name='chat' size={24} color='#333'></MaterialIcons>
+//       <MaterialIcons name='close' size={24} color='#333'></MaterialIcons>
 //     </View>
 //   );
 // }
 
-// function Feed({ navigation }) {
+// function Article() {
 //   return (
 //     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Feed Screen</Text>
-//       <Button
-//         title="Open drawer"
-//         onPress={() => navigation.dispatch(DrawerActions.openDrawer())}
-//       />
-//       <Button
-//         title="Toggle drawer"
-//         onPress={() => navigation.dispatch(DrawerActions.toggleDrawer())}
-//       />
+//       <Text>Article Screen</Text>
 //     </View>
 //   );
 // }
 
-// function Notifications() {
-//   return (
-//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-//       <Text>Notifications Screen</Text>
-//     </View>
-//   );
-// }
+// // component DrawerItem요소는 다음 prop을 허용합니다.
+// // - label(필수): 항목의 레이블 텍스트입니다. 문자열이거나 반응 요소를 반환하는 함수일 수 있습니다.
+// //  예 를 들어 ({ focused, color }) => <Text style={{ color }}>{focused ? 'Focused text' : 'Unfocused text'}</Text>
+// // - icon: 항목에 대해 표시할 아이콘입니다. 반응 요소를 반환하는 함수를 허용합니다.
+// //  예 를 들어 ({ focused, color, size }) => <Icon color={color} size={size} name={focused ? 'heart' : 'heart-outline'} />
+// // - focused: drawer 항목을 활성으로 강조 표시할지 여부를 나타내는 부울입니다.
+// // - onPress(필수): 누를 때 실행할 기능입니다.
+// // - activeTintColor: 항목이 활성 상태일 때 아이콘 및 레이블의 색상입니다.
+// // - inactiveTintColor: 항목이 비활성 상태일 때 아이콘 및 레이블의 색상입니다.
+// // - activeBackgroundColor: 활성화된 항목의 배경색입니다.
+// // - inactiveBackgroundColor: 비활성 상태일 때 항목의 배경색입니다.
+// // - labelStyle: 레이블의 스타일 개체입니다 Text.
+// // - style: 래퍼의 스타일 개체입니다 View.
+
+// // <DrawerItem
+// //   label="Help"
+// //   onPress={() => alert('Link to help')}
+// //   icon={({ focused, color, size }) => <MaterialIcons color={color} size={size} name="person-add"/>}
+// //   style = {{ //drawerItemStyle 유사
+// //     backgroundColor: "gray",
+// //     position: 'fixed',
+// //     bottom: 0,
+// //     left: 0,
+// //     width: 240
+// //   }}
+// //   labelStyle = {{ //drawerLabelStyle 유사
+// //     borderWidth: 3,
+// //     color: "black",
+// //     fontWeight: "bold",
+// //     borderColor: "orange",
+// //     backgroundColor: "pink"
+// //   }}
+// // />
 
 // function CustomDrawerContent(props) {
+
+//   const navigation = useNavigation();
+//   const isDrawerOpen = useDrawerStatus() === 'open';
+
 //   return (
 //     <DrawerContentScrollView {...props}>
 //       <DrawerItemList {...props} />
 //       <DrawerItem
-//         style={{
-//           borderWidth: 1,
-//           borderRadius: 0,
-//           height: 100,
-//           borderColor: "black",
-//           backgroundColor: 'pink',
+//         label=""
+//         onPress={() => navigation.navigate('Article')}
+//         icon={({ focused, color, size }) => <MaterialIcons color={color} size={size} name="person-add"/>}
+//         style = {{ //drawerItemStyle 유사
+//           position: 'fixed',
+//           bottom: 0,
+//           left: 200,
+//           width: 240,
+//           float: "right"
 //         }}
-//         label="Close drawer1"
-//         onPress={() => props.navigation.dispatch(DrawerActions.closeDrawer())}
 //       />
 //       <DrawerItem
-//         label="Toggle drawer"
-//         onPress={() => props.navigation.dispatch(DrawerActions.toggleDrawer())}
+//         label=""
+//         onPress={() => {isDrawerOpen ? props.navigation.closeDrawer() : props.navigation.openDrawer()}}
+//         icon={({ focused, color, size }) => <MaterialIcons color={color} size={size} name="close"/>}
+//         style = {{ //drawerItemStyle 유사
+//           position: 'fixed',
+//           bottom: 0,
+//           left: 240,
+//           width: 230,
+//           float: "right"
+//         }}
 //       />
 //     </DrawerContentScrollView>
 //   );
@@ -152,38 +181,65 @@ export default DrawerNavigator;
 //   return (
 //     <Drawer.Navigator
 //       useLegacyImplementation
-//       initialRouteName="Feed"
-//       //backBehavior​="order"
-//       drawerContent={(props) => <CustomDrawerContent {...props} />}
 //       screenOptions={{
-//         //drawerActiveBackgroundColor: 'red', //활성화된 항목의 배경색
-//         //drawerActiveTintColor: 'white', //비활성화된 항목의 텍스트 색상
-//         headerShown: true, // 기본값 true(숨김X)
+//         headerShown : false,
 //         drawerStyle: {
-//           backgroundColor: '#c6cbef',
+//           flex: 1,
+//           borderWidth: 3,
+//           backgroundColor: 'red',
+//           borderColor: "purple",
+//           width: 300,
 //         },
+//         drawerContentStyle : { //screenOptions.drawerContent 있을시 없어짐
+//           flex: 0.5,
+//           borderWidth: 3,
+//           borderColor: "gray",
+//           backgroundColor: "blue"
+//         },
+//         drawerItemStyle : {
+//           borderWidth: 3,
+//           borderColor: "green",
+//           backgroundColor: "yellow"
+//         },
+//         drawerLabelStyle : {
+//           borderWidth: 3,
+//           color: "black",
+//           forntWeight: "bold",
+//           borderColor: "orange",
+//           backgroundColor: "pink"
+//         },
+//         //overlayColor: "black"
 //       }}
+//       drawerContent={(props) => <CustomDrawerContent {...props} />}
 //     >
-//       <Drawer.Screen name="Custom" component={Custom}
-//       options={{
-//         title: "커스텀",
-//         drawerActiveBackgroundColor: 'red', //활성화된 항목의 배경색
-//         drawerActiveTintColor: 'white', //비활성화된 항목의 텍스트 색상
-//         //drawerInactiveBackgroundColor​ : "green",
-//         headerShown: true, // 기본값 true(숨김X)
-
-//         //drawerLabelStyle​ : {
-//         //}
-//       }}/>
-//       <Drawer.Screen name="Feed" component={Feed}
-//       options={{
-//         title: "테스트",
-//         drawerActiveBackgroundColor: 'red', //활성화된 항목의 배경색
-//         drawerActiveTintColor: 'white', //비활성화된 항목의 텍스트 색상
-//         //drawerInactiveBackgroundColor​ : "green",
-//         headerShown: true, // 기본값 true(숨김X)
-//       }}/>
-//       <Drawer.Screen name="Notifications" component={Notifications} />
+//       <Drawer.Screen
+//         name="Feed"
+//         component={Feed}
+//         options= {{
+//             title: "AAA",
+//             drawerLabel : "BBB",
+//             drawerContentStyle : { //screenOptions.drawerContent 있을시 없어짐
+//               flex: 0.5,
+//               borderWidth: 3,
+//               borderColor: "gray",
+//               backgroundColor: "blue"
+//             },
+//             drawerItemStyle : {
+//               borderWidth: 1,
+//               height: 150,
+//               borderColor: "black",
+//               backgroundColor: "yellow"
+//             },
+//             drawerLabelStyle : {
+//               borderWidth: 3,
+//               color: "black",
+//               forntWeight: "bold",
+//               borderColor: "orange",
+//               backgroundColor: "pink"
+//             },
+//           }}
+//         />
+//       <Drawer.Screen name="Article" component={Article} />
 //     </Drawer.Navigator>
 //   );
 // }

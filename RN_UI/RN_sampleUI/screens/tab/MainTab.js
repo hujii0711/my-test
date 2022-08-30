@@ -209,128 +209,147 @@ const styles = StyleSheet.create({
 export default MainTab;
 
 // import * as React from 'react';
-// import { Button, View, Text, StyleSheet} from 'react-native';
+// import { Text, View, Animated, TouchableOpacity } from 'react-native';
 // import { NavigationContainer } from '@react-navigation/native';
-// import { createStackNavigator } from '@react-navigation/stack';
-// import { getHeaderTitle } from '@react-navigation/elements';
+// import { createMaterialTopTabNavigator } from '@react-navigation/material-top-tabs';
 
-// function HomeScreen({ navigation }) {
+// function FeedScreen() {
 //   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button
-//         title="Go to Profile"
-//         onPress={() => navigation.navigate('Profile')}
-//       />
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Feed!</Text>
 //     </View>
 //   );
 // }
 
-// function ProfileScreen({ navigation }) {
+// function NotificationsScreen() {
 //   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button
-//         title="Go to Notifications"
-//         onPress={() => navigation.navigate('Notifications')}
-//       />
-//       <Button title="Go back" onPress={() => navigation.goBack()} />
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Notifications!</Text>
 //     </View>
 //   );
 // }
 
-// function NotificationsScreen({ navigation }) {
+// function ProfileScreen() {
 //   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button
-//         title="Go to Settings"
-//         onPress={() => navigation.navigate('Settings')}
-//       />
-//       <Button title="Go back" onPress={() => navigation.goBack()} />
+//     <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+//       <Text>Profile!</Text>
 //     </View>
 //   );
 // }
 
-// function SettingsScreen({ navigation }) {
+// function MyTabBar({ state, descriptors, navigation, position }) {
 //   return (
-//     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-//       <Button title="Go back" onPress={() => navigation.goBack()} />
-//     </View>
-//   );
-// }
+//     <View style={{ flexDirection: 'row' }}>
+//       {state.routes.map((route, index) => {
+//         const { options } = descriptors[route.key];
+//         const label =
+//           options.tabBarLabel !== undefined
+//             ? options.tabBarLabel
+//             : options.title !== undefined
+//             ? options.title
+//             : route.name;
 
-// function MyBackButton({ navigation, title}) {
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.top}>
-//         <Text>뒤로</Text>
-//       </View>
-//       <View style={styles.middle}>
-//         <Text>{title}</Text>
-//       </View>
-//       <View style={styles.bottom}>
-//         <Text>검색</Text>
-//       </View>
-//       <View style={styles.bottom}>
-//         <Text>가입</Text>
-//       </View>
-//     </View>
-//   );
-// }
+//         const isFocused = state.index === index;
 
-// const Stack = createStackNavigator();
+//         const onPress = () => {
+//           const event = navigation.emit({
+//             type: 'tabPress',
+//             target: route.key,
+//             canPreventDefault: true,
+//           });
 
-// function MyStack() {
-//   return (
-//     <Stack.Navigator>
-//       <Stack.Screen name="Home" component={HomeScreen}
-//         options={() => ({
-//         title: 'Awesome app',
-//         header: ({ navigation, route, options, back }) => {
-//           const title_ = getHeaderTitle(options, route.name);
-//           return <MyBackButton title = {title_}/>
-//         }
+//           if (!isFocused && !event.defaultPrevented) {
+//             // The `merge: true` option makes sure that the params inside the tab screen are preserved
+//             navigation.navigate({ name: route.name, merge: true });
+//           }
+//         };
+
+//         const onLongPress = () => {
+//           navigation.emit({
+//             type: 'tabLongPress',
+//             target: route.key,
+//           });
+//         };
+
+//         const inputRange = state.routes.map((_, i) => i);
+//         const opacity = position.interpolate({
+//           inputRange,
+//           outputRange: inputRange.map(i => (i === index ? 1 : 0)),
+//         });
+
+//         return (
+//           <TouchableOpacity
+//             accessibilityRole="button"
+//             accessibilityState={isFocused ? { selected: true } : {}}
+//             accessibilityLabel={options.tabBarAccessibilityLabel}
+//             testID={options.tabBarTestID}
+//             onPress={onPress}
+//             onLongPress={onLongPress}
+//             style={{ flex: 1 }}
+//           >
+//             <Animated.Text style={{ opacity }}>
+//               {label}
+//             </Animated.Text>
+//           </TouchableOpacity>
+//         );
 //       })}
-//       />
-//       <Stack.Screen name="Notifications" component={NotificationsScreen} />
-//       <Stack.Screen name="Profile" component={ProfileScreen} />
-//       <Stack.Screen name="Settings" component={SettingsScreen} />
-//     </Stack.Navigator>
+//     </View>
 //   );
 // }
 
+// const Tab = createMaterialTopTabNavigator();
+
+// function MyTabs() {
+//   return (
+//     <Tab.Navigator
+//       initialRouteName="Feed"
+//       //style​: 탭 보기 컨테이너에 적용할 스타일입니다.
+//       //tabBar​: 탭 표시줄로 표시할 React 요소를 반환하는 함수입니다.
+//       //backBehavior: 네비게이터에서 되돌아가는 방법을 제어합니다.
+//       //sceneContainerStyle​:각 화면을 래핑하는 뷰에 적용할 스타일입니다. 이것을 전달하여 오버플로 클리핑과 같은 일부 기본 스타일을 재정의할 수 있습니다.
+//       //tabBar={(props) => <MyTabBar {...props} />}
+//       screenOptions={{
+//         tabBarActiveTintColor: '#e91e63', //활성 탭의 아이콘 및 레이블 색상입니다.
+//         tabBarLabelStyle: { fontSize: 12 },
+//         tabBarStyle: { backgroundColor: 'powderblue' },
+//         //tabBarLabel​: 탭 표시줄에 표시되는 탭의 제목 문자열 또는 탭 표시줄 { focused: boolean, color: string }에 표시할 React.Node를 반환하는 함수.
+//         //tabBarShowLabel: 탭 레이블이 표시되어야 하는지 여부입니다.
+//         //tabBarShowIcon: 탭 아이콘이 표시되어야 하는지 여부입니다.
+//         //tabBarIcon​: 주어진 함수 { focused: boolean, color: string }는 탭 표시줄에 표시할 React.Node를 반환합니다.
+//         //tabBarInactiveTintColor​: "white", //비활성 탭의 아이콘 및 레이블 색상입니다.
+//         //tabBarPosition: 탭 보기에서 탭 표시줄의 위치입니다.
+
+//         //tabBarIndicatorStyle​:탭 표시줄 표시기의 스타일 개체입니다.
+//         //tabBarIndicatorContainerStyle​:탭 표시줄 표시기를 포함하는 보기의 스타일 개체입니다.
+//         //tabBarIconStyle​: 탭 아이콘 컨테이너의 스타일 개체입니다.
+//         //tabBarLabelStyle​: 탭 레이블의 스타일 개체입니다.
+//         //tabBarItemStyle​: 개별 탭 항목에 대한 스타일 개체입니다.
+//         //tabBarContentContainerStyle​:탭 항목을 포함하는 보기의 스타일 개체입니다.
+//         //tabBarStyle​: 탭 표시줄의 스타일 개체입니다.
+//       }}
+//     >
+//       <Tab.Screen
+//         name="Feed"
+//         component={FeedScreen}
+//         options={{ tabBarLabel: 'Home' }}
+//       />
+//       <Tab.Screen
+//         name="Notifications"
+//         component={NotificationsScreen}
+//         options={{ tabBarLabel: 'Updates' }}
+//       />
+//       <Tab.Screen
+//         name="Profile"
+//         component={ProfileScreen}
+//         options={{ tabBarLabel: 'Profile' }}
+//       />
+//     </Tab.Navigator>
+//   );
+// }
 // export default function App() {
 //   return (
 //     <NavigationContainer>
-//       <MyStack />
+//       <MyTabs />
 //     </NavigationContainer>
 //   );
 // }
-
-// const styles = StyleSheet.create({
-//   container: {
-//     flex: 1,
-//     flexDirection : "row",
-//     justifyContent: 'space-between', //가로 정렬
-//     backgroundColor: 'orange',
-//     padding: 5,
-//     margin: 5,
-//     height: 30,
-//   },
-//   top: {
-//     flex: 0.1,
-//     backgroundColor: 'grey',
-//     borderWidth: 1,
-//     height: 30,
-//   },
-//   middle: {
-//     flex: 0.5,
-//     backgroundColor: 'beige',
-//     borderWidth: 1,
-//     height: 30,
-//   },
-//   bottom: {
-//     flex: 0.1,
-//     height: 30,
-//     backgroundColor: 'pink',
-//     borderWidth: 1,
-//   },
-// });
