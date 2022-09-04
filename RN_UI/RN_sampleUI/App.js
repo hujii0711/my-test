@@ -1,15 +1,28 @@
-import React from 'react';
-
+import * as React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
-import DrawerNavigator from './screens/DrawerNavigator';
+import {SafeAreaProvider} from 'react-native-safe-area-context';
+import {createDrawerNavigator} from '@react-navigation/drawer';
+import RootNavigator from './screens/RootNavigator';
+import DrawerItems from './screens/DrawerItems';
 
-function App() {
-  console.log('App start!');
+const Drawer = createDrawerNavigator();
+
+const App = () => {
   return (
-    <NavigationContainer>
-      <DrawerNavigator />
-    </NavigationContainer>
+    <SafeAreaProvider>
+      <React.Fragment>
+        <NavigationContainer>
+          <Drawer.Navigator drawerContent={() => <DrawerItems />}>
+            <Drawer.Screen
+              name="Home"
+              component={RootNavigator}
+              options={{headerShown: false}}
+            />
+          </Drawer.Navigator>
+        </NavigationContainer>
+      </React.Fragment>
+    </SafeAreaProvider>
   );
-}
+};
 
 export default App;

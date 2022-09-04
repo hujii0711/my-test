@@ -320,7 +320,8 @@ def isNewArchitectureEnabled() {
 
 /* 미티리얼 아이콘 사용을 위해 추가(20220828)*/
 project.ext.vectoricons = [
-    iconFontNames: ['MaterialIcons.ttf']
+    //iconFontNames: ['MaterialIcons.ttf']
+    iconFontNames: ['MaterialCommunityIcons.ttf'] // react-native-paper 이용시 설정
 ]
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
