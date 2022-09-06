@@ -1,7 +1,6 @@
 import * as React from 'react';
 import {Appbar} from 'react-native-paper';
 import {getHeaderTitle} from '@react-navigation/elements';
-import ScreenList from './ScreenList';
 import {createStackNavigator} from '@react-navigation/stack';
 import MainTab from './tabs/MainTab';
 

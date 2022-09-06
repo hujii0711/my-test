@@ -23,13 +23,13 @@ const ArticleList = ({navigation}) => {
 
   return (
     <SafeAreaView style={styles.container}>
-      <FAB
+      {/* <FAB
         icon="clipboard-edit-outline"
         label="새 글 작성 하기"
         style={styles.fab}
         onPress={() => {}}
         visible={true}
-      />
+      /> */}
       <ScrollView style={styles.scrollView}>
         <List.AccordionGroup>
           {/* <List.Subheader>게시글 목록</List.Subheader> */}
@@ -165,6 +165,11 @@ const ArticleList = ({navigation}) => {
           </List.Accordion>
         </List.AccordionGroup>
       </ScrollView>
+      <FAB
+        icon="plus"
+        style={styles.fab}
+        onPress={() => console.log('Pressed')}
+      />
     </SafeAreaView>
   );
 };
@@ -307,8 +312,10 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   fab: {
-    margin: 5,
-    backgroundColor: '#ffc858',
+    position: 'absolute',
+    margin: 16,
+    right: 0,
+    bottom: 0,
   },
   badge_row: {
     flexDirection: 'row',

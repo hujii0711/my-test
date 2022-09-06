@@ -1,5 +1,5 @@
 import React from 'react';
-import {createMaterialTopTabNavigator} from '@react-navigation/material-top-tabs';
+import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import {Text, View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 
@@ -8,34 +8,24 @@ import ArticleList from './ArticleList';
 import ArticleView from './ArticleView';
 import ArticleWrite from './ArticleWrite';
 import Login from './Login';
+import Chatting from './Chatting';
 
-const Tab = createMaterialTopTabNavigator();
-
-function ChattingScreen() {
-  return (
-    <View>
-      <Text>ChattingScreen</Text>
-    </View>
-  );
-}
+const Tab = createMaterialBottomTabNavigator();
 
 function MainTab() {
   return (
     <Tab.Navigator
+      labeled={false}
       initialRouteName="DashBoard"
-      screenOptions={{
-        tabBarIndicatorStyle: {
-          backgroundColor: '#303132', //활성화 탭 하단 구분선
-        },
-        tabBarActiveTintColor: '#303132', //활성화 아이콘 색상
-        tabBarStyle: {height: 50},
-      }}>
+      activeColor="#ffffff"
+      inactiveColor="#c1c1c1"
+      barStyle={{backgroundColor: '#008C8C'}}>
       <Tab.Screen
         name="DashBoard"
         component={Dashboard}
         options={{
           //tabBarLabel: '대시보드_1',
-          tabBarShowLabel: false,
+          //tabBarShowLabel: false,
           tabBarIcon: ({color}) => (
             <Icon name="dashboard" color={color} size={24} />
           ),
@@ -46,7 +36,6 @@ function MainTab() {
         component={ArticleList}
         options={{
           //tabBarLabel: '게시글_2',
-          tabBarShowLabel: false,
           tabBarIcon: ({color}) => (
             <Icon name="article" color={color} size={24} />
           ),
@@ -57,7 +46,6 @@ function MainTab() {
         component={ArticleView}
         options={{
           //tabBarLabel: '나의 게시글_3',
-          tabBarShowLabel: false,
           tabBarIcon: ({color}) => (
             <Icon name="assignment-ind" color={color} size={24} />
           ),
@@ -68,7 +56,6 @@ function MainTab() {
         component={ArticleWrite}
         options={{
           //tabBarLabel: '사진 올리기_4',
-          tabBarShowLabel: false,
           tabBarIcon: ({color}) => (
             <Icon name="add-a-photo" color={color} size={24} />
           ),
@@ -79,7 +66,6 @@ function MainTab() {
         component={Login}
         options={{
           //tabBarLabel: '업로드 사진 뷰어_5',
-          tabBarShowLabel: false,
           tabBarIcon: ({color}) => (
             <Icon name="photo" color={color} size={24} />
           ),
@@ -87,10 +73,9 @@ function MainTab() {
       />
       <Tab.Screen
         name="Chatting"
-        component={ChattingScreen}
+        component={Chatting}
         options={{
           //tabBarLabel: '채팅_6',
-          tabBarShowLabel: false,
           tabBarIcon: ({color}) => <Icon name="chat" color={color} size={24} />,
         }}
       />
