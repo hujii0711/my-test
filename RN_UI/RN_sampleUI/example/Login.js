@@ -49,7 +49,7 @@ const MyComponent = () => {
 
         <View style={{flex: 1, flexDirection: 'row', marginVertical: 20}}>
           <Switch value={isSwitchOn} onValueChange={onToggleSwitch} />
-          <Text style={{fontSize: 12, marginLeft: 10, color: 'red'}}>
+          <Text style={{fontSize: 12, marginLeft: 10, color: '#000000'}}>
             자동 로그인
           </Text>
         </View>
@@ -71,14 +71,27 @@ const MyComponent = () => {
             flexDirection: 'row',
             justifyContent: 'center',
             marginTop: 10,
+            marginHorizontal: 30,
           }}>
-          <Button mode="text" labelStyle={{color: '#000000', fontSize: 12}}>
+          <Button
+            mode="outlined"
+            labelStyle={{color: '#000000', fontSize: 12}}
+            style={{borderRadius: 0, borderRightColor: '#ffffff'}}
+            contentStyle={{margin: -5}}>
             아이디 찾기
           </Button>
-          <Button mode="text" labelStyle={{color: '#000000', fontSize: 12}}>
+          <Button
+            mode="outlined"
+            labelStyle={{color: '#000000', fontSize: 12}}
+            style={{borderRadius: 0, borderRightColor: '#ffffff'}}
+            contentStyle={{margin: -5}}>
             비밀번호 찾기
           </Button>
-          <Button mode="text" labelStyle={{color: '#000000', fontSize: 12}}>
+          <Button
+            mode="outlined"
+            labelStyle={{color: '#000000', fontSize: 12}}
+            style={{borderRadius: 0}}
+            contentStyle={{margin: -5}}>
             회원가입
           </Button>
         </View>

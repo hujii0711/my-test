@@ -1,24 +1,31 @@
 import React from 'react';
-import {Text, View, StyleSheet, Button} from 'react-native';
+import {Share, View, Button} from 'react-native';
 
 const ShareScreen = () => {
+  const onShare = async () => {
+    try {
+      const result = await Share.share({
+        message:
+          'React Native | A framework for building native apps using React',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error) {
+      alert(error.message);
+    }
+  };
   return (
-    <View style={styles.container}>
-      <Text>ShareScreen</Text>
-      <Button
-        title="Go to MOVE"
-        onPress={() => console.log('MOVE')} //drawer 네비 이므로 push 사용 불가
-      />
+    <View style={{marginTop: 50}}>
+      <Button onPress={onShare} title="Share" />
     </View>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default ShareScreen;
