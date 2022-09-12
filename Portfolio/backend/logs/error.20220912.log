@@ -1,0 +1,176 @@
+2022-09-12 15:46:32 <error> (error.ts:35) a305e940-3266-11ed-b078-e13ab4b3060c [
+  ApiError: 이미 로그인 상태입니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:27:53 <error> (error.ts:35) 6a0ee050-326c-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:28:23 <error> (error.ts:35) 7c0766b0-326c-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:35:37 <error> (error.ts:35) 7e51fd80-326d-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:37:13 <error> (error.ts:35) b7b240d0-326d-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:38:38 <error> (error.ts:35) eaa8f9c0-326d-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:38:44 <error> (error.ts:35) ee22b730-326d-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:39:10 <error> (error.ts:35) fdc45540-326d-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:41:24 <error> (error.ts:35) 4d7136d0-326e-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:45:08 <error> (error.ts:35) d2ee5720-326e-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-09-12 16:45:21 <error> (error.ts:35) dac63e90-326e-11ed-b078-e13ab4b3060c [
+  ApiError: 로그인한 이후에 이용하시기 바랍니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
