@@ -184,3 +184,5 @@
 2022-09-12 17:36:08 <info> (App.ts:27) undefined '✅Success Create users Table'
 2022-09-12 18:18:18 <info> (App.ts:25) undefined '✅DB connection success.'
 2022-09-12 18:18:18 <info> (App.ts:27) undefined '✅Success Create users Table'
+2022-09-12 22:12:40 <info> (App.ts:25) undefined '✅DB connection success.'
+2022-09-12 22:12:40 <info> (App.ts:27) undefined '✅Success Create users Table'
