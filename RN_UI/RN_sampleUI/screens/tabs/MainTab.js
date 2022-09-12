@@ -1,87 +1,87 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {Text, View, StyleSheet, SafeAreaView, ScrollView} from 'react-native';
+import {StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
-
+import Color from '../../commons/Color';
 import Dashboard from './Dashboard';
-import ArticleList from './ArticleList';
-import ArticleView from './ArticleView';
-import ArticleWrite from './ArticleWrite';
-import Login from './Login';
+import Faq from './Faq';
+import ArticleList from './articles/ArticleList';
+import ArticleWrite from './articles/ArticleWrite';
+import ImageViewer from './ImageViewer';
 import Chatting from './Chatting';
 
 const Tab = createMaterialBottomTabNavigator();
 
-function MainTab() {
+const MainTab = () => {
   return (
     <Tab.Navigator
-      labeled={false}
+      //labeled={false} //라벨 보일지 여부
       initialRouteName="DashBoard"
-      activeColor="#ffffff"
-      inactiveColor="#c1c1c1"
-      barStyle={{backgroundColor: '#008C8C'}}>
+      activeColor={Color.active_icon}
+      inactiveColor={Color.unactive_icon}
+      barStyle={{backgroundColor: Color.white}}>
       <Tab.Screen
         name="DashBoard"
         component={Dashboard}
         options={{
-          //tabBarLabel: '대시보드_1',
-          //tabBarShowLabel: false,
-          tabBarIcon: ({color}) => (
-            <Icon name="dashboard" color={color} size={24} />
-          ),
+          tabBarIcon: ({color}) => <Icon name="web" color={color} size={24} />,
+          tabBarLabel: '대시보드',
         }}
       />
       <Tab.Screen
         name="Board"
         component={ArticleList}
         options={{
-          //tabBarLabel: '게시글_2',
           tabBarIcon: ({color}) => (
-            <Icon name="article" color={color} size={24} />
+            <Icon name="view-headline" color={color} size={24} />
           ),
+          tabBarLabel: '게시글',
         }}
       />
       <Tab.Screen
-        name="MyBoard"
-        component={ArticleView}
-        options={{
-          //tabBarLabel: '나의 게시글_3',
-          tabBarIcon: ({color}) => (
-            <Icon name="assignment-ind" color={color} size={24} />
-          ),
-        }}
-      />
-      <Tab.Screen
-        name="ImageUpload"
+        name="Email"
         component={ArticleWrite}
         options={{
-          //tabBarLabel: '사진 올리기_4',
           tabBarIcon: ({color}) => (
-            <Icon name="add-a-photo" color={color} size={24} />
+            <Icon name="outgoing-mail" color={color} size={24} />
           ),
+          tabBarLabel: '이메일 작성',
         }}
       />
       <Tab.Screen
         name="ImageViewer"
-        component={Login}
+        component={ImageViewer}
         options={{
-          //tabBarLabel: '업로드 사진 뷰어_5',
           tabBarIcon: ({color}) => (
             <Icon name="photo" color={color} size={24} />
           ),
+          tabBarLabel: '이미지 뷰어',
         }}
       />
       <Tab.Screen
         name="Chatting"
         component={Chatting}
         options={{
-          //tabBarLabel: '채팅_6',
           tabBarIcon: ({color}) => <Icon name="chat" color={color} size={24} />,
+          tabBarLabel: '채팅',
+        }}
+      />
+      <Tab.Screen
+        name="FAQ"
+        component={Faq}
+        options={{
+          tabBarIcon: ({color}) => (
+            <Icon name="wb-incandescent" color={color} size={24} />
+          ),
+          tabBarLabel: 'FAQ',
         }}
       />
     </Tab.Navigator>
   );
-}
+};
+
+export default MainTab;
+
 //1) display 속성은 기본적으로 flex이며, 다른값은 none 밖에 없다.
 //2) flexDirection 속성의 기본값은 웹에서는 row이지만, 리액트 네이티브에서는 column이다.
 //Web default)
@@ -97,53 +97,6 @@ function MainTab() {
 /* justify-content: space-between; */
 /* justify-content: space-around; */
 /* justify-content: space-evenly; */
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'space-between', //세로 정렬
-    backgroundColor: 'orange',
-    padding: 20,
-    margin: 10,
-  },
-  top: {
-    flex: 0.3,
-    //height: 50,
-    //width: 50,
-    backgroundColor: 'grey',
-    borderWidth: 2,
-    borderRadius: 20,
-    //borderTopLeftRadius: 20,
-    //borderTopRightRadius: 20,
-  },
-  middle: {
-    flex: 0.3,
-    backgroundColor: 'beige',
-    borderWidth: 2,
-    borderRadius: 20,
-  },
-  bottom: {
-    flex: 0.3,
-    backgroundColor: 'pink',
-    borderWidth: 2,
-    borderRadius: 20,
-    //borderBottomLeftRadius: 20,
-    //borderBottomRightRadius: 20,
-  },
-  container2: {
-    flex: 1,
-    backgroundColor: 'orange',
-  },
-  scrollView: {
-    backgroundColor: 'pink',
-    marginHorizontal: 20,
-  },
-  text: {
-    fontSize: 42,
-  },
-});
-
-export default MainTab;
 
 // import * as React from 'react';
 // import { Text, View, Animated, TouchableOpacity } from 'react-native';

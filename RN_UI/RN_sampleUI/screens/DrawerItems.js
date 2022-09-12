@@ -13,7 +13,7 @@ import {
 
 const DrawerItems = props => {
   const navigation = useNavigation();
-  console.log('navigation-----', navigation);
+
   const DrawerMenuData = [
     {
       label: '1. 공유',
@@ -100,7 +100,7 @@ const DrawerItems = props => {
             <IconButton
               icon="account-key"
               size={24}
-              onPress={() => console.log('Pressed')}
+              onPress={() => navigation.navigate('Login')}
             />
             <IconButton
               icon="account-lock-open"

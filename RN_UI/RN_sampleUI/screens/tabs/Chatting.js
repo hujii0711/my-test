@@ -1,86 +1,132 @@
 import * as React from 'react';
 import {Avatar, IconButton, Button} from 'react-native-paper';
-import {View, Text, ScrollView, TextInput} from 'react-native';
+import {
+  View,
+  Text,
+  KeyboardAvoidingView,
+  TextInput,
+  Platform,
+} from 'react-native';
+import Color from '../../commons/Color';
+import ScreenWrapper from '../../commons/ScreenWapper';
 
-const MyComponent = () => {
-  const [text, onChangeText] = React.useState('Useless Text');
+const MyView = () => {
   return (
-    <>
-      <ScrollView style={{flex: 1, backgroundColor: '#65abda'}}>
-        <Button
-          icon="calendar-month"
-          mode="text"
-          onPress={() => console.log('Pressed')}
-          style={{backgroundColor: '#dddddd', borderRadius: 0}}
-          textColor="#4d4d4d">
-          2022-09-06(수)
-        </Button>
-        {/* 
-        Array(10).fill().map((arr, i) => {
-          return (
-            <View
-              style={{
-                flexDirection: "row-reverse",
-                alignItems: 'center',
-                marginVertical:10,
-                marginHorizontal:5,
-                marginLeft:70
-              }}>
-              <Avatar.Text size={24} label="나"/>
-              <View style={{ marginRight: 10, flex:1}}>
-                <Text style={{backgroundColor: "#f9d900", color:"#000000", padding: 10, borderRadius:10}}>
-                  `{i}_____이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.`
-                </Text>
-              </View>
-            </View>
-          )
-        })
-      */}
-        <View
+    <View
+      style={{
+        flexDirection: 'row-reverse',
+        marginVertical: 10,
+      }}>
+      <View style={{marginRight: 10, flex: 1}}>
+        <Text
           style={{
-            flexDirection: 'row-reverse',
-            alignItems: 'center',
-            marginVertical: 10,
-            marginRight: 70,
+            backgroundColor: Color.black,
+            color: Color.white,
+            padding: 10,
+            borderRadius: 10,
+            flex: 1,
           }}>
-          <Avatar.Text size={24} label="나" />
-          <View style={{marginRight: 10, flex: 1}}>
-            <Text
-              style={{
-                backgroundColor: '#f9d900',
-                color: '#000000',
-                padding: 10,
-                borderRadius: 10,
-              }}>
-              이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이
-              배치됩니다. 이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과
-              같이 배치됩니다.
-            </Text>
-          </View>
-        </View>
-        <View
+          이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이
+          배치됩니다. 이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과
+          같이 배치됩니다.
+        </Text>
+      </View>
+      <Text
+        style={{
+          color: Color.text,
+          padding: 10,
+          fontSize: 10,
+          alignSelf: 'flex-end',
+        }}>
+        09:16
+      </Text>
+    </View>
+  );
+};
+
+const YouView = () => {
+  return (
+    <View
+      style={{
+        flexDirection: 'row',
+        marginVertical: 10,
+      }}>
+      <Avatar.Text
+        size={30}
+        label="너"
+        style={{
+          marginLeft: 10,
+          alignSelf: 'stretch',
+          marginTop: 5,
+          backgroundColor: Color.blue3,
+          color: Color.white,
+        }}
+      />
+      <View style={{marginLeft: 10, flex: 1}}>
+        <Text
           style={{
-            flexDirection: 'row',
-            alignItems: 'center',
-            marginVertical: 10,
-            marginRight: 70,
+            backgroundColor: Color.white,
+            color: Color.text,
+            padding: 10,
+            borderColor: Color.divider,
+            borderWidth: 1,
+            borderRadius: 10,
+            flex: 1,
           }}>
-          <Avatar.Text size={24} label="AI" />
-          <View style={{marginLeft: 10, flex: 1}}>
-            <Text
-              style={{
-                backgroundColor: '#ffffff',
-                padding: 10,
-                borderRadius: 10,
-              }}>
-              이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이
-              배치됩니다. 이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과
-              같이 배치됩니다.
-            </Text>
-          </View>
-        </View>
-      </ScrollView>
-      <View style={{flexDirection: 'row', flex: 0.09, alignItems: 'flex-end'}}>
+          이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이
+          배치됩니다. 이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과
+          같이 배치됩니다.
+        </Text>
+      </View>
+      <Text
+        style={{
+          color: Color.text,
+          padding: 10,
+          fontSize: 10,
+          alignSelf: 'flex-end',
+        }}>
+        09:16
+      </Text>
+    </View>
+  );
+};
+
+const Today = () => {
+  return (
+    <Button
+      icon="calendar-month"
+      mode="text"
+      onPress={() => console.log('Pressed')}
+      style={{backgroundColor: Color.pink1, borderRadius: 0}}
+      color={Color.white}>
+      2022-09-06(수)
+    </Button>
+  );
+};
+
+const Chatting = () => {
+  const [text, onChangeText] = React.useState('대화 내용을 입력하세요.');
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.select({ios: 'padding'})}
+      style={{flex: 1}}
+      keyboardVerticalOffset={80}>
+      <ScreenWrapper
+        style={{
+          backgroundColor: Color.faint_red,
+          margin: 10,
+        }}>
+        <Today />
+        <MyView />
+        <YouView />
+        <MyView />
+        <YouView />
+        <MyView />
+        <YouView />
+        <MyView />
+        <YouView />
+      </ScreenWrapper>
+      {/* <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
         <TextInput
           style={{
             margin: 12,
@@ -102,9 +148,9 @@ const MyComponent = () => {
             flex: 1,
           }}
         />
-      </View>
-    </>
+      </View> */}
+    </KeyboardAvoidingView>
   );
 };
 
-export default MyComponent;
+export default Chatting;
