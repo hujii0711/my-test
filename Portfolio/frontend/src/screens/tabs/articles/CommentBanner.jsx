@@ -3,7 +3,7 @@ import {Badge, IconButton} from 'react-native-paper';
 import {View, StyleSheet, Text} from 'react-native';
 import Color from '../../../commons/style/Color';
 
-const CommentWrite = ({refRBSheet}) => {
+const CommentBanner = ({refRBSheet}) => {
   return (
     <View style={styles.block}>
       <Text style={styles.text}>댓글</Text>
@@ -49,4 +49,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentWrite;
+export default CommentBanner;
