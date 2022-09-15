@@ -6,65 +6,61 @@ import {
   Button,
   Provider,
   TextInput,
+  IconButton,
 } from 'react-native-paper';
 import {View} from 'react-native';
 
-const MyComponent = () => {
-  const [visible, setVisible] = React.useState(false);
-  const [text, setText] = React.useState('');
+const CommentModifyModal = ({visible, initialMessage, onSubmit, onClose}) => {
+  const [message, setMessage] = React.useState('');
 
-  const showModal = () => setVisible(true);
-  const hideModal = () => setVisible(false);
-  const containerStyle = {backgroundColor: 'white', padding: 20};
+  // initialMessage가 변경되면 message 변경
+  React.useEffect(() => {
+    setMessage(initialMessage ?? '');
+  }, [initialMessage]);
 
   return (
     <Provider>
       <Portal>
         <Modal
           visible={visible}
-          onDismiss={hideModal}
-          contentContainerStyle={containerStyle}>
-          <Text>댓글 추가</Text>
+          onDismiss={onClose}
+          contentContainerStyle={{
+            backgroundColor: '#F2F5F9',
+            borderRadius: 20,
+            padding: 20,
+            flex: 0.5,
+          }}>
+          <Text>댓글 수정</Text>
           <TextInput
-            label="Email"
-            value={text}
-            onChangeText={text => setText(text)}
+            mode="outlined"
+            selectionColor="#c2c2c2" //텍스트 select 되었을 때
+            activeOutlineColor="#919191" //editmode
+            outlineColor="#919191" // input border
+            style={{backgroundColor: '#ffffff', fontSize: 12}}
+            value={message}
+            onChangeText={setMessage}
+            onSubmitEditing={() => {
+              onSubmit(message);
+              setMessage('');
+            }}
+            multiline
           />
           <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
-            <Button
-              mode="text"
-              icon="archive-cog-outline"
+            <IconButton
+              icon="sticker-check-outline"
+              size={20}
               onPress={() => console.log('Pressed')}
-              color="#3a3a3a"
-              style={{
-                borderRadius: 5,
-                padding: 0,
-                marginHorizontal: 5,
-              }}
-              labelStyle={{fontWeight: 'bold', fontSize: 12}}>
-              수정
-            </Button>
-            <Button
-              mode="text"
-              icon="archive-cog-outline"
+            />
+            <IconButton
+              icon="cancel"
+              size={20}
               onPress={() => console.log('Pressed')}
-              color="#3a3a3a"
-              style={{
-                borderRadius: 5,
-                padding: 0,
-                marginHorizontal: 5,
-              }}
-              labelStyle={{fontWeight: 'bold', fontSize: 12}}>
-              삭제
-            </Button>
+            />
           </View>
         </Modal>
       </Portal>
-      <Button style={{marginTop: 30}} onPress={showModal}>
-        Show
-      </Button>
     </Provider>
   );
 };
 
-export default MyComponent;
+export default CommentModifyModal;

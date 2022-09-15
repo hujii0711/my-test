@@ -33,9 +33,7 @@ function AskDialog({
               style={({pressed}) => pressed && styles.pressed}
               hitSlop={8}
               onPress={onClose}>
-              <Text style={[styles.buttonText, styles.cancelText]}>
-                {cancelText}
-              </Text>
+              <Text style={[styles.buttonText, styles.cancelText]}>{cancelText}</Text>
             </Pressable>
             <View style={styles.separator} />
             <Pressable

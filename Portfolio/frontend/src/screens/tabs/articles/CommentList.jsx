@@ -2,8 +2,10 @@ import React from 'react';
 import {IconButton, TextInput} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import ArticleItem from './ArticleItem';
+import {useMutation, useQueryClient} from 'react-query';
+import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
+import {writeComment} from '../../../api/comments';
 
 const DATA = [
   {
@@ -38,7 +40,23 @@ const DATA = [
   },
 ];
 
-const CommentList = ({refRBSheet}) => {
+const CommentList = ({CommentListData, refRBSheet, onRemove, onModify}) => {
+  const [message, setMessage] = useState('');
+  const queryClient = useQueryClient();
+
+  const {mutate} = useMutation(writeComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData(['comments', articleId], comments =>
+        (comments || []).concat(comment),
+      );
+    },
+  });
+  const onSubmit = message => {
+    mutate({
+      articleId,
+      message,
+    });
+  };
   return (
     <RBSheet
       ref={refRBSheet}
@@ -75,13 +93,16 @@ const CommentList = ({refRBSheet}) => {
           onPress={() => refRBSheet.current.close()}
         />
         <FlatList
-          data={DATA}
+          data={CommentListData}
           renderItem={({item}) => (
-            <ArticleItem
+            <CommentItem
               id={item.id}
-              title={item.title}
-              published_at={item.published_at}
-              user_name={item.user_name}
+              message={item.message}
+              publishedAt={item.created_at}
+              username={item.user_id}
+              onRemove={onRemove}
+              onModify={onModify}
+              //isMyComment={item.user_id === currentUser?.user_id}
             />
           )}
           keyExtractor={item => item.id}
@@ -97,7 +118,12 @@ const CommentList = ({refRBSheet}) => {
                 fontSize: 12,
                 margin: 10,
               }}
-              onChangeText={text => console.log('!11111')}
+              value={message}
+              onChangeText={setMessage}
+              onSubmitEditing={() => {
+                onSubmit(message);
+                setMessage('');
+              }}
             />
           }
           ItemSeparatorComponent={() => <View style={styles.separator} />}

@@ -8,6 +8,7 @@ import CommentBanner from './CommentBanner';
 import CommentList from './CommentList';
 import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
+import {deleteComment, getComments, modifyComment} from '../../../api/comments';
 
 // const DATA = {
 //   id: '1',
@@ -18,13 +19,21 @@ import CustomDialog from '../../../commons/utils/CustomDialog';
 //   user_name: '김형준',
 // };
 
-const ArticleViewItems = ({title, contents, publishedAt, username}) => {
+const ArticleViewItems = ({
+  title,
+  contents,
+  publishedAt,
+  username,
+  isMyArticle,
+}) => {
+  const isMe = isMyArticle;
   return (
     <View style={styles.block}>
       <Text style={styles.title}>{title}</Text>
       <Text style={styles.small_text}>
         {username} | {publishedAt} | 조회수: 12
       </Text>
+      {isMe ?? <Text>나의 게시글</Text>}
       <View style={styles.separator} />
       <Text style={styles.content}>{contents}</Text>
     </View>
@@ -35,8 +44,12 @@ const ArticleView = () => {
   //const {id, title, contents, published_at, user_name} = DATA;
   // 1-1: 기본 변수
   const refRBSheet = useRef();
-  const {params} = useRoute();
-  const {id: idf} = params;
+  // const useRoute = {"params" : {"id": "111"}};
+  // const {id} = useRoute.params;
+  //const {params} = useRoute();
+  //const {id: idf} = params;
+  const {id: articleId} = useRoute().params;
+  console.log('articleId=====', articleId);
 
   // 1-2: 전역 상태
   const {users: currentUser} = useSelector(({userReducer}) => ({
@@ -45,11 +58,15 @@ const ArticleView = () => {
   const isMyArticle = currentUser?.user_id === user_id;
 
   // 1-3: 게시판 페이지
-  const articleQuery = useQuery(['article', id], () => getArticle(id));
+  const articleQuery = useQuery(['article', articleId], () =>
+    getArticle(articleId),
+  );
   const {title, contents, published_at, user_id, user_name} = articleQuery.data;
 
   // 1-4: 댓글 목록
-  const commentsQuery = useQuery(['comments', id], () => getComments(id));
+  const commentsQuery = useQuery(['comments', articleId], () =>
+    getComments(articleId),
+  );
   const selectedComment = commentsQuery.data?.find(
     comment => comment.id === selectedCommentId,
   );
@@ -58,7 +75,7 @@ const ArticleView = () => {
   const queryClient = useQueryClient();
   const {mutate: modify} = useMutation(modifyComment, {
     onSuccess: comment => {
-      queryClient.setQueryData(['comments', id], comments =>
+      queryClient.setQueryData(['comments', articleId], comments =>
         comments
           ? comments.map(c => (c.id === selectedCommentId ? comment : c))
           : [],
@@ -139,21 +156,26 @@ const ArticleView = () => {
         publishedAt={published_at}
         username={user_name}
         id={id}
+        isMyArticle={isMyArticle}
       />
-      <CommentBanner refRBSheet={refRBSheet} />
+      <CommentBanner refRBSheet={refRBSheet} commentCount={0} />
       <CommentList
+        CommentListData={commentsQuery.data}
         refRBSheet={refRBSheet}
         onRemove={onRemove}
         onModify={onModify}
       />
       <CommentModifyModal
         visible={commentModifyModalVisible}
-        initialMessage="message"
+        initialMessage={selectedComment?.message}
         onClose={onCancelModify}
         onSubmit={onSubmitModify}
       />
       <CustomDialog
         visible={askDialogVisible}
+        title="댓글 삭제"
+        message="댓글을 삭제하시겠습니까?"
+        confirmText="삭제"
         onConfirm={onConfirmRemove}
         onClose={onCancelRemove}
       />
