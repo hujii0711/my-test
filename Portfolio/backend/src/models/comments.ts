@@ -1,12 +1,14 @@
-import { Sequelize, DataTypes, Model, Association } from "sequelize";
-import { Users } from "./users";
-import { CommentsAttributes } from "./types";
+import { Sequelize, DataTypes, Model, Association } from 'sequelize';
+import { Users } from './users';
+import { CommentsAttributes } from './types';
 
 export class Comments extends Model<CommentsAttributes> implements CommentsAttributes {
   public readonly id!: number;
   public message!: string;
   public user_id!: string;
   public articles_ref!: number;
+  public liked!: number;
+  public unliked!: number;
   public created_at!: Date;
   public updated_at!: Date;
 
@@ -31,6 +33,14 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
           type: DataTypes.INTEGER,
           allowNull: false,
         },
+        liked: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        unliked: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
         created_at: {
           type: DataTypes.DATE,
           allowNull: false,
@@ -44,8 +54,8 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
       },
       {
         sequelize,
-        modelName: "Comments",
-        tableName: "Comments",
+        modelName: 'Comments',
+        tableName: 'Comments',
       },
     );
     return Comments;

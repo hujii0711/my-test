@@ -1,6 +1,6 @@
-import { Sequelize, DataTypes, Model, Association } from "sequelize";
-import { Users } from "./users";
-import { ArticlesAttributes } from "./types";
+import { Sequelize, DataTypes, Model, Association } from 'sequelize';
+import { Users } from './users';
+import { ArticlesAttributes } from './types';
 
 export class Articles extends Model<ArticlesAttributes> implements ArticlesAttributes {
   public readonly id!: number;
@@ -8,7 +8,10 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
   public contents!: string;
   public user_id!: string;
   public user_name!: string;
-  public published_at!: Date;
+  public lookup!: number;
+  public liked!: number;
+  public unliked!: number;
+  public comment_cnt!: number;
   public created_at!: Date;
   public updated_at!: Date;
 
@@ -37,10 +40,21 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
           type: DataTypes.STRING(30),
           allowNull: false,
         },
-        published_at: {
-          type: DataTypes.DATE,
+        lookup: {
+          type: DataTypes.INTEGER,
           allowNull: false,
-          defaultValue: DataTypes.NOW,
+        },
+        liked: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        unliked: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+        },
+        comment_cnt: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
         },
         created_at: {
           type: DataTypes.DATE,
@@ -55,8 +69,8 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
       },
       {
         sequelize,
-        modelName: "Articles",
-        tableName: "articles",
+        modelName: 'Articles',
+        tableName: 'articles',
       },
     );
     return Articles;

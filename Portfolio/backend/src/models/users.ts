@@ -1,6 +1,6 @@
-import { Sequelize, DataTypes, Model, Association } from "sequelize";
+import { Sequelize, DataTypes, Model, Association } from 'sequelize';
 //import { Articles } from "./articles";
-import { UsersAttributes } from "./types";
+import { UsersAttributes } from './types';
 
 export class Users extends Model<UsersAttributes> implements UsersAttributes {
   public readonly id!: number;
@@ -8,9 +8,6 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
   public user_name!: string;
   public email!: string;
   public password!: string;
-  public provider!: string;
-  public confirmed!: boolean;
-  public blocked!: string;
   public jwt!: string;
   public created_at!: Date;
   public updated_at!: Date;
@@ -40,20 +37,6 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
           type: DataTypes.STRING(100),
           allowNull: false,
         },
-        provider: {
-          type: DataTypes.STRING(30),
-          allowNull: false,
-          defaultValue: "local",
-        },
-        confirmed: {
-          type: DataTypes.BOOLEAN,
-          allowNull: false,
-          defaultValue: true,
-        },
-        blocked: {
-          type: DataTypes.STRING(30),
-          allowNull: true,
-        },
         jwt: {
           type: DataTypes.STRING(500),
           allowNull: false,
@@ -71,8 +54,8 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
       },
       {
         sequelize, //static init 메서드의 매개변수와 연결되는 옵션으로 db.sequelize 객체를 넣어야 합니다.
-        modelName: "Users",
-        tableName: "users", //실제 MySQL에 생성되는 테이블 이름
+        modelName: 'Users',
+        tableName: 'users', //실제 MySQL에 생성되는 테이블 이름
       },
       //sequelize, //static init 메서드의 매개변수와 연결되는 옵션으로 db.sequelize 객체를 넣어야 합니다.
       //timestamps: false, //이 속성 값이 true면 시퀄라이즈는 createdAt과 updatedAt 컬럼을 추가합니다.

@@ -4,9 +4,6 @@ export interface UsersAttributes {
   user_name?: string;
   email?: string;
   password?: string;
-  provider?: string;
-  confirmed?: boolean;
-  blocked?: string;
   jwt?: string;
   created_at?: Date;
   updated_at?: Date;
@@ -17,6 +14,8 @@ export interface CommentsAttributes {
   message: string;
   user_id?: string;
   articles_ref?: number;
+  liked?: number;
+  unliked?: number;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -27,7 +26,10 @@ export interface ArticlesAttributes {
   contents?: string;
   user_id?: string;
   user_name?: string;
-  published_at?: Date;
+  lookup?: number;
+  liked?: number;
+  unliked?: number;
+  comment_cnt?: number;
   created_at?: Date;
   updated_at?: Date;
 }
