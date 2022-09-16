@@ -6,22 +6,16 @@ import {
   StyleSheet,
   StatusBar,
   RefreshControl,
+  Animated,
 } from 'react-native';
 import ArticleItem from './ArticleItem';
 import {FAB, ActivityIndicator} from 'react-native-paper';
 import {useInfiniteQuery} from 'react-query';
-import {getArticles} from '../../../api/articles';
+import {selectListArticle} from '../../../api/articles';
 import Color from '../../../commons/style/Color';
 
 const ArticleList = ({navigation}) => {
-  console.log('ArticlesScreen intro!!!');
-  const dataLoadCnt = useRef(0);
-  const renderCount = useRef(0);
-
-  useEffect(() => {
-    renderCount.current = renderCount.current + 1; //ref는 리렌더링을 발생시키지 않는다.
-    console.log('렌더링 횟수====', renderCount.current);
-  });
+  const animation = useRef(new Animated.Value(1)).current;
 
   const {
     data,
@@ -30,13 +24,13 @@ const ArticleList = ({navigation}) => {
     fetchNextPage,
     fetchPreviousPage,
   } = useInfiniteQuery(
-    'articles',
-    ({pageParam}) => getArticles({...pageParam}),
+    'selectListArticle',
+    ({pageParam}) => selectListArticle({...pageParam}),
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage.length === 10) {
           return {
-            cursor: dataLoadCnt.current * 10,
+            cursor: lastPage[lastPage.length - 1].id,
           };
         } else {
           return undefined;
@@ -59,13 +53,13 @@ const ArticleList = ({navigation}) => {
     if (!data) {
       return null;
     }
-    dataLoadCnt.current = dataLoadCnt.current + 1;
     return [].concat(...data.pages);
   }, [data]);
 
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
+
   return (
     <SafeAreaView style={styles.block}>
       <FlatList
@@ -75,7 +69,7 @@ const ArticleList = ({navigation}) => {
             navigation={navigation}
             id={item.id}
             title={item.title}
-            published_at={item.published_at}
+            created_at={item.created_at}
             user_name={item.user_name}
           />
         )}

@@ -2,30 +2,19 @@ import React from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 import Color from '../../../commons/style/Color';
+import {formatDaysAgo} from '../../../commons/utils/common';
 
-const ArticleItem = ({navigation, id, title, published_at, user_name}) => {
-  const onPress = () => {
+const ArticleItem = ({navigation, id, title, created_at, user_name}) => {
+  const createdAt = formatDaysAgo(created_at);
+
+  const onPressMove = () => {
     navigation.navigate('ArticleView', {id});
   };
-
-  let date = new Date(published_at);
-  const formattedDate =
-    date.getFullYear() +
-    '/' +
-    (date.getMonth() + 1) +
-    '/' +
-    date.getDate() +
-    ' ' +
-    date.getHours() +
-    ':' +
-    date.getMinutes() +
-    ':' +
-    date.getSeconds();
 
   return (
     <Pressable
       style={({pressed}) => [styles.block, pressed && styles.pressed]}
-      onPress={onPress}
+      onPress={onPressMove}
       android_ripple={{color: Color.pressed}}>
       <View style={{flexDirection: 'row'}}>
         <Text style={styles.title}>{title}</Text>
@@ -35,7 +24,7 @@ const ArticleItem = ({navigation, id, title, published_at, user_name}) => {
       </View>
       <View style={styles.footer}>
         <Text style={styles.smallText}>
-          {user_name} | {formattedDate} | 조회수: 11 | 추천: 12
+          {user_name} | {createdAt} | 조회수: 11 | 추천: 12
         </Text>
       </View>
     </Pressable>

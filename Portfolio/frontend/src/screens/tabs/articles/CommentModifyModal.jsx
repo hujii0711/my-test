@@ -1,22 +1,29 @@
-import * as React from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   Portal,
   Text,
-  Button,
   Provider,
   TextInput,
   IconButton,
 } from 'react-native-paper';
 import {View} from 'react-native';
+import {selectComment} from '../../../api/comments';
 
-const CommentModifyModal = ({visible, initialMessage, onSubmit, onClose}) => {
-  const [message, setMessage] = React.useState('');
+const CommentModifyModal = ({
+  visible,
+  commentId,
+  articleRef,
+  onSubmit,
+  onClose,
+}) => {
+  const selectCommentQuery = useQuery(['selectComment', commentId], () =>
+    selectComment(articleRef, commentId),
+  );
 
-  // initialMessage가 변경되면 message 변경
-  React.useEffect(() => {
-    setMessage(initialMessage ?? '');
-  }, [initialMessage]);
+  const [message, setMessage] = useState(
+    selectCommentQuery?.data?.message ?? '',
+  );
 
   return (
     <Provider>
@@ -38,24 +45,16 @@ const CommentModifyModal = ({visible, initialMessage, onSubmit, onClose}) => {
             outlineColor="#919191" // input border
             style={{backgroundColor: '#ffffff', fontSize: 12}}
             value={message}
-            onChangeText={setMessage}
-            onSubmitEditing={() => {
-              onSubmit(message);
-              setMessage('');
-            }}
+            onChangeText={text => setMessage(text)}
             multiline
           />
           <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
             <IconButton
               icon="sticker-check-outline"
               size={20}
-              onPress={() => console.log('Pressed')}
+              onPress={onSubmit}
             />
-            <IconButton
-              icon="cancel"
-              size={20}
-              onPress={() => console.log('Pressed')}
-            />
+            <IconButton icon="cancel" size={20} onPress={onClose} />
           </View>
         </Modal>
       </Portal>

@@ -1,75 +1,170 @@
-import React from 'react';
-import {View, StyleSheet, Text, Pressable} from 'react-native';
+import React, {useState} from 'react';
+import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
-import {format} from 'date-fns';
 
-function CommentItem({id, message, publishedAt, username, onRemove, onModify}) {
-  const handleRemove = () => onRemove(id);
-  const handleModify = () => onModify(id);
+import {modifyComment, removeComment} from '../../../api/comments';
+import CustomDialog from '../../../commons/utils/CustomDialog';
+import CommentModifyModal from './CommentModifyModal';
 
-  const [like, setLike] = React.useState(0);
-  const [hate, setHate] = React.useState(0);
+function CommentItem({commentId, message, created_at, username, articleRef}) {
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
+  const [askDialogVisible, setAskDialogVisible] = useState(false);
+  const [commentModifyModalVisible, setCommentModifyModalVisible] =
+    useState(false);
 
-  const published_at = format(new Date(publishedAt), 'yyyy-MM-dd');
+  const [like, setLike] = useState(0);
+  const [hate, setHate] = useState(0);
+
+  const {mutate: mutateModifyComment} = useMutation(modifyComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData <
+        InfiniteData >
+        ('selectListComment',
+        data => {
+          if (!data) {
+            return {
+              pageParams: [undefined],
+              pages: [[comment]],
+            };
+          }
+          const [firstPage, ...rest] = data.pages;
+          return {
+            ...data,
+            pages: [[comment, ...firstPage], ...rest],
+          };
+        });
+    },
+  });
+  const {mutate: mutateRemoveComment} = useMutation(removeComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData <
+        InfiniteData >
+        ('selectListComment',
+        data => {
+          if (!data) {
+            return {
+              pageParams: [undefined],
+              pages: [[comment]],
+            };
+          }
+          const [firstPage, ...rest] = data.pages;
+          return {
+            ...data,
+            pages: [[comment, ...firstPage], ...rest],
+          };
+        });
+    },
+  });
+
+  //CustomDialog
+  const onVisibleRemove = id => {
+    setSelectedCommentId(id);
+    setAskDialogVisible(true);
+  };
+
+  const onConfirmRemove = () => {
+    setAskDialogVisible(false);
+    mutateRemoveComment({
+      id: selectedCommentId,
+    });
+  };
+
+  const onCancelRemove = () => {
+    setAskDialogVisible(false);
+  };
+
+  //commentModifyModal
+  const onVisibleModify = id => {
+    setSelectedCommentId(id);
+    setCommentModifyModalVisible(true);
+  };
+
+  const onSubmitModify = message => {
+    setCommentModifyModalVisible(false);
+    mutateModifyComment({
+      articleRef,
+      message,
+    });
+  };
+
+  const onCancelModify = () => {
+    setCommentModifyModalVisible(false);
+  };
 
   return (
-    <View style={styles.block}>
-      {/*left*/}
-      <View style={styles.left}>
-        <Avatar.Text
-          size={30}
-          label="AI"
-          style={{backgroundColor: '#f6b93b'}}
-        />
+    <>
+      <View style={styles.block}>
+        {/*left*/}
+        <View style={styles.left}>
+          <Avatar.Text
+            size={30}
+            label="AI"
+            style={{backgroundColor: '#f6b93b'}}
+          />
+        </View>
+        {/*right*/}
+        <View style={styles.right}>
+          {/*header*/}
+          <View style={styles.header}>
+            <Text style={styles.header_text}>{username}</Text>
+            <View style={styles.space} />
+            <Text style={styles.header_text}>{created_at}</Text>
+          </View>
+          <View style={styles.divider} />
+
+          {/*content*/}
+          <View style={styles.content}>
+            <Text style={styles.content_text}>{message}</Text>
+          </View>
+          <View style={styles.divider} />
+
+          {/*footer*/}
+          <View style={styles.footer}>
+            <View style={styles.footer_left}>
+              <IconButton
+                icon="emoticon-kiss-outline"
+                size={18}
+                onPress={() => setLike(like + 1)}
+              />
+              <Text style={{fontSize: 11, marginLeft: -10}}>{like}</Text>
+              <IconButton
+                icon="emoticon-devil-outline"
+                size={18}
+                onPress={() => setHate(hate + 1)}
+              />
+              <Text style={{fontSize: 11, marginLeft: -10}}>{hate}</Text>
+            </View>
+            <View style={styles.footer_right}>
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={onVisibleModify(commentId)}>
+                <Text style={styles.buttonText}>수정</Text>
+              </Pressable>
+              <Pressable
+                style={({pressed}) => pressed && styles.pressed}
+                onPress={onVisibleRemove(commentId)}>
+                <Text style={styles.buttonText}>삭제</Text>
+              </Pressable>
+            </View>
+          </View>
+        </View>
       </View>
-      {/*right*/}
-      <View style={styles.right}>
-        {/*header*/}
-        <View style={styles.header}>
-          <Text style={styles.header_text}>{username}</Text>
-          <View style={styles.space} />
-          <Text style={styles.header_text}>{published_at}</Text>
-        </View>
-        <View style={styles.divider} />
-
-        {/*content*/}
-        <View style={styles.content}>
-          <Text style={styles.content_text}>{message}</Text>
-        </View>
-        <View style={styles.divider} />
-
-        {/*footer*/}
-        <View style={styles.footer}>
-          <View style={styles.footer_left}>
-            <IconButton
-              icon="emoticon-kiss-outline"
-              size={18}
-              onPress={() => setLike(like + 1)}
-            />
-            <Text style={{fontSize: 11, marginLeft: -10}}>{like}</Text>
-            <IconButton
-              icon="emoticon-devil-outline"
-              size={18}
-              onPress={() => setHate(hate + 1)}
-            />
-            <Text style={{fontSize: 11, marginLeft: -10}}>{hate}</Text>
-          </View>
-          <View style={styles.footer_right}>
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={handleModify}>
-              <Text style={styles.buttonText}>수정</Text>
-            </Pressable>
-            <Pressable
-              style={({pressed}) => pressed && styles.pressed}
-              onPress={handleRemove}>
-              <Text style={styles.buttonText}>삭제</Text>
-            </Pressable>
-          </View>
-        </View>
-      </View>{' '}
-      {/*right END*/}
-    </View> //block END
+      <CommentModifyModal
+        visible={commentModifyModalVisible}
+        commentId={selectedCommentId}
+        articleRef={articleRef}
+        onSubmit={onSubmitModify}
+        onClose={onCancelModify}
+      />
+      <CustomDialog
+        visible={askDialogVisible}
+        title="댓글 삭제"
+        message="댓글을 삭제하시겠습니까?"
+        confirmText="삭제"
+        onConfirm={onConfirmRemove}
+        onClose={onCancelRemove}
+      />
+    </>
   );
 }
 

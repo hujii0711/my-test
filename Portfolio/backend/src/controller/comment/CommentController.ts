@@ -1,12 +1,18 @@
-import { Request, Response } from "express";
-import * as CommentService from "../../service/comment/CommentService";
-import { catchAsync } from "../../modules/error";
-import httpStatus from "http-status";
+import { Request, Response } from 'express';
+import * as CommentService from '../../service/comment/CommentService';
+import { catchAsync } from '../../modules/error';
+import httpStatus from 'http-status';
 
 // /articles/:articleId/comments | GET | getComments | 댓글상세
 export const getComments = catchAsync(async (req: Request, res: Response) => {
   const { articleId } = req.params;
   const body = await CommentService.getComments(articleId);
+  res.json(body).status(httpStatus.OK);
+});
+
+export const getComment = catchAsync(async (req: Request, res: Response) => {
+  const { articleId, commentId } = req.params;
+  const body = await CommentService.getComment(articleId, commentId);
   res.json(body).status(httpStatus.OK);
 });
 
