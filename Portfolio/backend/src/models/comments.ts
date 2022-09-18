@@ -6,7 +6,7 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
   public readonly id!: number;
   public message!: string;
   public user_id!: string;
-  public articles_ref!: number;
+  public article_ref!: number;
   public liked!: number;
   public unliked!: number;
   public created_at!: Date;
@@ -29,17 +29,19 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
           type: DataTypes.STRING(30),
           allowNull: false,
         },
-        articles_ref: {
+        article_ref: {
           type: DataTypes.INTEGER,
           allowNull: false,
         },
         liked: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         unliked: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         created_at: {
           type: DataTypes.DATE,

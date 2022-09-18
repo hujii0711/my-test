@@ -1,13 +1,22 @@
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
-
+import {useMutation} from 'react-query';
 import {modifyComment, removeComment} from '../../../api/comments';
 import CustomDialog from '../../../commons/utils/CustomDialog';
 import CommentModifyModal from './CommentModifyModal';
+import {formatDaysAgo} from '../../../commons/utils/common';
 
-function CommentItem({commentId, message, created_at, username, articleRef}) {
-  const [selectedCommentId, setSelectedCommentId] = useState(null);
+function CommentItem({
+  commentId,
+  message,
+  created_at,
+  username,
+  articleRef,
+  isMyComment,
+}) {
+  const [selectedCommentId, setSelectedCommentId] = useState(commentId ?? 0);
+  console.log('CommentItem >>>>> commentId=====', commentId);
   const [askDialogVisible, setAskDialogVisible] = useState(false);
   const [commentModifyModalVisible, setCommentModifyModalVisible] =
     useState(false);
@@ -15,44 +24,41 @@ function CommentItem({commentId, message, created_at, username, articleRef}) {
   const [like, setLike] = useState(0);
   const [hate, setHate] = useState(0);
 
+  //const createdAt = formatDaysAgo(created_at);
+
   const {mutate: mutateModifyComment} = useMutation(modifyComment, {
     onSuccess: comment => {
-      queryClient.setQueryData <
-        InfiniteData >
-        ('selectListComment',
-        data => {
-          if (!data) {
-            return {
-              pageParams: [undefined],
-              pages: [[comment]],
-            };
-          }
-          const [firstPage, ...rest] = data.pages;
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
           return {
-            ...data,
-            pages: [[comment, ...firstPage], ...rest],
+            pageParams: [undefined],
+            pages: [[comment]],
           };
-        });
+        }
+        const [firstPage, ...rest] = data.pages;
+        return {
+          ...data,
+          pages: [[comment, ...firstPage], ...rest],
+        };
+      });
     },
   });
+
   const {mutate: mutateRemoveComment} = useMutation(removeComment, {
     onSuccess: comment => {
-      queryClient.setQueryData <
-        InfiniteData >
-        ('selectListComment',
-        data => {
-          if (!data) {
-            return {
-              pageParams: [undefined],
-              pages: [[comment]],
-            };
-          }
-          const [firstPage, ...rest] = data.pages;
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
           return {
-            ...data,
-            pages: [[comment, ...firstPage], ...rest],
+            pageParams: [undefined],
+            pages: [[comment]],
           };
-        });
+        }
+        const [firstPage, ...rest] = data.pages;
+        return {
+          ...data,
+          pages: [[comment, ...firstPage], ...rest],
+        };
+      });
     },
   });
 
@@ -73,7 +79,7 @@ function CommentItem({commentId, message, created_at, username, articleRef}) {
     setAskDialogVisible(false);
   };
 
-  //commentModifyModal
+  // //commentModifyModal
   const onVisibleModify = id => {
     setSelectedCommentId(id);
     setCommentModifyModalVisible(true);
@@ -92,7 +98,7 @@ function CommentItem({commentId, message, created_at, username, articleRef}) {
   };
 
   return (
-    <>
+    <React.Fragment key={commentId}>
       <View style={styles.block}>
         {/*left*/}
         <View style={styles.left}>
@@ -137,12 +143,12 @@ function CommentItem({commentId, message, created_at, username, articleRef}) {
             <View style={styles.footer_right}>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={onVisibleModify(commentId)}>
+                onPress={() => onVisibleModify(commentId)}>
                 <Text style={styles.buttonText}>수정</Text>
               </Pressable>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={onVisibleRemove(commentId)}>
+                onPress={() => onVisibleRemove(commentId)}>
                 <Text style={styles.buttonText}>삭제</Text>
               </Pressable>
             </View>
@@ -164,7 +170,7 @@ function CommentItem({commentId, message, created_at, username, articleRef}) {
         onConfirm={onConfirmRemove}
         onClose={onCancelRemove}
       />
-    </>
+    </React.Fragment>
   );
 }
 

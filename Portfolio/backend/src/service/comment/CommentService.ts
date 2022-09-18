@@ -1,22 +1,27 @@
 import { Comments } from '../../models/comments';
 
-export const getComments = async (params: any) => {
+export const getComments = async (params: any, article_ref: number) => {
   console.log('Commentervice >>>> getComments >>>> params====', params);
+  console.log('Commentervice >>>> getComments >>>> article_ref====', article_ref);
+  const { offset } = params; ////{offset:0}
   const data = await Comments.findAll({
-    attributes: ['id', 'message', 'user_id', 'articles_ref', 'created_at', 'updated_at'],
+    attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
+    order: [['id', 'DESC']],
+    limit: 10,
+    offset: Number(offset),
     where: {
-      articles_ref: params,
+      article_ref,
     },
     raw: true,
   });
   return data;
 };
 
-export const getComment = async (id: string, article_ref: string) => {
+export const getComment = async (article_ref: number, id: number) => {
   console.log('Commentervice >>>> getComment >>>> article_ref====', article_ref);
   console.log('Commentervice >>>> getComment >>>> id====', id);
   const data = await Comments.findOne({
-    attributes: ['id', 'message', 'user_id', 'articles_ref', 'created_at', 'updated_at'],
+    attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
     where: {
       article_ref,
       id,
@@ -26,14 +31,14 @@ export const getComment = async (id: string, article_ref: string) => {
   return data;
 };
 
-export const writeComment = async (message: string, articles_ref: number, userInfo: any) => {
+export const writeComment = async (message: string, article_ref: number, userInfo: any) => {
   console.log('Commentervice >>>> writeComment >>>> message====', message);
-  console.log('Commentervice >>>> writeComment >>>> articles_ref====', articles_ref);
+  console.log('Commentervice >>>> writeComment >>>> article_ref====', article_ref);
   const { user_id } = userInfo; // 세션 정보
 
   const data = await Comments.create({
     message,
-    articles_ref,
+    article_ref,
     user_id,
   });
 
@@ -52,7 +57,7 @@ export const modifyComment = async (message: string, articles_ref: string, id: s
   // 정상 업데이트 된 경우 해당 id 값으로 조회된 댓글 정보를 리턴
   if (data[0] > 0) {
     const searchData = await Comments.findOne({
-      attributes: ['id', 'message', 'user_id', 'articles_ref', 'created_at', 'updated_at'],
+      attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
       where: {
         id,
       },

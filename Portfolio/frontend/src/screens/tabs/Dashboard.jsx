@@ -4,9 +4,12 @@ import {useNavigation} from '@react-navigation/native';
 import {IconButton, Text} from 'react-native-paper';
 import Color from '../../commons/style/Color';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
+import {useUser} from '../../commons/hooks/useReduxState';
 
 const Dashboard = () => {
   const navigation = useNavigation();
+  const users = useUser();
+  console.log('Dashboard >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> users====', users);
   const data = [
     {
       id: 'share',

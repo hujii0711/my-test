@@ -45,8 +45,6 @@ function ArticlesScreen() {
   );
 
   const items = useMemo(() => {
-    console.log('items!!!!!!!!!!!!!!!!!!');
-    console.log('data==========', data);
     if (!data) {
       return null;
     }

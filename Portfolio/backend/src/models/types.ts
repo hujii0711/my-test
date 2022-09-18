@@ -13,7 +13,7 @@ export interface CommentsAttributes {
   id?: number;
   message: string;
   user_id?: string;
-  articles_ref?: number;
+  article_ref?: number;
   liked?: number;
   unliked?: number;
   created_at?: Date;

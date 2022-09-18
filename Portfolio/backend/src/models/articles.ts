@@ -43,18 +43,22 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
         lookup: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         liked: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         unliked: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         comment_cnt: {
           type: DataTypes.INTEGER,
           allowNull: false,
+          defaultValue: 0,
         },
         created_at: {
           type: DataTypes.DATE,

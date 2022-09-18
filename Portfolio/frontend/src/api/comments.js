@@ -3,8 +3,18 @@ import client from './client';
 /*
   Comment 글 목록
 */
-export async function selectListComment(articleId) {
-  const response = await client.get(`/articles/${articleId}/comments`);
+export async function selectListComment({
+  cursor = 0,
+  prevCursor = 0,
+  articleId = 6,
+}) {
+  const offset = cursor + prevCursor;
+  //console.log('selectListComment >>>>> articleId =====', articleId);
+  const response = await client.get(`/articles/6/comments`, {
+    params: {offset},
+    headers: {returnType: 'list'},
+  });
+  //console.log('selectListComment >>>>> response =====', response.data);
   return response.data;
 }
 
@@ -23,7 +33,8 @@ export async function selectComment(articleId, commentId) {
 */
 export async function writeComment(params) {
   const {articleId, message} = params;
-  const response = await client.post(`/articles/${articleId}/comments`, {
+  const articleRef = 6;
+  const response = await client.post(`/articles/${articleRef}/comments`, {
     message,
   });
   return response.data;

@@ -13,7 +13,7 @@ export const getArticles = async (params: any) => {
 
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
   const data = await Articles.findAll({
-    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
+    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'created_at', 'updated_at'],
     order: [['id', 'DESC']],
     limit: 10,
     offset: Number(offset),
@@ -25,7 +25,7 @@ export const getArticles = async (params: any) => {
 export const getArticle = async (id: string) => {
   console.log('ArticleService >>>> getArticle >>>> id====', id);
   const data = await Articles.findOne({
-    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
+    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'created_at', 'updated_at'],
     where: {
       id,
     },
@@ -64,7 +64,7 @@ export const modifyArticle = async (id: string, bodys: { title: string; contents
   // 정상 업데이트 된 경우 해당 id 값으로 조회된 게시글 정보를 리턴
   if (data[0] > 0) {
     const searchData = await Articles.findOne({
-      attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
+      attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'created_at', 'updated_at'],
       where: {
         id,
       },

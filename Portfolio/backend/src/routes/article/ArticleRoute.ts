@@ -18,9 +18,9 @@ router.use('/', (req: Request, res: Response, next: NextFunction) => {
 // /articles/delete/:id | DELETE | deleteArticle | 글삭제
 
 router.get('/articles', ArticleController.getArticles); //글목록
-router.get('/articles/:id', verifyToken, ArticleController.getArticle); //글상세
-router.post('/articles', verifyToken, ArticleController.writeArticle); //글쓰기
-router.put('/articles/:id', verifyToken, ArticleController.modifyArticle); //글수정
+router.get('/articles/:id', ArticleController.getArticle); //글상세
+router.post('/articles', ArticleController.writeArticle); //글쓰기
+router.put('/articles/:id', ArticleController.modifyArticle); //글수정
 router.delete('/articles/:id', verifyToken, ArticleController.deleteArticle); //글삭제
 router.get('/join', ArticleController.getJoinUser);
 router.post('/upload', upload.single('image'), ArticleController.fileUpload);

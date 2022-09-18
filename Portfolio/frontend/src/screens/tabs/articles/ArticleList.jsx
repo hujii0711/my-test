@@ -28,7 +28,7 @@ const ArticleList = ({navigation}) => {
     ({pageParam}) => selectListArticle({...pageParam}),
     {
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length === 10) {
+        if (lastPage?.length === 10) {
           return {
             cursor: lastPage[lastPage.length - 1].id,
           };

@@ -6,7 +6,6 @@ import {formatDaysAgo} from '../../../commons/utils/common';
 
 const ArticleItem = ({navigation, id, title, created_at, user_name}) => {
   const createdAt = formatDaysAgo(created_at);
-
   const onPressMove = () => {
     navigation.navigate('ArticleView', {id});
   };

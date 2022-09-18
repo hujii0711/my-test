@@ -1,16 +1,27 @@
-import React, {useMemo} from 'react';
+import React, {useMemo, useState} from 'react';
 import {IconButton, TextInput, ActivityIndicator} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet, RefreshControl} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {useMutation, useQueryClient} from 'react-query';
-
+import {useMutation, useQueryClient, useInfiniteQuery} from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
 import {writeComment, selectListComment} from '../../../api/comments';
+import {useUser} from '../../../commons/hooks/useReduxState';
 
 const CommentList = ({refRBSheet, articleRef}) => {
+  const users = useUser();
   const [message, setMessage] = useState('');
-  const queryClient = useQueryClient();
+
+  console.log('CommentList >>>> articleRef======', articleRef);
+
+  const {mutate: mutateWriteComment} = useMutation(writeComment);
+
+  const onSubmitWriteComment = message => {
+    mutateWriteComment({
+      articleRef,
+      message,
+    });
+  };
 
   const {
     data,
@@ -21,18 +32,29 @@ const CommentList = ({refRBSheet, articleRef}) => {
   } = useInfiniteQuery(
     'selectListComment',
     ({pageParam}) => selectListComment({...pageParam}),
+    // {
+    //   const pageParam_ = pageParam ?? {articleId: articleRef};
+    //   if (pageParam_) {
+    //     selectListComment({...pageParam_});
+    //   } else {
+    //     selectListComment({...pageParam});
+    //   }
+    // },
     {
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length === 10) {
+        if (lastPage?.length === 10) {
           return {
             cursor: lastPage[lastPage.length - 1].id,
+            articleId: articleRef,
           };
         } else {
-          return undefined;
+          return {
+            articleId: articleRef,
+          };
         }
       },
       getPreviousPageParam: (firstPage, allPages) => {
-        const validPage = allPages.find(page => page.length > 0);
+        const validPage = allPages.find(page => page?.length > 0);
         if (!validPage) {
           return undefined;
         }
@@ -44,34 +66,6 @@ const CommentList = ({refRBSheet, articleRef}) => {
     },
   );
 
-  const {mutate: mutateWriteComment} = useMutation(writeComment, {
-    onSuccess: comment => {
-      queryClient.setQueryData <
-        InfiniteData >
-        ('selectListComment',
-        data => {
-          if (!data) {
-            return {
-              pageParams: [undefined],
-              pages: [[comment]],
-            };
-          }
-          const [firstPage, ...rest] = data.pages;
-          return {
-            ...data,
-            pages: [[comment, ...firstPage], ...rest],
-          };
-        });
-    },
-  });
-
-  const onSubmitWriteComment = message => {
-    mutateWriteComment({
-      articleRef,
-      message,
-    });
-  };
-
   const items = useMemo(() => {
     if (!data) {
       return null;
@@ -80,13 +74,13 @@ const CommentList = ({refRBSheet, articleRef}) => {
   }, [data]);
 
   if (!items) {
-    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
+    return <ActivityIndicator color="red" />;
   }
 
   return (
     <RBSheet
       ref={refRBSheet}
-      height={300}
+      height={400}
       closeOnDragDown={true}
       closeOnPressMask={true}
       customStyles={{
@@ -119,7 +113,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
           onPress={() => refRBSheet.current.close()}
         />
         <FlatList
-          data={data}
+          data={items}
           renderItem={({item}) => (
             <CommentItem
               commentId={item.id}
@@ -127,10 +121,10 @@ const CommentList = ({refRBSheet, articleRef}) => {
               created_at={item.created_at}
               username={item.user_id}
               articleRef={articleRef}
-              //isMyComment={item.user_id === currentUser?.user_id}
+              isMyComment={item.user_id === users.user_id}
             />
           )}
-          keyExtractor={item => item.id}
+          keyExtractor={(item, index) => index.toString()}
           ListHeaderComponent={
             <View style={{flexDirection: 'row'}}>
               <TextInput
@@ -143,13 +137,16 @@ const CommentList = ({refRBSheet, articleRef}) => {
                   backgroundColor: Color.white,
                   fontSize: 12,
                   margin: 10,
+                  width: '80%',
+                  height: 35,
                 }}
                 value={message}
                 onChangeText={text => setMessage(text)}
               />
               <IconButton
                 icon="send"
-                size={20}
+                size={30}
+                style={{alignSelf: 'center'}}
                 onPress={() => onSubmitWriteComment(message)}
               />
             </View>

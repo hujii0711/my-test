@@ -1,4 +1,5 @@
 import Login from './login/Login';
+import Register from './login/Register';
 import SnsLogin from './login/SnsLogin';
 import MainTab from './tabs/MainTab';
 import ArticleView from './tabs/articles/ArticleView';
@@ -20,6 +21,7 @@ export const MenuList = [
   {id: 'ArticleView', component: ArticleView},
   {id: 'ArticleWrite', component: ArticleWrite},
   {id: 'Login', component: Login, options: {headerShown: false}},
+  {id: 'Register', component: Register},
   {id: 'SnsLogin', component: SnsLogin},
   {id: 'ShareScreen', component: ShareScreen},
   {id: 'NotifyPushScreen', component: NotifyPushScreen},

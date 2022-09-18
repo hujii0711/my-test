@@ -23,6 +23,9 @@ const Login = ({navigation}) => {
       password,
     });
   };
+  const onPressRegister = () => {
+    navigation.navigate('Register');
+  };
 
   return (
     <ScreenWrapper>
@@ -124,7 +127,7 @@ const Login = ({navigation}) => {
             </Button>
             <Button
               mode="text"
-              onPress={() => {}}
+              onPress={onPressRegister}
               labelStyle={{color: '#000000', fontSize: 12}}>
               회원가입
             </Button>

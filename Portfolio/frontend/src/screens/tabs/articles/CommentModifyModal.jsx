@@ -8,6 +8,7 @@ import {
   IconButton,
 } from 'react-native-paper';
 import {View} from 'react-native';
+import {useQuery} from 'react-query';
 import {selectComment} from '../../../api/comments';
 
 const CommentModifyModal = ({
@@ -17,6 +18,8 @@ const CommentModifyModal = ({
   onSubmit,
   onClose,
 }) => {
+  console.log('CommentModifyModal >>>> commentId=====', commentId);
+  console.log('CommentModifyModal >>>> articleRef=====', articleRef);
   const selectCommentQuery = useQuery(['selectComment', commentId], () =>
     selectComment(articleRef, commentId),
   );
@@ -35,7 +38,7 @@ const CommentModifyModal = ({
             backgroundColor: '#F2F5F9',
             borderRadius: 20,
             padding: 20,
-            flex: 0.5,
+            flex: 1,
           }}>
           <Text>댓글 수정</Text>
           <TextInput

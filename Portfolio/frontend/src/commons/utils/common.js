@@ -19,5 +19,3 @@ export const formatDaysAgo = date => {
 export const formatDate = (date, format) => {
   return format(new Date(date), format); //'yyyy-MM-dd'
 };
-
-console.log('11111-----', formatDate('2022-06-26T03:29:10.824Z'));

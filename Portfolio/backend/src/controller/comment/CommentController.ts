@@ -5,14 +5,18 @@ import httpStatus from 'http-status';
 
 // /articles/:articleId/comments | GET | getComments | 댓글상세
 export const getComments = catchAsync(async (req: Request, res: Response) => {
-  const { articleId } = req.params;
-  const body = await CommentService.getComments(articleId);
+  const query = req.query;
+  const articleId = parseInt(req.params.articleId);
+  console.log('req.query=====', req.query);
+  console.log('req.params=====', req.params);
+  const body = await CommentService.getComments(query, articleId);
   res.json(body).status(httpStatus.OK);
 });
 
 export const getComment = catchAsync(async (req: Request, res: Response) => {
-  const { articleId, commentId } = req.params;
-  const body = await CommentService.getComment(articleId, commentId);
+  const articleRef = parseInt(req.params.articleId);
+  const id = parseInt(req.params.commentId);
+  const body = await CommentService.getComment(articleRef, id);
   res.json(body).status(httpStatus.OK);
 });
 
