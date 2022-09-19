@@ -19,3 +19,23 @@ export const formatDaysAgo = date => {
 export const formatDate = (date, format) => {
   return format(new Date(date), format); //'yyyy-MM-dd'
 };
+
+export const truncate = text => {
+  // 정규식을 사용해 모든 줄 바꿈 문자 제거
+  const replaced = text.replace(/\n/g, ' ');
+  if (replaced.length <= 100) {
+    return replaced;
+  }
+  return replaced.slice(0, 100).concat('...');
+};
+
+export function isEmail(asValue) {
+  var regExp =
+    /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
+  return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
+}
+
+export function isPassword(asValue) {
+  var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/; //  8 ~ 10자 영문, 숫자 조합
+  return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
+}

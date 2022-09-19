@@ -1,10 +1,6 @@
 import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
-import {useMutation} from 'react-query';
-import {modifyComment, removeComment} from '../../../api/comments';
-import CustomDialog from '../../../commons/utils/CustomDialog';
-import CommentModifyModal from './CommentModifyModal';
 import {formatDaysAgo} from '../../../commons/utils/common';
 
 function CommentItem({
@@ -14,88 +10,55 @@ function CommentItem({
   username,
   articleRef,
   isMyComment,
+  onVisibleModify,
+  onVisibleRemove,
 }) {
-  const [selectedCommentId, setSelectedCommentId] = useState(commentId ?? 0);
-  console.log('CommentItem >>>>> commentId=====', commentId);
-  const [askDialogVisible, setAskDialogVisible] = useState(false);
-  const [commentModifyModalVisible, setCommentModifyModalVisible] =
-    useState(false);
+  const initLike = 12;
+  const [like, setLike] = useState(initLike);
+  const [selectedLike, setSelectedLike] = useState(false);
 
-  const [like, setLike] = useState(0);
-  const [hate, setHate] = useState(0);
+  const initHate = 10;
+  const [hate, setHate] = useState(initHate);
+  const [selectedHate, setSelectedHate] = useState(false);
 
-  //const createdAt = formatDaysAgo(created_at);
+  const onPressLike = () => {
+    // 좋아요 토클
+    if (selectedLike) {
+      setLike(like - 1);
+      //update like-1
+      setSelectedLike(false);
+    } else {
+      setLike(like + 1);
+      //update like+1
+      setSelectedLike(true);
+    }
+    // 싫어요 언체크
+    setSelectedHate(false);
 
-  const {mutate: mutateModifyComment} = useMutation(modifyComment, {
-    onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-        };
-      });
-    },
-  });
-
-  const {mutate: mutateRemoveComment} = useMutation(removeComment, {
-    onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-        };
-      });
-    },
-  });
-
-  //CustomDialog
-  const onVisibleRemove = id => {
-    setSelectedCommentId(id);
-    setAskDialogVisible(true);
+    // 싫어요는 원래 값으로 초기화
+    setHate(initHate);
   };
 
-  const onConfirmRemove = () => {
-    setAskDialogVisible(false);
-    mutateRemoveComment({
-      id: selectedCommentId,
-    });
+  const onPressHate = () => {
+    // 싫어요 토클
+    if (selectedHate) {
+      setHate(hate - 1);
+      setSelectedHate(false);
+    } else {
+      setHate(hate + 1);
+      setSelectedHate(true);
+    }
+    // 좋아요 언체크
+    setSelectedLike(false);
+
+    // 좋아요는 원래 값으로 초기화
+    setLike(initLike);
   };
 
-  const onCancelRemove = () => {
-    setAskDialogVisible(false);
-  };
+  const handleModify = () => onVisibleModify(commentId);
+  const handleRemove = () => onVisibleRemove(commentId);
 
-  // //commentModifyModal
-  const onVisibleModify = id => {
-    setSelectedCommentId(id);
-    setCommentModifyModalVisible(true);
-  };
-
-  const onSubmitModify = message => {
-    setCommentModifyModalVisible(false);
-    mutateModifyComment({
-      articleRef,
-      message,
-    });
-  };
-
-  const onCancelModify = () => {
-    setCommentModifyModalVisible(false);
-  };
+  const createdAt = formatDaysAgo(created_at);
 
   return (
     <React.Fragment key={commentId}>
@@ -114,7 +77,7 @@ function CommentItem({
           <View style={styles.header}>
             <Text style={styles.header_text}>{username}</Text>
             <View style={styles.space} />
-            <Text style={styles.header_text}>{created_at}</Text>
+            <Text style={styles.header_text}>{createdAt}</Text>
           </View>
           <View style={styles.divider} />
 
@@ -130,46 +93,31 @@ function CommentItem({
               <IconButton
                 icon="emoticon-kiss-outline"
                 size={18}
-                onPress={() => setLike(like + 1)}
+                onPress={onPressLike}
               />
               <Text style={{fontSize: 11, marginLeft: -10}}>{like}</Text>
               <IconButton
                 icon="emoticon-devil-outline"
                 size={18}
-                onPress={() => setHate(hate + 1)}
+                onPress={onPressHate}
               />
               <Text style={{fontSize: 11, marginLeft: -10}}>{hate}</Text>
             </View>
             <View style={styles.footer_right}>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={() => onVisibleModify(commentId)}>
+                onPress={handleModify}>
                 <Text style={styles.buttonText}>수정</Text>
               </Pressable>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={() => onVisibleRemove(commentId)}>
+                onPress={handleRemove}>
                 <Text style={styles.buttonText}>삭제</Text>
               </Pressable>
             </View>
           </View>
         </View>
       </View>
-      <CommentModifyModal
-        visible={commentModifyModalVisible}
-        commentId={selectedCommentId}
-        articleRef={articleRef}
-        onSubmit={onSubmitModify}
-        onClose={onCancelModify}
-      />
-      <CustomDialog
-        visible={askDialogVisible}
-        title="댓글 삭제"
-        message="댓글을 삭제하시겠습니까?"
-        confirmText="삭제"
-        onConfirm={onConfirmRemove}
-        onClose={onCancelRemove}
-      />
     </React.Fragment>
   );
 }

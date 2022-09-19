@@ -4,7 +4,14 @@ import {Badge} from 'react-native-paper';
 import Color from '../../../commons/style/Color';
 import {formatDaysAgo} from '../../../commons/utils/common';
 
-const ArticleItem = ({navigation, id, title, created_at, user_name}) => {
+const ArticleItem = ({
+  navigation,
+  id,
+  title,
+  created_at,
+  user_name,
+  comment_cnt,
+}) => {
   const createdAt = formatDaysAgo(created_at);
   const onPressMove = () => {
     navigation.navigate('ArticleView', {id});
@@ -18,12 +25,12 @@ const ArticleItem = ({navigation, id, title, created_at, user_name}) => {
       <View style={{flexDirection: 'row'}}>
         <Text style={styles.title}>{title}</Text>
         <Badge style={styles.badge} size={14}>
-          36
+          {comment_cnt}
         </Badge>
       </View>
       <View style={styles.footer}>
         <Text style={styles.smallText}>
-          {user_name} | {createdAt} | 조회수: 11 | 추천: 12
+          {user_name} | {createdAt} | 조회수: {lookup}
         </Text>
       </View>
     </Pressable>

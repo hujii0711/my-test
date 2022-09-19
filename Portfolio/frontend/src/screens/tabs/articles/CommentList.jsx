@@ -8,7 +8,12 @@ import Color from '../../../commons/style/Color';
 import {writeComment, selectListComment} from '../../../api/comments';
 import {useUser} from '../../../commons/hooks/useReduxState';
 
-const CommentList = ({refRBSheet, articleRef}) => {
+const CommentList = ({
+  refRBSheet,
+  articleRef,
+  onVisibleModify,
+  onVisibleRemove,
+}) => {
   const users = useUser();
   const [message, setMessage] = useState('');
 
@@ -32,25 +37,14 @@ const CommentList = ({refRBSheet, articleRef}) => {
   } = useInfiniteQuery(
     'selectListComment',
     ({pageParam}) => selectListComment({...pageParam}),
-    // {
-    //   const pageParam_ = pageParam ?? {articleId: articleRef};
-    //   if (pageParam_) {
-    //     selectListComment({...pageParam_});
-    //   } else {
-    //     selectListComment({...pageParam});
-    //   }
-    // },
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage?.length === 10) {
           return {
             cursor: lastPage[lastPage.length - 1].id,
-            articleId: articleRef,
           };
         } else {
-          return {
-            articleId: articleRef,
-          };
+          return undefined;
         }
       },
       getPreviousPageParam: (firstPage, allPages) => {
@@ -122,6 +116,8 @@ const CommentList = ({refRBSheet, articleRef}) => {
               username={item.user_id}
               articleRef={articleRef}
               isMyComment={item.user_id === users.user_id}
+              onVisibleModify={onVisibleModify}
+              onVisibleRemove={onVisibleRemove}
             />
           )}
           keyExtractor={(item, index) => index.toString()}

@@ -76,3 +76,20 @@ export const deleteComment = async (articles_ref: string, id: string) => {
   });
   return data;
 };
+
+export const updateLikeComment = async (id: string) => {
+  console.log('Commentervice >>>> updateLikeComment >>>> id====', id);
+  //update comments set liked = liked+1 where id = 10
+  const data = await Comments.increment(
+    {
+      liked: 1,
+    },
+    { where: { id } },
+  );
+  const data1 = await Comments.decrement(
+    {
+      liked: 1,
+    },
+    { where: { id } },
+  );
+};

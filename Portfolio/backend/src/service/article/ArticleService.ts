@@ -13,7 +13,17 @@ export const getArticles = async (params: any) => {
 
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
   const data = await Articles.findAll({
-    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'created_at', 'updated_at'],
+    attributes: [
+      'id',
+      'title',
+      'contents',
+      'user_id',
+      'user_name',
+      'lookup',
+      'comment_cnt',
+      'created_at',
+      'updated_at',
+    ],
     order: [['id', 'DESC']],
     limit: 10,
     offset: Number(offset),
@@ -25,7 +35,19 @@ export const getArticles = async (params: any) => {
 export const getArticle = async (id: string) => {
   console.log('ArticleService >>>> getArticle >>>> id====', id);
   const data = await Articles.findOne({
-    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'created_at', 'updated_at'],
+    attributes: [
+      'id',
+      'title',
+      'contents',
+      'user_id',
+      'user_name',
+      'lookup',
+      'liked',
+      'unliked',
+      'comment_cnt',
+      'created_at',
+      'updated_at',
+    ],
     where: {
       id,
     },
