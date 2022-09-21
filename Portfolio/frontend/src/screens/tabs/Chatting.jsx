@@ -14,31 +14,33 @@ const MyView = () => {
   return (
     <View
       style={{
-        flexDirection: 'row-reverse',
         marginVertical: 10,
+        flexDirection: 'row-reverse',
+        flexWrap: 'wrap',
+        backgroundColor: 'red',
       }}>
-      <View style={{marginRight: 10, flex: 1}}>
-        <Text
-          style={{
-            backgroundColor: Color.black,
-            color: Color.white,
-            padding: 10,
-            borderRadius: 10,
-            flex: 1,
-          }}>
-          이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이
-          배치됩니다. 이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과
-          같이 배치됩니다.
-        </Text>
-      </View>
       <Text
         style={{
-          color: Color.text,
+          backgroundColor: 'black', //Color.black
+          color: 'white', //Color.white
           padding: 10,
-          fontSize: 10,
-          alignSelf: 'flex-end',
+          borderRadius: 10,
+          maxWidth: '70%',
+          marginRight: 20,
         }}>
-        09:16
+        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
+        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
+      </Text>
+      <Text
+        style={{
+          color: '#3a3a3a', //Color.text
+          fontSize: 10,
+          paddingRight: 10,
+          fontSize: 11,
+          alignSelf: 'flex-end',
+          backgroundColor: 'green',
+        }}>
+        오후 09:16
       </Text>
     </View>
   );
@@ -49,43 +51,44 @@ const YouView = () => {
     <View
       style={{
         flexDirection: 'row',
+        flexWrap: 'wrap',
         marginVertical: 10,
+        backgroundColor: 'red',
       }}>
       <Avatar.Text
         size={30}
         label="너"
         style={{
-          marginLeft: 10,
           alignSelf: 'stretch',
           marginTop: 5,
-          backgroundColor: Color.blue3,
-          color: Color.white,
+          backgroundColor: 'blue', //Color.blue3
+          color: 'white', //Color.white
+          marginLeft: 10,
         }}
       />
-      <View style={{marginLeft: 10, flex: 1}}>
-        <Text
-          style={{
-            backgroundColor: Color.white,
-            color: Color.text,
-            padding: 10,
-            borderColor: Color.divider,
-            borderWidth: 1,
-            borderRadius: 10,
-            flex: 1,
-          }}>
-          이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이
-          배치됩니다. 이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과
-          같이 배치됩니다.
-        </Text>
-      </View>
       <Text
         style={{
-          color: Color.text,
+          backgroundColor: 'white', //Color.white
+          color: '#3a3a3a', //Color.text
           padding: 10,
-          fontSize: 10,
-          alignSelf: 'flex-end',
+          borderColor: '#3a3a3a', //Color.divider
+          borderWidth: 1,
+          borderRadius: 10,
+          marginLeft: 10,
+          maxWidth: '60%',
         }}>
-        09:16
+        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
+        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
+      </Text>
+      <Text
+        style={{
+          color: '#3a3a3a', //Color.text
+          paddingLeft: 10,
+          fontSize: 11,
+          alignSelf: 'flex-end',
+          backgroundColor: 'green',
+        }}>
+        오후 09:16
       </Text>
     </View>
   );

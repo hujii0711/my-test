@@ -46,23 +46,23 @@ app.use(cookieParser(env.cookie.secret));
 // resave : 세션에 변경사항이 없어도 요청마다 세션을 다시 저장, 기본 옵션인 true는 deprecated 상태로 false 권장
 // saveUninitialized : 세션에 저장할 내용이 없더라도 uninitialized 상태의 세션을 저장, 기본 옵션인 true는 deprecated 상태로 false 권장
 // ※ 해당 설정으로 인해 라우터 호출마다 세션은 자동으로 갱신되어 유효기간도 연장된다.
-app.use(
-  session({
-    name: 'sessionData',
-    secret: env.cookie.secret,
-    resave: false,
-    saveUninitialized: true,
-    // store 설정 없으면 기본 값은 MemoryStore
-    // Memory Store입니다. 메모리는 서버나 클라이언트를 껐다 키면 사라지는 휘발성
-    // 이를 대체할 수 있는 방법은 File Store
-    // cookie를 이용하여 세션을 관리해준다. 이때 maxAge 속성을 사용하여 이 쿠키가 얼마나 지속이 될것 인지 설정하는 부분
-    cookie: {
-      maxAge: env.max_age.session, // 1 hours (24 hours= 24 * 60 * 60 * 1000 ms)
-      httpOnly: true,
-    },
-  }),
-);
 
+const sessionMiddleware = session({
+  name: 'sessionData',
+  secret: env.cookie.secret,
+  resave: false,
+  saveUninitialized: true,
+  // store 설정 없으면 기본 값은 MemoryStore
+  // Memory Store입니다. 메모리는 서버나 클라이언트를 껐다 키면 사라지는 휘발성
+  // 이를 대체할 수 있는 방법은 File Store
+  // cookie를 이용하여 세션을 관리해준다. 이때 maxAge 속성을 사용하여 이 쿠키가 얼마나 지속이 될것 인지 설정하는 부분
+  cookie: {
+    maxAge: env.max_age.session, // 1 hours (24 hours= 24 * 60 * 60 * 1000 ms)
+    httpOnly: true,
+  },
+});
+
+app.use(sessionMiddleware);
 app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
 app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
 app.use(rTracer.expressMiddleware());
@@ -104,4 +104,4 @@ const server = app.listen(port, () => {
   console.log(`##################################################################################`);
 });
 
-webSocket(server, app); //웹소켓 연동
+webSocket(server, app, sessionMiddleware); //웹소켓 연동
