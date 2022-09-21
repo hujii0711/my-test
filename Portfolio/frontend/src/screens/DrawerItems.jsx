@@ -164,7 +164,7 @@ const DrawerItems = props => {
             <IconButton
               icon="account-plus"
               size={24}
-              onPress={() => console.log('Pressed')}
+              onPress={() => navigation.navigate('Register')}
             />
             <IconButton
               icon="account-wrench"

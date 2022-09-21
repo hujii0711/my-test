@@ -55,9 +55,6 @@ function CommentItem({
     setLike(initLike);
   };
 
-  const handleModify = () => onVisibleModify(commentId);
-  const handleRemove = () => onVisibleRemove(commentId);
-
   const createdAt = formatDaysAgo(created_at);
 
   return (
@@ -91,13 +88,13 @@ function CommentItem({
           <View style={styles.footer}>
             <View style={styles.footer_left}>
               <IconButton
-                icon="emoticon-kiss-outline"
+                icon={selectedLike ? 'thumb-up' : 'thumb-up-outline'}
                 size={18}
                 onPress={onPressLike}
               />
               <Text style={{fontSize: 11, marginLeft: -10}}>{like}</Text>
               <IconButton
-                icon="emoticon-devil-outline"
+                icon={selectedHate ? 'thumb-down' : 'thumb-down-outline'}
                 size={18}
                 onPress={onPressHate}
               />
@@ -106,12 +103,12 @@ function CommentItem({
             <View style={styles.footer_right}>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={handleModify}>
+                onPress={() => onVisibleModify(commentId)}>
                 <Text style={styles.buttonText}>수정</Text>
               </Pressable>
               <Pressable
                 style={({pressed}) => pressed && styles.pressed}
-                onPress={handleRemove}>
+                onPress={() => onVisibleRemove(commentId)}>
                 <Text style={styles.buttonText}>삭제</Text>
               </Pressable>
             </View>

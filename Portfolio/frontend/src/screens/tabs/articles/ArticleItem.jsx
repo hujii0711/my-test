@@ -11,6 +11,7 @@ const ArticleItem = ({
   created_at,
   user_name,
   comment_cnt,
+  lookup,
 }) => {
   const createdAt = formatDaysAgo(created_at);
   const onPressMove = () => {

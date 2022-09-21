@@ -38,7 +38,6 @@ const CommentModifyModal = ({
             backgroundColor: '#F2F5F9',
             borderRadius: 20,
             padding: 20,
-            flex: 1,
           }}>
           <Text>댓글 수정</Text>
           <TextInput
@@ -53,11 +52,11 @@ const CommentModifyModal = ({
           />
           <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
             <IconButton
-              icon="sticker-check-outline"
+              icon="comment-check-outline"
               size={20}
               onPress={onSubmit}
             />
-            <IconButton icon="cancel" size={20} onPress={onClose} />
+            <IconButton icon="close" size={20} onPress={onClose} />
           </View>
         </Modal>
       </Portal>

@@ -61,7 +61,7 @@ export const writeArticle = async (params: { title: string; contents: string }, 
   console.log('ArticleService >>>> writeArticle >>>> userInfo====', userInfo);
   const { title, contents } = params;
   const { user_id, user_name } = userInfo;
-
+  //await Articles.increment({ lookup: 1 }, { where: { id: 1 } }); // 잘됨
   const data = await Articles.create({
     title,
     contents,

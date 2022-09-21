@@ -7,13 +7,11 @@ import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
 import {writeComment, selectListComment} from '../../../api/comments';
 import {useUser} from '../../../commons/hooks/useReduxState';
+import CommentModifyModal from './CommentModifyModal';
+import CustomDialog from '../../../commons/utils/CustomDialog';
+import {modifyComment, removeComment} from '../../../api/comments';
 
-const CommentList = ({
-  refRBSheet,
-  articleRef,
-  onVisibleModify,
-  onVisibleRemove,
-}) => {
+const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   const users = useUser();
   const [message, setMessage] = useState('');
 
@@ -26,6 +24,89 @@ const CommentList = ({
       articleRef,
       message,
     });
+  };
+
+  const [selectedCommentId, setSelectedCommentId] = useState(0);
+  const [askDialogVisible, setAskDialogVisible] = useState(false);
+  const [commentModifyModalVisible, setCommentModifyModalVisible] =
+    useState(false);
+
+  const {mutate: mutateModifyComment} = useMutation(modifyComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
+          return {
+            pageParams: [undefined],
+            pages: [[comment]],
+          };
+        }
+        const [firstPage, ...rest] = data.pages;
+        return {
+          ...data,
+          pages: [[comment, ...firstPage], ...rest],
+        };
+      });
+    },
+  });
+
+  const {mutate: mutateRemoveComment} = useMutation(removeComment, {
+    onSuccess: comment => {
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
+          return {
+            pageParams: [undefined],
+            pages: [[comment]],
+          };
+        }
+        const [firstPage, ...rest] = data.pages;
+        return {
+          ...data,
+          pages: [[comment, ...firstPage], ...rest],
+        };
+      });
+    },
+  });
+
+  //commentModifyModal
+  // 댓글 수정 모달 띄움
+  const onVisibleModify = commentId => {
+    setSelectedCommentId(commentId);
+    setCommentModifyModalVisible(true);
+  };
+
+  // 댓글 수정
+  const onSubmitModify = message => {
+    setCommentModifyModalVisible(false);
+    mutateModifyComment({
+      id: selectedCommentId,
+      articleRef,
+      message,
+    });
+  };
+
+  // 댓글 수정 취소
+  const onCancelModify = () => {
+    setCommentModifyModalVisible(false);
+  };
+
+  //CustomDialog
+  // 댓글 삭제 dialog 띄움
+  const onVisibleRemove = commentId => {
+    setSelectedCommentId(commentId);
+    setAskDialogVisible(true);
+  };
+
+  // 댓글 삭제
+  const onConfirmRemove = () => {
+    setAskDialogVisible(false);
+    mutateRemoveComment({
+      id: selectedCommentId,
+    });
+  };
+
+  // 댓글 삭제 취소
+  const onCancelRemove = () => {
+    setAskDialogVisible(false);
   };
 
   const {
@@ -131,10 +212,10 @@ const CommentList = ({
                 outlineColor={Color.divider}
                 style={{
                   backgroundColor: Color.white,
-                  fontSize: 12,
+                  fontSize: 11,
                   margin: 10,
                   width: '80%',
-                  height: 35,
+                  height: 30,
                 }}
                 value={message}
                 onChangeText={text => setMessage(text)}
@@ -170,6 +251,21 @@ const CommentList = ({
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
+      <CommentModifyModal
+        visible={commentModifyModalVisible}
+        commentId={selectedCommentId}
+        articleRef={articleRef}
+        onSubmit={onSubmitModify}
+        onClose={onCancelModify}
+      />
+      <CustomDialog
+        visible={askDialogVisible}
+        title="댓글 삭제"
+        message="댓글을 삭제하시겠습니까?"
+        confirmText="삭제"
+        onConfirm={onConfirmRemove}
+        onClose={onCancelRemove}
+      />
     </RBSheet>
   );
 };

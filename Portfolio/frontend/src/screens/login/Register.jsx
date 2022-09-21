@@ -157,7 +157,7 @@ const MyComponent = () => {
       />
       <View>
         <Text style={{fontSize: 11, marginVertical: 20, marginLeft: 10}}>
-          <Pressable
+          {/* <Pressable
             style={{color: 'red', textDecoration: 'underline'}}
             onPress={() => console.log('press')}>
             서비스 이용 약관
@@ -168,7 +168,7 @@ const MyComponent = () => {
             onPress={() => console.log('press')}>
             개인 정보 수집 이용 약관
           </Pressable>
-          을 확인하세요.
+          을 확인하세요. */}
         </Text>
         <View style={{flexDirection: 'row'}}>
           <Checkbox

@@ -1,15 +1,14 @@
-import {useRoute, useNavigation} from '@react-navigation/native';
-import React, {useRef} from 'react';
+import {useNavigation, useRoute} from '@react-navigation/native';
+import React, {useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
-import {useQuery} from 'react-query';
+import {useMutation, useQuery} from 'react-query';
+import {selectArticle} from '../../../api/articles';
+import {useUser} from '../../../commons/hooks/useReduxState';
 import Color from '../../../commons/style/Color';
 import {formatDaysAgo} from '../../../commons/utils/common';
-import {selectArticle} from '../../../api/articles';
 import CommentEntry from './CommentEntry';
 import CommentList from './CommentList';
-import {useUser} from '../../../commons/hooks/useReduxState';
-import {modifyComment, removeComment} from '../../../api/comments';
 
 const ArticleView = () => {
   const refRBSheet = useRef();
@@ -22,89 +21,6 @@ const ArticleView = () => {
   const selectArticleQuery = useQuery(['selectArticle', articleRef], () =>
     selectArticle(articleRef),
   );
-
-  const [selectedCommentId, setSelectedCommentId] = useState(0);
-  const [askDialogVisible, setAskDialogVisible] = useState(false);
-  const [commentModifyModalVisible, setCommentModifyModalVisible] =
-    useState(false);
-
-  const {mutate: mutateModifyComment} = useMutation(modifyComment, {
-    onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-        };
-      });
-    },
-  });
-
-  const {mutate: mutateRemoveComment} = useMutation(removeComment, {
-    onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-        };
-      });
-    },
-  });
-
-  //commentModifyModal
-  // 댓글 수정 모달 띄움
-  const onVisibleModify = commentId => {
-    setSelectedCommentId(commentId);
-    setCommentModifyModalVisible(true);
-  };
-
-  // 댓글 수정
-  const onSubmitModify = message => {
-    setCommentModifyModalVisible(false);
-    mutateModifyComment({
-      id: selectedCommentId,
-      articleRef,
-      message,
-    });
-  };
-
-  // 댓글 수정 취소
-  const onCancelModify = () => {
-    setCommentModifyModalVisible(false);
-  };
-
-  //CustomDialog
-  // 댓글 삭제 dialog 띄움
-  const onVisibleRemove = commentId => {
-    setSelectedCommentId(commentId);
-    setAskDialogVisible(true);
-  };
-
-  // 댓글 삭제
-  const onConfirmRemove = () => {
-    setAskDialogVisible(false);
-    mutateRemoveComment({
-      id: selectedCommentId,
-    });
-  };
-
-  // 댓글 삭제 취소
-  const onCancelRemove = () => {
-    setAskDialogVisible(false);
-  };
 
   //selectArticleQuery 반환값이 없으면 로딩바 출력
   if (!selectArticleQuery.data) {
@@ -140,23 +56,6 @@ const ArticleView = () => {
         refRBSheet={refRBSheet}
         articleRef={articleRef}
         comment_cnt={comment_cnt}
-        onVisibleModify={onVisibleModify}
-        onVisibleRemove={onVisibleRemove}
-      />
-      <CommentModifyModal
-        visible={commentModifyModalVisible}
-        commentId={selectedCommentId}
-        articleRef={articleRef}
-        onSubmit={onSubmitModify}
-        onClose={onCancelModify}
-      />
-      <CustomDialog
-        visible={askDialogVisible}
-        title="댓글 삭제"
-        message="댓글을 삭제하시겠습니까?"
-        confirmText="삭제"
-        onConfirm={onConfirmRemove}
-        onClose={onCancelRemove}
       />
     </>
   );
