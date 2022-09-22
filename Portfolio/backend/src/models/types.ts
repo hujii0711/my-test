@@ -40,3 +40,20 @@ export interface TestsAttributes {
   created_at?: Date;
   updated_at?: Date;
 }
+
+export interface ChatRoomAttributes {
+  id?: string;
+  title?: string;
+  maxRoom: number;
+  password?: string;
+  owner_id?: string;
+  created_at?: Date;
+}
+
+export interface ChatMessageAttributes {
+  id?: number | null;
+  room_id?: string;
+  user_id?: string;
+  file_name: string;
+  created_at?: Date;
+}
