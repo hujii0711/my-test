@@ -13,6 +13,7 @@ export async function register(params) {
 */
 export async function login(params) {
   const response = await client.post('/login/loginAction', params);
+  // reponse가 undefined일 때 따로 처리 front 에러 메시지 없이 하는 방법 고안 필요
   return response.data;
 }
 

@@ -10,12 +10,14 @@ import {useUser} from '../../../commons/hooks/useReduxState';
 import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
 import {modifyComment, removeComment} from '../../../api/comments';
+import {useQuery} from 'react-query';
 
 const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   const users = useUser();
   const [message, setMessage] = useState('');
+  //const queryClient = useQueryClient();
 
-  console.log('CommentList >>>> articleRef======', articleRef);
+  //console.log('CommentList >>>> articleRef======', articleRef);
 
   const {mutate: mutateWriteComment} = useMutation(writeComment);
 
@@ -26,44 +28,20 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
     });
   };
 
-  const [selectedCommentId, setSelectedCommentId] = useState(0);
+  const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [askDialogVisible, setAskDialogVisible] = useState(false);
   const [commentModifyModalVisible, setCommentModifyModalVisible] =
     useState(false);
 
   const {mutate: mutateModifyComment} = useMutation(modifyComment, {
     onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-        };
-      });
+      console.log('mutateModifyComment >>>> onSuccess=====', comment);
     },
   });
 
   const {mutate: mutateRemoveComment} = useMutation(removeComment, {
     onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-        };
-      });
+      console.log('mutateRemoveComment >>>> onSuccess=====', comment);
     },
   });
 
@@ -79,8 +57,8 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
     setCommentModifyModalVisible(false);
     mutateModifyComment({
       id: selectedCommentId,
-      articleRef,
-      message,
+      article_ref: articleRef,
+      message: message,
     });
   };
 
@@ -117,7 +95,7 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
     fetchPreviousPage,
   } = useInfiniteQuery(
     'selectListComment',
-    ({pageParam}) => selectListComment({...pageParam}),
+    ({pageParam}) => selectListComment({...pageParam, articleId: articleRef}),
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage?.length === 10) {
@@ -151,6 +129,14 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   if (!items) {
     return <ActivityIndicator color="red" />;
   }
+
+  //const selectCommentQuery = useQuery(
+  //  ['selectComment', selectedCommentId],
+  //  () => selectComment(articleRef, selectedCommentId),
+  //);
+  //console.log('selectCommentQuery====', selectCommentQuery);
+
+  //const selectedComment = commentsQuery.data?.find(comment => comment.id === selectedCommentId);
 
   return (
     <RBSheet
@@ -251,21 +237,25 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
-      <CommentModifyModal
-        visible={commentModifyModalVisible}
-        commentId={selectedCommentId}
-        articleRef={articleRef}
-        onSubmit={onSubmitModify}
-        onClose={onCancelModify}
-      />
-      <CustomDialog
-        visible={askDialogVisible}
-        title="댓글 삭제"
-        message="댓글을 삭제하시겠습니까?"
-        confirmText="삭제"
-        onConfirm={onConfirmRemove}
-        onClose={onCancelRemove}
-      />
+      {selectedCommentId && (
+        <>
+          <CommentModifyModal
+            visible={commentModifyModalVisible}
+            commentId={selectedCommentId}
+            articleRef={articleRef}
+            onSubmit={onSubmitModify}
+            onClose={onCancelModify}
+          />
+          <CustomDialog
+            visible={askDialogVisible}
+            title="댓글 삭제"
+            message="댓글을 삭제하시겠습니까?"
+            confirmText="삭제"
+            onConfirm={onConfirmRemove}
+            onClose={onCancelRemove}
+          />
+        </>
+      )}
     </RBSheet>
   );
 };

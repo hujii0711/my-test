@@ -45,7 +45,8 @@ export const writeComment = async (message: string, article_ref: number, userInf
   return data;
 };
 
-export const modifyComment = async (message: string, articles_ref: string, id: string) => {
+export const modifyComment = async (message: string, id: string) => {
+  console.log('Commentervice >>>> modifyComment >>>> message====', message);
   console.log('Commentervice >>>> modifyComment >>>> id====', id);
   const data = await Comments.update(
     {
@@ -69,7 +70,7 @@ export const modifyComment = async (message: string, articles_ref: string, id: s
   }
 };
 
-export const deleteComment = async (articles_ref: string, id: string) => {
+export const deleteComment = async (id: string) => {
   console.log('Commentervice >>>> deleteComment >>>> id====', id);
   const data = await Comments.destroy({
     where: { id },

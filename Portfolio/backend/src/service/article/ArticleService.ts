@@ -1,6 +1,6 @@
 import { Articles } from '../../models/articles';
 import { Users } from '../../models/users';
-import { Sequelize } from 'sequelize';
+import mailSender from '../../modules/mail';
 
 export const getJoinUser = async () => {
   console.log('ArticleService >>>> getJoinUser!!!');
@@ -104,4 +104,9 @@ export const deleteArticle = async (id: string) => {
     where: { id },
   });
   return data;
+};
+
+export const sendEmail = async (bodys: { to: string; subject: string; html: string }) => {
+  console.log('ArticleService >>>> sendEmail >>>> bodys====', bodys);
+  return mailSender(bodys);
 };

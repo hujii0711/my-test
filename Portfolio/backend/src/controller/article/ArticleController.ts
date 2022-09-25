@@ -26,6 +26,13 @@ export const getArticle = catchAsync(async (req: Request, res: Response) => {
 export const writeArticle = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
   const userInfo = req.user;
+  console.log('writeArticle >>>>>>>>>> userInfo========', userInfo);
+  // const userInfo = {
+  //   id: 1,
+  //   user_id: 'bfa7ee89-805b-4957-83f2-ebeb23e1bac4',
+  //   user_name: '독거노총각',
+  //   email: 'fujii0711',
+  // };
   const result = await ArticleService.writeArticle(body, userInfo);
   res.json(result).status(httpStatus.OK);
 });
@@ -54,4 +61,12 @@ export const fileUpload = catchAsync(async (req: Request, res: Response) => {
 
   console.log(req.file); //req.file을 통해 여러가지 요청 결과를 확인할 수 있습니다.
   res.send('ok');
+});
+
+// /sendEmail | POST
+export const sendEmail = catchAsync(async (req: Request, res: Response) => {
+  const body = req.body;
+  const result = await ArticleService.sendEmail(body);
+  console.log('aaaa==', result);
+  res.json(result).status(httpStatus.OK);
 });

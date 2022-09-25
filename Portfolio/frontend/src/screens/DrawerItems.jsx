@@ -17,11 +17,13 @@ import authStorage from '../commons/storage/authStorage';
 import useInform from '../commons/hooks/useInform';
 import {userDelete} from '../commons/redux/users/reducers';
 import Color from '../commons/style/Color';
+import {useUser} from '../commons/hooks/useReduxState';
 
 const DrawerItems = props => {
   const navigation = useNavigation();
   const inform = useInform();
   const dispatch = useDispatch();
+  const isUser = useUser();
 
   const onLogout = () => {
     dispatch(userDelete());
@@ -155,22 +157,32 @@ const DrawerItems = props => {
             console.log('footer press');
           }}>
           <View style={styles.footer}>
-            <IconButton
-              icon="account-key"
-              size={24}
-              onPress={() => navigation.navigate('Login')}
-            />
-            <IconButton icon="account-lock-open" size={24} onPress={onLogout} />
-            <IconButton
-              icon="account-plus"
-              size={24}
-              onPress={() => navigation.navigate('Register')}
-            />
-            <IconButton
-              icon="account-wrench"
-              size={24}
-              onPress={() => console.log('Pressed')}
-            />
+            {isUser ? (
+              <IconButton
+                icon="account-lock-open"
+                size={24}
+                onPress={onLogout}
+              />
+            ) : (
+              <>
+                <IconButton
+                  icon="account-key"
+                  size={24}
+                  onPress={() => navigation.navigate('Login')}
+                />
+                <IconButton
+                  icon="account-plus"
+                  size={24}
+                  onPress={() => navigation.navigate('Register')}
+                />
+                <IconButton
+                  icon="account-wrench"
+                  size={24}
+                  onPress={() => console.log('Pressed')}
+                />
+              </>
+            )}
+
             <IconButton
               icon="close"
               size={24}

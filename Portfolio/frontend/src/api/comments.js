@@ -6,24 +6,22 @@ import client from './client';
 export async function selectListComment({
   cursor = 0,
   prevCursor = 0,
-  articleId = 6,
+  articleId = 0,
 }) {
   const offset = cursor + prevCursor;
-  //console.log('selectListComment >>>>> articleId =====', articleId);
-  const response = await client.get(`/articles/6/comments`, {
+  const response = await client.get(`/articles/${articleId}/comments`, {
     params: {offset},
     headers: {returnType: 'list'},
   });
-  //console.log('selectListComment >>>>> response =====', response.data);
   return response.data;
 }
 
 /*
   Comment 글 상세 : 신규
 */
-export async function selectComment(articleId, commentId) {
+export async function selectComment(articleRef, commentId) {
   const response = await client.get(
-    `/articles/${articleId}/comments/${commentId}`,
+    `/articles/${articleRef}/comments/${commentId}`,
   );
   return response.data;
 }
@@ -32,8 +30,7 @@ export async function selectComment(articleId, commentId) {
   Comment 글 쓰기
 */
 export async function writeComment(params) {
-  const {articleId, message} = params;
-  const articleRef = 6;
+  const {articleRef, message} = params;
   const response = await client.post(`/articles/${articleRef}/comments`, {
     message,
   });
@@ -44,15 +41,14 @@ export async function writeComment(params) {
   Comment 글 수정
 */
 export async function modifyComment(params) {
-  const {articleId, message, id} = params;
-
-  await client.put(`/articles/${articleId}/comments/${id}`, {message});
+  const {message, id} = params;
+  await client.put(`/articles/comments/${id}`, {id, message});
 
   const result = {
     id,
-    articleId,
     message,
   };
+
   return result;
 }
 
@@ -60,7 +56,7 @@ export async function modifyComment(params) {
   Comment 글 삭제
 */
 export async function removeComment(params) {
-  const {articleId, id} = params;
-  await client.delete(`/articles/${articleId}/comments/${id}`);
+  const {id} = params;
+  await client.delete(`/articles/comments/${id}`);
   return null;
 }

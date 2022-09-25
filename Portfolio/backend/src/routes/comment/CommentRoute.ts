@@ -16,9 +16,9 @@ router.use('/', (req: Request, res: Response, next: NextFunction) => {
 // /articles/:articleId/comments/:id | DELETE | deleteComment | 댓글삭제
 
 router.get('/articles/:articleId/comments', CommentController.getComments); //댓글목록
-router.get('/articles/:articleId/comments/:commentId', CommentController.getComment); //댓글상세
+router.get('/articles/:articleRef/comments/:commentId', CommentController.getComment); //댓글상세
 router.post('/articles/:articleId/comments', CommentController.writeComment); //댓글쓰기
-router.put('/articles/:articleId/comments/:id', CommentController.modifyComment); //댓글수정
-router.delete('/articles/:articleId/comments/:id', CommentController.deleteComment); //댓글삭제
+router.put('/articles/comments/:id', CommentController.modifyComment); //댓글수정
+router.delete('/articles/comments/:id', CommentController.deleteComment); //댓글삭제
 
 export default router;

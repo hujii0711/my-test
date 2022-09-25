@@ -2,7 +2,6 @@ import database from 'sequelize';
 import { databaseConfig as db } from '../config/database';
 import { Users } from './users';
 import { Articles } from './articles';
-import { Tests } from './tests';
 import { Comments } from './comments';
 import { ChatMessages } from './chatMessages';
 import { ChatParticipants } from './chatParticipants';
@@ -38,17 +37,17 @@ const sequelize = new database.Sequelize(
 );
 
 export function Sequelize() {
-  Tests.initModel(sequelize);
-  Articles.initModel(sequelize);
   Users.initModel(sequelize);
+  Articles.initModel(sequelize);
   Comments.initModel(sequelize);
   ChatMessages.initModel(sequelize);
   ChatRooms.initModel(sequelize);
   ChatParticipants.initModel(sequelize);
+
+  //Foreign key 관계의 경우 관계를 만드는 상위 테이블은 Unique 하거나 Primary 이어야 합니다. 또한 같은 데이터 타입 이어야 합니다.
   //Articles.hasMany(Users, { foreignKey: 'user_id', sourceKey: 'id' });
   //Users.belongsTo(Articles, { foreignKey: 'user_id', targetKey: 'user_id' });
-  Articles.hasOne(Comments, { foreignKey: 'articles_ref', sourceKey: 'id' });
-  //Foreign key 관계의 경우 관계를 만드는 상위 테이블은 Unique 하거나 Primary 이어야 합니다. 또한 같은 데이터 타입 이어야 합니다.
+  Articles.hasOne(Comments, { foreignKey: 'article_ref', sourceKey: 'id' });
   ChatRooms.hasOne(ChatMessages, { foreignKey: 'room_id', sourceKey: 'id' });
   ChatRooms.hasOne(ChatParticipants, { foreignKey: 'room_id', sourceKey: 'id' });
   return sequelize;

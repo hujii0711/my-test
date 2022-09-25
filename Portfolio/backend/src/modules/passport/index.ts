@@ -1,7 +1,7 @@
-import passport from "passport";
-import local from "./localStrategy";
-import { Users } from "../../models/users";
-import * as tokenConfig from "../token";
+import passport from 'passport';
+import local from './localStrategy';
+import { Users } from '../../models/users';
+import * as tokenConfig from '../token';
 
 // 전체 과정 요약
 // 1. 로그인 요청이 들어옴
@@ -20,19 +20,20 @@ import * as tokenConfig from "../token";
 
 const passportConfig = () => {
   passport.serializeUser((user: any, done) => {
+    console.log('★★★★★★★★★★★★passport.serializeUser★★★★★★★★★★★★');
     const { user_id } = user;
     done(null, user_id);
   });
 
   passport.deserializeUser(async (user_id: string, done) => {
-    console.log("★★★★★★★★★★★★passport.deserializeUser★★★★★★★★★★★★");
+    console.log('★★★★★★★★★★★★passport.deserializeUser★★★★★★★★★★★★');
     try {
       const users = await Users.findOne({
-        attributes: ["id", "user_id", "user_name", "email"],
+        attributes: ['id', 'user_id', 'user_name', 'email'],
         where: { user_id },
         raw: true,
       });
-
+      console.log('users=====', users);
       done(null, users);
     } catch (err) {
       done(err);

@@ -47,7 +47,7 @@ client.interceptors.response.use(
 export function applyToken(jwt) {
   console.log('applyToken=============', jwt);
   //client.defaults.headers.authorization = `Bearer ${jwt}`;
-  client.defaults.headers.common['Authentication'] = `${jwt}`;
+  client.defaults.headers.common['authorization'] = `${jwt}`;
 }
 
 /*******************************************

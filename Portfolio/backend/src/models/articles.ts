@@ -33,7 +33,7 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
           allowNull: false,
         },
         user_id: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.STRING(50),
           allowNull: false,
         },
         user_name: {

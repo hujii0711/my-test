@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Modal,
   Portal,
@@ -10,6 +10,8 @@ import {
 import {View} from 'react-native';
 import {useQuery} from 'react-query';
 import {selectComment} from '../../../api/comments';
+import id from 'date-fns/esm/locale/id/index.js';
+import {useEffect} from 'react';
 
 const CommentModifyModal = ({
   visible,
@@ -18,15 +20,16 @@ const CommentModifyModal = ({
   onSubmit,
   onClose,
 }) => {
-  console.log('CommentModifyModal >>>> commentId=====', commentId);
-  console.log('CommentModifyModal >>>> articleRef=====', articleRef);
   const selectCommentQuery = useQuery(['selectComment', commentId], () =>
     selectComment(articleRef, commentId),
   );
 
-  const [message, setMessage] = useState(
-    selectCommentQuery?.data?.message ?? '',
-  );
+  const selectedComment = selectCommentQuery.data;
+  const [message, setMessage] = useState('');
+
+  useEffect(() => {
+    setMessage(selectedComment?.message);
+  }, [selectedComment?.message]);
 
   return (
     <Provider>
@@ -54,7 +57,7 @@ const CommentModifyModal = ({
             <IconButton
               icon="comment-check-outline"
               size={20}
-              onPress={onSubmit}
+              onPress={() => onSubmit(message)}
             />
             <IconButton icon="close" size={20} onPress={onClose} />
           </View>

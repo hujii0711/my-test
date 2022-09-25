@@ -20,11 +20,11 @@ router.use('/', (req: Request, res: Response, next: NextFunction) => {
 router.get('/articles', ArticleController.getArticles); //글목록
 router.get('/articles/:id', ArticleController.getArticle); //글상세
 router.post('/articles', ArticleController.writeArticle); //글쓰기
-router.put('/articles/:id', ArticleController.modifyArticle); //글수정
+router.put('/articles/:id', verifyToken, ArticleController.modifyArticle); //글수정
 router.delete('/articles/:id', verifyToken, ArticleController.deleteArticle); //글삭제
 router.get('/join', ArticleController.getJoinUser);
 router.post('/upload', upload.single('image'), ArticleController.fileUpload);
-
+router.post('/sendEmail', ArticleController.sendEmail);
 export default router;
 
 // router.route('/sub') //한개 url로 REST 재활용 [ /test/sub ]

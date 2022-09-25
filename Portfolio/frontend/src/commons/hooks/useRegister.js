@@ -20,7 +20,6 @@ export default function useRegister() {
       authStorage.set(data);
     },
     onError: error => {
-      console.log(error.response?.data);
       const message =
         error.response?.data?.data?.[0]?.messages[0].message ?? '회원가입 실패';
       inform({
