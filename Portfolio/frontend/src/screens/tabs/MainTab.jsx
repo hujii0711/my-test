@@ -1,6 +1,5 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import {StyleSheet} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
 import Color from '../../commons/style/Color';
 import Dashboard from './Dashboard';
@@ -8,7 +7,7 @@ import Faq from './Faq';
 import ArticleList from './articles/ArticleList';
 import ArticleWrite from './articles/ArticleWrite';
 import ImageViewer from './ImageViewer';
-import Chatting from './Chatting';
+import ChatMain from './chat/ChatMain';
 
 const Tab = createMaterialBottomTabNavigator();
 
@@ -59,8 +58,8 @@ const MainTab = () => {
         }}
       />
       <Tab.Screen
-        name="Chatting"
-        component={Chatting}
+        name="ChatMain"
+        component={ChatMain}
         options={{
           tabBarIcon: ({color}) => <Icon name="chat" color={color} size={24} />,
           tabBarLabel: '채팅',

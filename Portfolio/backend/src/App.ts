@@ -72,8 +72,8 @@ uploadFolder(); //파일업로드 폴더 생성
  * 클라이언트의 모든 요청 로그 남김
  *****************************************/
 app.use((req: Request, res: Response, next: NextFunction) => {
-  const { method, path, url, query, headers, body, user } = req;
-  const request = { method, path, headers, body, url, query, user };
+  const { method, path, url, query, headers, body, user, cookies, session } = req;
+  const request = { method, path, headers, body, url, query, user, cookies, session };
   //logger.info({ request });
   console.log('All router request=====', request);
   next();

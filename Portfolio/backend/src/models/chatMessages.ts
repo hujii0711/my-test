@@ -5,7 +5,8 @@ import { ChatRooms } from './chatRooms';
 export class ChatMessages extends Model<ChatMessageAttributes> implements ChatMessageAttributes {
   public readonly id!: number;
   public room_id!: string;
-  public user_id!: string;
+  public sender_id!: string;
+  public receiver_id!: string;
   public file_name!: string;
   public created_at!: Date;
 
@@ -24,7 +25,11 @@ export class ChatMessages extends Model<ChatMessageAttributes> implements ChatMe
           allowNull: false,
           primaryKey: true,
         },
-        user_id: {
+        sender_id: {
+          type: DataTypes.STRING(50),
+          allowNull: false,
+        },
+        receiver_id: {
           type: DataTypes.STRING(50),
           allowNull: false,
         },

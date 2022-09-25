@@ -4,9 +4,9 @@ import { ChatMessages } from './chatMessages';
 
 export class ChatRooms extends Model<ChatRoomAttributes> implements ChatRoomAttributes {
   public readonly id!: string;
-  public owner_id!: string;
+  public creator_id!: string;
   public title!: string;
-  public maxRoom!: number;
+  public max_room!: number;
   public password!: string;
   public created_at!: Date;
 
@@ -19,15 +19,15 @@ export class ChatRooms extends Model<ChatRoomAttributes> implements ChatRoomAttr
           allowNull: false,
           primaryKey: true,
         },
-        owner_id: {
+        creator_id: {
           type: DataTypes.STRING(50),
           allowNull: false,
         },
         title: {
           type: DataTypes.STRING(100),
-          allowNull: false,
+          allowNull: true,
         },
-        maxRoom: {
+        max_room: {
           type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 0,

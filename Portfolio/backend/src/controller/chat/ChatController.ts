@@ -26,8 +26,9 @@ export const getChatMakeRoom = catchAsync(async (req: Request, res: Response) =>
 // /chat/makeRoom | POST | writeChatMakeRoom | 채팅방 만들고 채팅방으로 이동
 export const writeChatMakeRoom = catchAsync(async (req: Request, res: Response) => {
   //req.body 사용
-  const body = await ChatService.writeChatMakeRoom();
-  res.json(body).status(httpStatus.OK);
+  const participant_id = req.body.participant_id;
+  const result = await ChatService.writeChatMakeRoom(participant_id);
+  res.json(result).status(httpStatus.OK);
 });
 
 // /chat/roomEntrance/:id | GET | getChatRoomEntrance | 채팅방 입장

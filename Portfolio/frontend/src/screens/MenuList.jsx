@@ -4,6 +4,9 @@ import SnsLogin from './login/SnsLogin';
 import MainTab from './tabs/MainTab';
 import ArticleView from './tabs/articles/ArticleView';
 import ArticleWrite from './tabs/articles/ArticleWrite';
+import ChatMain from './tabs/chat/ChatMain';
+import ChattingMessge from './tabs/chat/ChattingMessge';
+
 import ShareScreen from './direct/ShareScreen';
 import NotifyPushScreen from './direct/NotifyPushScreen';
 import FilmingScreen from './direct/FilmingScreen';
@@ -23,6 +26,9 @@ export const MenuList = [
   {id: 'Login', component: Login, options: {headerShown: false}},
   {id: 'Register', component: Register},
   {id: 'SnsLogin', component: SnsLogin},
+  {id: 'ChatMain', component: ChatMain},
+  {id: 'ChattingMessge', component: ChattingMessge},
+
   {id: 'ShareScreen', component: ShareScreen},
   {id: 'NotifyPushScreen', component: NotifyPushScreen},
   {id: 'FilmingScreen', component: FilmingScreen},

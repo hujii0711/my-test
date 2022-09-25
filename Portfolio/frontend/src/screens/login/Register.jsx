@@ -101,60 +101,73 @@
 
 // export default Register;
 
-import * as React from 'react';
+import React, {useState} from 'react';
 import {TextInput, Button, Checkbox} from 'react-native-paper';
 import {View, Text, Pressable} from 'react-native';
+import useRegister from '../../commons/hooks/useRegister';
 
 const MyComponent = () => {
-  const [text, setText] = React.useState('');
-  const [checked, setChecked] = React.useState(false);
+  const [email, setEmail] = useState('');
+  const [user_name, setUserName] = useState('');
+  const [password, setPassword] = useState('');
+  const [checked, setChecked] = useState(false);
+
+  const {mutate: mutateRegister} = useRegister();
+
+  const onPressRegister = () => {
+    mutateRegister({
+      user_name,
+      email,
+      password,
+    });
+  };
 
   return (
     <>
       <TextInput
         label="이메일(아이디)"
         mode="outlined"
-        value={text}
+        value={email}
         placeholder="이메일을 입력하세요."
         activeOutlineColor="#919191"
         outlineColor="#919191"
         left={<TextInput.Icon icon="email" size={20} />}
         style={{backgroundColor: '#ffffff', fontSize: 13}}
-        onChangeText={text => setText(text)}
+        onChangeText={text => setEmail(text)}
       />
       <TextInput
         label="활동명"
         mode="outlined"
-        value={text}
+        value={user_name}
         placeholder="활동명을 입력하세요."
         activeOutlineColor="#919191"
         outlineColor="#919191"
         left={<TextInput.Icon icon="account" size={20} />}
         style={{backgroundColor: '#ffffff', fontSize: 13}}
-        onChangeText={text => setText(text)}
+        onChangeText={text => setUserName(text)}
       />
       <TextInput
         label="비밀번호"
         mode="outlined"
-        value={text}
+        value={password}
         placeholder="8~16자 영문 숫자 조합"
         activeOutlineColor="#919191"
         outlineColor="#919191"
         left={<TextInput.Icon icon="file-key-outline" size={20} />}
         style={{backgroundColor: '#ffffff', fontSize: 13}}
-        onChangeText={text => setText(text)}
+        onChangeText={text => setPassword(text)}
       />
-      <TextInput
+      {/* <TextInput
         label="비밀번호 확인"
         mode="outlined"
-        value={text}
+        value={setPassword}
         placeholder="방금 입력한 비밀번호를 다시 입력하세요."
         activeOutlineColor="#919191"
         outlineColor="#919191"
         left={<TextInput.Icon icon="file-key" size={20} />}
         style={{backgroundColor: '#ffffff', fontSize: 13}}
-        onChangeText={text => setText(text)}
-      />
+        onChangeText={text => setPassword(text)}
+      /> */}
       <View>
         <Text style={{fontSize: 11, marginVertical: 20, marginLeft: 10}}>
           {/* <Pressable
@@ -194,7 +207,7 @@ const MyComponent = () => {
         </View>
         <Button
           mode="contained"
-          onPress={{}}
+          onPress={onPressRegister}
           style={{
             borderWidth: 1,
             borderRadius: 5,

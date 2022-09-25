@@ -22,8 +22,10 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
           autoIncrement: true, // 자동증가 여부
         },
         user_id: {
-          type: DataTypes.STRING(30),
+          type: DataTypes.UUID,
+          defaultValue: DataTypes.UUIDV4,
           allowNull: false,
+          primaryKey: true,
         },
         user_name: {
           type: DataTypes.STRING(30),

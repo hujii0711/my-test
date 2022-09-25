@@ -47,7 +47,7 @@ const Login = ({navigation}) => {
           />
           <TextInput
             mode="outlined"
-            placeholder="아이디를 입력하세요."
+            placeholder="이메일을 입력하세요."
             selectionColor="#c2c2c2" //텍스트 select 되었을 때
             activeOutlineColor="#919191" //editmode
             outlineColor="#919191" // input border

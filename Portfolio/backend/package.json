@@ -13,10 +13,12 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@types/cookie-signature": "^1.0.4",
     "axios": "^0.26.1",
     "bcryptjs": "^2.4.3",
     "cls-rtracer": "^2.6.2",
     "cookie-parser": "^1.4.5",
+    "cookie-signature": "^1.2.0",
     "dotenv": "^8.2.0",
     "eslint-config-prettier": "^8.5.0",
     "express": "^4.17.1",

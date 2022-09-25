@@ -57,7 +57,7 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
       {
         sequelize,
         modelName: 'Comments',
-        tableName: 'Comments',
+        tableName: 'comments',
       },
     );
     return Comments;

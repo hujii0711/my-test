@@ -1,11 +1,31 @@
-import * as React from 'react';
+import React, {useCallback, useState} from 'react';
 import {Image, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
+import {useMutation} from 'react-query';
+import {writeChatMakeRoom} from '../../../api/chat';
+import {useNavigation} from '@react-navigation/native';
 
-const MyComponent = () => {
+const ChatMakeRoom = ({selectedId, setSelectedId}) => {
+  const navigation = useNavigation();
+
+  const {mutate: mutateWriteChatMakeRoom} = useMutation(writeChatMakeRoom, {
+    onSuccess: chat => {
+      navigation.navigate('ChattingMessge', {id: chat.id});
+    },
+  });
+
+  const onSubmitWriteChatMakeRoom = useCallback(() => {
+    mutateWriteChatMakeRoom({participant_id: selectedId});
+  }, [mutateWriteChatMakeRoom, selectedId]);
+
   return (
-    <View style={{flex: 1}}>
-      <View style={{width: '100%', height: '85%', backgroundColor: 'red'}}>
+    <View
+      style={
+        selectedId
+          ? {display: 'flex', backgroundColor: 'red'}
+          : {display: 'none'}
+      }>
+      <View style={{width: '100%', height: '85%'}}>
         <Image
           source={{
             uri: 'https://avatars3.githubusercontent.com/u/17571969?s=400&v=4',
@@ -28,17 +48,17 @@ const MyComponent = () => {
           icon="chat-plus"
           iconColor="#227093"
           size={50}
-          onPress={() => console.log('Pressed')}
+          onPress={onSubmitWriteChatMakeRoom}
         />
         <IconButton
           icon="close"
           iconColor="#227093"
           size={50}
-          onPress={() => console.log('Pressed')}
+          onPress={() => setSelectedId(null)}
         />
       </View>
     </View>
   );
 };
 
-export default MyComponent;
+export default ChatMakeRoom;

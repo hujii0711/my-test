@@ -44,16 +44,24 @@ export interface TestsAttributes {
 export interface ChatRoomAttributes {
   id?: string;
   title?: string;
-  maxRoom: number;
+  max_room?: number;
   password?: string;
-  owner_id?: string;
+  creator_id?: string;
   created_at?: Date;
 }
 
 export interface ChatMessageAttributes {
   id?: number | null;
   room_id?: string;
-  user_id?: string;
-  file_name: string;
+  sender_id?: string;
+  receiver_id?: string;
+  file_name?: string;
+  created_at?: Date;
+}
+
+export interface ChatParticipantAttributes {
+  id?: number | null;
+  room_id?: string;
+  participant_id?: string;
   created_at?: Date;
 }
