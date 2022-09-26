@@ -1,12 +1,11 @@
-import { Request, Response, NextFunction, Router } from "express";
+import { Request, Response, NextFunction, Router } from 'express';
 import * as UserController from '../../controller/user/UserController';
 
 export const path = 'user';
 export const router = Router();
 
-router.use('/', (req:Request, res:Response, next: NextFunction) => {
-    console.log("user 라우터 초기 미들웨어");
-    next();
+router.use('/', (req: Request, res: Response, next: NextFunction) => {
+  next();
 });
 
 router.get('/select', UserController.getListUsers);
@@ -15,3 +14,9 @@ router.put('/update', UserController.updateUsers);
 router.delete('/delete', UserController.deleteUsers);
 
 export default router;
+
+// router.route('/sub') //한개 url로 REST 재활용 [ /test/sub ]
+//     .get(TestController.getListTests)
+//     .post(TestController.insertTests)
+//     .put(TestController.updateTests)
+//     .delete(TestController.deleteTests)

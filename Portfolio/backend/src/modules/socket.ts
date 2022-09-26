@@ -4,6 +4,8 @@ import { NextFunction } from 'express';
 import env from '../modules/env';
 import cookie from 'cookie-signature';
 import axios from 'axios';
+import { deleteChatRoomExit } from '../controller/chat/ChatController';
+
 // var cookie = require('cookie-signature');
 
 // var val = cookie.sign('hello', 'tobiiscool');
@@ -24,10 +26,10 @@ export default (server: any, app: any, sessionMiddleware: any) => {
   const room = io.of('/room');
   const chat = io.of('/chat');
 
-  //io.use((socket: any, next: any) => {
-  //  cookieParser(env.cookie.secret)(socket.request, socket.request.res, next);
-  //  sessionMiddleware(socket.request, socket.request.res, next);
-  //});
+  io.use((socket: any, next: any) => {
+    cookieParser(env.cookie.secret)(socket.request, socket.request.res, next);
+    sessionMiddleware(socket.request, socket.request.res, next);
+  });
 
   room.on('connection', (socket) => {
     console.log('room 네임스페이스에 접속');
@@ -46,9 +48,9 @@ export default (server: any, app: any, sessionMiddleware: any) => {
     const roomId = referer.split('/')[referer.split('/').length - 1].replace(/\?.+/, '');
 
     socket.join(roomId);
+
     socket.to(roomId).emit('join', {
-      user: 'system',
-      chat: `${req.session.color}님이 입장하셨습니다.`,
+      message: `${req.user}님이 입장하셨습니다.`,
     });
 
     socket.on('disconnect', async () => {
@@ -58,37 +60,28 @@ export default (server: any, app: any, sessionMiddleware: any) => {
 
       const userCount = currentRoom ? currentRoom.length : 0;
 
-      // if (userCount === 0) {
+      if (userCount === 0) {
+        // 유저가 0명이면 방 삭제
+        const signedCookie = cookie.sign(req.signedCookies['connect.sid'], env.cookie);
 
-      //   // 유저가 0명이면 방 삭제
-      //   const signedCookie = cookie.sign(
-      //     req.signedCookies["connect.sid"],
-      //     process.env.COOKIE_SECRET
-      //   );
+        const connectSID = `${signedCookie}`;
 
-      //   const connectSID = `${signedCookie}`;
+        const config = {
+          headers: {
+            Cookie: `connect.sid=s%3A${connectSID}`,
+          },
+        };
 
-      //   axios
-      //     .delete(`http://localhost:8005/room/${roomId}`, {
-      //       headers: {
-      //         Cookie: `connect.sid=s%3A${connectSID}`,
-      //       },
-      //       data: {
-      //         TEST: "test",
-      //       },
-      //     })
-      //     .then(() => {
-      //       console.log("방 제거 요청 성공");
-      //     })
-      //     .catch((error) => {
-      //       console.error(error);
-      //     });
-      // } else {
-      //   socket.to(roomId).emit("exit", {
-      //     user: "system",
-      //     chat: `${req.session.color}님이 퇴장하셨습니다.`,
-      //   });
-      //}
+        try {
+          await axios.delete(`/chat/roomExit/${roomId}`, config);
+        } catch (err) {
+          console.log(err);
+        }
+      } else {
+        socket.to(roomId).emit('exit', {
+          message: `${req.user}님이 퇴장하셨습니다.`,
+        });
+      }
     });
   });
 };

@@ -13,41 +13,47 @@ import httpStatus from 'http-status';
 
 // /chat/intro | GET | getChatRoomList | 채팅방 목록 페이지
 export const getChatRoomList = catchAsync(async (req: Request, res: Response) => {
-  const result = await ChatService.getChatRoomList();
+  const userInfo = req.user;
+  const result = await ChatService.getChatRoomList(userInfo);
   res.json(result).status(httpStatus.OK);
-});
-
-// /chat/makeRoom | GET | getChatMakeRoom | 채팅방 만들기 폼 페이지
-export const getChatMakeRoom = catchAsync(async (req: Request, res: Response) => {
-  const body = await ChatService.getChatMakeRoom();
-  res.json(body).status(httpStatus.OK);
 });
 
 // /chat/makeRoom | POST | writeChatMakeRoom | 채팅방 만들고 채팅방으로 이동
 export const writeChatMakeRoom = catchAsync(async (req: Request, res: Response) => {
-  //req.body 사용
+  const userInfo = req.user;
   const participant_id = req.body.participant_id;
-  const result = await ChatService.writeChatMakeRoom(participant_id);
+  const result = await ChatService.writeChatMakeRoom(userInfo, participant_id);
   res.json(result).status(httpStatus.OK);
 });
 
 // /chat/roomEntrance/:id | GET | getChatRoomEntrance | 채팅방 입장
 export const getChatRoomEntrance = catchAsync(async (req: Request, res: Response) => {
-  //req.param 사용
-  const result = await ChatService.getChatRoomEntrance();
+  const userInfo = req.user;
+  const { room_id } = req.params;
+
+  const result = await ChatService.getChatRoomEntrance(userInfo, room_id);
   res.json(result).status(httpStatus.OK);
 });
 
 // /chat/sendMessge/:id | POST | writeChatMessage | 채팅 메시지 전송
 export const writeChatMessage = catchAsync(async (req: Request, res: Response) => {
-  //req.param 사용
-  const result = await ChatService.writeChatMessage();
+  const userInfo = req.user;
+  const { room_id } = req.params;
+  const { message, receiver_id } = req.body;
+  const data = {
+    room_id,
+    message,
+    receiver_id,
+  };
+
+  const result = await ChatService.writeChatMessage(userInfo, data);
+  req.app.get('io').of('/chat').to(room_id).emit('receiveMessage', result);
   res.json(result).status(httpStatus.OK);
 });
 
 // /chat/roomExit/:id | DELETE | deleteChatRoomExit | 채팅방 나가기
 export const deleteChatRoomExit = catchAsync(async (req: Request, res: Response) => {
-  //req.param 사용
-  const result = await ChatService.deleteChatRoomExit();
+  const { roomId } = req.params;
+  const result = await ChatService.deleteChatRoomExit(roomId);
   res.json(result).status(httpStatus.OK);
 });

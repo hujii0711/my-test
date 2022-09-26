@@ -3,11 +3,6 @@ import * as ArticleService from '../../service/article/ArticleService';
 import { catchAsync } from '../../modules/error';
 import httpStatus from 'http-status';
 
-export const getJoinUser = catchAsync(async (req: Request, res: Response) => {
-  const result = await ArticleService.getJoinUser();
-  res.json(result).status(httpStatus.OK);
-});
-
 //router.get('/articles', ArticleController.getArticles); //글목록
 export const getArticles = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
@@ -67,6 +62,19 @@ export const fileUpload = catchAsync(async (req: Request, res: Response) => {
 export const sendEmail = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
   const result = await ArticleService.sendEmail(body);
-  console.log('aaaa==', result);
+  res.json(result).status(httpStatus.OK);
+});
+
+// /articles/lookup | PATCH
+export const updateArticleLookup = catchAsync(async (req: Request, res: Response) => {
+  const body = req.body;
+  const result = await ArticleService.updateArticleLookup(body);
+  res.json(result).status(httpStatus.OK);
+});
+
+// /articles/like | PATCH
+export const updateArticleLike = catchAsync(async (req: Request, res: Response) => {
+  const { id, select } = req.body;
+  const result = await ArticleService.updateArticleLike(id, select);
   res.json(result).status(httpStatus.OK);
 });

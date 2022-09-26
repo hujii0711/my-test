@@ -5,20 +5,13 @@ export const path = '';
 export const router = Router();
 
 router.use('/', (req: Request, res: Response, next: NextFunction) => {
-  console.log('<<<<<< comments 라우터 초기 미들웨어 >>>>>>');
   next();
 });
 
-// /articles/:articleId/comments | GET | getComments | 댓글목록
-// /articles/:articleId/comments/:commentId | GET | getComment | 댓글목록
-// /articles/:articleId/comments | POST | writeComment | 댓글쓰기
-// /articles/:articleId/comments/:id | PUT | modifyComment | 댓글수정
-// /articles/:articleId/comments/:id | DELETE | deleteComment | 댓글삭제
-
-router.get('/articles/:articleId/comments', CommentController.getComments); //댓글목록
-router.get('/articles/:articleRef/comments/:commentId', CommentController.getComment); //댓글상세
-router.post('/articles/:articleId/comments', CommentController.writeComment); //댓글쓰기
-router.put('/articles/comments/:id', CommentController.modifyComment); //댓글수정
-router.delete('/articles/comments/:id', CommentController.deleteComment); //댓글삭제
-
+router.get('/comment/:articleRef', CommentController.getComments); //댓글 목록
+router.get('/comment/:articleRef/:id', CommentController.getComment); //댓글 상세
+router.post('/comment/insert/:articleRef', CommentController.writeComment); //댓글 쓰기
+router.put('/comment/update/:id', CommentController.modifyComment); //댓글 수정
+router.delete('/comment/delete/:id', CommentController.deleteComment); //댓글 삭제
+router.patch('/comment/update/like', CommentController.updateCommentLike); //댓글 like 증가
 export default router;

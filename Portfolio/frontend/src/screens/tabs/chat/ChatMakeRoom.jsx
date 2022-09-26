@@ -2,15 +2,18 @@ import React, {useCallback, useState} from 'react';
 import {Image, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {useMutation} from 'react-query';
-import {writeChatMakeRoom} from '../../../api/chat';
+import {insertChatMakeRoom} from '../../../api/chat';
 import {useNavigation} from '@react-navigation/native';
 
 const ChatMakeRoom = ({selectedId, setSelectedId}) => {
   const navigation = useNavigation();
 
-  const {mutate: mutateWriteChatMakeRoom} = useMutation(writeChatMakeRoom, {
+  const {mutate: mutateWriteChatMakeRoom} = useMutation(insertChatMakeRoom, {
     onSuccess: chat => {
-      navigation.navigate('ChattingMessge', {id: chat.id});
+      navigation.navigate('ChattingMessge', {
+        id: chat.id,
+        participant_id: selectedId,
+      });
     },
   });
 

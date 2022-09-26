@@ -2,6 +2,7 @@ import client from './client';
 
 /*
   Comment 글 목록
+  /comment/:articleRef
 */
 export async function selectListComment({
   cursor = 0,
@@ -9,7 +10,8 @@ export async function selectListComment({
   articleId = 0,
 }) {
   const offset = cursor + prevCursor;
-  const response = await client.get(`/articles/${articleId}/comments`, {
+  const articleRef = articleId;
+  const response = await client.get(`/comment/${articleRef}`, {
     params: {offset},
     headers: {returnType: 'list'},
   });
@@ -18,20 +20,21 @@ export async function selectListComment({
 
 /*
   Comment 글 상세 : 신규
+  /comment/:articleRef/:id
 */
 export async function selectComment(articleRef, commentId) {
-  const response = await client.get(
-    `/articles/${articleRef}/comments/${commentId}`,
-  );
+  const id = commentId;
+  const response = await client.get(`/comment/${articleRef}/${id}`);
   return response.data;
 }
 
 /*
   Comment 글 쓰기
+  /comment/insert/:articleRef
 */
-export async function writeComment(params) {
+export async function insertComment(params) {
   const {articleRef, message} = params;
-  const response = await client.post(`/articles/${articleRef}/comments`, {
+  const response = await client.post(`/comment/insert/${articleRef}`, {
     message,
   });
   return response.data;
@@ -39,10 +42,11 @@ export async function writeComment(params) {
 
 /*
   Comment 글 수정
+  /comment/update/:id
 */
-export async function modifyComment(params) {
+export async function updateComment(params) {
   const {message, id} = params;
-  await client.put(`/articles/comments/${id}`, {id, message});
+  await client.put(`/comment/update/${id}`, {id, message});
 
   const result = {
     id,
@@ -54,9 +58,20 @@ export async function modifyComment(params) {
 
 /*
   Comment 글 삭제
+  /comment/delete/:id
 */
-export async function removeComment(params) {
+export async function deleteComment(params) {
   const {id} = params;
-  await client.delete(`/articles/comments/${id}`);
+  await client.delete(`/comment/delete/${id}`);
+  return null;
+}
+
+/*
+  Comment 댓글 like 증가
+  /comment/update/like
+*/
+export async function updateCommentLike(id) {
+  const config = {headers: {returnType: 'map'}};
+  await client.patch('/comment/update/like', {id}, config);
   return null;
 }

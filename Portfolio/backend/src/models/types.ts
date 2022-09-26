@@ -53,6 +53,7 @@ export interface ChatRoomAttributes {
 export interface ChatMessageAttributes {
   id?: number | null;
   room_id?: string;
+  message?: string;
   sender_id?: string;
   receiver_id?: string;
   file_name?: string;

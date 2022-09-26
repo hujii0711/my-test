@@ -3,7 +3,7 @@ import React, {useRef, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
 import {useMutation, useQuery} from 'react-query';
-import {selectArticle} from '../../../api/articles';
+import {selectArticle, deleteArticle} from '../../../api/articles';
 import {useUser} from '../../../commons/hooks/useReduxState';
 import Color from '../../../commons/style/Color';
 import {formatDaysAgo} from '../../../commons/utils/common';
@@ -75,9 +75,33 @@ const ArticleViewItems = ({
   const createdAt = formatDaysAgo(created_at);
   const navigation = useNavigation();
 
-  const onPressMove = () => {
+  const onPressNaviMove = () => {
     navigation.navigate('ArticleWrite', {id});
   };
+
+  const {mutate: mutateDeleteArticle} = useMutation(deleteArticle, {
+    onSuccess: article => {
+      queryClient.setQueryData('selectListArticle', data => {
+        if (!data) {
+          return {
+            pageParams: [undefined],
+            pages: [[article]],
+          };
+        }
+        const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
+        return {
+          ...data,
+          // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
+          pages: [[article, ...firstPage], ...rest],
+        };
+      });
+      navigation.goBack();
+    },
+  });
+
+  const onPressDeleteArticle = useCallback(() => {
+    mutateDeleteArticle(id);
+  }, [mutateDeleteArticle, id]);
 
   return (
     <View style={styles.block}>
@@ -87,12 +111,20 @@ const ArticleViewItems = ({
           {user_name} | {createdAt} | 조회수: {lookup}
         </Text>
         {isMyArticle ? (
-          <IconButton
-            icon="application-edit-outline"
-            size={18}
-            style={{alignSelf: 'flex-end'}}
-            onPress={() => onPressMove()}
-          />
+          <>
+            <IconButton
+              icon="application-edit-outline"
+              size={18}
+              style={{alignSelf: 'flex-end'}}
+              onPress={() => onPressNaviMove()}
+            />
+            <IconButton
+              icon="archive-remove-outline"
+              size={18}
+              style={{alignSelf: 'flex-end'}}
+              onPress={() => onPressDeleteArticle()}
+            />
+          </>
         ) : (
           <>
             <IconButton

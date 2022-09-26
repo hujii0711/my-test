@@ -2,15 +2,8 @@ import { Articles } from '../../models/articles';
 import { Users } from '../../models/users';
 import mailSender from '../../modules/mail';
 
-export const getJoinUser = async () => {
-  console.log('ArticleService >>>> getJoinUser!!!');
-  const data = await Articles.findAll({ include: Users, raw: true });
-  return data;
-};
-
 export const getArticles = async (params: any) => {
   const { offset } = params; ////{offset:0}
-
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
   const data = await Articles.findAll({
     attributes: [
@@ -33,7 +26,6 @@ export const getArticles = async (params: any) => {
 };
 
 export const getArticle = async (id: string) => {
-  console.log('ArticleService >>>> getArticle >>>> id====', id);
   const data = await Articles.findOne({
     attributes: [
       'id',
@@ -57,11 +49,8 @@ export const getArticle = async (id: string) => {
 };
 
 export const writeArticle = async (params: { title: string; contents: string }, userInfo: any) => {
-  console.log('ArticleService >>>> writeArticle >>>> params====', params);
-  console.log('ArticleService >>>> writeArticle >>>> userInfo====', userInfo);
   const { title, contents } = params;
   const { user_id, user_name } = userInfo;
-  //await Articles.increment({ lookup: 1 }, { where: { id: 1 } }); // 잘됨
   const data = await Articles.create({
     title,
     contents,
@@ -73,8 +62,6 @@ export const writeArticle = async (params: { title: string; contents: string }, 
 };
 
 export const modifyArticle = async (id: string, bodys: { title: string; contents: string }) => {
-  console.log('ArticleService >>>> modifyArticle >>>> id====', id);
-  console.log('ArticleService >>>> modifyArticle >>>> bodys====', bodys);
   const { title, contents } = bodys;
   const data = await Articles.update(
     {
@@ -103,6 +90,23 @@ export const deleteArticle = async (id: string) => {
   const data = await Articles.destroy({
     where: { id },
   });
+  return data;
+};
+
+export const updateArticleLookup = async (id: string) => {
+  const data = await Articles.increment({ lookup: 1 }, { where: { id } });
+  return data;
+};
+
+export const updateArticleLike = async (id: string, select: string) => {
+  let data;
+
+  if (select === 'liked') {
+    data = await Articles.increment({ liked: 1 }, { where: { id } });
+  } else {
+    data = await Articles.increment({ unliked: 1 }, { where: { id } });
+  }
+
   return data;
 };
 

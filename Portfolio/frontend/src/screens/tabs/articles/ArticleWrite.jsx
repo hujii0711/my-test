@@ -4,7 +4,7 @@ import {Avatar, Button, Card, TextInput} from 'react-native-paper';
 import {useRoute, useNavigation} from '@react-navigation/native';
 import {useMutation, useQueryClient} from 'react-query';
 import Color from '../../../commons/style/Color';
-import {writeArticle, modifyArticle} from '../../../api/articles';
+import {insertArticle, updateArticle} from '../../../api/articles';
 
 const LeftContent = props => (
   <Avatar.Text
@@ -34,7 +34,7 @@ const ArticleWrite = () => {
   const [title, setTitle] = useState(cachedArticle?.title ?? '');
   const [contents, setContents] = useState(cachedArticle?.contents ?? '');
 
-  const {mutate: mutateWriteArticle} = useMutation(writeArticle, {
+  const {mutate: mutateInsertArticle} = useMutation(insertArticle, {
     onSuccess: article => {
       queryClient.setQueryData('selectListArticle', data => {
         if (!data) {
@@ -54,14 +54,13 @@ const ArticleWrite = () => {
     },
   });
 
-  const {mutate: mutateModifyArticle} = useMutation(modifyArticle, {
+  const {mutate: mutateUpdateArticle} = useMutation(updateArticle, {
     onSuccess: article => {
       // 게시글 목록 수정
       queryClient.setQueryData('selectListArticle', data => {
         if (!data) {
           return {pageParams: [], pages: []};
         }
-
         return {
           pageParams: data.pageParams,
           pages: data.pages.map(page =>
@@ -78,12 +77,12 @@ const ArticleWrite = () => {
   });
 
   const onSubmitWriteArticle = useCallback(() => {
-    mutateWriteArticle({title, contents});
-  }, [mutateWriteArticle, title, contents]);
+    mutateInsertArticle({title, contents});
+  }, [mutateInsertArticle, title, contents]);
 
   const onSubmitModifyArticle = useCallback(() => {
-    mutateModifyArticle({id: articleId, title, contents});
-  }, [mutateModifyArticle, title, contents, articleId]);
+    mutateUpdateArticle({id: articleId, title, contents});
+  }, [mutateUpdateArticle, title, contents, articleId]);
 
   return (
     <Card style={{flex: 1}}>

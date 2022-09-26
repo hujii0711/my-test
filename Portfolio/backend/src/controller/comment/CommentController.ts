@@ -3,7 +3,7 @@ import * as CommentService from '../../service/comment/CommentService';
 import { catchAsync } from '../../modules/error';
 import httpStatus from 'http-status';
 
-// /articles/:articleId/comments | GET | getComments | 댓글상세
+// /articles/:articleId/comments | GET | getComments | 댓글 목록
 export const getComments = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
   const articleId = parseInt(req.params.articleId);
@@ -11,6 +11,7 @@ export const getComments = catchAsync(async (req: Request, res: Response) => {
   res.json(body).status(httpStatus.OK);
 });
 
+// /articles/:articleRef/comments/:commentId | GET | getComment | 댓글 상세
 export const getComment = catchAsync(async (req: Request, res: Response) => {
   const articleRef = parseInt(req.params.articleRef);
   const id = parseInt(req.params.commentId);
@@ -22,15 +23,7 @@ export const getComment = catchAsync(async (req: Request, res: Response) => {
 export const writeComment = catchAsync(async (req: Request, res: Response) => {
   const { message } = req.body;
   const article_ref = parseInt(req.params.articleId);
-  //const userInfo = req.user;
-
-  const userInfo = {
-    id: 1,
-    user_id: 'bfa7ee89-805b-4957-83f2-ebeb23e1bac4',
-    user_name: '독거노총각',
-    email: 'fujii0711',
-  };
-
+  const userInfo = req.user;
   const result = await CommentService.writeComment(message, article_ref, userInfo);
   res.json(result).status(httpStatus.OK);
 });
@@ -38,10 +31,7 @@ export const writeComment = catchAsync(async (req: Request, res: Response) => {
 // /articles/:articleId/comments/:id | PUT | modifyComment | 댓글수정
 export const modifyComment = catchAsync(async (req: Request, res: Response) => {
   const { message, id } = req.body;
-  console.log('modifyComment >>>> req.body====', req.body);
-  // '/articles/1/comments/1'
   const result = await CommentService.modifyComment(message, id);
-  console.log('modifyComment >>>> result====', result);
   res.json(result).status(httpStatus.OK);
 });
 
@@ -49,5 +39,12 @@ export const modifyComment = catchAsync(async (req: Request, res: Response) => {
 export const deleteComment = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
   const result = await CommentService.deleteComment(id);
+  res.json(result).status(httpStatus.OK);
+});
+
+// /articles/comments/like | PATCH | updateCommentLike | 댓글 like 감소 증가
+export const updateCommentLike = catchAsync(async (req: Request, res: Response) => {
+  const { id, select } = req.body;
+  const result = await CommentService.updateCommentLike(id, select);
   res.json(result).status(httpStatus.OK);
 });

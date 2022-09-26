@@ -5,11 +5,11 @@ import RBSheet from 'react-native-raw-bottom-sheet';
 import {useMutation, useQueryClient, useInfiniteQuery} from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
-import {writeComment, selectListComment} from '../../../api/comments';
+import {insertComment, selectListComment} from '../../../api/comments';
 import {useUser} from '../../../commons/hooks/useReduxState';
 import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
-import {modifyComment, removeComment} from '../../../api/comments';
+import {updateComment, deleteComment} from '../../../api/comments';
 import {useQuery} from 'react-query';
 
 const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
@@ -19,10 +19,10 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
 
   //console.log('CommentList >>>> articleRef======', articleRef);
 
-  const {mutate: mutateWriteComment} = useMutation(writeComment);
+  const {mutate: mutateInsertComment} = useMutation(insertComment);
 
   const onSubmitWriteComment = message => {
-    mutateWriteComment({
+    mutateInsertComment({
       articleRef,
       message,
     });
@@ -33,15 +33,15 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   const [commentModifyModalVisible, setCommentModifyModalVisible] =
     useState(false);
 
-  const {mutate: mutateModifyComment} = useMutation(modifyComment, {
+  const {mutate: mutateUpdateComment} = useMutation(updateComment, {
     onSuccess: comment => {
-      console.log('mutateModifyComment >>>> onSuccess=====', comment);
+      console.log('mutateUpdateComment >>>> onSuccess=====', comment);
     },
   });
 
-  const {mutate: mutateRemoveComment} = useMutation(removeComment, {
+  const {mutate: mutateDeleteComment} = useMutation(deleteComment, {
     onSuccess: comment => {
-      console.log('mutateRemoveComment >>>> onSuccess=====', comment);
+      console.log('mutateDeleteComment >>>> onSuccess=====', comment);
     },
   });
 
@@ -55,7 +55,7 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   // 댓글 수정
   const onSubmitModify = message => {
     setCommentModifyModalVisible(false);
-    mutateModifyComment({
+    mutateUpdateComment({
       id: selectedCommentId,
       article_ref: articleRef,
       message: message,
@@ -77,7 +77,7 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   // 댓글 삭제
   const onConfirmRemove = () => {
     setAskDialogVisible(false);
-    mutateRemoveComment({
+    mutateDeleteComment({
       id: selectedCommentId,
     });
   };

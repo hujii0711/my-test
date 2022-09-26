@@ -1,6 +1,12 @@
-import * as React from 'react';
-import {Avatar, IconButton, Button} from 'react-native-paper';
+import React, {useState} from 'react';
+import {
+  Avatar,
+  IconButton,
+  Button,
+  ActivityIndicator,
+} from 'react-native-paper';
 import {useNavigation, useRoute} from '@react-navigation/native';
+import {useMutation, useQuery} from 'react-query';
 import {
   View,
   Text,
@@ -8,8 +14,113 @@ import {
   TextInput,
   Platform,
 } from 'react-native';
+import io from 'socket.io-client';
 import Color from '../../../commons/style/Color';
 import ScreenWrapper from '../../../commons/utils/ScreenWapper';
+import {selectListChatRoomEntrance, insertChatMessage} from '../../../api/chat';
+
+const ChattingMessge = () => {
+  // 웹소켓 통신 시작
+  const socket = io('http://10.0.2.2:4000', {
+    path: '/socket.io/chat',
+    transports: ['websocket'],
+  });
+
+  const [message, setMessage] = useState('');
+  const [messageList, setMessageList] = useState([]);
+  const {id: roomId, participant_id: participantId} = useRoute().params;
+
+  // 대화 내용 조회
+  const selectChatRoomEntranceQuery = useQuery(
+    ['selectListChatRoomEntrance', roomId],
+    () => selectListChatRoomEntrance(roomId),
+  );
+
+  const selectChatRoomEntranceQueryData = selectChatRoomEntranceQuery.data;
+  const initData = selectChatRoomEntranceQueryData.map((elem, index) => {
+    if (elem.sender_id === currentUserId) {
+      return <MyView message={elem.message} key={index} />;
+    } else {
+      return <YouView message={elem.message} key={index} />;
+    }
+  });
+
+  // 메시지 송신
+  const onSubmitSendMessage = useCallback(() => {
+    mutateInsertChatMessage({roomId, message, participantId});
+  }, [mutateInsertChatMessage, message]);
+
+  const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
+    onSuccess: chat => {
+      setMessageList(
+        messageList.concat(
+          <MyView message={chat.message} key={messageList.length} />,
+        ),
+      );
+    },
+  });
+
+  //메시지 수신
+  socket.on('receiveMessage', data => {
+    setMessageList(
+      messageList.concat(
+        <YouView message={data.message} key={messageList.length} />,
+      ),
+    );
+  });
+
+  socket.on('join', data => {
+    console.log(data.message); // XXX가 입장했습니다.
+  });
+
+  socket.on('exit', data => {
+    console.log(data.message); // XXX가 퇴장했습니다.
+  });
+
+  // 로딩바
+  if (!selectChatRoomEntranceQuery.data) {
+    return <ActivityIndicator color="red" />;
+  }
+
+  return (
+    <KeyboardAvoidingView
+      behavior={Platform.select({ios: 'padding'})}
+      style={{flex: 1}}
+      keyboardVerticalOffset={80}>
+      <ScreenWrapper
+        style={{
+          backgroundColor: Color.faint_red,
+          margin: 10,
+        }}>
+        <Today />
+        {initData}
+      </ScreenWrapper>
+      <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
+        <TextInput
+          style={{
+            margin: 12,
+            borderWidth: 1,
+            borderColor: '#b2b2b2',
+            borderRadius: 10,
+            padding: 10,
+            height: 40,
+            flex: 5,
+          }}
+          onChangeText={text => setMessage(text)}
+          value={message}
+        />
+        <IconButton
+          icon="check"
+          size={36}
+          onPress={onSubmitSendMessage}
+          style={{
+            flex: 1,
+          }}
+        />
+      </View>
+    </KeyboardAvoidingView>
+  );
+};
 
 const MyView = () => {
   return (
@@ -105,57 +216,6 @@ const Today = () => {
       color={Color.white}>
       2022-09-06(수)
     </Button>
-  );
-};
-
-const ChattingMessge = () => {
-  const [text, onChangeText] = React.useState('대화 내용을 입력하세요.');
-  const {id: roomId} = useRoute().params;
-  console.log('ChattingMessge >>>> roomId=====', roomId);
-  return (
-    <KeyboardAvoidingView
-      behavior={Platform.select({ios: 'padding'})}
-      style={{flex: 1}}
-      keyboardVerticalOffset={80}>
-      <ScreenWrapper
-        style={{
-          backgroundColor: Color.faint_red,
-          margin: 10,
-        }}>
-        <Today />
-        <MyView />
-        <YouView />
-        <MyView />
-        <YouView />
-        <MyView />
-        <YouView />
-        <MyView />
-        <YouView />
-      </ScreenWrapper>
-      {/* <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
-        <TextInput
-          style={{
-            margin: 12,
-            borderWidth: 1,
-            borderColor: '#b2b2b2',
-            borderRadius: 10,
-            padding: 10,
-            height: 40,
-            flex: 5,
-          }}
-          onChangeText={onChangeText}
-          value={text}
-        />
-        <IconButton
-          icon="check"
-          size={36}
-          onPress={() => console.log('Pressed')}
-          style={{
-            flex: 1,
-          }}
-        />
-      </View> */}
-    </KeyboardAvoidingView>
   );
 };
 

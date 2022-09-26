@@ -94,3 +94,15 @@ export const updateLikeComment = async (id: string) => {
     { where: { id } },
   );
 };
+
+export const updateCommentLike = async (id: string, select: string) => {
+  let data;
+
+  if (select === 'liked') {
+    data = await Comments.increment({ liked: 1 }, { where: { id } });
+  } else {
+    data = await Comments.increment({ unliked: 1 }, { where: { id } });
+  }
+
+  return data;
+};
