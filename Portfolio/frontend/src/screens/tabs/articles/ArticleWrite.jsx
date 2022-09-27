@@ -22,7 +22,7 @@ const ArticleWrite = () => {
   const queryClient = useQueryClient();
   const mode = articleId ? 'modify' : 'write';
 
-  //articleId가 바뀌지 않는 한 캐싱 데이터 활용
+  //글 수정시 articleId가 바뀌지 않는 한 캐싱 데이터 활용
   const cachedArticle = useMemo(
     () =>
       articleId

@@ -7,59 +7,40 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
 import {Avatar, ActivityIndicator} from 'react-native-paper';
 import {useInfiniteQuery} from 'react-query';
-import {selectListChatRoomList} from '../../../api/chat';
-
-// 임의의 100개 배열 만들기
-// const uuidv4 = () => {
-//   return 'xy'.replace(/[xy]/g, function (c) {
-//     var r = (Math.random() * 16) | 0,
-//       v = c == 'x' ? r : (r & 0x3) | 0x8;
-//     return v.toString(16);
-//   });
-// };
-// const DATA = Array(100)
-//   .fill()
-//   .map((elem, idx) => (elem = {user_name: uuidv4(), id: idx}));
+import {selectListChatRoom} from '../../../api/chat';
 
 const ChatRoomList = () => {
   const [selectedId, setSelectedId] = useState(null);
   const {
-    data, //data.pages: useInfiniteQuery를 이용해 호출되는 데이터들은 page별로 배열의 요소에 담기게 됩니다.
+    data,
     isFetchingNextPage,
     isFetchingPreviousPage,
-    fetchNextPage, //fetchNextPage는 다음 페이지의 데이터를 호출할 때 사용됩니다.
-    fetchPreviousPage, //fetchPreviousPage는 이전 페이지의 데이터를 호출할 때 사용됩니다.
+    fetchNextPage,
+    fetchPreviousPage,
   } = useInfiniteQuery(
-    'selectListChatRoomList',
-    ({pageParam}) => selectListChatRoomList({...pageParam}),
+    'selectListChatRoom',
+    ({pageParam}) => selectListChatRoom({...pageParam}),
     {
-      //getNextPageParam은 다음 api를 요청할 때 사용될 pageParam값을 정할 수 있습니다.
       getNextPageParam: (lastPage, allPages) => {
-        //lastPage는 useInfiniteQuery를 이용해 호출된 가장 마지막에 있는 페이지 데이터를 의미합니다.
-        //allPages는 useInfiniteQuery를 이용해 호출된 모든 페이지 데이터를 의미합니다.
         if (lastPage?.length === 10) {
           return {
-            cursor: lastPage[lastPage.length - 1].id, // 다음 페이지를 호출할 때 사용 될 pageParam
+            nextOffset: lastPage[lastPage.length - 1].id,
           };
         } else {
           return undefined;
         }
       },
-      //getPreviousPageParam은 이전 api를 요청할 때 사용될 pageParam값을 정할 수 있습니다.
       getPreviousPageParam: (firstPage, allPages) => {
-        //firstPage는 useInfiniteQuery를 이용해 호출된 가장 처음에 있는 페이지 데이터를 의미합니다.
-        //allPages는 useInfiniteQuery를 이용해 호출된 모든 페이지 데이터를 의미합니다.
-
         const validPage = allPages.find(page => page.length > 0);
         if (!validPage) {
           return undefined;
         }
-
         return {
-          prevCursor: validPage[0].id,
+          prevOffset: validPage[0].id,
         };
       },
     },
@@ -112,7 +93,49 @@ const ChatRoomList = () => {
             </TouchableOpacity>
           );
         }}
-        keyExtractor={item => item.id}
+        keyExtractor={(item, index) => index.toString()}
+        ListHeaderComponent={
+          <View style={{flexDirection: 'row'}}>
+            <TextInput
+              mode="outlined"
+              placeholder="댓글을 입력하세요!"
+              selectionColor={Color.divider}
+              activeOutlineColor={Color.pink1}
+              outlineColor={Color.divider}
+              style={{
+                backgroundColor: Color.white,
+                fontSize: 11,
+                margin: 10,
+                width: '80%',
+                height: 30,
+              }}
+              value={message}
+              onChangeText={text => setMessage(text)}
+            />
+            <IconButton
+              icon="send"
+              size={30}
+              style={{alignSelf: 'center'}}
+              onPress={() => onSubmitWriteComment(message)}
+            />
+          </View>
+        }
+        ListFooterComponent={items => (
+          <>
+            {items.length > 0 ? <View style={styles.separator} /> : null}
+            {isFetchingNextPage && (
+              <ActivityIndicator size="small" color="blue" style={{flex: 1}} />
+            )}
+          </>
+        )}
+        onEndReachedThreshold={0.5}
+        onEndReached={fetchNextPage}
+        refreshControl={
+          <RefreshControl
+            onRefresh={fetchPreviousPage}
+            refreshing={isFetchingPreviousPage}
+          />
+        }
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </SafeAreaView>

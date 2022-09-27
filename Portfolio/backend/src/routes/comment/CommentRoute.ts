@@ -8,10 +8,10 @@ router.use('/', (req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-router.get('/comment/:articleRef', CommentController.getComments); //댓글 목록
-router.get('/comment/:articleRef/:id', CommentController.getComment); //댓글 상세
-router.post('/comment/insert/:articleRef', CommentController.writeComment); //댓글 쓰기
-router.put('/comment/update/:id', CommentController.modifyComment); //댓글 수정
+router.get('/comment/:articleRef', CommentController.selectListComment); //댓글 목록
+router.get('/comment/:articleRef/:id', CommentController.selectComment); //댓글 상세
+router.post('/comment/insert/:articleRef', CommentController.insertComment); //댓글 쓰기
+router.put('/comment/update/:id', CommentController.updateComment); //댓글 수정
 router.delete('/comment/delete/:id', CommentController.deleteComment); //댓글 삭제
 router.patch('/comment/update/like', CommentController.updateCommentLike); //댓글 like 증가
 export default router;

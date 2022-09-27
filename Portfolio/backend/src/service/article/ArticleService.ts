@@ -1,8 +1,9 @@
 import { Articles } from '../../models/articles';
-import { Users } from '../../models/users';
+import { Comments } from '../../models/comments';
 import mailSender from '../../modules/mail';
+import { Sequelize } from 'sequelize';
 
-export const getArticles = async (params: any) => {
+export const selectListArticle = async (params: any) => {
   const { offset } = params; ////{offset:0}
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
   const data = await Articles.findAll({
@@ -25,7 +26,7 @@ export const getArticles = async (params: any) => {
   return data;
 };
 
-export const getArticle = async (id: string) => {
+export const selectArticle = async (id: string) => {
   const data = await Articles.findOne({
     attributes: [
       'id',
@@ -48,7 +49,7 @@ export const getArticle = async (id: string) => {
   return data;
 };
 
-export const writeArticle = async (params: { title: string; contents: string }, userInfo: any) => {
+export const insertArticle = async (params: { title: string; contents: string }, userInfo: any) => {
   const { title, contents } = params;
   const { user_id, user_name } = userInfo;
   const data = await Articles.create({
@@ -61,7 +62,7 @@ export const writeArticle = async (params: { title: string; contents: string }, 
   return data;
 };
 
-export const modifyArticle = async (id: string, bodys: { title: string; contents: string }) => {
+export const updateArticle = async (id: string, bodys: { title: string; contents: string }) => {
   const { title, contents } = bodys;
   const data = await Articles.update(
     {
@@ -107,6 +108,17 @@ export const updateArticleLike = async (id: string, select: string) => {
     data = await Articles.increment({ unliked: 1 }, { where: { id } });
   }
 
+  return data;
+};
+
+export const selectCommentCount = async (id: string) => {
+  //select count(id) as comment_cnt from comments where id=1;
+  const data = Comments.findAll({
+    attributes: [[Sequelize.fn('COUNT', Sequelize.col('id')), 'comment_cnt']],
+    where: {
+      id,
+    },
+  });
   return data;
 };
 

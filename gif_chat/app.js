@@ -39,13 +39,13 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(sessionMiddleware);
 
 app.use((req, res, next) => {
-  console.log("req.session=========", req.session);
-  console.log("req.sessionID=========", req.sessionID);
-  console.log("req.cookies=========", req.cookies);
-  console.log("req.params==================", req.params);
-  console.log("req.query==================", req.query);
-  console.log("req.body==================", req.body);
-  console.log("req.headers==================", req.headers);
+  // console.log("req.session=========", req.session);
+  // console.log("req.sessionID=========", req.sessionID);
+  // console.log("req.cookies=========", req.cookies);
+  // console.log("req.params==================", req.params);
+  // console.log("req.query==================", req.query);
+  // console.log("req.body==================", req.body);
+  // console.log("req.headers==================", req.headers);
   if (!req.session.color) {
     const colorHash = new ColorHash();
     req.session.color = colorHash.hex(req.sessionID);

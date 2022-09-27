@@ -17,7 +17,7 @@ export const upload = multer({
   storage: multer.diskStorage({
     destination(req, file, done) {
       //destination 옵션은 받아온 이미지를 어디에 저장할 것인지 정합니다
-      done(null, 'uploads/');
+      done(null, '../uploads/');
     },
     filename(req, file, done) {
       const ext = path.extname(file.originalname);

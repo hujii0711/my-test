@@ -79,26 +79,23 @@ const ArticleViewItems = ({
     navigation.navigate('ArticleWrite', {id});
   };
 
+  // mutate 댓글 삭제
   const {mutate: mutateDeleteArticle} = useMutation(deleteArticle, {
-    onSuccess: article => {
+    onSuccess: () => {
       queryClient.setQueryData('selectListArticle', data => {
         if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[article]],
-          };
+          return {pageParams: [], pages: []};
         }
-        const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
         return {
-          ...data,
-          // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
-          pages: [[article, ...firstPage], ...rest],
+          pageParams: data.pageParams,
+          pages: data.pages.map(page => page.filter(a => a.id !== id)),
         };
       });
       navigation.goBack();
     },
   });
 
+  // submit 댓글 삭제
   const onPressDeleteArticle = useCallback(() => {
     mutateDeleteArticle(id);
   }, [mutateDeleteArticle, id]);

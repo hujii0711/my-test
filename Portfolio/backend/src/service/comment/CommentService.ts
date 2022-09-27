@@ -1,8 +1,6 @@
 import { Comments } from '../../models/comments';
 
-export const getComments = async (params: any, article_ref: number) => {
-  console.log('Commentervice >>>> getComments >>>> params====', params);
-  console.log('Commentervice >>>> getComments >>>> article_ref====', article_ref);
+export const selectListComment = async (params: any, article_ref: number) => {
   const { offset } = params; ////{offset:0}
   const data = await Comments.findAll({
     attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
@@ -17,9 +15,7 @@ export const getComments = async (params: any, article_ref: number) => {
   return data;
 };
 
-export const getComment = async (article_ref: number, id: number) => {
-  console.log('Commentervice >>>> getComment >>>> article_ref====', article_ref);
-  console.log('Commentervice >>>> getComment >>>> id====', id);
+export const selectComment = async (article_ref: number, id: number) => {
   const data = await Comments.findOne({
     attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
     where: {
@@ -31,9 +27,7 @@ export const getComment = async (article_ref: number, id: number) => {
   return data;
 };
 
-export const writeComment = async (message: string, article_ref: number, userInfo: any) => {
-  console.log('Commentervice >>>> writeComment >>>> message====', message);
-  console.log('Commentervice >>>> writeComment >>>> article_ref====', article_ref);
+export const insertComment = async (message: string, article_ref: number, userInfo: any) => {
   const { user_id } = userInfo; // 세션 정보
 
   const data = await Comments.create({
@@ -45,9 +39,7 @@ export const writeComment = async (message: string, article_ref: number, userInf
   return data;
 };
 
-export const modifyComment = async (message: string, id: string) => {
-  console.log('Commentervice >>>> modifyComment >>>> message====', message);
-  console.log('Commentervice >>>> modifyComment >>>> id====', id);
+export const updateComment = async (message: string, id: string) => {
   const data = await Comments.update(
     {
       message,
@@ -71,7 +63,6 @@ export const modifyComment = async (message: string, id: string) => {
 };
 
 export const deleteComment = async (id: string) => {
-  console.log('Commentervice >>>> deleteComment >>>> id====', id);
   const data = await Comments.destroy({
     where: { id },
   });
@@ -79,7 +70,6 @@ export const deleteComment = async (id: string) => {
 };
 
 export const updateLikeComment = async (id: string) => {
-  console.log('Commentervice >>>> updateLikeComment >>>> id====', id);
   //update comments set liked = liked+1 where id = 10
   const data = await Comments.increment(
     {

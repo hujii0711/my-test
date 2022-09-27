@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   Modal,
   Portal,
@@ -10,8 +10,6 @@ import {
 import {View} from 'react-native';
 import {useQuery} from 'react-query';
 import {selectComment} from '../../../api/comments';
-import id from 'date-fns/esm/locale/id/index.js';
-import {useEffect} from 'react';
 
 const CommentModifyModal = ({
   visible,
@@ -20,16 +18,17 @@ const CommentModifyModal = ({
   onSubmit,
   onClose,
 }) => {
+  // articleRef, commentId에 해당하는 댓글 조회 --> 수정에 활용
   const selectCommentQuery = useQuery(['selectComment', commentId], () =>
     selectComment(articleRef, commentId),
   );
 
-  const selectedComment = selectCommentQuery.data;
+  const selectedCommentData = selectCommentQuery.data;
   const [message, setMessage] = useState('');
 
   useEffect(() => {
-    setMessage(selectedComment?.message);
-  }, [selectedComment?.message]);
+    setMessage(selectedCommentData?.message);
+  }, [selectedCommentData?.message]);
 
   return (
     <Provider>

@@ -1,11 +1,20 @@
 import client from './client';
+// 1. router.get('/article', ArticleController.selectListArticle); //글 목록
+// 2. router.get('/article/:id', ArticleController.selectArticle); //글 상세
+// 3. router.post('/article/insert', ArticleController.insertArticle); //글 쓰기
+// 4. router.put('/article/update/:id', verifyToken, ArticleController.updateArticle); //글 수정
+// 5. router.delete('/article/delete/:id', verifyToken, ArticleController.deleteArticle); //글 삭제
+// 6. router.patch('/article/update/lookup', verifyToken, ArticleController.updateArticleLookup); //조회수 증가
+// 7. router.patch('/article/update/like', verifyToken, ArticleController.updateArticleLike); //like 증가
+// 8. router.get('/article/commentCnt/', verifyToken, ArticleController.selectCommentCount); //댓글 개수 조회
+// router.post('/upload', upload.single('image'), ArticleController.fileUpload);
+// router.post('/sendEmail', ArticleController.sendEmail);
 
 /*
-  Article 글 목록
-  /article
+  1. Article 글 목록 | /article
 */
-export async function selectListArticle({cursor = 0, prevCursor = 0}) {
-  const offset = cursor + prevCursor;
+export async function selectListArticle({nextOffset = 0, prevOffset = 0}) {
+  const offset = nextOffset + prevOffset;
   const response = await client.get('/article', {
     params: {offset},
     headers: {returnType: 'list'},
@@ -14,8 +23,7 @@ export async function selectListArticle({cursor = 0, prevCursor = 0}) {
 }
 
 /*
-  Article 글 상세
-  /article/:id
+  2. Article 글 상세 | /article/:id
 */
 export async function selectArticle(id) {
   const response = await client.get(`/article/${id}`, {
@@ -25,8 +33,7 @@ export async function selectArticle(id) {
 }
 
 /*
-  Article 글 쓰기
-  /article/insert
+  3. Article 글 쓰기 | /article/insert
 */
 export async function insertArticle(params) {
   const config = {headers: {returnType: 'map'}};
@@ -35,8 +42,7 @@ export async function insertArticle(params) {
 }
 
 /*
-  Article 글 수정
-  /article/update/:id
+  4. Article 글 수정 | /article/update/:id
 */
 export async function updateArticle(params) {
   const {id, title, contents} = params;
@@ -50,8 +56,7 @@ export async function updateArticle(params) {
 }
 
 /*
-  Article 글 삭제
-  /article/delete/:id
+  5. Article 글 삭제 | /article/delete/:id
 */
 export async function deleteArticle(id) {
   const config = {headers: {returnType: 'map'}};
@@ -60,8 +65,7 @@ export async function deleteArticle(id) {
 }
 
 /*
-  Article 글 상세 조회수 증가
-  /article/update/lookup
+  6. Article 글 상세 조회수 증가 | /article/update/lookup
 */
 export async function updateArticleLookup(id) {
   const config = {headers: {returnType: 'map'}};
@@ -70,11 +74,19 @@ export async function updateArticleLookup(id) {
 }
 
 /*
-  Article 글 상세 like 증가
-  /article/update/like
+  7. Article 글 상세 like 증가 | /article/update/like
 */
 export async function updateArticleLike(id) {
   const config = {headers: {returnType: 'map'}};
   await client.patch('/article/update/like', {id}, config);
+  return null;
+}
+
+/*
+  8. Article 댓글 개수 조회 | /article/commentCnt
+*/
+export async function selectCommentCount(id) {
+  const config = {headers: {returnType: 'map'}};
+  await client.get('/article/commentCnt', {id}, config);
   return null;
 }

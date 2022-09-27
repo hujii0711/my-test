@@ -29,7 +29,6 @@ export interface ArticlesAttributes {
   lookup?: number;
   liked?: number;
   unliked?: number;
-  comment_cnt?: number;
   created_at?: Date;
   updated_at?: Date;
 }

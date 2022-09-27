@@ -1,25 +1,13 @@
 import { ChatMessages } from '../../models/chatMessages';
 import { ChatRooms } from '../../models/chatRooms';
 import { ChatParticipants } from '../../models/chatParticipants';
-// [
-//   {
-//       "id": "7aceed3d-2059-43cf-8676-f1ab7e86046d",
-//       "creator_id": "hujii0711",
-//       "title": null,
-//       "max_room": 0,
-//       "password": null,
-//       "created_at": "2022-09-25T01:41:43.000Z",
-//       "ChatParticipant.id": 5,
-//       "ChatParticipant.room_id": "7aceed3d-2059-43cf-8676-f1ab7e86046d",
-//       "ChatParticipant.participant_id": "hujii0711",
-//       "ChatParticipant.created_at": "2022-09-25T01:41:43.000Z"
-//   }
-// ]
+
 // 메인 페이지, 채팅방 목록 보여주는 페이지
-// /chat/intro | GET | getChatRoomList | 채팅방 목록 페이지
-export const getChatRoomList = async (userInfo: any) => {
-  console.log('ChatService >>>> getChatRoomList');
+// /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
+export const selectListChatRoom = async (userInfo: any, params: any) => {
+  console.log('ChatService >>>> selectListChatRoom');
   const { user_id } = userInfo;
+  const { offset } = params;
 
   const data = ChatRooms.findAll({
     //attributes: ['id', ['ChatParticipant.participant_id', 'userName']],
@@ -30,14 +18,17 @@ export const getChatRoomList = async (userInfo: any) => {
         where: { participant_id: user_id },
       },
     ],
+    order: [['id', 'DESC']],
+    limit: 10,
+    offset: Number(offset),
     raw: true,
   });
   return data;
 };
 
 // 채팅방 생성시하고 생성한 채팅방으로 이동
-// /chat/makeRoom | POST | writeChatMakeRoom | 채팅방 만들고 채팅방으로 이동
-export const writeChatMakeRoom = async (userInfo: any, participant_id: string) => {
+// /chat/makeRoom | POST | insertChatMakeRoom | 채팅방 만들고 채팅방으로 이동
+export const insertChatMakeRoom = async (userInfo: any, participant_id: string) => {
   const { user_id } = userInfo;
 
   const chatRoomInsertData = await ChatRooms.create({
@@ -57,8 +48,8 @@ export const writeChatMakeRoom = async (userInfo: any, participant_id: string) =
 };
 
 // 방 입장
-// /chat/roomEntrance/:id | GET | getChatRoomEntrance | 채팅방 입장
-export const getChatRoomEntrance = async (userInfo: any, roomId: string) => {
+// /chat/roomEntrance/:id | GET | selectListChatRoomMessage | 채팅방 입장
+export const selectListChatRoomMessage = async (userInfo: any, roomId: string) => {
   // chat_rooms와 chat_participants 조인한뒤 다시 chat_messages를 조인
 
   const { user_id } = userInfo;
@@ -82,8 +73,8 @@ export const getChatRoomEntrance = async (userInfo: any, roomId: string) => {
 };
 
 // 채팅 글 작성 submit
-// /chat/sendMessge/:id | POST | writeChatMessage | 채팅 메시지 전송
-export const writeChatMessage = async (
+// /chat/sendMessge/:id | POST | insertChatMessage | 채팅 메시지 전송
+export const insertChatMessage = async (
   userInfo: any,
   params: { room_id: string; receiver_id: string; message: string },
 ) => {
@@ -112,5 +103,11 @@ export const deleteChatRoomExit = async (roomId: string) => {
     where: { id: roomId },
   });
 
+  return null;
+};
+
+// 파일업로드 수행
+// /chat/sendMessgeUpload/:id | POST | insertFileUpload | 채팅방 나가기
+export const insertFileUpload = async () => {
   return null;
 };

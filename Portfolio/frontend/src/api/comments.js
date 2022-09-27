@@ -1,15 +1,21 @@
 import client from './client';
 
+// 1. router.get('/comment/:articleRef', CommentController.selectListComment); //댓글 목록
+// 2. router.get('/comment/:articleRef/:id', CommentController.selectComment); //댓글 상세
+// 3. router.post('/comment/insert/:articleRef', CommentController.insertComment); //댓글 쓰기
+// 4. router.put('/comment/update/:id', CommentController.updateComment); //댓글 수정
+// 5. router.delete('/comment/delete/:id', CommentController.deleteComment); //댓글 삭제
+// 6. router.patch('/comment/update/like', CommentController.updateCommentLike); //댓글 like 증가
+
 /*
-  Comment 글 목록
-  /comment/:articleRef
+  1. Comment 글 목록 | /comment/:articleRef
 */
 export async function selectListComment({
-  cursor = 0,
-  prevCursor = 0,
+  nextOffset = 0,
+  prevOffset = 0,
   articleId = 0,
 }) {
-  const offset = cursor + prevCursor;
+  const offset = nextOffset + prevOffset;
   const articleRef = articleId;
   const response = await client.get(`/comment/${articleRef}`, {
     params: {offset},
@@ -19,8 +25,7 @@ export async function selectListComment({
 }
 
 /*
-  Comment 글 상세 : 신규
-  /comment/:articleRef/:id
+  2. Comment 글 상세 : 신규 | /comment/:articleRef/:id
 */
 export async function selectComment(articleRef, commentId) {
   const id = commentId;
@@ -29,8 +34,7 @@ export async function selectComment(articleRef, commentId) {
 }
 
 /*
-  Comment 글 쓰기
-  /comment/insert/:articleRef
+  3. Comment 글 쓰기 | /comment/insert/:articleRef
 */
 export async function insertComment(params) {
   const {articleRef, message} = params;
@@ -41,8 +45,7 @@ export async function insertComment(params) {
 }
 
 /*
-  Comment 글 수정
-  /comment/update/:id
+  4. Comment 글 수정 | /comment/update/:id
 */
 export async function updateComment(params) {
   const {message, id} = params;
@@ -57,8 +60,7 @@ export async function updateComment(params) {
 }
 
 /*
-  Comment 글 삭제
-  /comment/delete/:id
+  5. Comment 글 삭제 | /comment/delete/:id
 */
 export async function deleteComment(params) {
   const {id} = params;
@@ -67,8 +69,7 @@ export async function deleteComment(params) {
 }
 
 /*
-  Comment 댓글 like 증가
-  /comment/update/like
+  6. Comment 댓글 like 증가 | /comment/update/like
 */
 export async function updateCommentLike(id) {
   const config = {headers: {returnType: 'map'}};

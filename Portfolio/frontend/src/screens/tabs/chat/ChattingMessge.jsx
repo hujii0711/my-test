@@ -17,7 +17,11 @@ import {
 import io from 'socket.io-client';
 import Color from '../../../commons/style/Color';
 import ScreenWrapper from '../../../commons/utils/ScreenWapper';
-import {selectListChatRoomEntrance, insertChatMessage} from '../../../api/chat';
+import {
+  selectListChatRoomMessage,
+  insertChatMessage,
+  insertChatMessageUpload,
+} from '../../../api/chat';
 
 const ChattingMessge = () => {
   // 웹소켓 통신 시작
@@ -31,13 +35,14 @@ const ChattingMessge = () => {
   const {id: roomId, participant_id: participantId} = useRoute().params;
 
   // 대화 내용 조회
-  const selectChatRoomEntranceQuery = useQuery(
-    ['selectListChatRoomEntrance', roomId],
-    () => selectListChatRoomEntrance(roomId),
+  const selectListChatRoomMessageQuery = useQuery(
+    ['selectListChatRoomMessage', roomId],
+    () => selectListChatRoomMessage(roomId),
   );
 
-  const selectChatRoomEntranceQueryData = selectChatRoomEntranceQuery.data;
-  const initData = selectChatRoomEntranceQueryData.map((elem, index) => {
+  const selectListChatRoomMessageQueryData =
+    selectListChatRoomMessageQuery.data;
+  const initData = selectListChatRoomMessageQueryData.map((elem, index) => {
     if (elem.sender_id === currentUserId) {
       return <MyView message={elem.message} key={index} />;
     } else {
@@ -76,6 +81,34 @@ const ChattingMessge = () => {
   socket.on('exit', data => {
     console.log(data.message); // XXX가 퇴장했습니다.
   });
+
+  const onSubmitSendMessageUpload = useCallback(() => {
+    const localUri = '/uploads/sss/aaaa.png';
+    const fileName = localUri.split('/').pop();
+    const match = /\.(\w+)$/.exec(fileName ?? '');
+    const type = match ? `image/${match[1]}` : 'image';
+
+    const formData = new FormData();
+    formData.append('file', {
+      name: fileName, //aaaa.png
+      type, //image/png
+      uri: localUri, ///uploads/sss/aaaa.png
+    });
+    mutateInsertChatMessageUpload({formData, roomId, message, participantId});
+  }, [mutateInsertChatMessage, message]);
+
+  const {mutate: mutateInsertChatMessageUpload} = useMutation(
+    insertChatMessageUpload,
+    {
+      onSuccess: chat => {
+        setMessageList(
+          messageList.concat(
+            <MyView message={chat.message} key={messageList.length} />,
+          ),
+        );
+      },
+    },
+  );
 
   // 로딩바
   if (!selectChatRoomEntranceQuery.data) {
@@ -117,12 +150,20 @@ const ChattingMessge = () => {
             flex: 1,
           }}
         />
+        <IconButton
+          icon="remove"
+          size={36}
+          onPress={onSubmitSendMessageUpload}
+          style={{
+            flex: 1,
+          }}
+        />
       </View>
     </KeyboardAvoidingView>
   );
 };
 
-const MyView = () => {
+const MyView = ({message}) => {
   return (
     <View
       style={{
@@ -140,8 +181,7 @@ const MyView = () => {
           maxWidth: '70%',
           marginRight: 20,
         }}>
-        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
-        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
+        {message}
       </Text>
       <Text
         style={{
@@ -158,7 +198,7 @@ const MyView = () => {
   );
 };
 
-const YouView = () => {
+const YouView = ({message}) => {
   return (
     <View
       style={{
@@ -189,8 +229,7 @@ const YouView = () => {
           marginLeft: 10,
           maxWidth: '60%',
         }}>
-        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
-        이 한 줄의 CSS만으로 아이템들은 기본적으로 아래 그림과 같이 배치됩니다.
+        {message}
       </Text>
       <Text
         style={{

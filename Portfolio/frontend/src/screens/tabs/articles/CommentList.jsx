@@ -2,7 +2,12 @@ import React, {useMemo, useState} from 'react';
 import {IconButton, TextInput, ActivityIndicator} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet, RefreshControl} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {useMutation, useQueryClient, useInfiniteQuery} from 'react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+  useQuery,
+} from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
 import {insertComment, selectListComment} from '../../../api/comments';
@@ -10,40 +15,84 @@ import {useUser} from '../../../commons/hooks/useReduxState';
 import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
 import {updateComment, deleteComment} from '../../../api/comments';
-import {useQuery} from 'react-query';
 
 const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
+  console.log('CommentList >>>> articleRef======', articleRef);
   const users = useUser();
+  const queryClient = useQueryClient();
   const [message, setMessage] = useState('');
-  //const queryClient = useQueryClient();
-
-  //console.log('CommentList >>>> articleRef======', articleRef);
-
-  const {mutate: mutateInsertComment} = useMutation(insertComment);
-
-  const onSubmitWriteComment = message => {
-    mutateInsertComment({
-      articleRef,
-      message,
-    });
-  };
-
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [askDialogVisible, setAskDialogVisible] = useState(false);
   const [commentModifyModalVisible, setCommentModifyModalVisible] =
     useState(false);
 
-  const {mutate: mutateUpdateComment} = useMutation(updateComment, {
+  // mutate 댓글 입력
+  const {mutate: mutateInsertComment} = useMutation(insertComment, {
     onSuccess: comment => {
-      console.log('mutateUpdateComment >>>> onSuccess=====', comment);
+      // 게시글 목록 수정
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
+          return {
+            pageParams: [undefined],
+            pages: [[comment]],
+            articleId: articleRef,
+          };
+        }
+        const [firstPage, ...rest] = data.pages;
+        return {
+          ...data,
+          pages: [[comment, ...firstPage], ...rest],
+          articleId: articleRef,
+        };
+      });
     },
   });
 
-  const {mutate: mutateDeleteComment} = useMutation(deleteComment, {
+  // mutate 댓글 수정
+  const {mutate: mutateUpdateComment} = useMutation(updateComment, {
     onSuccess: comment => {
-      console.log('mutateDeleteComment >>>> onSuccess=====', comment);
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
+          return {pageParams: [], pages: []};
+        }
+        return {
+          pageParams: data.pageParams,
+          pages: data.pages.map(page =>
+            page.find(a => a.id === selectedCommentId)
+              ? page.map(a => (a.id === selectedCommentId ? comment : a))
+              : page,
+          ),
+          articleId: articleRef,
+        };
+      });
     },
   });
+
+  // mutate 댓글 삭제
+  const {mutate: mutateDeleteComment} = useMutation(deleteComment, {
+    onSuccess: () => {
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
+          return {pageParams: [], pages: []};
+        }
+        return {
+          pageParams: data.pageParams,
+          pages: data.pages.map(page => page.filter(a => a.id !== id)),
+        };
+      });
+    },
+  });
+
+  // submit 댓글 입력
+  const onSubmitWriteComment = useCallback(
+    message => {
+      mutateInsertComment({
+        articleRef,
+        message,
+      });
+    },
+    [mutateDeleteArticle, articleRef],
+  );
 
   //commentModifyModal
   // 댓글 수정 모달 띄움
@@ -100,20 +149,29 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage?.length === 10) {
           return {
-            cursor: lastPage[lastPage.length - 1].id,
+            nextOffset: lastPage[lastPage.length - 1].id,
+            articleId: articleRef,
           };
         } else {
-          return undefined;
+          return {
+            articleId: articleRef,
+            nextOffset: undefined,
+            prevOffset: undefined,
+          };
         }
       },
       getPreviousPageParam: (firstPage, allPages) => {
         const validPage = allPages.find(page => page?.length > 0);
         if (!validPage) {
-          return undefined;
+          return {
+            articleId: articleRef,
+            nextOffset: undefined,
+            prevOffset: undefined,
+          };
         }
-
         return {
-          prevCursor: validPage[0].id,
+          prevOffset: validPage[0].id,
+          articleId: articleRef,
         };
       },
     },
@@ -129,14 +187,6 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   if (!items) {
     return <ActivityIndicator color="red" />;
   }
-
-  //const selectCommentQuery = useQuery(
-  //  ['selectComment', selectedCommentId],
-  //  () => selectComment(articleRef, selectedCommentId),
-  //);
-  //console.log('selectCommentQuery====', selectCommentQuery);
-
-  //const selectedComment = commentsQuery.data?.find(comment => comment.id === selectedCommentId);
 
   return (
     <RBSheet
