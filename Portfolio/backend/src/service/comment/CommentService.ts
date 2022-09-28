@@ -69,30 +69,28 @@ export const deleteComment = async (id: string) => {
   return data;
 };
 
-export const updateLikeComment = async (id: string) => {
-  //update comments set liked = liked+1 where id = 10
-  const data = await Comments.increment(
-    {
-      liked: 1,
-    },
-    { where: { id } },
-  );
-  const data1 = await Comments.decrement(
-    {
-      liked: 1,
-    },
-    { where: { id } },
-  );
-};
-
-export const updateCommentLike = async (id: string, select: string) => {
-  let data;
-
-  if (select === 'liked') {
-    data = await Comments.increment({ liked: 1 }, { where: { id } });
-  } else {
-    data = await Comments.increment({ unliked: 1 }, { where: { id } });
+export const updateCommentPrefer = async (id: string, type: string) => {
+  switch (type) {
+    case 'likeUp':
+      await Comments.increment({ liked: 1 }, { where: { id } });
+      break;
+    case 'likeDown':
+      await Comments.decrement({ liked: 1 }, { where: { id } });
+      break;
+    case 'hateUp':
+      await Comments.increment({ unliked: 1 }, { where: { id } });
+      break;
+    case 'hateDown':
+      await Comments.decrement({ unliked: 1 }, { where: { id } });
+      break;
+    case 'likeUpAndhateDown':
+      await Comments.increment({ liked: 1 }, { where: { id } });
+      await Comments.decrement({ unliked: 1 }, { where: { id } });
+      break;
+    case 'likeDownAndhateUp':
+      await Comments.decrement({ liked: 1 }, { where: { id } });
+      await Comments.increment({ unliked: 1 }, { where: { id } });
+      break;
   }
-
-  return data;
+  return { status: 'success' };
 };

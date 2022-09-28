@@ -74,11 +74,11 @@ export async function updateArticleLookup(id) {
 }
 
 /*
-  7. Article 글 상세 like 증가 | /article/update/like
+  7. Article 글 상세 like 증가 감소 | /article/update/prefer
 */
-export async function updateArticleLike(id) {
+export async function updateArticlePrefer(id, type) {
   const config = {headers: {returnType: 'map'}};
-  await client.patch('/article/update/like', {id}, config);
+  await client.patch('/article/update/prefer', {id, type}, config);
   return null;
 }
 

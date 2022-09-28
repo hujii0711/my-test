@@ -42,9 +42,9 @@ export const deleteComment = catchAsync(async (req: Request, res: Response) => {
   res.json(result).status(httpStatus.OK);
 });
 
-// /comment/update/like | PATCH | updateCommentLike | 댓글 like 감소 증가
-export const updateCommentLike = catchAsync(async (req: Request, res: Response) => {
-  const { id, select } = req.body;
-  const result = await CommentService.updateCommentLike(id, select);
+// /comment/update/prefer | PATCH | updateCommentPrefer | 댓글 like 감소 증가
+export const updateCommentPrefer = catchAsync(async (req: Request, res: Response) => {
+  const { id, type } = req.body;
+  const result = await CommentService.updateCommentPrefer(id, type);
   res.json(result).status(httpStatus.OK);
 });

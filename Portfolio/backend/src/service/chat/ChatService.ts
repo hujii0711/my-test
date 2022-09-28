@@ -5,7 +5,6 @@ import { ChatParticipants } from '../../models/chatParticipants';
 // 메인 페이지, 채팅방 목록 보여주는 페이지
 // /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
 export const selectListChatRoom = async (userInfo: any, params: any) => {
-  console.log('ChatService >>>> selectListChatRoom');
   const { user_id } = userInfo;
   const { offset } = params;
 

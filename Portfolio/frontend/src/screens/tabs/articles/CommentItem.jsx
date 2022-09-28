@@ -2,60 +2,92 @@ import React, {useState} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
 import {formatDaysAgo} from '../../../commons/utils/common';
+import {updateCommentPrefer} from '../../../api/comments';
 
 function CommentItem({
   commentId,
   message,
-  created_at,
+  createdAt,
   username,
   articleRef,
   isMyComment,
   onVisibleModify,
   onVisibleRemove,
+  initLike = 0,
+  initHate = 0,
 }) {
-  const initLike = 12;
-  const [like, setLike] = useState(initLike);
+  const [likeCnt, setLikeCnt] = useState(initLike);
   const [selectedLike, setSelectedLike] = useState(false);
 
-  const initHate = 10;
-  const [hate, setHate] = useState(initHate);
+  const [hateCnt, setHateCnt] = useState(initHate);
   const [selectedHate, setSelectedHate] = useState(false);
 
   const onPressLike = () => {
-    // 좋아요 토클
     if (selectedLike) {
-      setLike(like - 1);
-      //update like-1
+      setLikeCnt(likeCnt - 1);
       setSelectedLike(false);
     } else {
-      setLike(like + 1);
-      //update like+1
+      setLikeCnt(likeCnt + 1);
       setSelectedLike(true);
     }
-    // 싫어요 언체크
     setSelectedHate(false);
-
-    // 싫어요는 원래 값으로 초기화
-    setHate(initHate);
+    setHateCnt(initHate);
   };
 
   const onPressHate = () => {
-    // 싫어요 토클
     if (selectedHate) {
-      setHate(hate - 1);
+      setHateCnt(hateCnt - 1);
       setSelectedHate(false);
     } else {
-      setHate(hate + 1);
+      setHateCnt(hateCnt + 1);
       setSelectedHate(true);
     }
-    // 좋아요 언체크
     setSelectedLike(false);
-
-    // 좋아요는 원래 값으로 초기화
-    setLike(initLike);
+    setHateCnt(initLike);
   };
 
-  const createdAt = formatDaysAgo(created_at);
+  const createdAt = formatDaysAgo(createdAt);
+
+  useEffect(() => {
+    //console.log('isFirstRender.current========', isFirstRender.current);
+    //console.log('select.current========', select.current);
+
+    // 최초 렌더링시 skip
+    if (isFirstRender.current === false) {
+      isFirstRender.current = true;
+      return;
+    }
+
+    // 경우의 수
+    // 1. selectedLike=false | selectedHate=false
+    // 2. selectedLike=true | selectedHate=false
+    // 3. selectedLike=false | selectedHate=true
+    if (selectedLike === false && selectedHate === false) {
+      if (select.current === 'like') {
+        updateCommentPrefer(commentId, 'likeDown');
+      } else if (select.current === 'hate') {
+        updateCommentPrefer(commentId, 'hateDown');
+      }
+      select.current = '';
+      return;
+    } else if (selectedLike === true && selectedHate === false) {
+      if (select.current === '') {
+        updateCommentPrefer(commentId, 'likeUp');
+      } else if (select.current === 'hate') {
+        updateCommentPrefer(commentId, 'likeUpAndhateDown');
+      }
+      select.current = 'like';
+      return;
+    } else if (selectedLike === false && selectedHate === true) {
+      if (select.current === '') {
+        updateCommentPrefer(commentId, 'hateUp');
+      } else if (select.current === 'like') {
+        updateCommentPrefer(commentId, 'likeDownAndhateUp');
+      }
+      select.current = 'hate';
+      return;
+    }
+  }, [selectedLike, selectedHate]);
 
   return (
     <React.Fragment key={commentId}>
@@ -92,13 +124,13 @@ function CommentItem({
                 size={18}
                 onPress={onPressLike}
               />
-              <Text style={{fontSize: 11, marginLeft: -10}}>{like}</Text>
+              <Text style={{fontSize: 11, marginLeft: -10}}>{likeCnt}</Text>
               <IconButton
                 icon={selectedHate ? 'thumb-down' : 'thumb-down-outline'}
                 size={18}
                 onPress={onPressHate}
               />
-              <Text style={{fontSize: 11, marginLeft: -10}}>{hate}</Text>
+              <Text style={{fontSize: 11, marginLeft: -10}}>{hateCnt}</Text>
             </View>
             <View style={styles.footer_right}>
               <Pressable

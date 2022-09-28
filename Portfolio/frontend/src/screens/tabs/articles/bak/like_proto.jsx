@@ -2,26 +2,24 @@ import React, {useState, useEffect, useRef} from 'react';
 import {Pressable, View, Text} from 'react-native';
 import {IconButton} from 'react-native-paper';
 
-const MyComponent = () => {
-  const initLike = 12;
-  const [like, setLike] = useState(initLike);
+const MyComponent = ({initLike = 12, initHate = 10}) => {
+  const [likeCnt, setLikeCnt] = useState(initLike);
   const [selectedLike, setSelectedLike] = useState(false);
 
-  const initHate = 10;
-  const [hate, setHate] = useState(initHate);
+  const [hateCnt, setHateCnt] = useState(initHate);
   const [selectedHate, setSelectedHate] = useState(false);
 
-  const renderCount = useRef(0);
+  const isFirstRender = useRef(false);
   const select = useRef('');
 
   const onPressLike = () => {
     // 좋아요 토클
     if (selectedLike) {
-      setLike(like - 1);
+      setLikeCnt(likeCnt - 1);
       //update like-1
       setSelectedLike(false);
     } else {
-      setLike(like + 1);
+      setLikeCnt(likeCnt + 1);
       //update like+1
       setSelectedLike(true);
     }
@@ -29,62 +27,84 @@ const MyComponent = () => {
     setSelectedHate(false);
 
     // 싫어요는 원래 값으로 초기화
-    setHate(initHate);
-    select.current = 'like';
+    setHateCnt(initHate);
   };
 
   const onPressHate = () => {
     // 싫어요 토클
     if (selectedHate) {
-      setHate(hate - 1);
+      setHateCnt(hateCnt - 1);
       setSelectedHate(false);
     } else {
-      setHate(hate + 1);
+      setHateCnt(hateCnt + 1);
       setSelectedHate(true);
     }
     // 좋아요 언체크
     setSelectedLike(false);
 
     // 좋아요는 원래 값으로 초기화
-    setLike(initLike);
-    select.current = 'hate';
+    setLikeCnt(initLike);
+  };
+
+  const dbUpdate = type => {
+    if (type === 'likeUp') {
+      console.log('likeUp');
+    } else if (type === 'likeDown') {
+      console.log('likeDown');
+    } else if (type === 'hateUp') {
+      console.log('hateUp');
+    } else if (type === 'hateDown') {
+      console.log('hateDown');
+    } else if (type === 'likeUpAndhateDown') {
+      console.log('likeUpAndhateDown');
+    } else if (type === 'likeDownAndhateUp') {
+      console.log('likeDownAndhateUp');
+    }
   };
 
   useEffect(() => {
-    console.log('renderCount.current========', renderCount.current);
-    console.log('select.current========', select.current);
+    //console.log('isFirstRender.current========', isFirstRender.current);
+    //console.log('select.current========', select.current);
 
-    if (renderCount.current === 0) {
-      renderCount.current = renderCount.current + 1;
+    // 최초 렌더링시 skip
+    if (isFirstRender.current === false) {
+      isFirstRender.current = true;
       return;
     }
-    renderCount.current = renderCount.current + 1;
-    console.log('selectedLike===========', selectedLike);
-    console.log('selectedHate==========', selectedHate);
 
     // 경우의 수
     // 1. selectedLike=false | selectedHate=false
     // 2. selectedLike=true | selectedHate=false
     // 3. selectedLike=false | selectedHate=true
-
     if (selectedLike === false && selectedHate === false) {
+      if (select.current === 'like') {
+        console.log('like를 체크한 상태에서 like를 언체크한 경우'); //like--
+        dbUpdate('likeDown');
+      } else if (select.current === 'hate') {
+        console.log('hate를 체크한 상태에서 hate를 언체크한 경우'); //unlike--
+        dbUpdate('hateDown');
+      }
       select.current = '';
-      console.log('like를 체크한 상태에서 like를 언체크한 경우');
-      console.log('hate를 체크한 상태에서 hate를 언체크한 경우');
-      //like를 체크한 상태에서 like를 언체크한 경우 like--
-      //hate를 체크한 상태에서 hate를 언체크한 경우 unlike--
       return;
     } else if (selectedLike === true && selectedHate === false) {
-      //DB like++
-      console.log('처음부터 like를 체크한 경우');
-      console.log('hate를 체크한 상태에서 like를 언체크한 경우');
-      //hate를 체크한 상태에서 like를 언체크한 경우 unlike--
+      if (select.current === '') {
+        console.log('처음부터 like를 체크한 경우'); //like++
+        dbUpdate('likeUp');
+      } else if (select.current === 'hate') {
+        console.log('hate가 체크된 상태에서 like를 체크한 경우'); //unlike-- & like++
+        dbUpdate('likeUpAndhateDown');
+      }
+      select.current = 'like';
       return;
     } else if (selectedLike === false && selectedHate === true) {
-      //DB unlike++
-      console.log('처음부터 hate를 체크한 경우');
-      console.log('like를 체크한 상태에서 hate를 언체크한 경우');
-      //like를 체크한 상태에서 hate를 언체크한 경우 like--
+      if (select.current === '') {
+        console.log('처음부터 hate를 체크한 경우'); //unlike++
+        dbUpdate('hateUp');
+      } else if (select.current === 'like') {
+        console.log('like가 체크된 상태에서 hate를 체크한 경우'); //like-- & unlike++
+        dbUpdate('likeDownAndhateUp');
+      }
+      select.current = 'hate';
       return;
     }
   }, [selectedLike, selectedHate]);
@@ -96,13 +116,13 @@ const MyComponent = () => {
         size={18}
         onPress={onPressLike}
       />
-      <Text style={{fontSize: 11, marginLeft: -10}}>{like}</Text>
+      <Text style={{fontSize: 11, marginLeft: -10}}>{likeCnt}</Text>
       <IconButton
         icon={selectedHate ? 'thumb-down' : 'thumb-down-outline'}
         size={18}
         onPress={onPressHate}
       />
-      <Text style={{fontSize: 11, marginLeft: -10}}>{hate}</Text>
+      <Text style={{fontSize: 11, marginLeft: -10}}>{hateCnt}</Text>
     </View>
   );
 };

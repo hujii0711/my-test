@@ -87,7 +87,6 @@ export const updateArticle = async (id: string, bodys: { title: string; contents
 };
 
 export const deleteArticle = async (id: string) => {
-  console.log('ArticleService >>>> deleteArticle >>>> id====', id);
   const data = await Articles.destroy({
     where: { id },
   });
@@ -99,16 +98,30 @@ export const updateArticleLookup = async (id: string) => {
   return data;
 };
 
-export const updateArticleLike = async (id: string, select: string) => {
-  let data;
-
-  if (select === 'liked') {
-    data = await Articles.increment({ liked: 1 }, { where: { id } });
-  } else {
-    data = await Articles.increment({ unliked: 1 }, { where: { id } });
+export const updateArticlePrefer = async (id: string, type: string) => {
+  switch (type) {
+    case 'likeUp':
+      await Articles.increment({ liked: 1 }, { where: { id } });
+      break;
+    case 'likeDown':
+      await Articles.decrement({ liked: 1 }, { where: { id } });
+      break;
+    case 'hateUp':
+      await Articles.increment({ unliked: 1 }, { where: { id } });
+      break;
+    case 'hateDown':
+      await Articles.decrement({ unliked: 1 }, { where: { id } });
+      break;
+    case 'likeUpAndhateDown':
+      await Articles.increment({ liked: 1 }, { where: { id } });
+      await Articles.decrement({ unliked: 1 }, { where: { id } });
+      break;
+    case 'likeDownAndhateUp':
+      await Articles.decrement({ liked: 1 }, { where: { id } });
+      await Articles.increment({ unliked: 1 }, { where: { id } });
+      break;
   }
-
-  return data;
+  return { status: 'success' };
 };
 
 export const selectCommentCount = async (id: string) => {

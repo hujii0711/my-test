@@ -69,10 +69,10 @@ export async function deleteComment(params) {
 }
 
 /*
-  6. Comment 댓글 like 증가 | /comment/update/like
+  6. Comment 댓글 like 감소 증가| /comment/update/prefer
 */
-export async function updateCommentLike(id) {
+export async function updateCommentPrefer(id, type) {
   const config = {headers: {returnType: 'map'}};
-  await client.patch('/comment/update/like', {id}, config);
+  await client.patch('/comment/update/prefer', {id, type}, config);
   return null;
 }

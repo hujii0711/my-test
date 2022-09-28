@@ -16,7 +16,7 @@ router.post('/article/insert', ArticleController.insertArticle); //글 쓰기
 router.put('/article/update/:id', verifyToken, ArticleController.updateArticle); //글 수정
 router.delete('/article/delete/:id', verifyToken, ArticleController.deleteArticle); //글 삭제
 router.patch('/article/update/lookup', verifyToken, ArticleController.updateArticleLookup); //조회수 증가
-router.patch('/article/update/like', verifyToken, ArticleController.updateArticleLike); //like 증가
+router.patch('/article/update/prefer', verifyToken, ArticleController.updateArticlePrefer); //like 증가 감소
 router.get('/article/commentCnt/', verifyToken, ArticleController.selectCommentCount); //댓글 개수 조회
 router.post('/upload', upload.single('fileUpload'), ArticleController.fileUpload);
 //upload.single('avatar') 의 매개변수 'avatar'는 form을 통해 전송되는 파일의 name속성을 가져야 함.

@@ -65,10 +65,10 @@ export const updateArticleLookup = catchAsync(async (req: Request, res: Response
   res.json(result).status(httpStatus.OK);
 });
 
-// /article/update/like | PATCH
-export const updateArticleLike = catchAsync(async (req: Request, res: Response) => {
-  const { id, select } = req.body;
-  const result = await ArticleService.updateArticleLike(id, select);
+// /article/update/prefer | PATCH
+export const updateArticlePrefer = catchAsync(async (req: Request, res: Response) => {
+  const { id, type } = req.body;
+  const result = await ArticleService.updateArticlePrefer(id, type);
   res.json(result).status(httpStatus.OK);
 });
 

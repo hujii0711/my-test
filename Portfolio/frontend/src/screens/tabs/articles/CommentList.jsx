@@ -229,10 +229,12 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
             <CommentItem
               commentId={item.id}
               message={item.message}
-              created_at={item.created_at}
+              createdAt={item.created_at}
               username={item.user_id}
               articleRef={articleRef}
               isMyComment={item.user_id === users.user_id}
+              initLike={item.like}
+              initHate={item.unlike}
               onVisibleModify={onVisibleModify}
               onVisibleRemove={onVisibleRemove}
             />
