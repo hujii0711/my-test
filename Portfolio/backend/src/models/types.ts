@@ -65,3 +65,12 @@ export interface ChatParticipantAttributes {
   participant_id?: string;
   created_at?: Date;
 }
+
+export interface FaqAttributes {
+  id?: number | null;
+  user_id?: string;
+  question?: string;
+  answer?: string;
+  created_at?: Date;
+  update_at?: Date;
+}

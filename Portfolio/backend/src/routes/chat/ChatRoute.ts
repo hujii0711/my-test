@@ -1,13 +1,9 @@
-import { Request, Response, NextFunction, Router } from 'express';
+import { Router } from 'express';
 import * as ChatController from '../../controller/chat/ChatController';
 import { upload } from '../../modules/multer';
 
-export const path = '';
+export const path = ''; //chat
 export const router = Router();
-
-router.use('/', (req: Request, res: Response, next: NextFunction) => {
-  next();
-});
 
 router.get('/chat/intro', ChatController.selectListChatRoom); //채팅방 목록 페이지
 router.post('/chat/makeRoom', ChatController.insertChatMakeRoom); //채팅방 만들고 채팅방으로 이동

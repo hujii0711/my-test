@@ -4,7 +4,6 @@ import { catchAsync } from '../../modules/error';
 import passport from 'passport';
 import httpStatus from 'http-status';
 import * as tokenConfig from '../../modules/token';
-import env from '../../modules/env';
 
 export const register = catchAsync(async (req: Request, res: Response) => {
   const body = req.body;
@@ -27,6 +26,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
     }
 
     return req.login(user, (loginError) => {
+      console.log('login >>> req.login >>>> user========', user);
       if (loginError) {
         console.error(loginError);
         return next(loginError);
@@ -43,12 +43,6 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
         jwt: token, //로그인이후 UI에 넘겨줄 token
       };
       console.log('login >>> 로그인 이후 result=====', result);
-      // 쿠키 생성
-      //res.cookie('access_token', token, {
-      //  maxAge: env.max_age.token_cookie, //30일
-      //  httpOnly: true,
-      //});
-      //res.clearCookie('access_token');
       res.json(result).status(httpStatus.OK);
 
       // 로그인 이후 생성되는 데이터
@@ -70,7 +64,7 @@ export const logout = catchAsync(async (req: Request, res: Response) => {
 export const getLoginStatus = catchAsync(async (req: Request, res: Response) => {
   console.log('getLoginStatus >>> 세션 정보 req.user=====', req.user);
   console.log('getLoginStatus >>> 세션 정보 req.session=====', req.session);
-  console.log('getLoginStatus >>> 토큰 req.tokenUserInfo=====', req.tokenUserInfo);
+  //console.log('getLoginStatus >>> 토큰 req.tokenUserInfo=====', req.tokenUserInfo);
 
   const result = {
     user: req.user,

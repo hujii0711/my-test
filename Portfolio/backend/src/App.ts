@@ -23,7 +23,7 @@ const port = env.port;
   try {
     await Sequelize().authenticate();
     logger.info('✅DB connection success.');
-    await Sequelize().sync({ force: false });
+    await Sequelize().sync({ force: true });
     logger.info('✅Success Create users Table');
   } catch (error) {
     logger.info('❗️Error in Create users Table : ', error);

@@ -14,10 +14,8 @@ const localStrategy = () => {
       async (identifier, password, done) => {
         try {
           const exUser = await Users.findOne({ where: { email: identifier } });
-          console.log('exUser >>>> ', exUser);
           if (exUser) {
             const result = await bcrypt.compare(password, exUser.password);
-            console.log('result >>>> ', result);
             if (result) {
               done(null, exUser);
             } else {

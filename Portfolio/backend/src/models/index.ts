@@ -6,6 +6,7 @@ import { Comments } from './comments';
 import { ChatMessages } from './chatMessages';
 import { ChatParticipants } from './chatParticipants';
 import { ChatRooms } from './chatRooms';
+import { Faqs } from './faqs';
 import env from '../modules/env';
 
 const sequelize = new database.Sequelize(
@@ -43,6 +44,7 @@ export function Sequelize() {
   ChatMessages.initModel(sequelize);
   ChatRooms.initModel(sequelize);
   ChatParticipants.initModel(sequelize);
+  Faqs.initModel(sequelize);
 
   //Foreign key 관계의 경우 관계를 만드는 상위 테이블은 Unique 하거나 Primary 이어야 합니다. 또한 같은 데이터 타입 이어야 합니다.
   //Articles.hasMany(Users, { foreignKey: 'user_id', sourceKey: 'id' });

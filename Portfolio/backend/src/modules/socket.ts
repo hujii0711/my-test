@@ -4,8 +4,6 @@ import { NextFunction } from 'express';
 import env from '../modules/env';
 import cookie from 'cookie-signature';
 import axios from 'axios';
-import { deleteChatRoomExit } from '../controller/chat/ChatController';
-
 // var cookie = require('cookie-signature');
 
 // var val = cookie.sign('hello', 'tobiiscool');
@@ -23,7 +21,7 @@ import { deleteChatRoomExit } from '../controller/chat/ChatController';
 export default (server: any, app: any, sessionMiddleware: any) => {
   const io = new SocketIO(server, { path: '/socket.io' }); //익스프레스 서버와 연결
   app.set('io', io); //라우터에서 io 객체를 사용할 수 있게 저장, req.app.get("io")로 접근 가능
-  const room = io.of('/room');
+  const token = io.of('/token');
   const chat = io.of('/chat');
 
   io.use((socket: any, next: any) => {
@@ -31,10 +29,10 @@ export default (server: any, app: any, sessionMiddleware: any) => {
     sessionMiddleware(socket.request, socket.request.res, next);
   });
 
-  room.on('connection', (socket) => {
-    console.log('room 네임스페이스에 접속');
+  token.on('connection', (socket) => {
+    console.log('token 네임스페이스에 접속');
     socket.on('disconnect', () => {
-      console.log('room 네임스페이스 접속 해제');
+      console.log('token 네임스페이스 접속 해제');
     });
   });
 
@@ -62,7 +60,7 @@ export default (server: any, app: any, sessionMiddleware: any) => {
 
       if (userCount === 0) {
         // 유저가 0명이면 방 삭제
-        const signedCookie = cookie.sign(req.signedCookies['connect.sid'], env.cookie);
+        const signedCookie = cookie.sign(req.signedCookies['connect.sid'], env.cookie.secret);
 
         const connectSID = `${signedCookie}`;
 
