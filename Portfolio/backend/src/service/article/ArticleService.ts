@@ -7,17 +7,7 @@ export const selectListArticle = async (params: any) => {
   const { offset } = params; ////{offset:0}
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
   const data = await Articles.findAll({
-    attributes: [
-      'id',
-      'title',
-      'contents',
-      'user_id',
-      'user_name',
-      'lookup',
-      'comment_cnt',
-      'created_at',
-      'updated_at',
-    ],
+    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'lookup', 'created_at', 'updated_at'],
     order: [['id', 'DESC']],
     limit: 10,
     offset: Number(offset),
@@ -37,7 +27,6 @@ export const selectArticle = async (id: string) => {
       'lookup',
       'liked',
       'unliked',
-      'comment_cnt',
       'created_at',
       'updated_at',
     ],
@@ -93,7 +82,7 @@ export const deleteArticle = async (id: string) => {
   return data;
 };
 
-export const updateArticleLookup = async (id: string) => {
+export const updateArticleLookup = async (id: number) => {
   const data = await Articles.increment({ lookup: 1 }, { where: { id } });
   return data;
 };
@@ -124,12 +113,12 @@ export const updateArticlePrefer = async (id: string, type: string) => {
   return { status: 'success' };
 };
 
-export const selectCommentCount = async (id: string) => {
-  //select count(id) as comment_cnt from comments where id=1;
+export const selectCommentCount = async (article_ref: number) => {
+  //SELECT COUNT(`id`) AS `comment_cnt` FROM `comments` AS `Comments` WHERE `Comments`.`article_ref` = 26;
   const data = Comments.findAll({
     attributes: [[Sequelize.fn('COUNT', Sequelize.col('id')), 'comment_cnt']],
     where: {
-      id,
+      article_ref,
     },
   });
   return data;

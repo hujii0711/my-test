@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect, useRef, memo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
 import {formatDaysAgo} from '../../../commons/utils/common';
@@ -16,6 +16,9 @@ function CommentItem({
   initLike = 0,
   initHate = 0,
 }) {
+  const isFirstRender = useRef(false);
+  const select = useRef(false);
+
   const [likeCnt, setLikeCnt] = useState(initLike);
   const [selectedLike, setSelectedLike] = useState(false);
 
@@ -35,6 +38,7 @@ function CommentItem({
   };
 
   const onPressHate = () => {
+    console.log('selectedHate=====', selectedHate);
     if (selectedHate) {
       setHateCnt(hateCnt - 1);
       setSelectedHate(false);
@@ -43,20 +47,20 @@ function CommentItem({
       setSelectedHate(true);
     }
     setSelectedLike(false);
-    setHateCnt(initLike);
+    setLikeCnt(initLike);
   };
 
-  const createdAt = formatDaysAgo(createdAt);
+  const created_at = formatDaysAgo(createdAt);
 
   useEffect(() => {
     //console.log('isFirstRender.current========', isFirstRender.current);
     //console.log('select.current========', select.current);
 
     // 최초 렌더링시 skip
-    if (isFirstRender.current === false) {
-      isFirstRender.current = true;
-      return;
-    }
+    // if (isFirstRender.current === false) {
+    //   isFirstRender.current = true;
+    //   return;
+    // }
 
     // 경우의 수
     // 1. selectedLike=false | selectedHate=false
@@ -106,7 +110,7 @@ function CommentItem({
           <View style={styles.header}>
             <Text style={styles.header_text}>{username}</Text>
             <View style={styles.space} />
-            <Text style={styles.header_text}>{createdAt}</Text>
+            <Text style={styles.header_text}>{created_at}</Text>
           </View>
           <View style={styles.divider} />
 
@@ -220,4 +224,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentItem;
+export default memo(CommentItem);

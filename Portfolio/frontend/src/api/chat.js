@@ -31,9 +31,12 @@ export async function insertChatMakeRoom(params) {
   3. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/roomEntrance/:id
 */
 export async function selectListChatRoomMessage(room_id) {
-  const response = await client.get(`/chat/roomEntrance/${room_id}`, {
-    headers: {returnType: 'list'},
-  });
+  const response = await client.get(
+    `/chat/roomEntrance/0732236e-f0bf-478b-92d0-35fd0a0afeb7`,
+    {
+      headers: {returnType: 'list'},
+    },
+  );
   return response.data;
 }
 
@@ -45,7 +48,7 @@ export async function insertChatMessage(params) {
   const {roomId: room_id, participantId: receiver_id, message} = params;
   const config = {headers: {returnType: 'map'}};
   const response = await client.post(
-    `/chat/sendMessge/${room_id}`,
+    `/chat/sendMessge/0732236e-f0bf-478b-92d0-35fd0a0afeb7`,
     {receiver_id, message},
     config,
   );
@@ -64,7 +67,7 @@ export async function deleteChatRoomExit(params) {
 /*
   6. 파일업로드 메시지 전송 | /chat/sendMessgeUpload/:id
 */
-mutateInsertChatMessageUpload({formData, roomId, message, participantId});
+//mutateInsertChatMessageUpload({formData, roomId, message, participantId});
 export async function insertChatMessageUpload(params) {
   const {
     formData,

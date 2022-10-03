@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useCallback} from 'react';
 import {
   Avatar,
   IconButton,
@@ -22,11 +22,12 @@ import {
   insertChatMessage,
   insertChatMessageUpload,
 } from '../../../api/chat';
+import {useEffect} from 'react';
 
 const ChattingMessge = () => {
   // 웹소켓 통신 시작
-  const socket = io('http://10.0.2.2:4000', {
-    path: '/socket.io/chat',
+  const socket = io('http://10.0.2.2:4000/chat', {
+    path: '/socket.io',
     transports: ['websocket'],
   });
 
@@ -35,20 +36,6 @@ const ChattingMessge = () => {
   const {id: roomId, participant_id: participantId} = useRoute().params;
 
   // 대화 내용 조회
-  const selectListChatRoomMessageQuery = useQuery(
-    ['selectListChatRoomMessage', roomId],
-    () => selectListChatRoomMessage(roomId),
-  );
-
-  const selectListChatRoomMessageQueryData =
-    selectListChatRoomMessageQuery.data;
-  const initData = selectListChatRoomMessageQueryData.map((elem, index) => {
-    if (elem.sender_id === currentUserId) {
-      return <MyView message={elem.message} key={index} />;
-    } else {
-      return <YouView message={elem.message} key={index} />;
-    }
-  });
 
   // 메시지 송신
   const onSubmitSendMessage = useCallback(() => {
@@ -67,6 +54,7 @@ const ChattingMessge = () => {
 
   //메시지 수신
   socket.on('receiveMessage', data => {
+    console.log('receiveMessage >>>> data=====', data);
     setMessageList(
       messageList.concat(
         <YouView message={data.message} key={messageList.length} />,
@@ -110,11 +98,6 @@ const ChattingMessge = () => {
     },
   );
 
-  // 로딩바
-  if (!selectChatRoomEntranceQuery.data) {
-    return <ActivityIndicator color="red" />;
-  }
-
   return (
     <KeyboardAvoidingView
       behavior={Platform.select({ios: 'padding'})}
@@ -126,7 +109,7 @@ const ChattingMessge = () => {
           margin: 10,
         }}>
         <Today />
-        {initData}
+        {messageList}
       </ScreenWrapper>
       <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
         <TextInput
@@ -151,7 +134,7 @@ const ChattingMessge = () => {
           }}
         />
         <IconButton
-          icon="remove"
+          icon="cancel"
           size={36}
           onPress={onSubmitSendMessageUpload}
           style={{

@@ -68,6 +68,7 @@ export async function deleteArticle(id) {
   6. Article 글 상세 조회수 증가 | /article/update/lookup
 */
 export async function updateArticleLookup(id) {
+  console.log('updateArticleLookup >>>> id-----', id);
   const config = {headers: {returnType: 'map'}};
   await client.patch('/article/update/lookup', {id}, config);
   return null;
@@ -85,8 +86,12 @@ export async function updateArticlePrefer(id, type) {
 /*
   8. Article 댓글 개수 조회 | /article/commentCnt
 */
-export async function selectCommentCount(id) {
+export async function selectCommentCount(articleRef) {
+  console.log('selectCommentCount >>>>> articleRef======', articleRef);
   const config = {headers: {returnType: 'map'}};
-  await client.get('/article/commentCnt', {id}, config);
-  return null;
+  const response = await client.get(
+    `/article/commentCnt/${articleRef}`,
+    config,
+  );
+  return response.data;
 }

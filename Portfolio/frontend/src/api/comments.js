@@ -72,6 +72,8 @@ export async function deleteComment(params) {
   6. Comment 댓글 like 감소 증가| /comment/update/prefer
 */
 export async function updateCommentPrefer(id, type) {
+  console.log('updateCommentPrefer >>>> id======', id);
+  console.log('updateCommentPrefer >>>> type======', type);
   const config = {headers: {returnType: 'map'}};
   await client.patch('/comment/update/prefer', {id, type}, config);
   return null;

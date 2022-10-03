@@ -6,7 +6,7 @@ import httpStatus from 'http-status';
 // /comment/:articleRef | GET | selectListComment | 댓글 목록
 export const selectListComment = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
-  const articleId = parseInt(req.params.articleId);
+  const articleId = parseInt(req.params.articleRef);
   const body = await CommentService.selectListComment(query, articleId);
   res.json(body).status(httpStatus.OK);
 });
@@ -14,7 +14,7 @@ export const selectListComment = catchAsync(async (req: Request, res: Response) 
 // /comment/:articleRef/:id | GET | selectComment | 댓글 상세
 export const selectComment = catchAsync(async (req: Request, res: Response) => {
   const articleRef = parseInt(req.params.articleRef);
-  const id = parseInt(req.params.commentId);
+  const id = parseInt(req.params.id);
   const body = await CommentService.selectComment(articleRef, id);
   res.json(body).status(httpStatus.OK);
 });
@@ -22,7 +22,7 @@ export const selectComment = catchAsync(async (req: Request, res: Response) => {
 // /comment/insert/:articleRef | POST | insertComment | 댓글쓰기
 export const insertComment = catchAsync(async (req: Request, res: Response) => {
   const { message } = req.body;
-  const article_ref = parseInt(req.params.articleId);
+  const article_ref = parseInt(req.params.articleRef);
   const userInfo = req.user;
   const result = await CommentService.insertComment(message, article_ref, userInfo);
   res.json(result).status(httpStatus.OK);

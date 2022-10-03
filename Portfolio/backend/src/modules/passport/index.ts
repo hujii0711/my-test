@@ -23,6 +23,18 @@ const passportConfig = () => {
     console.log('★★★★★★★★★★★★passport.serializeUser★★★★★★★★★★★★');
     // user에 무엇이 들어 있는지 확인 필요!!!!!
     const { user_id } = user;
+    console.log('serializeUser >>>>> user=====', user);
+    // dataValues: {
+    //   id: 1,
+    //   user_id: 'f7d1176a-a503-4b4e-94cd-8d11b8eb990c',
+    //   user_name: '김형준',
+    //   email: 'fujii0711@daum.net',
+    //   password: '$2a$12$pBB97fE44l97Ua32eUEjhuGNd5bNJ4wi2eerkDBGY2NsyrZtEiIPW',
+    //   jwt: 'no token',
+    //   created_at: 2022-10-03T01:51:12.000Z,
+    //   updated_at: 2022-10-03T01:51:12.000Z
+    // },
+
     done(null, user_id);
   });
 
@@ -34,7 +46,7 @@ const passportConfig = () => {
         where: { user_id },
         raw: true,
       });
-      console.log('users=====', users);
+      console.log('deserializeUser >>>>> users=====', users);
 
       // 토큰 정보를 조회해서 users 정보 리턴해줌!!!!!!!!!!!!!!! ----> request.user에 저장
       done(null, users);

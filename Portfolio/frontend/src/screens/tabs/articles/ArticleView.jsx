@@ -1,9 +1,14 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useRef, useState} from 'react';
+import React, {useRef, useCallback, useEffect} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
-import {useMutation, useQuery} from 'react-query';
-import {selectArticle, deleteArticle} from '../../../api/articles';
+import {useMutation, useQuery, useQueryClient} from 'react-query';
+import {
+  selectArticle,
+  deleteArticle,
+  updateArticleLookup,
+  selectCommentCount,
+} from '../../../api/articles';
 import {useUser} from '../../../commons/hooks/useReduxState';
 import Color from '../../../commons/style/Color';
 import {formatDaysAgo} from '../../../commons/utils/common';
@@ -13,17 +18,30 @@ import CommentList from './CommentList';
 const ArticleView = () => {
   const refRBSheet = useRef();
   const {id: articleRef} = useRoute().params;
-
   // 전역 상태
   const currentUser = useUser();
+  console.log('ArticleView >>>>>>> articleRef======', articleRef);
+
+  // 조회수 증가
+  useEffect(() => {
+    (async () => {
+      await updateArticleLookup(articleRef);
+    })();
+  }, [articleRef]);
 
   // 게시판 상세
   const selectArticleQuery = useQuery(['selectArticle', articleRef], () =>
     selectArticle(articleRef),
   );
 
-  //selectArticleQuery 반환값이 없으면 로딩바 출력
-  if (!selectArticleQuery.data) {
+  // 게시판 댓글 수
+  const selectCommentCountQuery = useQuery(
+    ['selectCommentCount', articleRef],
+    () => selectCommentCount(articleRef),
+  );
+
+  //selectArticleQuery OR selectCommentCountQuery 반환값이 없으면 로딩바 출력
+  if (!selectArticleQuery.data || !selectCommentCountQuery.data) {
     return <ActivityIndicator color="red" />;
   }
 
@@ -34,10 +52,12 @@ const ArticleView = () => {
     user_id,
     user_name,
     lookup,
-    comment_cnt,
     liked,
     unliked,
   } = selectArticleQuery.data;
+
+  const {comment_cnt} = selectCommentCountQuery.data;
+
   return (
     <>
       <ArticleViewItems
@@ -51,12 +71,8 @@ const ArticleView = () => {
         unliked={unliked}
         isMyArticle={currentUser.user_id === user_id}
       />
-      <CommentEntry refRBSheet={refRBSheet} lookup={0} />
-      <CommentList
-        refRBSheet={refRBSheet}
-        articleRef={articleRef}
-        comment_cnt={comment_cnt}
-      />
+      <CommentEntry refRBSheet={refRBSheet} commentCnt={comment_cnt} />
+      <CommentList refRBSheet={refRBSheet} articleRef={articleRef} />
     </>
   );
 };
@@ -74,6 +90,7 @@ const ArticleViewItems = ({
 }) => {
   const createdAt = formatDaysAgo(created_at);
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
 
   const onPressNaviMove = () => {
     navigation.navigate('ArticleWrite', {id});

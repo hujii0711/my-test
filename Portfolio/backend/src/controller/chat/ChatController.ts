@@ -14,8 +14,8 @@ import httpStatus from 'http-status';
 // /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
 export const selectListChatRoom = catchAsync(async (req: Request, res: Response) => {
   const userInfo = req.user;
-  const params = req.params;
-  const result = await ChatService.selectListChatRoom(userInfo, params);
+  const query = req.query;
+  const result = await ChatService.selectListChatRoom(userInfo, query);
   res.json(result).status(httpStatus.OK);
 });
 
@@ -29,10 +29,9 @@ export const insertChatMakeRoom = catchAsync(async (req: Request, res: Response)
 
 // /chat/roomEntrance/:id | GET | selectListChatRoomMessage | 채팅방 입장
 export const selectListChatRoomMessage = catchAsync(async (req: Request, res: Response) => {
-  const userInfo = req.user;
   const { room_id } = req.params;
 
-  const result = await ChatService.selectListChatRoomMessage(userInfo, room_id);
+  const result = await ChatService.selectListChatRoomMessage(room_id);
   res.json(result).status(httpStatus.OK);
 });
 
@@ -48,6 +47,7 @@ export const insertChatMessage = catchAsync(async (req: Request, res: Response) 
   };
 
   const result = await ChatService.insertChatMessage(userInfo, data);
+  console.log('ChatController >>> insertChatMessage >>>> room_id------', room_id);
   req.app.get('io').of('/chat').to(room_id).emit('receiveMessage', result);
   res.json(result).status(httpStatus.OK);
 });

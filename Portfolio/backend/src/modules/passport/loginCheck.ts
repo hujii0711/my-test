@@ -7,7 +7,7 @@ import { verifyToken } from '../../modules/token';
 export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (req.isAuthenticated()) {
     //토큰 검증 및 만료 임박시 재발급
-    verifyToken(req, res, next);
+    //verifyToken(req, res, next);
     next();
   } else {
     const err = new Error('로그인한 이후에 이용하시기 바랍니다.');
@@ -18,7 +18,7 @@ export const isLoggedIn = (req: Request, res: Response, next: NextFunction) => {
 export const isNotLoggedIn = (req: Request, res: Response, next: NextFunction) => {
   if (!req.isAuthenticated()) {
     //토큰 검증 및 만료 임박시 재발급
-    verifyToken(req, res, next);
+    //verifyToken(req, res, next);
     next();
   } else {
     const err = new Error('이미 로그인 상태입니다.');

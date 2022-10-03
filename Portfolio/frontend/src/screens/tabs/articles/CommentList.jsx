@@ -1,4 +1,4 @@
-import React, {useMemo, useState} from 'react';
+import React, {useMemo, useState, useCallback, memo, useEffect} from 'react';
 import {IconButton, TextInput, ActivityIndicator} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet, RefreshControl} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
@@ -16,7 +16,7 @@ import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
 import {updateComment, deleteComment} from '../../../api/comments';
 
-const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
+const CommentList = ({refRBSheet, articleRef}) => {
   console.log('CommentList >>>> articleRef======', articleRef);
   const users = useUser();
   const queryClient = useQueryClient();
@@ -51,20 +51,23 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
   // mutate 댓글 수정
   const {mutate: mutateUpdateComment} = useMutation(updateComment, {
     onSuccess: comment => {
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {pageParams: [], pages: []};
-        }
-        return {
-          pageParams: data.pageParams,
-          pages: data.pages.map(page =>
-            page.find(a => a.id === selectedCommentId)
-              ? page.map(a => (a.id === selectedCommentId ? comment : a))
-              : page,
-          ),
-          articleId: articleRef,
-        };
-      });
+      // ☆ update 리턴 데이터 캐싱할 데이터 원본과 다름
+      // LOG  ======= {"article_ref": 2, "created_at": "2022-10-03T05:36:37.000Z", "id": 8, "message": "test", "updated_at": "2022-10-03T05:36:37.000Z", "user_id": "f7d1176a-a503-4b4e-94cd-8d11b8eb990c"}
+      // LOG  ======= {"id": 8, "message": "test1"}
+      // queryClient.setQueryData('selectListComment', data => {
+      //   if (!data) {
+      //     return {pageParams: [], pages: []};
+      //   }
+      //   return {
+      //     pageParams: data.pageParams,
+      //     pages: data.pages.map(page =>
+      //       page.find(a => a.id === selectedCommentId)
+      //         ? page.map(a => (a.id === selectedCommentId ? comment : a))
+      //         : page,
+      //     ),
+      //     articleId: articleRef,
+      //   };
+      // });
     },
   });
 
@@ -91,7 +94,7 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
         message,
       });
     },
-    [mutateDeleteArticle, articleRef],
+    [mutateInsertComment, articleRef],
   );
 
   //commentModifyModal
@@ -225,20 +228,23 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
         />
         <FlatList
           data={items}
-          renderItem={({item}) => (
-            <CommentItem
-              commentId={item.id}
-              message={item.message}
-              createdAt={item.created_at}
-              username={item.user_id}
-              articleRef={articleRef}
-              isMyComment={item.user_id === users.user_id}
-              initLike={item.like}
-              initHate={item.unlike}
-              onVisibleModify={onVisibleModify}
-              onVisibleRemove={onVisibleRemove}
-            />
-          )}
+          renderItem={({item}) => {
+            console.log('=======', item);
+            return (
+              <CommentItem
+                commentId={item.id}
+                message={item.message}
+                createdAt={item.created_at}
+                username={item.user_id}
+                articleRef={articleRef}
+                isMyComment={item.user_id === users.user_id}
+                initLike={item.liked}
+                initHate={item.unliked}
+                onVisibleModify={onVisibleModify}
+                onVisibleRemove={onVisibleRemove}
+              />
+            );
+          }}
           keyExtractor={(item, index) => index.toString()}
           ListHeaderComponent={
             <View style={{flexDirection: 'row'}}>
@@ -278,8 +284,9 @@ const CommentList = ({refRBSheet, articleRef, comment_cnt}) => {
               )}
             </>
           )}
-          onEndReachedThreshold={0.5}
-          onEndReached={fetchNextPage}
+          // ☆ 주석 해제시 렌더링 부하 발생
+          //onEndReachedThreshold={0.5}
+          //onEndReached={fetchNextPage}
           refreshControl={
             <RefreshControl
               onRefresh={fetchPreviousPage}
@@ -318,4 +325,5 @@ const styles = StyleSheet.create({
     right: 5,
   },
 });
-export default CommentList;
+
+export default memo(CommentList);

@@ -1,6 +1,7 @@
 import React, {useEffect, useRef} from 'react';
 import {Platform, Pressable, StyleSheet, Animated} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialIcons';
+import Color from '../../commons/style/Color';
 
 const FloatingButton = ({hidden, onPressFloatButton}) => {
   const animation = useRef(new Animated.Value(0)).current;
@@ -71,7 +72,7 @@ const styles = StyleSheet.create({
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: '#009688',
+    backgroundColor: Color.pink1,
     justifyContent: 'center',
     alignItems: 'center',
   },

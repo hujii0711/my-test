@@ -15,52 +15,63 @@ import {selectListChatRoom} from '../../../api/chat';
 
 const ChatRoomList = () => {
   const [selectedId, setSelectedId] = useState(null);
-  const {
-    data,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    fetchNextPage,
-    fetchPreviousPage,
-  } = useInfiniteQuery(
-    'selectListChatRoom',
-    ({pageParam}) => selectListChatRoom({...pageParam}),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage?.length === 10) {
-          return {
-            nextOffset: lastPage[lastPage.length - 1].id,
-          };
-        } else {
-          return undefined;
-        }
-      },
-      getPreviousPageParam: (firstPage, allPages) => {
-        const validPage = allPages.find(page => page.length > 0);
-        if (!validPage) {
-          return undefined;
-        }
-        return {
-          prevOffset: validPage[0].id,
-        };
-      },
-    },
-  );
+  // const {
+  //   data,
+  //   isFetchingNextPage,
+  //   isFetchingPreviousPage,
+  //   fetchNextPage,
+  //   fetchPreviousPage,
+  // } = useInfiniteQuery(
+  //   'selectListChatRoom',
+  //   ({pageParam}) => selectListChatRoom({...pageParam}),
+  //   {
+  //     getNextPageParam: (lastPage, allPages) => {
+  //       if (lastPage?.length === 10) {
+  //         return {
+  //           nextOffset: lastPage[lastPage.length - 1].id,
+  //         };
+  //       } else {
+  //         return undefined;
+  //       }
+  //     },
+  //     getPreviousPageParam: (firstPage, allPages) => {
+  //       const validPage = allPages.find(page => page.length > 0);
+  //       if (!validPage) {
+  //         return undefined;
+  //       }
+  //       return {
+  //         prevOffset: validPage[0].id,
+  //       };
+  //     },
+  //   },
+  // );
 
-  const items = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-    return [].concat(...data.pages);
-  }, [data]);
+  // const items = useMemo(() => {
+  //   if (!data) {
+  //     return null;
+  //   }
+  //   return [].concat(...data.pages);
+  // }, [data]);
 
-  if (!items) {
-    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
-  }
-
+  // if (!items) {
+  //   return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
+  // }
+  //dc35ca80-cc36-4926-a5f1-ca8c4cbd696f
+  //xxyyxxyy-ccyy-yyyy-xyxy-xxyxyxxxyyyx
+  const uuidv4 = () => {
+    return 'xyxyxyxy'.replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };
+  const DATA = Array(100)
+    .fill()
+    .map((elem, idx) => (elem = {user_id: uuidv4(), id: idx}));
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
-        data={items}
+        data={DATA}
         renderItem={({item}) => {
           const background_color =
             item.id === selectedId ? '#34ace0' : '#f7f1e3';
@@ -86,8 +97,7 @@ const ChatRoomList = () => {
                   alignSelf: 'center',
                   color: color,
                 }}>
-                {' '}
-                index : {item.id} | user_name :{' '}
+                user_id :{item.user_id}
                 {item['ChatParticipant.participant_id']}
               </Text>
             </TouchableOpacity>
@@ -95,47 +105,24 @@ const ChatRoomList = () => {
         }}
         keyExtractor={(item, index) => index.toString()}
         ListHeaderComponent={
-          <View style={{flexDirection: 'row'}}>
-            <TextInput
-              mode="outlined"
-              placeholder="댓글을 입력하세요!"
-              selectionColor={Color.divider}
-              activeOutlineColor={Color.pink1}
-              outlineColor={Color.divider}
-              style={{
-                backgroundColor: Color.white,
-                fontSize: 11,
-                margin: 10,
-                width: '80%',
-                height: 30,
-              }}
-              value={message}
-              onChangeText={text => setMessage(text)}
-            />
-            <IconButton
-              icon="send"
-              size={30}
-              style={{alignSelf: 'center'}}
-              onPress={() => onSubmitWriteComment(message)}
-            />
-          </View>
+          <View style={{flexDirection: 'row', backgroundColor: 'red'}}></View>
         }
-        ListFooterComponent={items => (
-          <>
-            {items.length > 0 ? <View style={styles.separator} /> : null}
-            {isFetchingNextPage && (
-              <ActivityIndicator size="small" color="blue" style={{flex: 1}} />
-            )}
-          </>
-        )}
-        onEndReachedThreshold={0.5}
-        onEndReached={fetchNextPage}
-        refreshControl={
-          <RefreshControl
-            onRefresh={fetchPreviousPage}
-            refreshing={isFetchingPreviousPage}
-          />
-        }
+        // ListFooterComponent={items => (
+        //   <>
+        //     {items.length > 0 ? <View style={styles.separator} /> : null}
+        //     {isFetchingNextPage && (
+        //       <ActivityIndicator size="small" color="blue" style={{flex: 1}} />
+        //     )}
+        //   </>
+        // )}
+        // onEndReachedThreshold={0.5}
+        // onEndReached={fetchNextPage}
+        // refreshControl={
+        //   <RefreshControl
+        //     onRefresh={fetchPreviousPage}
+        //     refreshing={isFetchingPreviousPage}
+        //   />
+        // }
         ItemSeparatorComponent={() => <View style={styles.separator} />}
       />
     </SafeAreaView>

@@ -60,8 +60,8 @@ export const sendEmail = catchAsync(async (req: Request, res: Response) => {
 
 // /article/update/lookup | PATCH
 export const updateArticleLookup = catchAsync(async (req: Request, res: Response) => {
-  const body = req.body;
-  const result = await ArticleService.updateArticleLookup(body);
+  const id = parseInt(req.body.id);
+  const result = await ArticleService.updateArticleLookup(id);
   res.json(result).status(httpStatus.OK);
 });
 
@@ -74,7 +74,7 @@ export const updateArticlePrefer = catchAsync(async (req: Request, res: Response
 
 // /article/commentCnt | GET
 export const selectCommentCount = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.body;
-  const result = await ArticleService.selectCommentCount(id);
+  const article_ref = parseInt(req.params.articleRef);
+  const result = await ArticleService.selectCommentCount(article_ref);
   res.json(result).status(httpStatus.OK);
 });

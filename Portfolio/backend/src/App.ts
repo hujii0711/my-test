@@ -13,6 +13,7 @@ import rTracer from 'cls-rtracer';
 import { errorConverter, errorHandler, error400Handler } from './modules/error';
 import { uploadFolder } from './modules/multer';
 import webSocket from './modules/socket';
+import cors from 'cors';
 
 const app = express();
 passportConfig(); // 패스포트 설정
@@ -23,7 +24,7 @@ const port = env.port;
   try {
     await Sequelize().authenticate();
     logger.info('✅DB connection success.');
-    await Sequelize().sync({ force: true });
+    await Sequelize().sync({ force: false });
     logger.info('✅Success Create users Table');
   } catch (error) {
     logger.info('❗️Error in Create users Table : ', error);
@@ -31,6 +32,18 @@ const port = env.port;
 })();
 
 app.use(morgan('dev'));
+
+/*****************************************
+ * CORS 설정
+ * passport deserializeUser 호출 안되는 문제 개선
+ *****************************************/
+app.use((req: Request, res: Response, next: NextFunction) => {
+  cors({
+    origin: 'http://localhost:3000',
+    credentials: true,
+  })(req, res, next);
+});
+
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -48,7 +61,7 @@ app.use(cookieParser(env.cookie.secret));
 // ※ 해당 설정으로 인해 라우터 호출마다 세션은 자동으로 갱신되어 유효기간도 연장된다.
 
 const sessionMiddleware = session({
-  name: 'sessionData',
+  //name: 'sessionData',
   secret: env.cookie.secret,
   resave: false,
   saveUninitialized: true,
@@ -59,6 +72,7 @@ const sessionMiddleware = session({
   cookie: {
     maxAge: env.max_age.session, // 1 hours (24 hours= 24 * 60 * 60 * 1000 ms)
     httpOnly: true,
+    //secure: true,
   },
 });
 
@@ -74,7 +88,6 @@ uploadFolder(); //파일업로드 폴더 생성
 app.use((req: Request, res: Response, next: NextFunction) => {
   const { method, path, url, query, headers, body, user, cookies, session } = req;
   const request = { method, path, headers, body, url, query, user, cookies, session };
-  //logger.info({ request });
   console.log('All router request=====', request);
   next();
 });

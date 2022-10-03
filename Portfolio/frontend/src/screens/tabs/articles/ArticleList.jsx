@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useMemo} from 'react';
+import React, {useRef, useEffect, useState, useMemo} from 'react';
 import {
   SafeAreaView,
   View,
@@ -35,14 +35,7 @@ const ArticleList = ({navigation}) => {
   const onPressFloatButton = () => {
     navigation.navigate('ArticleWrite');
   };
-  // export async function selectListArticle({cursor = 0, prevCursor = 0}) {
-  //   const offset = cursor + prevCursor;
-  //   const response = await client.get('/article', {
-  //     params: {offset},
-  //     headers: {returnType: 'list'},
-  //   });
-  //   return response.data;
-  // }
+
   const {
     data, //data.pages: useInfiniteQuery를 이용해 호출되는 데이터들은 page별로 배열의 요소에 담기게 됩니다.
     isFetchingNextPage,
@@ -108,7 +101,6 @@ const ArticleList = ({navigation}) => {
             title={item.title}
             created_at={item.created_at}
             user_name={item.user_name}
-            comment_cnt={item.comment_cnt}
             lookup={item.lookup}
           />
         )}
@@ -132,11 +124,6 @@ const ArticleList = ({navigation}) => {
           />
         }
       />
-      {/* <FAB
-        icon="plus"
-        style={styles.fab}
-        onPress={() => navigation.navigate('ArticleWrite')}
-      /> */}
       <FloatingButton
         hidden={floatButtonHidden}
         onPressFloatButton={onPressFloatButton}

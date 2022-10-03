@@ -10,7 +10,6 @@ const ArticleItem = ({
   title,
   created_at,
   user_name,
-  comment_cnt,
   lookup,
 }) => {
   const createdAt = formatDaysAgo(created_at);
@@ -25,9 +24,7 @@ const ArticleItem = ({
       android_ripple={{color: Color.pressed}}>
       <View style={{flexDirection: 'row'}}>
         <Text style={styles.title}>{title}</Text>
-        <Badge style={styles.badge} size={14}>
-          {comment_cnt}
-        </Badge>
+        <Badge style={styles.badge} size={14}></Badge>
       </View>
       <View style={styles.footer}>
         <Text style={styles.smallText}>

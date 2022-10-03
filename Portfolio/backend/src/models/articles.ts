@@ -1,5 +1,5 @@
 import { Sequelize, DataTypes, Model, Association } from 'sequelize';
-import { Users } from './users';
+import { Comments } from './comments';
 import { ArticlesAttributes } from './types';
 
 export class Articles extends Model<ArticlesAttributes> implements ArticlesAttributes {
@@ -75,6 +75,6 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
   }
 
   public static associations: {
-    projects: Association<Articles, Users>;
+    projects: Association<Articles, Comments>;
   };
 }

@@ -4,9 +4,9 @@ import { ChatParticipants } from '../../models/chatParticipants';
 
 // 메인 페이지, 채팅방 목록 보여주는 페이지
 // /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
-export const selectListChatRoom = async (userInfo: any, params: any) => {
+export const selectListChatRoom = async (userInfo: any, query: any) => {
   const { user_id } = userInfo;
-  const { offset } = params;
+  const { offset } = query;
 
   const data = ChatRooms.findAll({
     //attributes: ['id', ['ChatParticipant.participant_id', 'userName']],
@@ -48,26 +48,33 @@ export const insertChatMakeRoom = async (userInfo: any, participant_id: string) 
 
 // 방 입장
 // /chat/roomEntrance/:id | GET | selectListChatRoomMessage | 채팅방 입장
-export const selectListChatRoomMessage = async (userInfo: any, roomId: string) => {
-  // chat_rooms와 chat_participants 조인한뒤 다시 chat_messages를 조인
-
-  const { user_id } = userInfo;
-  const data = ChatMessages.findAll({
-    include: [
-      {
-        model: ChatRooms,
-        required: true,
-        where: { id: roomId },
-        include: [
-          {
-            model: ChatParticipants,
-            where: { participant_id: user_id },
-          },
-        ],
-      },
-    ],
+export const selectListChatRoomMessage = async (roomId: string) => {
+  console.log('ChatService >>> selectListChatRoomMessage >>>>> roomId ====', roomId);
+  const data = await ChatMessages.findAll({
+    attributes: ['id', 'room_id', 'sender_id', 'message', 'receiver_id', 'file_name', 'created_at'],
+    where: {
+      room_id: roomId,
+    },
     raw: true,
   });
+  console.log('ChatService >>> selectListChatRoomMessage >>>>> data ====', data);
+  // chat_rooms와 chat_participants 조인한뒤 다시 chat_messages를 조인
+  // const data = ChatRooms.findAll({
+  //   include: [
+  //     {
+  //       model: ChatMessages,
+  //       required: true,
+  //       where: { id: roomId },
+  //       include: [
+  //         {
+  //           model: ChatParticipants,
+  //           where: { participant_id: user_id },
+  //         },
+  //       ],
+  //     },
+  //   ],
+  //   raw: true,
+  // });
   return data;
 };
 
@@ -82,7 +89,7 @@ export const insertChatMessage = async (
     room_id,
     receiver_id,
     message,
-    sender_id: userInfo.user_id,
+    sender_id: 'f7d1176a-a503-4b4e-94cd-8d11b8eb990c', //userInfo.user_id,
   });
   return data;
 };

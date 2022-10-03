@@ -40,46 +40,46 @@ export default (server: any, app: any, sessionMiddleware: any) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.request;
 
-    const {
-      headers: { referer },
-    } = req;
-    const roomId = referer.split('/')[referer.split('/').length - 1].replace(/\?.+/, '');
+    // referer 확인해보고 이상하면
+    // uuid 로 채번
+    const roomId = '0732236e-f0bf-478b-92d0-35fd0a0afeb7'; //referer.split('/')[referer.split('/').length - 1].replace(/\?.+/, '');
 
     socket.join(roomId);
 
     socket.to(roomId).emit('join', {
       message: `${req.user}님이 입장하셨습니다.`,
+      //uuid 로 채번한것 프런트에 넘겨서 DB 저장에 활용할 수 있도록
     });
 
     socket.on('disconnect', async () => {
       console.log('chat 네임스페이스 접속 해제');
       socket.leave(roomId);
-      const currentRoom = socket.adapter.rooms[roomId];
+      // const currentRoom = socket.adapter.rooms[roomId];
 
-      const userCount = currentRoom ? currentRoom.length : 0;
+      // const userCount = currentRoom ? currentRoom.length : 0;
 
-      if (userCount === 0) {
-        // 유저가 0명이면 방 삭제
-        const signedCookie = cookie.sign(req.signedCookies['connect.sid'], env.cookie.secret);
+      // if (userCount === 0) {
+      //   // 유저가 0명이면 방 삭제
+      //   const signedCookie = cookie.sign(req.signedCookies['connect.sid'], env.cookie.secret);
 
-        const connectSID = `${signedCookie}`;
+      //   const connectSID = `${signedCookie}`;
 
-        const config = {
-          headers: {
-            Cookie: `connect.sid=s%3A${connectSID}`,
-          },
-        };
+      //   const config = {
+      //     headers: {
+      //       Cookie: `connect.sid=s%3A${connectSID}`,
+      //     },
+      //   };
 
-        try {
-          await axios.delete(`/chat/roomExit/${roomId}`, config);
-        } catch (err) {
-          console.log(err);
-        }
-      } else {
-        socket.to(roomId).emit('exit', {
-          message: `${req.user}님이 퇴장하셨습니다.`,
-        });
-      }
+      //   try {
+      //     await axios.delete(`/chat/roomExit/${roomId}`, config);
+      //   } catch (err) {
+      //     console.log(err);
+      //   }
+      // } else {
+      //   socket.to(roomId).emit('exit', {
+      //     message: `${req.user}님이 퇴장하셨습니다.`,
+      //   });
+      // }
     });
   });
 };

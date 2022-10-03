@@ -3,7 +3,7 @@ import { Comments } from '../../models/comments';
 export const selectListComment = async (params: any, article_ref: number) => {
   const { offset } = params; ////{offset:0}
   const data = await Comments.findAll({
-    attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
+    attributes: ['id', 'message', 'user_id', 'liked', 'unliked', 'article_ref', 'created_at', 'updated_at'],
     order: [['id', 'DESC']],
     limit: 10,
     offset: Number(offset),
@@ -29,7 +29,7 @@ export const selectComment = async (article_ref: number, id: number) => {
 
 export const insertComment = async (message: string, article_ref: number, userInfo: any) => {
   const { user_id } = userInfo; // 세션 정보
-
+  console.log('insertComment2 >>>>> article_ref====', article_ref);
   const data = await Comments.create({
     message,
     article_ref,

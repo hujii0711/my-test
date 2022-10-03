@@ -1,14 +1,16 @@
-import React from 'react';
-import {Badge, IconButton} from 'react-native-paper';
+import React, {memo, useEffect} from 'react';
+import {Badge, IconButton, ActivityIndicator} from 'react-native-paper';
 import {View, StyleSheet, Text} from 'react-native';
 import Color from '../../../commons/style/Color';
 
-const CommentEntry = ({refRBSheet}) => {
+const CommentEntry = ({refRBSheet, commentCnt = 0}) => {
+  console.log('CommentEntry >>>> commentCnt=====', commentCnt);
+
   return (
     <View style={styles.block}>
       <Text style={styles.text}>댓글</Text>
       <Badge style={styles.badge} visible={true} size={16}>
-        31
+        {commentCnt}
       </Badge>
       <IconButton
         icon="arrow-expand-vertical"
@@ -49,4 +51,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CommentEntry;
+export default memo(CommentEntry);
