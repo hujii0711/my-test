@@ -11,9 +11,6 @@ const router = express.Router();
 // 메인 페이지, 채팅방 목록 보여주는 페이지
 router.get("/", async (req, res, next) => {
   console.log("/ :: GET");
-  console.log(
-    "//////////////////////////////////////////////////////////////////////////////"
-  );
   try {
     const rooms = await Room.find({});
     res.render("main", { rooms, title: "GIF 채팅방" });
@@ -48,7 +45,7 @@ router.post("/room", async (req, res, next) => {
   }
 });
 
-// 방 입장
+// 방 입장 location.href = '/room/' + e.target.dataset.id + '?password=' + password;
 router.get("/room/:id", async (req, res, next) => {
   console.log("/room/:id :: GET");
   try {

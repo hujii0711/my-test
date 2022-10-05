@@ -4,6 +4,7 @@ import { NextFunction } from 'express';
 import env from '../modules/env';
 import cookie from 'cookie-signature';
 import axios from 'axios';
+import Commonjs from '../modules/common';
 // var cookie = require('cookie-signature');
 
 // var val = cookie.sign('hello', 'tobiiscool');
@@ -42,7 +43,8 @@ export default (server: any, app: any, sessionMiddleware: any) => {
 
     // referer 확인해보고 이상하면
     // uuid 로 채번
-    const roomId = '0732236e-f0bf-478b-92d0-35fd0a0afeb7'; //referer.split('/')[referer.split('/').length - 1].replace(/\?.+/, '');
+    //const room_id = Commonjs.uuidv4();
+    const roomId = Commonjs.uuidv4(); //referer.split('/')[referer.split('/').length - 1].replace(/\?.+/, '');
 
     socket.join(roomId);
 

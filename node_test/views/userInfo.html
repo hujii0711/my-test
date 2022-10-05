@@ -1,0 +1,7 @@
+{% extends 'layout.html' %} {% block content %}
+<h1>아이디: {{userInfo.user_id}}</h1>
+<h1>이름: {{userInfo.user_name}}</h1>
+<h1>성별: {{userInfo.sex}}</h1>
+<h1>주소: {{userInfo.address}}</h1>
+<a href="/auth/logout">로그아웃</a>
+{% endblock %}
