@@ -1,18 +1,32 @@
 import { Articles } from '../../models/articles';
 import { Comments } from '../../models/comments';
 import mailSender from '../../modules/mail';
-import { Sequelize } from 'sequelize';
+import { Sequelize, QueryTypes } from 'sequelize';
+import { sequelize } from '../../models';
 
 export const selectListArticle = async (params: any) => {
   const { offset } = params; ////{offset:0}
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
-  const data = await Articles.findAll({
-    attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'lookup', 'created_at', 'updated_at'],
-    order: [['id', 'DESC']],
-    limit: 10,
-    offset: Number(offset),
-    raw: true,
+  // SELECT *, ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
+  // FROM example.articles ORDER BY ROW_NUM ASC
+  // LIMIT 20, 10;
+
+  const query = `SELECT id, title, contents, user_id, user_name, lookup, created_at, updated_at,
+    ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
+    FROM example.articles ORDER BY ROW_NUM ASC
+    LIMIT :offset, 10;`;
+  const data = await sequelize.query(query, {
+    type: QueryTypes.SELECT,
+    replacements: { offset },
   });
+  // const data = await Articles.findAll({
+  //   attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'lookup', 'created_at', 'updated_at'],
+  //   order: [['id', 'DESC']],
+  //   limit: 10,
+  //   offset: Number(offset),
+  //   raw: true,
+  // });
+
   return data;
 };
 

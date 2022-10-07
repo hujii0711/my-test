@@ -1,10 +1,11 @@
 import { Server as SocketIO } from 'socket.io';
 import cookieParser from 'cookie-parser';
-import { NextFunction } from 'express';
 import env from '../modules/env';
 import cookie from 'cookie-signature';
 import axios from 'axios';
 import Commonjs from '../modules/common';
+import { selectExistRoom } from '../service/chat/ChatService';
+
 // var cookie = require('cookie-signature');
 
 // var val = cookie.sign('hello', 'tobiiscool');
@@ -22,7 +23,6 @@ import Commonjs from '../modules/common';
 export default (server: any, app: any, sessionMiddleware: any) => {
   const io = new SocketIO(server, { path: '/socket.io' }); //익스프레스 서버와 연결
   app.set('io', io); //라우터에서 io 객체를 사용할 수 있게 저장, req.app.get("io")로 접근 가능
-  const token = io.of('/token');
   const chat = io.of('/chat');
 
   io.use((socket: any, next: any) => {
@@ -30,26 +30,28 @@ export default (server: any, app: any, sessionMiddleware: any) => {
     sessionMiddleware(socket.request, socket.request.res, next);
   });
 
-  token.on('connection', (socket) => {
-    console.log('token 네임스페이스에 접속');
-    socket.on('disconnect', () => {
-      console.log('token 네임스페이스 접속 해제');
-    });
-  });
-
-  chat.on('connection', (socket: any) => {
+  chat.on('connection', async (socket: any) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.request;
 
-    // referer 확인해보고 이상하면
-    // uuid 로 채번
-    //const room_id = Commonjs.uuidv4();
-    const roomId = Commonjs.uuidv4(); //referer.split('/')[referer.split('/').length - 1].replace(/\?.+/, '');
+    // 기존방 유무 체크
+    let roomId = '';
+    const roomInfo = await selectExistRoom('ㅁㅁㅁ', 'ㅍㅍㅍ'); //[{room_id:"XXXXXXXXXX"}]
+
+    // 기존 방이 있는자
+    if (roomInfo.length > 0) {
+      //roomId = roomInfo[0].room_id;
+      // 기존 방이 없는자
+    } else {
+      console.log('!22222222');
+      roomId = Commonjs.uuidv4();
+    }
 
     socket.join(roomId);
 
     socket.to(roomId).emit('join', {
       message: `${req.user}님이 입장하셨습니다.`,
+
       //uuid 로 채번한것 프런트에 넘겨서 DB 저장에 활용할 수 있도록
     });
 

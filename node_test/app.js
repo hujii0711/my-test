@@ -8,7 +8,7 @@ import dotenv from 'dotenv';
 import * as Api from './routes/index.js';
 import passport from 'passport';
 import passportConfig from './passport/index.js';
-import db from './models/index.js';
+import { sequelize } from './models/index.js';
 
 dotenv.config({ path: 'config/.env' });
 const MySQLStore = expressMySqlSession(session);
@@ -23,7 +23,7 @@ nunjucks.configure('views', {
   watch: true,
 });
 
-db.sequelize
+sequelize
   .sync({ force: false })
   .then(() => {
     console.log('데이터베이스 연결됨.');

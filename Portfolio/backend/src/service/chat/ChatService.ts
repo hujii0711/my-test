@@ -1,6 +1,8 @@
 import { ChatMessages } from '../../models/chatMessages';
 import { ChatRooms } from '../../models/chatRooms';
 import { ChatParticipants } from '../../models/chatParticipants';
+import { sequelize } from '../../models';
+import { QueryTypes } from 'sequelize';
 
 // 메인 페이지, 채팅방 목록 보여주는 페이지
 // /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
@@ -116,4 +118,19 @@ export const deleteChatRoomExit = async (roomId: string) => {
 // /chat/sendMessgeUpload/:id | POST | insertFileUpload | 채팅방 나가기
 export const insertFileUpload = async () => {
   return null;
+};
+
+// /chat/existRoom | POST | selectExistRoomCheck | 채팅방 나가기
+export const selectExistRoomCheck = async (userId: string, selectedId: string) => {
+  // 선택한 유저중에 나와 같은 room_id가 있으면 기존 방이 있는 것이다.
+  const query = `SELECT A.room_id cnt FROM
+    (SELECT room_id, participant_id FROM chat_participants WHERE participant_id =:user_id) A LEFT JOIN
+    (SELECT room_id, participant_id FROM chat_participants WHERE participant_id =:selected_id) B
+    ON A.room_id = B.room_id;`;
+  const data = await sequelize.query(query, {
+    type: QueryTypes.SELECT,
+    replacements: { user_id: userId, selected_id: selectedId },
+  });
+
+  return data; //[ { cnt: 1, user_name: 'GH' } ]
 };

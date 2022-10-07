@@ -12,9 +12,6 @@ export const getArticles = async (params: any) => {
   const { offset } = params; ////{offset:0}
 
   // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
-  // SELECT *, ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
-  // FROM example.articles ORDER BY ROW_NUM ASC
-  // LIMIT 20, 10;
   const data = await Articles.findAll({
     attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'published_at', 'created_at', 'updated_at'],
     order: [['id', 'DESC']],

@@ -87,3 +87,17 @@ export async function insertChatMessageUpload(params) {
   );
   return response.data;
 }
+
+/*
+  7. 기존 방 있는지 유무 체크| /chat/existRoom
+*/
+export async function selectExistRoomCheck(params) {
+  const {userId, selectedId} = params;
+  const config = {headers: {returnType: 'map'}};
+  const response = await client.post(
+    `/chat/existRoomCheck`,
+    {userId, selectedId},
+    config,
+  );
+  return response.data;
+}

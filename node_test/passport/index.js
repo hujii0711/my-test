@@ -27,7 +27,7 @@ const passportConfig = () => {
       where: { user_id: userId },
       raw: true,
     });
-    console.log('users====', users);
+    //console.log('users====', users);
 
     try {
       done(null, users);

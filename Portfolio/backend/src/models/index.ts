@@ -9,7 +9,7 @@ import { ChatRooms } from './chatRooms';
 import { Faqs } from './faqs';
 import env from '../modules/env';
 
-const sequelize = new database.Sequelize(
+export const sequelize = new database.Sequelize(
   db[env.node_env].dbname, //스키마 이름
   db[env.node_env].username,
   db[env.node_env].password,

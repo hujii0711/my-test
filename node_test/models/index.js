@@ -1,7 +1,7 @@
 import Sequelize from 'sequelize';
 import Test from './test.js';
 
-const sequelize = new Sequelize('example', 'root', 'hj@1560813', {
+export const sequelize = new Sequelize('example', 'root', 'hj@1560813', {
   host: 'localhost', //데이터베이스가 실행중인 호스트
   port: 3307,
   dialect: 'mysql',
@@ -21,11 +21,4 @@ const sequelize = new Sequelize('example', 'root', 'hj@1560813', {
   },
 });
 
-const db = {
-  sequelize,
-  sequelize,
-};
-
 Test.init(sequelize);
-
-export default db;

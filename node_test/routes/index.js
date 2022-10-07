@@ -2,7 +2,9 @@ import { Router } from 'express';
 import passport from 'passport';
 //import Test from '../models/test.js';
 import { QueryTypes } from 'sequelize';
-import db from '../models/index.js';
+import tokenConfig from '../passport/token.js';
+import { sequelize } from '../models/index.js';
+
 export const router = Router();
 
 /***************************************
@@ -42,7 +44,7 @@ router.post('/auth/loginAction', (req, res, next) => {
   passport.authenticate('local', (authError, user, options) => {
     console.log('passport 2번=passport.authenticate');
     console.log('passport.authenticate >>>> user===', user);
-    console.log('passport.authenticate >>>> options===', options);
+
     if (authError) {
       console.error(authError);
       return next(authError);
@@ -59,10 +61,41 @@ router.post('/auth/loginAction', (req, res, next) => {
         console.error(loginError);
         return next(loginError);
       }
-
-      res.redirect('/userInfo');
+      // 토큰 취득
+      const token = tokenConfig.generateToken(user.user_id);
+      res.cookie('access_token', token, {
+        maxAge: 1000 * 60 * 60, // 1시간
+        httpOnly: true,
+      });
+      res.status(200).render('userInfo', {
+        token, //app asyncStorage에 담기
+        userInfo: req.user, // redux 상태에 담기
+      });
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
+});
+
+/***************************************
+  자동로그인 기능
+***************************************/
+router.get('/auth/autoLogin', (req, res, next) => {
+  const _token = req.cookies.access_token ?? '';
+
+  const result = tokenConfig.verifyToken(_token);
+  const { status, user_id, pwd, token, message } = result;
+
+  if (status === 'S') {
+    res.status(200).render('userInfo', {
+      user_id,
+      pwd,
+      token,
+      message,
+    });
+  } else {
+    res.status(200).render('userInfo', {
+      message,
+    });
+  }
 });
 
 /***************************************
@@ -84,22 +117,65 @@ router.get('/userInfo', (req, res) => {
 /***************************************
   로그아웃
 ***************************************/
-router.get('/auth/logout', (req, res) => {
-  req.logout();
-
-  // req.session 객체의 내용을 제거
-  req.session.destroy((err) => {
-    res.redirect('/');
-  });
+router.get('/auth/logout', (req, res, next) => {
+  if (req.user) {
+    console.log('로그아웃 처리');
+    req.logout();
+    req.session.destroy((err) => {
+      if (err) {
+        next('세션 삭제시 에러');
+      }
+      console.log('세션 삭제 성공');
+      res.clearCookie('access_token', '', { httpOnly: true });
+      res.redirect('/');
+    });
+  } else {
+    console.log('로긴 안되어 있음');
+    res.redirect('/auth/login');
+  }
 });
 
 /***************************************
   저수준 쿼리 테스트
 ***************************************/
 router.get('/rawQuery', async (req, res) => {
-  const query = `SELECT * FROM example.tests WHERE user_id='test'`;
-  const result = await db.sequelize.query(query, { type: QueryTypes.SELECT });
-  console.log('result====', result);
+  // const param1 = 'test';
+  // const param2 = '1234';
+  // const query = `SELECT * FROM example.tests WHERE user_id=? and pwd=?`;
+  // const result = await sequelize.query(query, {
+  //   type: QueryTypes.SELECT,
+  //   replacements: [param1, param2],
+  // });
+  //console.log('result====', result);
+  const query1 = `SELECT count(B.id) cnt FROM
+	  (SELECT id, title, user_name FROM example.articles WHERE title ='aaaaa') A LEFT JOIN
+    (SELECT id, title, user_name FROM example.articles WHERE title ='bbbbb') B ON A.user_name = B.user_name;`;
+  const result1 = await sequelize.query(query1, {
+    type: QueryTypes.SELECT,
+  });
+  console.log('result1====', result1);
+  console.log('result1.length====', result1.length);
+  //[ { cnt: 1, user_name: 'GH' } ]
+  const param1 = 0;
+  const param2 = 10;
+  const query2 = `SELECT *, ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
+  FROM example.articles ORDER BY ROW_NUM ASC
+  LIMIT :offset, :limit;`;
+  const result2 = await sequelize.query(query2, {
+    type: QueryTypes.SELECT,
+    replacements: { offset: param1, limit: param2 },
+  });
+
+  console.log('result2====', result2);
+  console.log('result2.length====', result2.length);
+  // const param3 = 'test';
+  // const param4 = '1234';
+  // const query1 = `SELECT * FROM example.tests WHERE user_id=:userId and pwd=:password`;
+  // const result1 = await db.sequelize.query(query1, {
+  //   type: QueryTypes.SELECT,
+  //   replacements: { userId: param3, password: param4 },
+  // });
+  //console.log('result1====', result1);
   res.redirect('/');
 });
 

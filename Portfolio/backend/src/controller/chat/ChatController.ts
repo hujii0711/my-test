@@ -67,3 +67,10 @@ export const insertFileUpload = catchAsync(async (req: Request, res: Response) =
   const result = await ChatService.insertFileUpload();
   res.json(result).status(httpStatus.OK);
 });
+
+// /chat/existRoom | POST | selectExistRoom | 선택 유저와 기존 채팅방이 있는지 여부
+export const selectExistRoomCheck = catchAsync(async (req: Request, res: Response) => {
+  const { userId, selectedId } = req.body;
+  const result = await ChatService.selectExistRoomCheck(userId, selectedId);
+  res.json(result).status(httpStatus.OK);
+});
