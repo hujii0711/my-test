@@ -13,8 +13,6 @@ export const register = catchAsync(async (req: Request, res: Response) => {
 
 export const login = catchAsync(async (req: Request, res: Response, next: NextFunction) => {
   passport.authenticate('local', (authError, user, options) => {
-    console.log('login >>> authError========', authError);
-    console.log('login >>> user========', user);
     if (authError) {
       console.error(authError);
       return next(authError);
@@ -26,7 +24,6 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
     }
 
     return req.login(user, (loginError) => {
-      console.log('login >>> req.login >>>> user========', user);
       if (loginError) {
         console.error(loginError);
         return next(loginError);
@@ -42,9 +39,7 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
         user,
         jwt: token, //로그인이후 UI에 넘겨줄 token
       };
-      console.log('login >>> 로그인 이후 result=====', result);
       res.json(result).status(httpStatus.OK);
-
       // 로그인 이후 생성되는 데이터
       //req.user
       //req.session
@@ -72,5 +67,12 @@ export const getLoginStatus = catchAsync(async (req: Request, res: Response) => 
     isAuthenticated: req.isAuthenticated(),
   };
 
+  res.json(result).status(httpStatus.OK);
+});
+
+export const autoLogin = catchAsync(async (req: Request, res: Response) => {
+  const token = req.headers.authorization ?? '';
+  console.log('LoginController >>> token-----', token);
+  const result = await LoginService.autoLogin(token);
   res.json(result).status(httpStatus.OK);
 });

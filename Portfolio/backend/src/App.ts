@@ -14,6 +14,7 @@ import { errorConverter, errorHandler, error400Handler } from './modules/error';
 import { uploadFolder } from './modules/multer';
 import webSocket from './modules/socket';
 import cors from 'cors';
+const MySQLStore = require('express-mysql-session')(session);
 
 const app = express();
 passportConfig(); // 패스포트 설정
@@ -59,21 +60,22 @@ app.use(cookieParser(env.cookie.secret));
 // resave : 세션에 변경사항이 없어도 요청마다 세션을 다시 저장, 기본 옵션인 true는 deprecated 상태로 false 권장
 // saveUninitialized : 세션에 저장할 내용이 없더라도 uninitialized 상태의 세션을 저장, 기본 옵션인 true는 deprecated 상태로 false 권장
 // ※ 해당 설정으로 인해 라우터 호출마다 세션은 자동으로 갱신되어 유효기간도 연장된다.
-
+// store 설정 없으면 기본 값은 MemoryStore
+// Memory Store입니다. 메모리는 서버나 클라이언트를 껐다 키면 사라지는 휘발성
+// 이를 대체할 수 있는 방법은 File Store
+// cookie를 이용하여 세션을 관리해준다. 이때 maxAge 속성을 사용하여 이 쿠키가 얼마나 지속이 될것 인지 설정하는 부분
 const sessionMiddleware = session({
-  //name: 'sessionData',
+  name: 'sessionId',
   secret: env.cookie.secret,
   resave: false,
   saveUninitialized: true,
-  // store 설정 없으면 기본 값은 MemoryStore
-  // Memory Store입니다. 메모리는 서버나 클라이언트를 껐다 키면 사라지는 휘발성
-  // 이를 대체할 수 있는 방법은 File Store
-  // cookie를 이용하여 세션을 관리해준다. 이때 maxAge 속성을 사용하여 이 쿠키가 얼마나 지속이 될것 인지 설정하는 부분
-  cookie: {
-    maxAge: env.max_age.session, // 1 hours (24 hours= 24 * 60 * 60 * 1000 ms)
-    httpOnly: true,
-    //secure: true,
-  },
+  store: new MySQLStore({
+    host: env.database.host,
+    port: env.database.port,
+    user: 'root',
+    password: env.database.password,
+    database: env.database.dbname,
+  }),
 });
 
 app.use(sessionMiddleware);
@@ -88,7 +90,7 @@ uploadFolder(); //파일업로드 폴더 생성
 app.use((req: Request, res: Response, next: NextFunction) => {
   const { method, path, url, query, headers, body, user, cookies, session } = req;
   const request = { method, path, headers, body, url, query, user, cookies, session };
-  console.log('All router request=====', request);
+  //console.log('All router request=====', request);
   next();
 });
 

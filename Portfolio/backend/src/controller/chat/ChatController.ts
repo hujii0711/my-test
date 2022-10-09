@@ -30,7 +30,6 @@ export const insertChatMakeRoom = catchAsync(async (req: Request, res: Response)
 // /chat/roomEntrance/:id | GET | selectListChatRoomMessage | 채팅방 입장
 export const selectListChatRoomMessage = catchAsync(async (req: Request, res: Response) => {
   const { room_id } = req.params;
-
   const result = await ChatService.selectListChatRoomMessage(room_id);
   res.json(result).status(httpStatus.OK);
 });
@@ -47,7 +46,6 @@ export const insertChatMessage = catchAsync(async (req: Request, res: Response) 
   };
 
   const result = await ChatService.insertChatMessage(userInfo, data);
-  console.log('ChatController >>> insertChatMessage >>>> room_id------', room_id);
   req.app.get('io').of('/chat').to(room_id).emit('receiveMessage', result);
   res.json(result).status(httpStatus.OK);
 });
@@ -68,7 +66,7 @@ export const insertFileUpload = catchAsync(async (req: Request, res: Response) =
   res.json(result).status(httpStatus.OK);
 });
 
-// /chat/existRoom | POST | selectExistRoom | 선택 유저와 기존 채팅방이 있는지 여부
+// /chat/existRoom | POST | selectExistRoomCheck | 선택 유저와 기존 채팅방이 있는지 여부
 export const selectExistRoomCheck = catchAsync(async (req: Request, res: Response) => {
   const { userId, selectedId } = req.body;
   const result = await ChatService.selectExistRoomCheck(userId, selectedId);

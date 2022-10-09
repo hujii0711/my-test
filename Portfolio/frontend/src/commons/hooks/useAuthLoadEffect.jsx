@@ -13,7 +13,9 @@ export default function useAuthLoadEffect() {
       if (!auth) {
         return;
       }
+      // 리덕스 변경
       dispatch(userSelect(auth.user));
+      // AsyncStotage 토큰 변경
       applyToken(auth.jwt);
     })();
   }, [dispatch]);

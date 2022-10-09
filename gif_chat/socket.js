@@ -9,18 +9,21 @@ module.exports = (server, app, sessionMiddleware) => {
   app.set("io", io);
   const room = io.of("/room");
   const chat = io.of("/chat");
-
+  console.log("AAAAAAAAAAAAAAAAAA");
   io.use((socket, next) => {
     cookieParser(process.env.COOKIE_SECRET)(
       socket.request,
       socket.request.res,
       next
     );
+
     sessionMiddleware(socket.request, socket.request.res, next);
   });
 
   room.on("connection", (socket) => {
     console.log("room 네임스페이스에 접속");
+    const req = socket.request;
+    console.log("req.cookies===========", req.cookies);
     socket.on("disconnect", () => {
       console.log("room 네임스페이스 접속 해제");
     });

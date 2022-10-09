@@ -1,10 +1,8 @@
-import { Users } from "../../models/users";
+import { Users } from '../../models/users';
+import bcrypt from 'bcryptjs';
 
-export const getListUsers = async (params: any) => {
+export const getListUsers = async () => {
   const data = await Users.findAll({
-    where: {
-      id: params,
-    },
     raw: true,
   });
   return data;
@@ -42,8 +40,32 @@ export const deleteUsers = async (params: { id: number }) => {
 
 export const findByUserInfo = async (user_id: string) => {
   return await Users.findOne({
-    attributes: ["id", "user_id", "user_name"],
+    attributes: ['id', 'user_id', 'user_name'],
     where: { user_id },
     raw: true,
   });
+};
+
+export const createUser = async () => {
+  const hash = await bcrypt.hash('1234', 12);
+  const uuidv4 = () => {
+    return 'xyxyxyxy'.replace(/[xy]/g, function (c) {
+      var r = (Math.random() * 16) | 0,
+        v = c == 'x' ? r : (r & 0x3) | 0x8;
+      return v.toString(16);
+    });
+  };
+  const _email = uuidv4() + '@daum.net';
+  const DATA = Array(50)
+    .fill(undefined)
+    .map((elem, idx) => (elem = { email: uuidv4() + '@daum.net', password: hash, user_name: '랜덤테스터' }));
+
+  DATA.forEach(async (elem) => {
+    await Users.create({
+      email: _email,
+      password: hash,
+      user_name: '랜덤테스터',
+    });
+  });
+  return null;
 };

@@ -2,9 +2,6 @@ import { Server as SocketIO } from 'socket.io';
 import cookieParser from 'cookie-parser';
 import env from '../modules/env';
 import cookie from 'cookie-signature';
-import axios from 'axios';
-import Commonjs from '../modules/common';
-import { selectExistRoom } from '../service/chat/ChatService';
 
 // var cookie = require('cookie-signature');
 
@@ -27,35 +24,21 @@ export default (server: any, app: any, sessionMiddleware: any) => {
 
   io.use((socket: any, next: any) => {
     cookieParser(env.cookie.secret)(socket.request, socket.request.res, next);
-    sessionMiddleware(socket.request, socket.request.res, next);
+    //sessionMiddleware(socket.request, socket.request.res, next);
   });
 
-  chat.on('connection', async (socket: any) => {
+  chat.on('connection', (socket: any) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.request;
-
-    // 기존방 유무 체크
-    let roomId = '';
-    const roomInfo = await selectExistRoom('ㅁㅁㅁ', 'ㅍㅍㅍ'); //[{room_id:"XXXXXXXXXX"}]
-
-    // 기존 방이 있는자
-    if (roomInfo.length > 0) {
-      //roomId = roomInfo[0].room_id;
-      // 기존 방이 없는자
-    } else {
-      console.log('!22222222');
-      roomId = Commonjs.uuidv4();
-    }
+    const roomId = req._query.room_id; //클라이언트에서 접속시 보낸 room_id 파라미터
 
     socket.join(roomId);
 
     socket.to(roomId).emit('join', {
-      message: `${req.user}님이 입장하셨습니다.`,
-
-      //uuid 로 채번한것 프런트에 넘겨서 DB 저장에 활용할 수 있도록
+      message: `테스터님이 입장하셨습니다.`,
     });
 
-    socket.on('disconnect', async () => {
+    socket.on('disconnect', () => {
       console.log('chat 네임스페이스 접속 해제');
       socket.leave(roomId);
       // const currentRoom = socket.adapter.rooms[roomId];

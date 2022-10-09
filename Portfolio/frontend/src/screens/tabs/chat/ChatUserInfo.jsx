@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -8,29 +8,59 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
-import {Avatar} from 'react-native-paper';
+import {Avatar, ActivityIndicator} from 'react-native-paper';
+import {useInfiniteQuery} from 'react-query';
 import ChatMakeRoom from './ChatMakeRoom';
+import {selectListUserInfo} from '../../../api/chat';
 
-// 임의의 100개 배열 만들기
-const uuidv4 = () => {
-  return 'xyxyxyxy'.replace(/[xy]/g, function (c) {
-    var r = (Math.random() * 16) | 0,
-      v = c == 'x' ? r : (r & 0x3) | 0x8;
-    return v.toString(16);
-  });
-};
-const DATA = Array(100)
-  .fill()
-  .map((elem, idx) => (elem = {user_id: uuidv4(), id: idx}));
-
-const ChatRoomList = () => {
+const ChatUserInfo = () => {
   const [selectedId, setSelectedId] = useState(null);
+  const {
+    data,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    fetchNextPage,
+    fetchPreviousPage,
+  } = useInfiniteQuery(
+    'selectListUserInfo',
+    ({pageParam}) => selectListUserInfo({...pageParam}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage?.length === 10) {
+          return {
+            nextOffset: lastPage[lastPage.length - 1].id,
+          };
+        } else {
+          return undefined;
+        }
+      },
+      getPreviousPageParam: (firstPage, allPages) => {
+        const validPage = allPages.find(page => page.length > 0);
+        if (!validPage) {
+          return undefined;
+        }
+        return {
+          prevOffset: validPage[0].id,
+        };
+      },
+    },
+  );
 
+  const items = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+    return [].concat(...data.pages);
+  }, [data]);
+
+  if (!items) {
+    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
+  }
   return (
     <SafeAreaView style={styles.container}>
       <>
         <FlatList
-          data={DATA}
+          data={items}
           style={selectedId ? {display: 'none'} : {display: 'flex'}}
           renderItem={({item}) => {
             const background_color =
@@ -48,7 +78,7 @@ const ChatRoomList = () => {
                   size={30}
                   labelStyle={{fontSize: 12, color: 'white'}}
                   style={{backgroundColor: '#ff5252'}}
-                  label={item.user_id}
+                  label={item.user_name}
                 />
                 <Text
                   style={{
@@ -57,7 +87,7 @@ const ChatRoomList = () => {
                     alignSelf: 'center',
                     color: color,
                   }}>
-                  {item.user_id}
+                  {item.user_name}
                 </Text>
               </TouchableOpacity>
             );
@@ -65,7 +95,9 @@ const ChatRoomList = () => {
           keyExtractor={item => item.id + 1}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
-        <ChatMakeRoom selectedId={selectedId} setSelectedId={setSelectedId} />
+        {selectedId && (
+          <ChatMakeRoom selectedId={selectedId} setSelectedId={setSelectedId} />
+        )}
       </>
     </SafeAreaView>
   );
@@ -82,4 +114,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChatRoomList;
+export default ChatUserInfo;

@@ -1,46 +1,36 @@
-import { Request, Response } from 'express';
 import * as UserService from '../../service/user/UserService';
+import { NextFunction, Request, Response } from 'express';
+import { catchAsync } from '../../modules/error';
+import httpStatus from 'http-status';
 
-export const getListUsers = async (req: Request, res: Response) => {
-	const { id } = req.query;
-	const body = await UserService.getListUsers(id);
+export const getListUsers = catchAsync(async (req: Request, res: Response) => {
+  const result = await UserService.getListUsers();
+  res.json(result).status(httpStatus.OK);
+});
 
-	res.json({
-		code: 'success',
-		message: '정상적으로 조회 되었습니다.',
-		resp: body,
-	});
-};
+export const insertUsers = catchAsync(async (req: Request, res: Response) => {
+  const body = req.body;
+  const result = await UserService.insertUsers(body);
 
-export const insertUsers = async (req: Request, res: Response) => {
-	const body = req.body;
-	const result = await UserService.insertUsers(body);
-
-	res.json({
-		code: 'success',
-		message: '정상적으로 저장 되었습니다.',
-		resp: result,
-	});
-};
+  res.json(result).status(httpStatus.OK);
+});
 
 export const updateUsers = async (req: Request, res: Response) => {
-	const body = req.body;
-	const result = await UserService.updateUsers(body);
+  const body = req.body;
+  const result = await UserService.updateUsers(body);
 
-	res.json({
-		code: 'success',
-		message: '정상적으로 수정 되었습니다.',
-		resp: result,
-	});
+  res.json(result).status(httpStatus.OK);
 };
 
 export const deleteUsers = async (req: Request, res: Response) => {
-	const body = req.body;
-	const result = await UserService.deleteUsers(body);
+  const body = req.body;
+  const result = await UserService.deleteUsers(body);
 
-	res.json({
-		code: 'success',
-		message: '정상적으로 삭제 되었습니다.',
-		resp: result,
-	});
+  res.json(result).status(httpStatus.OK);
+};
+
+export const createUser = async (req: Request, res: Response) => {
+  const result = await UserService.createUser();
+
+  res.json(result).status(httpStatus.OK);
 };

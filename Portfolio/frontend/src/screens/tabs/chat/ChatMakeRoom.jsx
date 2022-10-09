@@ -1,4 +1,4 @@
-import React, {useCallback, useState} from 'react';
+import React, {useCallback, useState, useRef, useEffect} from 'react';
 import {Image, View} from 'react-native';
 import {IconButton, ActivityIndicator} from 'react-native-paper';
 import {useMutation, useQuery} from 'react-query';
@@ -7,25 +7,26 @@ import {useNavigation} from '@react-navigation/native';
 import {useUser} from '../../../commons/hooks/useReduxState';
 
 const ChatMakeRoom = ({selectedId, setSelectedId}) => {
-  const [isRoom, setIsRoom] = useState(false);
+  const roomId = useRef('');
   const navigation = useNavigation();
   const currentUser = useUser();
 
   // 채팅 상대방에 대해 기존 방이 있는지 유무 체크
   const selectExistRoomCheckQuery = useQuery(
-    ['selectExistRoomCheck', userId],
+    ['selectExistRoomCheck', currentUser.user_id],
     () => selectExistRoomCheck(currentUser.user_id, selectedId),
   );
 
-  if (!selectExistRoomCheckQuery.data) {
-    return <ActivityIndicator color="red" />;
-  }
-
-  // 기존방 있을 때 roomId 채번
-  const {room_id} = selectExistRoomCheckQuery.data;
-
-  if (room_id) {
-    setIsRoom(true);
+  if (
+    selectExistRoomCheckQuery.data &&
+    selectExistRoomCheckQuery.data.length === 0
+  ) {
+    roomId.current = '';
+  } else if (
+    selectExistRoomCheckQuery.data &&
+    selectExistRoomCheckQuery.data.length > 0
+  ) {
+    roomId.current = selectExistRoomCheckQuery.data[0].room_id;
   }
 
   // 기존 방 없을 때 새로운 채팅방 생성
@@ -39,14 +40,14 @@ const ChatMakeRoom = ({selectedId, setSelectedId}) => {
   });
 
   const onSubmitInsertChatMakeRoom = useCallback(() => {
-    if (isRoom) {
-      moveChat();
+    if (roomId.current) {
+      moveChattingMessage(roomId.current);
     } else {
       mutateInsertChatMakeRoom({participant_id: selectedId});
     }
   }, [selectedId]);
 
-  const moveChat = room_id => {
+  const moveChattingMessage = room_id => {
     navigation.navigate('ChattingMessge', {
       id: room_id,
       participant_id: selectedId,
@@ -86,7 +87,7 @@ const ChatMakeRoom = ({selectedId, setSelectedId}) => {
           onPress={onSubmitInsertChatMakeRoom}
         />
         <IconButton
-          icon="close"
+          icon="undo"
           iconColor="#227093"
           size={50}
           onPress={() => setSelectedId(null)}

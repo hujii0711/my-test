@@ -63,6 +63,7 @@ export interface ChatParticipantAttributes {
   id?: number | null;
   room_id?: string;
   participant_id?: string;
+  //participant_name?: string;
   created_at?: Date;
 }
 

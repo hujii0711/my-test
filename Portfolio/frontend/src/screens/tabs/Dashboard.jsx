@@ -8,8 +8,8 @@ import {useUser} from '../../commons/hooks/useReduxState';
 
 const Dashboard = () => {
   const navigation = useNavigation();
-  const users = useUser();
-  console.log('Dashboard1 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>> users====', users);
+  //const users = useUser();
+
   const data = [
     {
       id: 'share',

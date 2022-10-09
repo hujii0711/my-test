@@ -1,17 +1,18 @@
 import client from './client';
 
-// 1. router.get('/chat/intro', ChatController.selectListChatRoom); //채팅방 목록 페이지
-// 2. router.post('/chat/makeRoom', ChatController.insertChatMakeRoom); //채팅방 만들고 채팅방으로 이동
-// 3. router.get('/chat/roomEntrance/:id', ChatController.selectListChatRoomMessage); //채팅방 입장
-// 4. router.post('/chat/sendMessge/:id', ChatController.insertChatMessage); //채팅 메시지 전송
-// 5. router.delete('/chat/roomExit/:id', ChatController.deleteChatRoomExit); //채팅방 나가기
-// 6. router.post('/chat/sendMessgeUpload/:id', upload.single('fileUpload'), ChatController.insertFileUpload); //파입업로드
+// router.get('/chat/chatRoomList', ChatController.selectListChatRoom); //채팅방 목록 페이지
+// router.post('/chat/insert/makeRoom', ChatController.insertChatMakeRoom); //채팅방 만들고 채팅방으로 이동
+// router.post('/chat/existRoomCheck', ChatController.selectExistRoomCheck); //선택 유저와 기존 채팅방이 있는지 여부
+// router.get('/chat/chatRoomMessage/:room_id', ChatController.selectListChatRoomMessage); //채팅방 입장
+// router.post('/chat/sendMessge/:room_id', ChatController.insertChatMessage); //채팅 메시지 전송
+// router.delete('/chat/delete/roomExit/:id', ChatController.deleteChatRoomExit); //채팅방 나가기
+// router.post('/chat/sendMessgeUpload/:id', upload.single('fileUpload'), ChatController.insertFileUpload); //파입업로드
 /*
-  1. 채팅방 목록 조회 | /chat/intro
+  1. 채팅방 목록 조회 | /chat/chatRoomList
 */
 export async function selectListChatRoom({nextOffset = 0, prevOffset = 0}) {
   const offset = nextOffset + prevOffset;
-  const response = await client.get('/chat/intro', {
+  const response = await client.get('/chat/chatRoomList', {
     params: {offset},
     headers: {returnType: 'list'},
   });
@@ -19,36 +20,46 @@ export async function selectListChatRoom({nextOffset = 0, prevOffset = 0}) {
 }
 
 /*
-  2. 채팅방 개설 | /chat/makeRoom
+  2. 채팅방 개설 | /chat/insert/makeRoom
 */
 export async function insertChatMakeRoom(params) {
   const config = {headers: {returnType: 'map'}};
-  const response = await client.post('/chat/makeRoom ', params, config);
+  const response = await client.post('/chat/insert/makeRoom', params, config);
   return response.data;
 }
 
 /*
-  3. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/roomEntrance/:id
+  3. 기존 방 있는지 유무 체크| /chat/existRoomCheck
 */
-export async function selectListChatRoomMessage(room_id) {
-  const response = await client.get(
-    `/chat/roomEntrance/0732236e-f0bf-478b-92d0-35fd0a0afeb7`,
-    {
-      headers: {returnType: 'list'},
-    },
+export async function selectExistRoomCheck(userId, selectedId) {
+  const config = {headers: {returnType: 'map'}};
+  const response = await client.post(
+    `/chat/existRoomCheck`,
+    {userId, selectedId},
+    config,
   );
   return response.data;
 }
 
 /*
-  4. 채팅방 메시지 전송 | /chat/sendMessge/:id
+  4. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/chatRoomMessage/:room_id
+*/
+export async function selectListChatRoomMessage(room_id) {
+  const response = await client.get(`/chat/chatRoomMessage/${room_id}`, {
+    headers: {returnType: 'list'},
+  });
+  return response.data;
+}
+
+/*
+  5. 채팅방 메시지 전송 | /chat/sendMessge/:room_id
 */
 //mutateInsertChatMessage({roomId, message, participantId});
 export async function insertChatMessage(params) {
   const {roomId: room_id, participantId: receiver_id, message} = params;
   const config = {headers: {returnType: 'map'}};
   const response = await client.post(
-    `/chat/sendMessge/0732236e-f0bf-478b-92d0-35fd0a0afeb7`,
+    `/chat/sendMessge/${room_id}`,
     {receiver_id, message},
     config,
   );
@@ -56,16 +67,16 @@ export async function insertChatMessage(params) {
 }
 
 /*
-  5. 채팅방 나가기 | /chat/roomExit/:id
+  6. 채팅방 나가기 | /chat/delete/roomExit/:id
 */
 export async function deleteChatRoomExit(params) {
   const {room_id} = params;
-  await client.delete(`/chat/roomExit/${room_id}`);
+  await client.delete(`/chat/delete/roomExit/${room_id}`);
   return null;
 }
 
 /*
-  6. 파일업로드 메시지 전송 | /chat/sendMessgeUpload/:id
+  7. 파일업로드 메시지 전송 | /chat/sendMessgeUpload/:id
 */
 //mutateInsertChatMessageUpload({formData, roomId, message, participantId});
 export async function insertChatMessageUpload(params) {
@@ -89,15 +100,10 @@ export async function insertChatMessageUpload(params) {
 }
 
 /*
-  7. 기존 방 있는지 유무 체크| /chat/existRoom
+  8. 사용자 정보 조회 /select
 */
-export async function selectExistRoomCheck(params) {
-  const {userId, selectedId} = params;
-  const config = {headers: {returnType: 'map'}};
-  const response = await client.post(
-    `/chat/existRoomCheck`,
-    {userId, selectedId},
-    config,
-  );
+export async function selectListUserInfo() {
+  const config = {headers: {returnType: 'list'}};
+  const response = await client.get(`/select`, config);
   return response.data;
 }

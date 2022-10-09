@@ -59,7 +59,6 @@ export const selectListChatRoomMessage = async (roomId: string) => {
     },
     raw: true,
   });
-  console.log('ChatService >>> selectListChatRoomMessage >>>>> data ====', data);
   // chat_rooms와 chat_participants 조인한뒤 다시 chat_messages를 조인
   // const data = ChatRooms.findAll({
   //   include: [
@@ -91,7 +90,7 @@ export const insertChatMessage = async (
     room_id,
     receiver_id,
     message,
-    sender_id: 'f7d1176a-a503-4b4e-94cd-8d11b8eb990c', //userInfo.user_id,
+    sender_id: userInfo.user_id,
   });
   return data;
 };
@@ -123,14 +122,14 @@ export const insertFileUpload = async () => {
 // /chat/existRoom | POST | selectExistRoomCheck | 채팅방 나가기
 export const selectExistRoomCheck = async (userId: string, selectedId: string) => {
   // 선택한 유저중에 나와 같은 room_id가 있으면 기존 방이 있는 것이다.
-  const query = `SELECT A.room_id cnt FROM
-    (SELECT room_id, participant_id FROM chat_participants WHERE participant_id =:user_id) A LEFT JOIN
-    (SELECT room_id, participant_id FROM chat_participants WHERE participant_id =:selected_id) B
+  const query = `SELECT B.room_id room_id FROM
+    (SELECT room_id, participant_id FROM chat_participants WHERE participant_id =:selected_id) A LEFT JOIN
+    (SELECT room_id, participant_id FROM chat_participants WHERE participant_id =:user_id) B
     ON A.room_id = B.room_id;`;
   const data = await sequelize.query(query, {
     type: QueryTypes.SELECT,
     replacements: { user_id: userId, selected_id: selectedId },
   });
 
-  return data; //[ { cnt: 1, user_name: 'GH' } ]
+  return data; //[ { room_id: 'XXXXXXXXXXXX' } ]
 };

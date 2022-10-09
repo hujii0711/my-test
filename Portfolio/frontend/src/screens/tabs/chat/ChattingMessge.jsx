@@ -1,4 +1,4 @@
-import React, {useState, useCallback} from 'react';
+import React, {useState, useCallback, useEffect, useMemo} from 'react';
 import {
   Avatar,
   IconButton,
@@ -22,7 +22,6 @@ import {
   insertChatMessage,
   insertChatMessageUpload,
 } from '../../../api/chat';
-import {useEffect} from 'react';
 
 const ChattingMessge = () => {
   // 웹소켓 통신 시작
@@ -32,77 +31,99 @@ const ChattingMessge = () => {
 
   //기존 방이 있는지 여부 체크한후 콜백으로 웹소켓 통신을 시작한다.
   //웹소켓 통신시 파라미터로 roomId를 넘겨줬으면 좋겠다.
-  const socket = io('http://10.0.2.2:4000/chat', {
-    path: '/socket.io',
-    transports: ['websocket'],
-  });
+  useEffect(() => {
+    const socket = io('http://10.0.2.2:4000/chat', {
+      path: '/socket.io',
+      transports: ['websocket'],
+      query: {
+        room_id: roomId,
+      },
+    });
+
+    socket.on('join', data => {
+      console.log(data.message); // XXX가 입장했습니다.
+    });
+
+    //메시지 수신
+    socket.on('receiveMessage', data => {
+      setMessageList(
+        messageList.concat(<YouView message={data.message} key={data.id} />),
+      );
+    });
+
+    socket.on('exit', data => {
+      console.log(data.message); // XXX가 퇴장했습니다.
+    });
+  }, []);
 
   const [message, setMessage] = useState('');
-  const [messageList, setMessageList] = useState([]);
   const {id: roomId, participant_id: participantId} = useRoute().params;
+  const [messageList, setMessageList] = useState([]);
+  console.log('ChattingMessge >>>>>> roomId=====', roomId);
+  console.log('ChattingMessge >>>>>> participantId=====', participantId);
 
   // 대화 내용 조회
+  const selectListChatRoomMessageQuery = useQuery(
+    ['selectListChatRoomMessage', roomId],
+    () => selectListChatRoomMessage(roomId),
+  );
+
+  useMemo(() => {
+    if (
+      selectListChatRoomMessageQuery.data &&
+      selectListChatRoomMessageQuery.data.length > 0
+    ) {
+      const data = selectListChatRoomMessageQuery.data.reduce(
+        (accVal, curVal) => {
+          accVal.push(<MyView message={curVal.message} key={curVal.id} />);
+          return accVal;
+        },
+        [],
+      );
+      setMessageList(data);
+    }
+  }, [selectListChatRoomMessageQuery.data]);
 
   // 메시지 송신
   const onSubmitSendMessage = useCallback(() => {
     mutateInsertChatMessage({roomId, message, participantId});
-  }, [mutateInsertChatMessage, message]);
+  }, [mutateInsertChatMessage]);
 
   const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
     onSuccess: chat => {
       setMessageList(
-        messageList.concat(
-          <MyView message={chat.message} key={messageList.length} />,
-        ),
+        messageList.concat(<MyView message={chat.message} key={chat.id} />),
       );
     },
   });
 
-  //메시지 수신
-  socket.on('receiveMessage', data => {
-    console.log('receiveMessage >>>> data=====', data);
-    setMessageList(
-      messageList.concat(
-        <YouView message={data.message} key={messageList.length} />,
-      ),
-    );
-  });
+  // const onSubmitSendMessageUpload = useCallback(() => {
+  //   const localUri = '/uploads/sss/aaaa.png';
+  //   const fileName = localUri.split('/').pop();
+  //   const match = /\.(\w+)$/.exec(fileName ?? '');
+  //   const type = match ? `image/${match[1]}` : 'image';
 
-  socket.on('join', data => {
-    console.log(data.message); // XXX가 입장했습니다.
-  });
+  //   const formData = new FormData();
+  //   formData.append('file', {
+  //     name: fileName, //aaaa.png
+  //     type, //image/png
+  //     uri: localUri, ///uploads/sss/aaaa.png
+  //   });
+  //   mutateInsertChatMessageUpload({formData, roomId, message, participantId});
+  // }, [mutateInsertChatMessage, message]);
 
-  socket.on('exit', data => {
-    console.log(data.message); // XXX가 퇴장했습니다.
-  });
-
-  const onSubmitSendMessageUpload = useCallback(() => {
-    const localUri = '/uploads/sss/aaaa.png';
-    const fileName = localUri.split('/').pop();
-    const match = /\.(\w+)$/.exec(fileName ?? '');
-    const type = match ? `image/${match[1]}` : 'image';
-
-    const formData = new FormData();
-    formData.append('file', {
-      name: fileName, //aaaa.png
-      type, //image/png
-      uri: localUri, ///uploads/sss/aaaa.png
-    });
-    mutateInsertChatMessageUpload({formData, roomId, message, participantId});
-  }, [mutateInsertChatMessage, message]);
-
-  const {mutate: mutateInsertChatMessageUpload} = useMutation(
-    insertChatMessageUpload,
-    {
-      onSuccess: chat => {
-        setMessageList(
-          messageList.concat(
-            <MyView message={chat.message} key={messageList.length} />,
-          ),
-        );
-      },
-    },
-  );
+  // const {mutate: mutateInsertChatMessageUpload} = useMutation(
+  //   insertChatMessageUpload,
+  //   {
+  //     onSuccess: chat => {
+  //       setMessageList(
+  //         messageList.concat(
+  //           <MyView message={chat.message} key={messageList.length} />,
+  //         ),
+  //       );
+  //     },
+  //   },
+  // );
 
   return (
     <KeyboardAvoidingView
@@ -139,14 +160,14 @@ const ChattingMessge = () => {
             flex: 1,
           }}
         />
-        <IconButton
+        {/* <IconButton
           icon="cancel"
           size={36}
           onPress={onSubmitSendMessageUpload}
           style={{
             flex: 1,
           }}
-        />
+        /> */}
       </View>
     </KeyboardAvoidingView>
   );
@@ -159,7 +180,7 @@ const MyView = ({message}) => {
         marginVertical: 10,
         flexDirection: 'row-reverse',
         flexWrap: 'wrap',
-        backgroundColor: 'red',
+        //backgroundColor: 'red',
       }}>
       <Text
         style={{
@@ -179,7 +200,7 @@ const MyView = ({message}) => {
           paddingRight: 10,
           fontSize: 11,
           alignSelf: 'flex-end',
-          backgroundColor: 'green',
+          //backgroundColor: 'green',
         }}>
         오후 09:16
       </Text>
@@ -226,7 +247,7 @@ const YouView = ({message}) => {
           paddingLeft: 10,
           fontSize: 11,
           alignSelf: 'flex-end',
-          backgroundColor: 'green',
+          //backgroundColor: 'green',
         }}>
         오후 09:16
       </Text>

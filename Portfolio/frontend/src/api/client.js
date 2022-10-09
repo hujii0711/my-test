@@ -45,7 +45,7 @@ client.interceptors.response.use(
   서버 요청시 토큰 정보 저장
 ********************************************/
 export function applyToken(jwt) {
-  console.log('applyToken=============', jwt);
+  //console.log('applyToken=============', jwt);
   //client.defaults.headers.authorization = `Bearer ${jwt}`;
   client.defaults.headers.common['authorization'] = `${jwt}`;
 }

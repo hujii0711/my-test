@@ -14,7 +14,7 @@ export const selectListArticle = async (params: any) => {
   const query = `SELECT id, title, contents, user_id, user_name, lookup, created_at, updated_at,
     ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
     FROM example.articles ORDER BY ROW_NUM ASC
-    LIMIT :offset, 10;`;
+    LIMIT 0, 10;`;
   const data = await sequelize.query(query, {
     type: QueryTypes.SELECT,
     replacements: { offset },
