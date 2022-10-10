@@ -48,6 +48,9 @@ router.post("/room", async (req, res, next) => {
 // 방 입장 location.href = '/room/' + e.target.dataset.id + '?password=' + password;
 router.get("/room/:id", async (req, res, next) => {
   console.log("/room/:id :: GET");
+  const paramPack = { ...req.params, ...req.query };
+  console.log("paramPack====", paramPack);
+
   try {
     const room = await Room.findOne({ _id: req.params.id });
     const io = req.app.get("io");

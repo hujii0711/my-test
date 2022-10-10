@@ -65,8 +65,8 @@ export const insertArticle = async (params: { title: string; contents: string },
   return data;
 };
 
-export const updateArticle = async (id: string, bodys: { title: string; contents: string }) => {
-  const { title, contents } = bodys;
+export const updateArticle = async (paramPack: { id: string; title: string; contents: string }) => {
+  const { id, title, contents } = paramPack;
   const data = await Articles.update(
     {
       title,

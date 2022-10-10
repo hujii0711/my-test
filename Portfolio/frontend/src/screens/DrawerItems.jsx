@@ -12,7 +12,7 @@ import {
 import {useDispatch} from 'react-redux';
 import {useMutation} from 'react-query';
 import {logout, getLoginStatus} from '../api/login';
-import {clearToken} from '../api/client';
+import {setHeaderRemoveToken} from '../api/client';
 import authStorage from '../commons/storage/authStorage';
 import useInform from '../commons/hooks/useInform';
 import {userDelete} from '../commons/redux/users/reducers';
@@ -27,34 +27,18 @@ const DrawerItems = props => {
 
   const onLogout = () => {
     dispatch(userDelete());
-    clearToken();
-    authStorage.clear();
-    logoutServer();
+    setHeaderRemoveToken();
+    //authStorage.clear();
+    authStorage.clear('token');
+    mutateLogout();
   };
-  const {mutate: logoutServer} = useMutation(logout, {
+
+  const {mutate: mutateLogout} = useMutation(logout, {
     onSuccess: data => {
       inform({
         title: '성공',
         message: data.message,
       });
-    },
-    onError: error => {
-      const message =
-        error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
-      inform({
-        title: '오류',
-        message,
-      });
-    },
-  });
-
-  const {mutate: userStateServer} = useMutation(getLoginStatus, {
-    onSuccess: data => {
-      (async () => {
-        const auth = await authStorage.get();
-        console.log('userStateServer >>>>>> auth-----', auth);
-        console.log('현재 토큰 및 세션 상태::::', data);
-      })();
     },
     onError: error => {
       const message =
@@ -131,7 +115,7 @@ const DrawerItems = props => {
           <Pressable
             style={styles.userInfo}
             android_ripple={{color: Color.red4}}
-            onPress={userStateServer}>
+            onPress={() => {}}>
             <Avatar.Icon size={50} icon="account" />
             <Text>김형준</Text>
           </Pressable>

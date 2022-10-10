@@ -4,7 +4,7 @@ export interface UsersAttributes {
   user_name?: string;
   email?: string;
   password?: string;
-  jwt?: string;
+  //jwt?: string;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -63,7 +63,7 @@ export interface ChatParticipantAttributes {
   id?: number | null;
   room_id?: string;
   participant_id?: string;
-  //participant_name?: string;
+  participant_name?: string;
   created_at?: Date;
 }
 

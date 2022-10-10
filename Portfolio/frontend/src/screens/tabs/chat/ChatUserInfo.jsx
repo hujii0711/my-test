@@ -15,6 +15,13 @@ import {selectListUserInfo} from '../../../api/chat';
 
 const ChatUserInfo = () => {
   const [selectedId, setSelectedId] = useState(null);
+  const [selectedNm, setSelectedNm] = useState(null);
+
+  const onPressSelectUserInfo = (id, name) => {
+    setSelectedId(id);
+    setSelectedNm(name);
+  };
+
   const {
     data,
     isFetchingNextPage,
@@ -68,7 +75,7 @@ const ChatUserInfo = () => {
             const color = item.id === selectedId ? 'white' : 'black';
             return (
               <TouchableOpacity
-                onPress={() => setSelectedId(item.user_id)}
+                onPress={onPressSelectUserInfo(item.user_id, item.user_name)}
                 style={{
                   flexDirection: 'row',
                   padding: 10,
@@ -96,7 +103,11 @@ const ChatUserInfo = () => {
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
         {selectedId && (
-          <ChatMakeRoom selectedId={selectedId} setSelectedId={setSelectedId} />
+          <ChatMakeRoom
+            selectedId={selectedId}
+            selectedNm={selectedNm}
+            onPressSelectUserInfo={onPressSelectUserInfo}
+          />
         )}
       </>
     </SafeAreaView>

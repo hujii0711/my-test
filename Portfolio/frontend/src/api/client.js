@@ -44,8 +44,7 @@ client.interceptors.response.use(
 /*******************************************
   서버 요청시 토큰 정보 저장
 ********************************************/
-export function applyToken(jwt) {
-  //console.log('applyToken=============', jwt);
+export function setHeaderToken(jwt) {
   //client.defaults.headers.authorization = `Bearer ${jwt}`;
   client.defaults.headers.common['authorization'] = `${jwt}`;
 }
@@ -53,7 +52,7 @@ export function applyToken(jwt) {
 /*******************************************
   서버 요청시 토큰 정보 삭제
 ********************************************/
-export function clearToken() {
+export function setHeaderRemoveToken() {
   delete client.defaults.headers.common['authorization'];
 }
 

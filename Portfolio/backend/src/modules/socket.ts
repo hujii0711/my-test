@@ -22,14 +22,24 @@ export default (server: any, app: any, sessionMiddleware: any) => {
   app.set('io', io); //라우터에서 io 객체를 사용할 수 있게 저장, req.app.get("io")로 접근 가능
   const chat = io.of('/chat');
 
-  io.use((socket: any, next: any) => {
-    cookieParser(env.cookie.secret)(socket.request, socket.request.res, next);
-    //sessionMiddleware(socket.request, socket.request.res, next);
-  });
+  //const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
+  const wrap = (middleware: any) => (socket: any, next: any) =>
+    middleware(socket.request, socket.request.res || {}, next);
+  io.use(wrap(cookieParser(env.cookie.secret)));
+  io.use(wrap(sessionMiddleware));
+
+  // io.use((socket: any, next: any) => {
+  //   cookieParser(env.cookie.secret)(socket.request, socket.request.res, next);
+  //   //sessionMiddleware(socket.request, socket.request.res, next);
+  // });
 
   chat.on('connection', (socket: any) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.request;
+    console.log('req.cookies========', req.cookies);
+    console.log('req.user========', req.user);
+    console.log('req.session========', req.session);
+    console.log('req.sessionID========', req.sessionID);
     const roomId = req._query.room_id; //클라이언트에서 접속시 보낸 room_id 파라미터
 
     socket.join(roomId);
@@ -41,10 +51,9 @@ export default (server: any, app: any, sessionMiddleware: any) => {
     socket.on('disconnect', () => {
       console.log('chat 네임스페이스 접속 해제');
       socket.leave(roomId);
-      // const currentRoom = socket.adapter.rooms[roomId];
-
-      // const userCount = currentRoom ? currentRoom.length : 0;
-
+      const currentRoom = socket.adapter.rooms[roomId];
+      const userCount = currentRoom ? currentRoom.length : 0;
+      console.log('userCount====', userCount);
       // if (userCount === 0) {
       //   // 유저가 0명이면 방 삭제
       //   const signedCookie = cookie.sign(req.signedCookies['connect.sid'], env.cookie.secret);

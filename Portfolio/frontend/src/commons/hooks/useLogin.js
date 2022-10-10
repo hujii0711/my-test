@@ -1,7 +1,7 @@
 import {useMutation} from 'react-query';
 import {useNavigation} from '@react-navigation/core';
 import {useDispatch} from 'react-redux';
-import {applyToken} from '../../api/client';
+import {setHeaderToken} from '../../api/client';
 import {login} from '../../api/login';
 import authStorage from '../storage/authStorage';
 import useInform from './useInform';
@@ -15,9 +15,12 @@ export default function useLogin() {
   const mutation = useMutation(login, {
     onSuccess: data => {
       if (data) {
-        dispatch(userSelect(data.user));
-        applyToken(data.jwt);
-        authStorage.set(data);
+        //dispatch(userSelect(data.user));
+        //setHeaderToken(data.jwt);
+        //authStorage.set(data);
+        dispatch(userSelect(data.sessionUser));
+        setHeaderToken(data.token);
+        authStorage.set('token', data);
       }
       navigation.pop();
     },

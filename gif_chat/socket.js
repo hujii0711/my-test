@@ -32,11 +32,11 @@ module.exports = (server, app, sessionMiddleware) => {
   chat.on("connection", (socket) => {
     console.log("chat 네임스페이스에 접속");
     const req = socket.request;
-    console.log("req====", req);
+    //console.log("req====", req);
     const {
       headers: { referer },
     } = req;
-    console.log("referer====", referer);
+    //console.log("referer====", referer);
     const roomId = referer
       .split("/")
       [referer.split("/").length - 1].replace(/\?.+/, "");

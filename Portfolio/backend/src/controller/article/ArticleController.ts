@@ -27,10 +27,10 @@ export const insertArticle = catchAsync(async (req: Request, res: Response) => {
 
 // /article/update/:id | PUT | updateArticle | 글수정
 export const updateArticle = catchAsync(async (req: Request, res: Response) => {
-  const body = req.body;
-  const { id } = req.params;
-  const result = await ArticleService.updateArticle(id, body);
-  //const userInfo = req.session.userInfo;
+  //const body = req.body;
+  //const { id } = req.params;
+  const paramPack = { ...req.body, ...req.params };
+  const result = await ArticleService.updateArticle(paramPack);
   res.json(result).status(httpStatus.OK);
 });
 

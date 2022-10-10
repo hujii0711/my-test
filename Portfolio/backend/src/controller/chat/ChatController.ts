@@ -23,7 +23,8 @@ export const selectListChatRoom = catchAsync(async (req: Request, res: Response)
 export const insertChatMakeRoom = catchAsync(async (req: Request, res: Response) => {
   const userInfo = req.user;
   const participant_id = req.body.participant_id;
-  const result = await ChatService.insertChatMakeRoom(userInfo, participant_id);
+  const participant_name = req.body.participant_name;
+  const result = await ChatService.insertChatMakeRoom(userInfo, participant_id, participant_name);
   res.json(result).status(httpStatus.OK);
 });
 

@@ -8,7 +8,7 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
   public user_name!: string;
   public email!: string;
   public password!: string;
-  public jwt!: string;
+  //public jwt!: string;
   public created_at!: Date;
   public updated_at!: Date;
 
@@ -39,10 +39,10 @@ export class Users extends Model<UsersAttributes> implements UsersAttributes {
           type: DataTypes.STRING(100),
           allowNull: false,
         },
-        jwt: {
-          type: DataTypes.STRING(500),
-          allowNull: false,
-        },
+        //jwt: {
+        //  type: DataTypes.STRING(500),
+        //  allowNull: false,
+        //},
         created_at: {
           type: DataTypes.DATE,
           allowNull: false,

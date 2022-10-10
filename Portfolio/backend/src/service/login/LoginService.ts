@@ -15,7 +15,7 @@ export const register = async (params: { email: string; user_name: string; passw
     user_name: payload.user_name,
     password: hash,
     email: payload.email,
-    jwt: 'no token',
+    //jwt: 'no token',
   });
   return data;
 };

@@ -106,7 +106,7 @@ import {TextInput, Button, Checkbox} from 'react-native-paper';
 import {View, Text, Pressable} from 'react-native';
 import useRegister from '../../commons/hooks/useRegister';
 
-const MyComponent = () => {
+const Register = () => {
   const [email, setEmail] = useState('');
   const [user_name, setUserName] = useState('');
   const [password, setPassword] = useState('');
@@ -223,4 +223,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default Register;

@@ -4,6 +4,7 @@ import {Avatar, Button, TextInput, Switch} from 'react-native-paper';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import Color from '../../commons/style/Color';
 import useLogin from '../../commons/hooks/useLogin';
+import {authStorage} from '/commons/storage/authStorage';
 
 const Login = ({navigation}) => {
   const [isSwitchOn, setIsSwitchOn] = useState(true);
@@ -14,10 +15,14 @@ const Login = ({navigation}) => {
   const {mutate: login, isLoading: loginLoading} = useLogin();
   const isLoading = loginLoading;
 
-  const onLoginPress = () => {
+  const onPressLogin = () => {
     if (isLoading) {
       return;
     }
+
+    // 자동로그인 체크 정보 AsyncStorage에 저장
+    authStorage.set('autoLogin', isSwitchOn ? 'Y' : 'N');
+
     login({
       identifier,
       password,
@@ -82,7 +87,7 @@ const Login = ({navigation}) => {
 
           <Button
             mode="contained"
-            onPress={onLoginPress}
+            onPress={onPressLogin}
             style={{
               borderWidth: 1,
               borderRadius: 5,

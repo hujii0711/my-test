@@ -36,8 +36,8 @@ export const login = catchAsync(async (req: Request, res: Response, next: NextFu
       const token = tokenConfig.generateToken(id, userId, email);
 
       const result = {
-        user,
-        jwt: token, //로그인이후 UI에 넘겨줄 token
+        sessionUser: user, //세션에 있는 정보: redux 저장
+        token, //취득한 토큰 : AsyncStorage에 저장
       };
       res.json(result).status(httpStatus.OK);
       // 로그인 이후 생성되는 데이터

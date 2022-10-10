@@ -37,7 +37,7 @@ export async function getLoginStatus() {
 /*
   자동로그인
 */
-export async function autoLogin() {
-  const response = await client.get('/auth/autoLogin');
+export async function autoLogin(token) {
+  const response = await client.get(`/auth/autoLogin/${token}`);
   return response.data;
 }

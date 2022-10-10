@@ -29,19 +29,21 @@ export const selectListChatRoom = async (userInfo: any, query: any) => {
 
 // 채팅방 생성시하고 생성한 채팅방으로 이동
 // /chat/makeRoom | POST | insertChatMakeRoom | 채팅방 만들고 채팅방으로 이동
-export const insertChatMakeRoom = async (userInfo: any, participant_id: string) => {
-  const { user_id } = userInfo;
-
+export const insertChatMakeRoom = async (userInfo: any, participant_id: string, participant_name: string) => {
   const chatRoomInsertData = await ChatRooms.create({
-    creator_id: user_id,
+    creator_id: userInfo.user_id,
   });
 
-  const participantsArr = [user_id, participant_id];
+  const participantsArr = [
+    { user_id: userInfo.user_id, user_name: userInfo.user_name },
+    { user_id: participant_id, user_name: participant_name },
+  ];
 
   participantsArr.forEach(async (elem) => {
     await ChatParticipants.create({
       room_id: chatRoomInsertData.id,
-      participant_id: elem,
+      participant_id: elem.user_id,
+      participant_name: elem.user_name,
     });
   });
 
@@ -59,23 +61,6 @@ export const selectListChatRoomMessage = async (roomId: string) => {
     },
     raw: true,
   });
-  // chat_rooms와 chat_participants 조인한뒤 다시 chat_messages를 조인
-  // const data = ChatRooms.findAll({
-  //   include: [
-  //     {
-  //       model: ChatMessages,
-  //       required: true,
-  //       where: { id: roomId },
-  //       include: [
-  //         {
-  //           model: ChatParticipants,
-  //           where: { participant_id: user_id },
-  //         },
-  //       ],
-  //     },
-  //   ],
-  //   raw: true,
-  // });
   return data;
 };
 

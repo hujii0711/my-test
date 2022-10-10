@@ -1,12 +1,12 @@
-import React, {useCallback, useState, useRef, useEffect} from 'react';
+import React, {useCallback, useRef} from 'react';
 import {Image, View} from 'react-native';
-import {IconButton, ActivityIndicator} from 'react-native-paper';
+import {IconButton} from 'react-native-paper';
 import {useMutation, useQuery} from 'react-query';
 import {insertChatMakeRoom, selectExistRoomCheck} from '../../../api/chat';
 import {useNavigation} from '@react-navigation/native';
 import {useUser} from '../../../commons/hooks/useReduxState';
 
-const ChatMakeRoom = ({selectedId, setSelectedId}) => {
+const ChatMakeRoom = ({selectedId, selectedNm, onPressSelectUserInfo}) => {
   const roomId = useRef('');
   const navigation = useNavigation();
   const currentUser = useUser();
@@ -43,7 +43,10 @@ const ChatMakeRoom = ({selectedId, setSelectedId}) => {
     if (roomId.current) {
       moveChattingMessage(roomId.current);
     } else {
-      mutateInsertChatMakeRoom({participant_id: selectedId});
+      mutateInsertChatMakeRoom({
+        participant_id: selectedId,
+        participant_name: selectedNm,
+      });
     }
   }, [selectedId]);
 
@@ -90,7 +93,7 @@ const ChatMakeRoom = ({selectedId, setSelectedId}) => {
           icon="undo"
           iconColor="#227093"
           size={50}
-          onPress={() => setSelectedId(null)}
+          onPress={onPressSelectUserInfo(null, null)}
         />
       </View>
     </View>
