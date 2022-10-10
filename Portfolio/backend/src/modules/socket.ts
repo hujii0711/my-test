@@ -25,8 +25,8 @@ export default (server: any, app: any, sessionMiddleware: any) => {
   //const wrap = middleware => (socket, next) => middleware(socket.request, {}, next);
   const wrap = (middleware: any) => (socket: any, next: any) =>
     middleware(socket.request, socket.request.res || {}, next);
-  io.use(wrap(cookieParser(env.cookie.secret)));
-  io.use(wrap(sessionMiddleware));
+  chat.use(wrap(cookieParser(env.cookie.secret)));
+  chat.use(wrap(sessionMiddleware));
 
   // io.use((socket: any, next: any) => {
   //   cookieParser(env.cookie.secret)(socket.request, socket.request.res, next);
@@ -36,10 +36,18 @@ export default (server: any, app: any, sessionMiddleware: any) => {
   chat.on('connection', (socket: any) => {
     console.log('chat 네임스페이스에 접속');
     const req = socket.request;
-    console.log('req.cookies========', req.cookies);
-    console.log('req.user========', req.user);
-    console.log('req.session========', req.session);
-    console.log('req.sessionID========', req.sessionID);
+    // console.log('req.cookies========', req.cookies);
+    // console.log('req.user========', req.user);
+    // console.log('req.session========', req.session);
+    // console.log('req.sessionID========', req.sessionID);
+    // req.cookies======== {}
+    // req.user======== undefined
+    // req.session======== Session {
+    //   cookie: { path: '/', _expires: null, originalMaxAge: null, httpOnly: true },
+    //   passport: { user: '2bc11da5-b1e4-48b9-af2d-605f4bda9af3' }
+    // }
+    // req.sessionID======== fB44quwSGxmjqI9cXz13KWxkbjVxeGFe
+
     const roomId = req._query.room_id; //클라이언트에서 접속시 보낸 room_id 파라미터
 
     socket.join(roomId);

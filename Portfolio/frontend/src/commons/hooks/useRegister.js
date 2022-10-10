@@ -14,7 +14,7 @@ export default function useRegister() {
 
   const mutation = useMutation(register, {
     onSuccess: data => {
-      navigation.navigation('Login');
+      navigation.navigate('Login');
       // {
       //   user_name: payload.user_name,
       //   password: hash,

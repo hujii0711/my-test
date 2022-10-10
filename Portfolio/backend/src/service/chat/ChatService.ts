@@ -7,23 +7,36 @@ import { QueryTypes } from 'sequelize';
 // 메인 페이지, 채팅방 목록 보여주는 페이지
 // /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
 export const selectListChatRoom = async (userInfo: any, query: any) => {
-  const { user_id } = userInfo;
-  const { offset } = query;
-
-  const data = ChatRooms.findAll({
-    //attributes: ['id', ['ChatParticipant.participant_id', 'userName']],
-    include: [
-      {
-        model: ChatParticipants,
-        required: true, // required: true --> left join | required: false --> left outer join
-        where: { participant_id: user_id },
-      },
-    ],
-    order: [['id', 'DESC']],
-    limit: 10,
-    offset: Number(offset),
-    raw: true,
+  const sql = `select 
+                B.room_id as room_id,
+                B.participant_id as user_id,
+                  (select participant_id from chat_participants where participant_id != :user_id and room_id = B.room_id) opponent_id,
+                  (select participant_name from chat_participants where participant_id != :user_id and room_id = B.room_id) opponent_name,
+                  row_number() over(order by A.id desc) AS row_num
+              from chat_rooms A left join chat_participants B
+                ON A.id = B.room_id
+              where B.participant_id = :user_id
+              order by row_num asc
+              limit 0, 10`;
+  const data = await sequelize.query(sql, {
+    type: QueryTypes.SELECT,
+    replacements: { user_id: userInfo.user_id },
   });
+
+  // const data = ChatRooms.findAll({
+  //   //attributes: ['id', ['ChatParticipant.participant_id', 'userName']],
+  //   include: [
+  //     {
+  //       model: ChatParticipants,
+  //       required: true, // required: true --> left join | required: false --> left outer join
+  //       where: { participant_id: user_id },
+  //     },
+  //   ],
+  //   order: [['id', 'DESC']],
+  //   limit: 10,
+  //   offset: Number(offset),
+  //   raw: true,
+  // });
   return data;
 };
 

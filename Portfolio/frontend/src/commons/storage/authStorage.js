@@ -29,7 +29,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 //   },
 // };
 
-export const authStorage = {
+const authStorage = {
   async get(key) {
     try {
       return await AsyncStorage.getItem(key);

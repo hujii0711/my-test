@@ -6,7 +6,11 @@ import {insertChatMakeRoom, selectExistRoomCheck} from '../../../api/chat';
 import {useNavigation} from '@react-navigation/native';
 import {useUser} from '../../../commons/hooks/useReduxState';
 
-const ChatMakeRoom = ({selectedId, selectedNm, onPressSelectUserInfo}) => {
+const ChatMakeRoom = ({
+  selectedUserId,
+  selectedUserNm,
+  onPressSelectUserInfo,
+}) => {
   const roomId = useRef('');
   const navigation = useNavigation();
   const currentUser = useUser();
@@ -14,7 +18,7 @@ const ChatMakeRoom = ({selectedId, selectedNm, onPressSelectUserInfo}) => {
   // 채팅 상대방에 대해 기존 방이 있는지 유무 체크
   const selectExistRoomCheckQuery = useQuery(
     ['selectExistRoomCheck', currentUser.user_id],
-    () => selectExistRoomCheck(currentUser.user_id, selectedId),
+    () => selectExistRoomCheck(currentUser.user_id, selectedUserId),
   );
 
   if (
@@ -34,7 +38,7 @@ const ChatMakeRoom = ({selectedId, selectedNm, onPressSelectUserInfo}) => {
     onSuccess: chat => {
       navigation.navigate('ChattingMessge', {
         id: chat.id, //chat_rooms.id (room_id에 해당)
-        participant_id: selectedId,
+        participant_id: selectedUserId,
       });
     },
   });
@@ -44,23 +48,23 @@ const ChatMakeRoom = ({selectedId, selectedNm, onPressSelectUserInfo}) => {
       moveChattingMessage(roomId.current);
     } else {
       mutateInsertChatMakeRoom({
-        participant_id: selectedId,
-        participant_name: selectedNm,
+        participant_id: selectedUserId,
+        participant_name: selectedUserNm,
       });
     }
-  }, [selectedId]);
+  }, [selectedUserId]);
 
   const moveChattingMessage = room_id => {
     navigation.navigate('ChattingMessge', {
       id: room_id,
-      participant_id: selectedId,
+      participant_id: selectedUserId,
     });
   };
 
   return (
     <View
       style={
-        selectedId
+        selectedUserId
           ? {display: 'flex', backgroundColor: 'red'}
           : {display: 'none'}
       }>
@@ -93,7 +97,7 @@ const ChatMakeRoom = ({selectedId, selectedNm, onPressSelectUserInfo}) => {
           icon="undo"
           iconColor="#227093"
           size={50}
-          onPress={onPressSelectUserInfo(null, null)}
+          onPress={() => onPressSelectUserInfo(null, null)}
         />
       </View>
     </View>

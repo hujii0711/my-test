@@ -4,7 +4,7 @@ import {Avatar, Button, TextInput, Switch} from 'react-native-paper';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import Color from '../../commons/style/Color';
 import useLogin from '../../commons/hooks/useLogin';
-import {authStorage} from '/commons/storage/authStorage';
+import authStorage from '../../commons/storage/authStorage';
 
 const Login = ({navigation}) => {
   const [isSwitchOn, setIsSwitchOn] = useState(true);

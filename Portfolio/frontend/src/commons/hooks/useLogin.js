@@ -20,9 +20,9 @@ export default function useLogin() {
         //authStorage.set(data);
         dispatch(userSelect(data.sessionUser));
         setHeaderToken(data.token);
-        authStorage.set('token', data);
+        authStorage.set('token', data.token);
       }
-      navigation.pop();
+      //navigation.pop();
     },
     onError: error => {
       const message =

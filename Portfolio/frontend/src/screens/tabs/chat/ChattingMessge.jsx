@@ -59,8 +59,6 @@ const ChattingMessge = () => {
   const [message, setMessage] = useState('');
   const {id: roomId, participant_id: participantId} = useRoute().params;
   const [messageList, setMessageList] = useState([]);
-  console.log('ChattingMessge >>>>>> roomId=====', roomId);
-  console.log('ChattingMessge >>>>>> participantId=====', participantId);
 
   // 대화 내용 조회
   const selectListChatRoomMessageQuery = useQuery(
@@ -85,9 +83,9 @@ const ChattingMessge = () => {
   }, [selectListChatRoomMessageQuery.data]);
 
   // 메시지 송신
-  const onSubmitSendMessage = useCallback(() => {
+  const onSubmitSendMessage = () => {
     mutateInsertChatMessage({roomId, message, participantId});
-  }, [mutateInsertChatMessage]);
+  };
 
   const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
     onSuccess: chat => {

@@ -14,12 +14,12 @@ import ChatMakeRoom from './ChatMakeRoom';
 import {selectListUserInfo} from '../../../api/chat';
 
 const ChatUserInfo = () => {
-  const [selectedId, setSelectedId] = useState(null);
-  const [selectedNm, setSelectedNm] = useState(null);
+  const [selectedUserId, setSelectedUserId] = useState(null);
+  const [selectedUserNm, setSelectedUserNm] = useState('');
 
-  const onPressSelectUserInfo = (id, name) => {
-    setSelectedId(id);
-    setSelectedNm(name);
+  const onPressSelectUserInfo = (userId, userNm) => {
+    setSelectedUserId(userId);
+    setSelectedUserNm(userNm);
   };
 
   const {
@@ -63,19 +63,22 @@ const ChatUserInfo = () => {
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
+
   return (
     <SafeAreaView style={styles.container}>
       <>
         <FlatList
           data={items}
-          style={selectedId ? {display: 'none'} : {display: 'flex'}}
+          style={selectedUserId ? {display: 'none'} : {display: 'flex'}}
           renderItem={({item}) => {
             const background_color =
-              item.id === selectedId ? '#34ace0' : '#f7f1e3';
-            const color = item.id === selectedId ? 'white' : 'black';
+              item.user_id === selectedUserId ? '#34ace0' : '#f7f1e3';
+            const color = item.user_id === selectedUserId ? 'white' : 'black';
             return (
               <TouchableOpacity
-                onPress={onPressSelectUserInfo(item.user_id, item.user_name)}
+                onPress={() =>
+                  onPressSelectUserInfo(item.user_id, item.user_name)
+                }
                 style={{
                   flexDirection: 'row',
                   padding: 10,
@@ -102,10 +105,10 @@ const ChatUserInfo = () => {
           keyExtractor={item => item.id + 1}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
-        {selectedId && (
+        {selectedUserId && (
           <ChatMakeRoom
-            selectedId={selectedId}
-            selectedNm={selectedNm}
+            selectedUserId={selectedUserId}
+            selectedUserNm={selectedUserNm}
             onPressSelectUserInfo={onPressSelectUserInfo}
           />
         )}

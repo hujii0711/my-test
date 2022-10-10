@@ -21,7 +21,6 @@ export const register = async (params: { email: string; user_name: string; passw
 };
 
 export const autoLogin = async (token: string) => {
-  console.log('LoginService >>>> autoLogin >>>> token====', token);
   const data = tokenConfig.verifyToken(token);
   return data;
 };

@@ -30,6 +30,7 @@ export const updateArticle = catchAsync(async (req: Request, res: Response) => {
   //const body = req.body;
   //const { id } = req.params;
   const paramPack = { ...req.body, ...req.params };
+  //paramPack==== { title: 'test1', contents: 'test231', id: '1' }
   const result = await ArticleService.updateArticle(paramPack);
   res.json(result).status(httpStatus.OK);
 });

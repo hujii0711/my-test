@@ -73,7 +73,6 @@ export const getLoginStatus = catchAsync(async (req: Request, res: Response) => 
 export const autoLogin = catchAsync(async (req: Request, res: Response) => {
   //const token = req.headers.authorization ?? '';
   const token = req.params.token;
-  console.log('LoginController >>> token-----', token);
   const result = await LoginService.autoLogin(token);
   res.json(result).status(httpStatus.OK);
 });

@@ -29,6 +29,7 @@ export default function useAuthLoadEffect() {
     (async () => {
       const autoLogin = await authStorage.get('autoLogin');
       const token = await authStorage.get('token');
+
       if (!autoLogin) {
         return;
       }
@@ -47,7 +48,6 @@ export default function useAuthLoadEffect() {
   // 토큰 검증
   const {mutate: mutateAutoLogin} = useMutation(autoLogin, {
     onSuccess: data => {
-      console.log('mutateAutoLogin >>> data===', data);
       // {
       //   status: 'S',
       //   message: '토큰이 정상입니다.',
@@ -58,7 +58,7 @@ export default function useAuthLoadEffect() {
       // };
 
       // 로그인 수행 : 세션 취득, 토큰 재취득
-      mutateLogin({user_id: data.user_id, password});
+      mutateLogin({identifier: data.email, password: data.password});
     },
     onError: error => {
       const message =

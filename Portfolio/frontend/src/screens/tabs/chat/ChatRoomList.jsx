@@ -14,7 +14,7 @@ import {useInfiniteQuery} from 'react-query';
 import {selectListChatRoom} from '../../../api/chat';
 
 const ChatRoomList = () => {
-  const [selectedId, setSelectedId] = useState(null);
+  const [selectedRoomId, setSelectedRoomId] = useState(null);
   const {
     data,
     isFetchingNextPage,
@@ -53,6 +53,7 @@ const ChatRoomList = () => {
     return [].concat(...data.pages);
   }, [data]);
 
+  console.log('chatRoomList >>>> items ====', items);
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
@@ -63,11 +64,11 @@ const ChatRoomList = () => {
         data={items}
         renderItem={({item}) => {
           const background_color =
-            item.id === selectedId ? '#34ace0' : '#f7f1e3';
-          const color = item.id === selectedId ? 'white' : 'black';
+            item.room_id === selectedRoomId ? '#34ace0' : '#f7f1e3';
+          const color = item.room_id === selectedRoomId ? 'white' : 'black';
           return (
             <TouchableOpacity
-              onPress={() => setSelectedId(item.id)}
+              onPress={() => setSelectedRoomId(item.room_id)} //chat_rooms.id = room_id
               style={{
                 flexDirection: 'row',
                 padding: 10,
@@ -77,7 +78,7 @@ const ChatRoomList = () => {
                 size={30}
                 labelStyle={{fontSize: 12, color: 'white'}}
                 style={{backgroundColor: '#ff5252'}}
-                label={item['ChatParticipant.participant_id']}
+                label={item.opponent_name}
               />
               <Text
                 style={{
@@ -86,8 +87,7 @@ const ChatRoomList = () => {
                   alignSelf: 'center',
                   color: color,
                 }}>
-                user_id :{item.user_id}
-                {item['ChatParticipant.participant_id']}
+                대화 상대방 :{item.opponent_name}
               </Text>
             </TouchableOpacity>
           );
