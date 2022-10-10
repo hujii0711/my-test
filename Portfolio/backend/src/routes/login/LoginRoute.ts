@@ -7,7 +7,7 @@ export const router = Router();
 router.post('/auth/register', LoginController.register);
 router.post('/auth/login', LoginController.login); // 로그인이 되어 있지 않아야 통과
 router.get('/auth/logout', LoginController.logout); // 로그인이 되어 있어야 통과
-router.get('/auth/autoLogin', LoginController.autoLogin);
+router.get('/auth/autoLogin/:token', LoginController.autoLogin);
 router.get('/auth/status', LoginController.getLoginStatus);
 
 export default router;
