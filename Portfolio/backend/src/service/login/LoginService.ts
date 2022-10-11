@@ -2,10 +2,10 @@ import { Users } from '../../models/users';
 import bcrypt from 'bcryptjs';
 import * as tokenConfig from '../../modules/token';
 
-export const register = async (params: { email: string; user_name: string; password: string }) => {
-  console.log('LoginService >>>> register >>>> params====', params);
+export const register = async (body: { email: string; user_name: string; password: string }) => {
+  console.log('LoginService >>>> register >>>> body====', body);
   // { email: 'test2@daum.net', user_name: 'fujii0711', password: '1234' }
-  const payload = params;
+  const payload = body;
 
   // 아이디 또는 이메일 중복 제거 로직 필요
 

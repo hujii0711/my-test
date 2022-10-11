@@ -53,7 +53,6 @@ const ChatRoomList = () => {
     return [].concat(...data.pages);
   }, [data]);
 
-  console.log('chatRoomList >>>> items ====', items);
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
@@ -93,26 +92,26 @@ const ChatRoomList = () => {
           );
         }}
         keyExtractor={(item, index) => index.toString()}
+        ItemSeparatorComponent={() => <View style={styles.separator} />}
         ListHeaderComponent={
           <View style={{flexDirection: 'row', backgroundColor: 'red'}}></View>
         }
-        // ListFooterComponent={items => (
-        //   <>
-        //     {items.length > 0 ? <View style={styles.separator} /> : null}
-        //     {isFetchingNextPage && (
-        //       <ActivityIndicator size="small" color="blue" style={{flex: 1}} />
-        //     )}
-        //   </>
-        // )}
-        // onEndReachedThreshold={0.5}
-        // onEndReached={fetchNextPage}
-        // refreshControl={
-        //   <RefreshControl
-        //     onRefresh={fetchPreviousPage}
-        //     refreshing={isFetchingPreviousPage}
-        //   />
-        // }
-        ItemSeparatorComponent={() => <View style={styles.separator} />}
+        ListFooterComponent={items => (
+          <>
+            {items.length > 0 ? <View style={styles.separator} /> : null}
+            {isFetchingNextPage && (
+              <ActivityIndicator size="small" color="blue" style={{flex: 1}} />
+            )}
+          </>
+        )}
+        onEndReachedThreshold={0.5}
+        onEndReached={fetchNextPage}
+        refreshControl={
+          <RefreshControl
+            onRefresh={fetchPreviousPage}
+            refreshing={isFetchingPreviousPage}
+          />
+        }
       />
     </SafeAreaView>
   );

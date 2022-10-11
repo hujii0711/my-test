@@ -44,8 +44,14 @@ export async function selectExistRoomCheck(userId, selectedId) {
 /*
   4. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/chatRoomMessage/:room_id
 */
-export async function selectListChatRoomMessage(room_id) {
-  const response = await client.get(`/chat/chatRoomMessage/${room_id}`, {
+export async function selectListChatRoomMessage({
+  nextOffset = 0,
+  prevOffset = 0,
+  roomId = '',
+}) {
+  const offset = nextOffset + prevOffset;
+  const response = await client.get(`/chat/chatRoomMessage/${roomId}`, {
+    params: {offset},
     headers: {returnType: 'list'},
   });
   return response.data;

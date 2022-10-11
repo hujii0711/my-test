@@ -1,4 +1,4 @@
-import React, {useRef, useEffect, useState, useMemo} from 'react';
+import React, {useState, useMemo} from 'react';
 import {
   SafeAreaView,
   View,
@@ -6,7 +6,6 @@ import {
   StyleSheet,
   StatusBar,
   RefreshControl,
-  Animated,
 } from 'react-native';
 import ArticleItem from './ArticleItem';
 import {FAB, ActivityIndicator} from 'react-native-paper';
@@ -52,7 +51,7 @@ const ArticleList = ({navigation}) => {
         //allPages는 useInfiniteQuery를 이용해 호출된 모든 페이지 데이터를 의미합니다.
         if (lastPage.length === 10) {
           return {
-            nextOffset: lastPage[lastPage.length - 1].id, // 다음 페이지를 호출할 때 사용 될 pageParam
+            nextOffset: lastPage[lastPage.length - 1].row_num, // 다음 페이지를 호출할 때 사용 될 pageParam
             //{nextOffset = 15, prevOffset = undefined}
           };
         } else {
@@ -72,7 +71,7 @@ const ArticleList = ({navigation}) => {
         }
 
         return {
-          prevOffset: validPage[0].id, //allPages 데이터중 첫번째 값
+          prevOffset: validPage[0].row_num, //allPages 데이터중 첫번째 값
           //{nextOffset = undefined, prevOffset = 11}
         };
       },

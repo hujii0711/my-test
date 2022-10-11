@@ -4,28 +4,24 @@ import mailSender from '../../modules/mail';
 import { Sequelize, QueryTypes } from 'sequelize';
 import { sequelize } from '../../models';
 
-export const selectListArticle = async (params: any) => {
-  const { offset } = params; ////{offset:0}
-  // select * from A limit 1(_offset), 10(_limit) === select * from A limit 10 offset 1
-  // SELECT *, ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
-  // FROM example.articles ORDER BY ROW_NUM ASC
-  // LIMIT 20, 10;
-
-  const query = `SELECT id, title, contents, user_id, user_name, lookup, created_at, updated_at,
-    ROW_NUMBER() OVER(ORDER BY id DESC) AS ROW_NUM
-    FROM example.articles ORDER BY ROW_NUM ASC
-    LIMIT 0, 10;`;
-  const data = await sequelize.query(query, {
+export const selectListArticle = async (query: any) => {
+  const offset = Number(query.offset);
+  const sql = `select id
+                     ,title
+                     ,contents
+                     ,user_id
+                     ,user_name
+                     ,lookup
+                     ,created_at
+                     ,updated_at
+                     ,row_number() over(order by id desc) as row_num
+                 from articles
+                 order by row_num asc
+                 limit :offset, 10;`;
+  const data = await sequelize.query(sql, {
     type: QueryTypes.SELECT,
     replacements: { offset },
   });
-  // const data = await Articles.findAll({
-  //   attributes: ['id', 'title', 'contents', 'user_id', 'user_name', 'lookup', 'created_at', 'updated_at'],
-  //   order: [['id', 'DESC']],
-  //   limit: 10,
-  //   offset: Number(offset),
-  //   raw: true,
-  // });
 
   return data;
 };
@@ -101,7 +97,8 @@ export const updateArticleLookup = async (id: number) => {
   return data;
 };
 
-export const updateArticlePrefer = async (id: string, type: string) => {
+export const updateArticlePrefer = async (params: { id: string; type: string }) => {
+  const { type, id } = params;
   switch (type) {
     case 'likeUp':
       await Articles.increment({ liked: 1 }, { where: { id } });

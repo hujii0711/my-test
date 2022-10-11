@@ -3,55 +3,42 @@ import * as ChatService from '../../service/chat/ChatService';
 import { catchAsync } from '../../modules/error';
 import httpStatus from 'http-status';
 
-// console.log("req.session=========", req.session);
-// console.log("req.sessionID=========", req.sessionID);
-// console.log("req.cookies=========", req.cookies);
-// console.log("req.params==================", req.params);
-// console.log("req.query==================", req.query);
-// console.log("req.body==================", req.body);
-// console.log("req.headers==================", req.headers);
-
-// /chat/intro | GET | selectListChatRoom | 채팅방 목록 페이지
+// /chat/chatRoomList | GET | selectListChatRoom | 채팅방 목록 페이지
 export const selectListChatRoom = catchAsync(async (req: Request, res: Response) => {
   const userInfo = req.user;
-  const query = req.query;
+  const query = req.query; //offset
   const result = await ChatService.selectListChatRoom(userInfo, query);
   res.json(result).status(httpStatus.OK);
 });
 
-// /chat/makeRoom | POST | insertChatMakeRoom | 채팅방 만들고 채팅방으로 이동
+// /chat/insert/makeRoom | POST | insertChatMakeRoom | 채팅방 만들고 채팅방으로 이동
 export const insertChatMakeRoom = catchAsync(async (req: Request, res: Response) => {
   const userInfo = req.user;
-  const participant_id = req.body.participant_id;
-  const participant_name = req.body.participant_name;
-  const result = await ChatService.insertChatMakeRoom(userInfo, participant_id, participant_name);
+  const body = req.body;
+  const result = await ChatService.insertChatMakeRoom(userInfo, body);
   res.json(result).status(httpStatus.OK);
 });
 
-// /chat/roomEntrance/:id | GET | selectListChatRoomMessage | 채팅방 입장
+// /chat/chatRoomMessage/:room_id | GET | selectListChatRoomMessage | 채팅방 입장
 export const selectListChatRoomMessage = catchAsync(async (req: Request, res: Response) => {
-  const { room_id } = req.params;
-  const result = await ChatService.selectListChatRoomMessage(room_id);
+  const offset = req.query.offset as unknown as string;
+  const roomId = req.params.room_id;
+  const paramPack = { offset, roomId };
+  const result = await ChatService.selectListChatRoomMessage(paramPack);
   res.json(result).status(httpStatus.OK);
 });
 
-// /chat/sendMessge/:id | POST | insertChatMessage | 채팅 메시지 전송
+// /chat/sendMessge/:room_id | POST | insertChatMessage | 채팅 메시지 전송
 export const insertChatMessage = catchAsync(async (req: Request, res: Response) => {
   const userInfo = req.user;
-  const { room_id } = req.params;
-  const { message, receiver_id } = req.body;
-  const data = {
-    room_id,
-    message,
-    receiver_id,
-  };
+  const paramPack = { ...req.params, ...req.body };
 
-  const result = await ChatService.insertChatMessage(userInfo, data);
-  req.app.get('io').of('/chat').to(room_id).emit('receiveMessage', result);
+  const result = await ChatService.insertChatMessage(userInfo, paramPack);
+  req.app.get('io').of('/chat').to(paramPack.room_id).emit('receiveMessage', result);
   res.json(result).status(httpStatus.OK);
 });
 
-// /chat/roomExit/:id | DELETE | deleteChatRoomExit | 채팅방 나가기
+// /chat/delete/roomExit/:id| DELETE | deleteChatRoomExit | 채팅방 나가기
 export const deleteChatRoomExit = catchAsync(async (req: Request, res: Response) => {
   const { roomId } = req.params;
   const result = await ChatService.deleteChatRoomExit(roomId);
@@ -67,9 +54,9 @@ export const insertFileUpload = catchAsync(async (req: Request, res: Response) =
   res.json(result).status(httpStatus.OK);
 });
 
-// /chat/existRoom | POST | selectExistRoomCheck | 선택 유저와 기존 채팅방이 있는지 여부
+// /chat/existRoomCheck | POST | selectExistRoomCheck | 선택 유저와 기존 채팅방이 있는지 여부
 export const selectExistRoomCheck = catchAsync(async (req: Request, res: Response) => {
-  const { userId, selectedId } = req.body;
-  const result = await ChatService.selectExistRoomCheck(userId, selectedId);
+  const body = req.body;
+  const result = await ChatService.selectExistRoomCheck(body);
   res.json(result).status(httpStatus.OK);
 });

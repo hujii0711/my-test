@@ -21,7 +21,7 @@ export const errorConverter = (err: any, req: Request, res: Response, next: Next
  * 에러내용을 응답함
  */
 export const errorHandler = (err: ApiError, req: Request, res: Response, next: NextFunction) => {
-  console.log('errorHandler!!!');
+  console.log('errorHandler500!!!');
 
   let { statusCode, message } = err;
 

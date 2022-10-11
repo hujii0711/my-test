@@ -17,7 +17,6 @@ import CustomDialog from '../../../commons/utils/CustomDialog';
 import {updateComment, deleteComment} from '../../../api/comments';
 
 const CommentList = ({refRBSheet, articleRef}) => {
-  console.log('CommentList >>>> articleRef======', articleRef);
   const users = useUser();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState('');

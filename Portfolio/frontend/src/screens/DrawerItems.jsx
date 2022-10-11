@@ -41,6 +41,7 @@ const DrawerItems = props => {
       });
     },
     onError: error => {
+      console.log('DrawerItems logout >>> onError >>> error---------', error);
       const message =
         error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
       inform({

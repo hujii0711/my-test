@@ -7,6 +7,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from 'react-native';
 import {Avatar, ActivityIndicator} from 'react-native-paper';
 import {useInfiniteQuery} from 'react-query';
@@ -104,6 +105,26 @@ const ChatUserInfo = () => {
           }}
           keyExtractor={item => item.id + 1}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListFooterComponent={items => (
+            <>
+              {items.length > 0 ? <View style={styles.separator} /> : null}
+              {isFetchingNextPage && (
+                <ActivityIndicator
+                  size="small"
+                  color="blue"
+                  style={{flex: 1}}
+                />
+              )}
+            </>
+          )}
+          onEndReachedThreshold={0.5}
+          onEndReached={fetchNextPage}
+          refreshControl={
+            <RefreshControl
+              onRefresh={fetchPreviousPage}
+              refreshing={isFetchingPreviousPage}
+            />
+          }
         />
         {selectedUserId && (
           <ChatMakeRoom

@@ -1,45 +1,48 @@
 import { Comments } from '../../models/comments';
 
-export const selectListComment = async (params: any, article_ref: number) => {
-  const { offset } = params; ////{offset:0}
+export const selectListComment = async (paramPack: { offset: string; articleRef: string }) => {
+  const { offset, articleRef } = paramPack;
   const data = await Comments.findAll({
     attributes: ['id', 'message', 'user_id', 'liked', 'unliked', 'article_ref', 'created_at', 'updated_at'],
     order: [['id', 'DESC']],
     limit: 10,
     offset: Number(offset),
     where: {
-      article_ref,
+      article_ref: articleRef,
     },
     raw: true,
   });
   return data;
 };
 
-export const selectComment = async (article_ref: number, id: number) => {
+export const selectComment = async (params: { id: string; articleRef: string }) => {
+  const { id, articleRef } = params;
   const data = await Comments.findOne({
     attributes: ['id', 'message', 'user_id', 'article_ref', 'created_at', 'updated_at'],
     where: {
-      article_ref,
-      id,
+      article_ref: Number(articleRef),
+      id: Number(id),
     },
     raw: true,
   });
   return data;
 };
 
-export const insertComment = async (message: string, article_ref: number, userInfo: any) => {
+export const insertComment = async (userInfo: any, paramPack: { message: string; articleRef: string }) => {
   const { user_id } = userInfo; // 세션 정보
-  console.log('insertComment2 >>>>> article_ref====', article_ref);
+  const { message, articleRef } = paramPack; // 세션 정보
+
   const data = await Comments.create({
     message,
-    article_ref,
+    article_ref: Number(articleRef),
     user_id,
   });
 
   return data;
 };
 
-export const updateComment = async (message: string, id: string) => {
+export const updateComment = async (body: { message: string; id: string }) => {
+  const { id, message } = body;
   const data = await Comments.update(
     {
       message,
@@ -69,7 +72,8 @@ export const deleteComment = async (id: string) => {
   return data;
 };
 
-export const updateCommentPrefer = async (id: string, type: string) => {
+export const updateCommentPrefer = async (body: { id: string; type: string }) => {
+  const { id, type } = body;
   switch (type) {
     case 'likeUp':
       await Comments.increment({ liked: 1 }, { where: { id } });

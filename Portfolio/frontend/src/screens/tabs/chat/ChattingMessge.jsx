@@ -1,22 +1,24 @@
-import React, {useState, useCallback, useEffect, useMemo} from 'react';
+import React, {useState, useEffect, useMemo, useRef} from 'react';
 import {
   Avatar,
   IconButton,
   Button,
   ActivityIndicator,
 } from 'react-native-paper';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {useMutation, useQuery} from 'react-query';
+import {useRoute} from '@react-navigation/native';
+import {useMutation, useInfiniteQuery} from 'react-query';
 import {
   View,
   Text,
   KeyboardAvoidingView,
   TextInput,
   Platform,
+  StatusBar,
+  SafeAreaView,
+  RefreshControl,
 } from 'react-native';
 import io from 'socket.io-client';
 import Color from '../../../commons/style/Color';
-import ScreenWrapper from '../../../commons/utils/ScreenWapper';
 import {
   selectListChatRoomMessage,
   insertChatMessage,
@@ -49,6 +51,7 @@ const ChattingMessge = () => {
       setMessageList(
         messageList.concat(<YouView message={data.message} key={data.id} />),
       );
+      lastIndexToScrollMove(data.id);
     });
 
     socket.on('exit', data => {
@@ -59,28 +62,89 @@ const ChattingMessge = () => {
   const [message, setMessage] = useState('');
   const {id: roomId, participant_id: participantId} = useRoute().params;
   const [messageList, setMessageList] = useState([]);
+  const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
+
+  const lastIndexToScrollMove = index => {
+    lastIndexToScroll.scrollToIndex({
+      animated: true,
+      index: index,
+      viewPosition: 0,
+    });
+  };
 
   // 대화 내용 조회
-  const selectListChatRoomMessageQuery = useQuery(
-    ['selectListChatRoomMessage', roomId],
-    () => selectListChatRoomMessage(roomId),
+  const {
+    data,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    fetchNextPage,
+    fetchPreviousPage,
+  } = useInfiniteQuery(
+    'selectListChatRoomMessage',
+    ({pageParam}) => selectListChatRoomMessage({...pageParam, roomId}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage?.length === 10) {
+          return {
+            nextOffset: lastPage[lastPage.length - 1].id,
+            roomId,
+          };
+        } else {
+          return {
+            roomId,
+            nextOffset: undefined,
+            prevOffset: undefined,
+          };
+        }
+      },
+      getPreviousPageParam: (firstPage, allPages) => {
+        const validPage = allPages.find(page => page?.length > 0);
+        if (!validPage) {
+          return {
+            roomId,
+            nextOffset: undefined,
+            prevOffset: undefined,
+          };
+        }
+        return {
+          prevOffset: validPage[0].id,
+          roomId,
+        };
+      },
+    },
   );
 
-  useMemo(() => {
-    if (
-      selectListChatRoomMessageQuery.data &&
-      selectListChatRoomMessageQuery.data.length > 0
-    ) {
-      const data = selectListChatRoomMessageQuery.data.reduce(
-        (accVal, curVal) => {
-          accVal.push(<MyView message={curVal.message} key={curVal.id} />);
-          return accVal;
-        },
-        [],
-      );
-      setMessageList(data);
+  const items = useMemo(() => {
+    if (!data) {
+      return null;
     }
-  }, [selectListChatRoomMessageQuery.data]);
+    return [].concat(...data.pages);
+  }, [data]);
+
+  if (!items) {
+    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
+  }
+
+  // const selectListChatRoomMessageQuery = useQuery(
+  //   ['selectListChatRoomMessage', roomId],
+  //   () => selectListChatRoomMessage(roomId),
+  // );
+
+  // useMemo(() => {
+  //   if (
+  //     selectListChatRoomMessageQuery.data &&
+  //     selectListChatRoomMessageQuery.data.length > 0
+  //   ) {
+  //     const data = selectListChatRoomMessageQuery.data.reduce(
+  //       (accVal, curVal) => {
+  //         accVal.push(<MyView message={curVal.message} key={curVal.id} />);
+  //         return accVal;
+  //       },
+  //       [],
+  //     );
+  //     setMessageList(data);
+  //   }
+  // }, [selectListChatRoomMessageQuery.data]);
 
   // 메시지 송신
   const onSubmitSendMessage = () => {
@@ -128,14 +192,52 @@ const ChattingMessge = () => {
       behavior={Platform.select({ios: 'padding'})}
       style={{flex: 1}}
       keyboardVerticalOffset={80}>
-      <ScreenWrapper
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          data={items}
+          ref={ref => {
+            setLastIndexToScroll(ref);
+          }}
+          renderItem={({item}) => {
+            return <MyView message={item.message} key={item.id} />;
+          }}
+          keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
+          ListHeaderComponent={
+            <View style={{flexDirection: 'row', backgroundColor: 'red'}}></View>
+          }
+          ListFooterComponent={items => (
+            <>
+              {items.length > 0 ? <View style={styles.separator} /> : null}
+              {isFetchingNextPage && (
+                <ActivityIndicator
+                  size="small"
+                  color="blue"
+                  style={{flex: 1}}
+                />
+              )}
+            </>
+          )}
+          onEndReachedThreshold={0.5}
+          onEndReached={fetchNextPage}
+          refreshControl={
+            <RefreshControl
+              onRefresh={fetchPreviousPage}
+              refreshing={isFetchingPreviousPage}
+            />
+          }
+        />
+        {messageList}
+      </SafeAreaView>
+      {/* <ScreenWrapper
         style={{
           backgroundColor: Color.faint_red,
           margin: 10,
         }}>
         <Today />
         {messageList}
-      </ScreenWrapper>
+      </ScreenWrapper> */}
+
       <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
         <TextInput
           style={{
@@ -265,5 +367,16 @@ const Today = () => {
     </Button>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    marginTop: StatusBar.currentHeight || 0,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: '#aaa69d',
+  },
+});
 
 export default ChattingMessge;

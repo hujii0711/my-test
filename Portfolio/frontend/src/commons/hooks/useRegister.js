@@ -15,18 +15,9 @@ export default function useRegister() {
   const mutation = useMutation(register, {
     onSuccess: data => {
       navigation.navigate('Login');
-      // {
-      //   user_name: payload.user_name,
-      //   password: hash,
-      //   email: payload.email,
-      // };
-      // 회원가입후 로그인 수행
-      //dispatch(userSelect(data.user));
-      //navigation.pop();
-      //setHeaderToken(data.jwt);
-      //authStorage.set(data); //{user:{}, jwt:"XXX"}
     },
     onError: error => {
+      console.log('useRegister >>> onError >>> error---------', error);
       const message =
         error.response?.data?.data?.[0]?.messages[0].message ?? '회원가입 실패';
       inform({

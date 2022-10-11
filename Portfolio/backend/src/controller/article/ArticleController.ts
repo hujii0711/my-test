@@ -6,15 +6,15 @@ import httpStatus from 'http-status';
 // /article | GET | selectListArticle | 글목록
 export const selectListArticle = catchAsync(async (req: Request, res: Response) => {
   const query = req.query;
-  const body = await ArticleService.selectListArticle(query);
-  res.json(body).status(httpStatus.OK);
+  const result = await ArticleService.selectListArticle(query);
+  res.json(result).status(httpStatus.OK);
 });
 
 // /article/:id | GET | selectArticle | 글상세
 export const selectArticle = catchAsync(async (req: Request, res: Response) => {
   const { id } = req.params;
-  const body = await ArticleService.selectArticle(id);
-  res.json(body).status(httpStatus.OK);
+  const result = await ArticleService.selectArticle(id);
+  res.json(result).status(httpStatus.OK);
 });
 
 // /article/insert | POST | insertArticle | 글쓰기
@@ -68,8 +68,8 @@ export const updateArticleLookup = catchAsync(async (req: Request, res: Response
 
 // /article/update/prefer | PATCH
 export const updateArticlePrefer = catchAsync(async (req: Request, res: Response) => {
-  const { id, type } = req.body;
-  const result = await ArticleService.updateArticlePrefer(id, type);
+  const body = req.body;
+  const result = await ArticleService.updateArticlePrefer(body);
   res.json(result).status(httpStatus.OK);
 });
 
