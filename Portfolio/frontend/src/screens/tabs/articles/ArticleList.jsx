@@ -86,7 +86,9 @@ const ArticleList = ({navigation}) => {
   }, [data]);
 
   if (!items) {
-    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
+    return (
+      <ActivityIndicator size="small" style={{flex: 1}} color={Color.blue2} />
+    );
   }
 
   return (
@@ -109,7 +111,11 @@ const ArticleList = ({navigation}) => {
           <>
             {items.length > 0 ? <View style={styles.separator} /> : null}
             {isFetchingNextPage && (
-              <ActivityIndicator size="small" color="blue" style={{flex: 1}} />
+              <ActivityIndicator
+                size="small"
+                style={{flex: 1}}
+                color={Color.blue2}
+              />
             )}
           </>
         )}

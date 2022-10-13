@@ -22,7 +22,7 @@ export const insertChatMakeRoom = catchAsync(async (req: Request, res: Response)
 // /chat/chatRoomMessage/:room_id | GET | selectListChatRoomMessage | 채팅방 입장
 export const selectListChatRoomMessage = catchAsync(async (req: Request, res: Response) => {
   const offset = req.query.offset as unknown as string;
-  const roomId = req.params.room_id;
+  const roomId = req.params.roomId;
   const paramPack = { offset, roomId };
   const result = await ChatService.selectListChatRoomMessage(paramPack);
   res.json(result).status(httpStatus.OK);

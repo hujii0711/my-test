@@ -143,15 +143,11 @@ const DrawerItems = props => {
           }}>
           <View style={styles.footer}>
             {isUser ? (
-              <IconButton
-                icon="account-lock-open"
-                size={24}
-                onPress={onLogout}
-              />
+              <IconButton icon="logout" size={24} onPress={onLogout} />
             ) : (
               <>
                 <IconButton
-                  icon="account-key"
+                  icon="login"
                   size={24}
                   onPress={() => navigation.navigate('Login')}
                 />
@@ -169,7 +165,7 @@ const DrawerItems = props => {
             )}
 
             <IconButton
-              icon="close"
+              icon="undo"
               size={24}
               onPress={() => {
                 navigation.dispatch(DrawerActions.closeDrawer());

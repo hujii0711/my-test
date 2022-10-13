@@ -70,7 +70,7 @@ export const insertChatMakeRoom = async (userInfo: any, body: { participant_id: 
 // /chat/chatRoomMessage/:room_id| GET | selectListChatRoomMessage | 채팅방 입장
 export const selectListChatRoomMessage = async (paramPack: { roomId: string; offset: string }) => {
   const { roomId, offset } = paramPack;
-  const sql = `select id
+  const SQL = `select id
                      ,room_id
                      ,sender_id
                      ,message
@@ -78,11 +78,11 @@ export const selectListChatRoomMessage = async (paramPack: { roomId: string; off
                      ,file_name
                      ,created_at
                      ,row_number() over(order by id desc) as row_num
-                 from chat_messages
-                 where room_id = :roomId
-                 order by row_num asc
-                 limit :offset, 10;`;
-  const data = await sequelize.query(sql, {
+                from chat_messages
+                where room_id = :roomId
+                order by row_num asc
+                limit :offset, 20;`;
+  const data = await sequelize.query(SQL, {
     type: QueryTypes.SELECT,
     replacements: { offset: Number(offset), roomId },
   });
@@ -93,14 +93,14 @@ export const selectListChatRoomMessage = async (paramPack: { roomId: string; off
 // /chat/sendMessge/:room_id | POST | insertChatMessage | 채팅 메시지 전송
 export const insertChatMessage = async (
   userInfo: any,
-  paramPack: { room_id: string; receiver_id: string; message: string },
+  paramPack: { roomId: string; receiverId: string; message: string },
 ) => {
-  const { room_id, receiver_id, message } = paramPack;
+  const { roomId, receiverId, message } = paramPack;
   const data = await ChatMessages.create({
-    room_id,
-    receiver_id,
-    message,
+    room_id: roomId,
+    receiver_id: receiverId,
     sender_id: userInfo.user_id,
+    message,
   });
   return data;
 };
@@ -134,12 +134,12 @@ export const selectExistRoomCheck = async (body: { userId: string; selectedId: s
   // 선택한 유저중에 나와 같은 room_id가 있으면 기존 방이 있는 것이다.
   const { userId, selectedId } = body;
 
-  const sql = `select b.room_id room_id 
-               from
+  const SQL = `select b.room_id room_id 
+                from
                 (select room_id, participant_id from chat_participants where participant_id =:selected_id) a left join
                 (select room_id, participant_id from chat_participants where participant_id =:user_id) b
                   on a.room_id = b.room_id`;
-  const data = await sequelize.query(sql, {
+  const data = await sequelize.query(SQL, {
     type: QueryTypes.SELECT,
     replacements: { user_id: userId, selected_id: selectedId },
   });

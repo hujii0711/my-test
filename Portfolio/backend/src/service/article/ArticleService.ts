@@ -6,7 +6,7 @@ import { sequelize } from '../../models';
 
 export const selectListArticle = async (query: any) => {
   const offset = Number(query.offset);
-  const sql = `select id
+  const SQL = `select id
                      ,title
                      ,contents
                      ,user_id
@@ -15,10 +15,10 @@ export const selectListArticle = async (query: any) => {
                      ,created_at
                      ,updated_at
                      ,row_number() over(order by id desc) as row_num
-                 from articles
-                 order by row_num asc
-                 limit :offset, 10;`;
-  const data = await sequelize.query(sql, {
+                from articles
+                order by row_num asc
+                limit :offset, 10;`;
+  const data = await sequelize.query(SQL, {
     type: QueryTypes.SELECT,
     replacements: { offset },
   });
@@ -124,12 +124,12 @@ export const updateArticlePrefer = async (params: { id: string; type: string }) 
   return { status: 'success' };
 };
 
-export const selectCommentCount = async (article_ref: number) => {
+export const selectCommentCount = async (articleRef: string) => {
   //SELECT COUNT(`id`) AS `comment_cnt` FROM `comments` AS `Comments` WHERE `Comments`.`article_ref` = 26;
   const data = Comments.findAll({
     attributes: [[Sequelize.fn('COUNT', Sequelize.col('id')), 'comment_cnt']],
     where: {
-      article_ref,
+      article_ref: Number(articleRef),
     },
   });
   return data;

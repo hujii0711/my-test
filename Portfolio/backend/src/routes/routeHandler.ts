@@ -8,7 +8,6 @@ declare module 'express-serve-static-core' {
 }
 
 const routeHandler = (req: Request, res: Response, next: NextFunction) => {
-  console.log('routeHandler=====');
   res.error = (statusCode: number, errorMessage: string) => res.status(statusCode).json(errorMessage);
   res.success = (statusCode: number, message: string, result: any) =>
     res.status(statusCode).json({

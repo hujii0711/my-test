@@ -75,7 +75,7 @@ export const updateArticlePrefer = catchAsync(async (req: Request, res: Response
 
 // /article/commentCnt | GET
 export const selectCommentCount = catchAsync(async (req: Request, res: Response) => {
-  const article_ref = parseInt(req.params.articleRef);
-  const result = await ArticleService.selectCommentCount(article_ref);
+  const articleRef = req.params.articleRef;
+  const result = await ArticleService.selectCommentCount(articleRef);
   res.json(result).status(httpStatus.OK);
 });

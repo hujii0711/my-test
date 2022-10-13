@@ -42,7 +42,9 @@ const ArticleView = () => {
 
   //selectArticleQuery OR selectCommentCountQuery 반환값이 없으면 로딩바 출력
   if (!selectArticleQuery.data || !selectCommentCountQuery.data) {
-    return <ActivityIndicator color="red" />;
+    return (
+      <ActivityIndicator size="small" style={{flex: 1}} color={Color.blue2} />
+    );
   }
 
   const {

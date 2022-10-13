@@ -62,11 +62,11 @@ export async function selectListChatRoomMessage({
 */
 //mutateInsertChatMessage({roomId, message, participantId});
 export async function insertChatMessage(params) {
-  const {roomId: room_id, participantId: receiver_id, message} = params;
+  const {roomId, participantId: receiverId, message} = params;
   const config = {headers: {returnType: 'map'}};
   const response = await client.post(
-    `/chat/sendMessge/${room_id}`,
-    {receiver_id, message},
+    `/chat/sendMessge/${roomId}`,
+    {receiverId, message},
     config,
   );
   return response.data;
