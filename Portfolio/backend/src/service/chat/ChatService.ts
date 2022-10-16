@@ -9,7 +9,7 @@ import { QueryTypes } from 'sequelize';
 export const selectListChatRoom = async (userInfo: any, query: any) => {
   const offset = Number(query.offset);
 
-  const sql = `select B.room_id as room_id,
+  const sql = `select B.room_id as room_id
                      ,B.participant_id as user_id
                      ,(select participant_id from chat_participants where participant_id != :user_id and room_id = B.room_id) opponent_id
                      ,(select participant_name from chat_participants where participant_id != :user_id and room_id = B.room_id) opponent_name
@@ -77,7 +77,7 @@ export const selectListChatRoomMessage = async (paramPack: { roomId: string; off
                      ,receiver_id
                      ,file_name
                      ,created_at
-                     ,row_number() over(order by id desc) as row_num
+                     ,row_number() over(order by id asc) as row_num
                 from chat_messages
                 where room_id = :roomId
                 order by row_num asc

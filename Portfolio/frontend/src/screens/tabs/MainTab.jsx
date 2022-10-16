@@ -1,6 +1,6 @@
 import React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Color from '../../commons/style/Color';
 import Dashboard from './Dashboard';
 import Faq from './Faq';
@@ -23,7 +23,9 @@ const MainTab = () => {
         name="DashBoard"
         component={Dashboard}
         options={{
-          tabBarIcon: ({color}) => <Icon name="web" color={color} size={24} />,
+          tabBarIcon: ({color}) => (
+            <Icon name="shape-outline" color={color} size={24} />
+          ),
           tabBarLabel: '대시보드',
         }}
       />
@@ -32,7 +34,7 @@ const MainTab = () => {
         component={ArticleList}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="view-headline" color={color} size={24} />
+            <Icon name="table" color={color} size={24} />
           ),
           tabBarLabel: '게시글',
         }}
@@ -42,7 +44,7 @@ const MainTab = () => {
         component={ArticleWrite}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="outgoing-mail" color={color} size={24} />
+            <Icon name="email-plus" color={color} size={24} />
           ),
           tabBarLabel: '이메일 작성',
         }}
@@ -52,7 +54,7 @@ const MainTab = () => {
         component={ImageViewer}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="photo" color={color} size={24} />
+            <Icon name="image-marker" color={color} size={24} />
           ),
           tabBarLabel: '이미지 뷰어',
         }}
@@ -61,7 +63,9 @@ const MainTab = () => {
         name="ChatMain"
         component={ChatMain}
         options={{
-          tabBarIcon: ({color}) => <Icon name="chat" color={color} size={24} />,
+          tabBarIcon: ({color}) => (
+            <Icon name="chat-outline" color={color} size={24} />
+          ),
           tabBarLabel: '채팅',
         }}
       />
@@ -70,7 +74,7 @@ const MainTab = () => {
         component={Faq}
         options={{
           tabBarIcon: ({color}) => (
-            <Icon name="wb-incandescent" color={color} size={24} />
+            <Icon name="gamepad-circle-outline" color={color} size={24} />
           ),
           tabBarLabel: 'FAQ',
         }}

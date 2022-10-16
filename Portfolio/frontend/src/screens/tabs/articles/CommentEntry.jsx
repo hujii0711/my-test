@@ -4,8 +4,6 @@ import {View, StyleSheet, Text} from 'react-native';
 import Color from '../../../commons/style/Color';
 
 const CommentEntry = ({refRBSheet, commentCnt = 0}) => {
-  console.log('CommentEntry >>>> commentCnt=====', commentCnt);
-
   return (
     <View style={styles.block}>
       <Text style={styles.text}>댓글</Text>
@@ -13,7 +11,7 @@ const CommentEntry = ({refRBSheet, commentCnt = 0}) => {
         {commentCnt}
       </Badge>
       <IconButton
-        icon="arrow-expand-vertical"
+        icon="unfold-more-horizontal"
         iconColor={Color.text}
         style={styles.button}
         size={18}

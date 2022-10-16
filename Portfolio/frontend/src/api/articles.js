@@ -14,6 +14,7 @@ import client from './client';
   1. Article 글 목록 | /article
 */
 export async function selectListArticle({nextOffset = 0, prevOffset = 0}) {
+  console.log('selectListArticle >>>> nextOffset=========', nextOffset);
   const offset = nextOffset + prevOffset;
   const response = await client.get('/article', {
     params: {offset},

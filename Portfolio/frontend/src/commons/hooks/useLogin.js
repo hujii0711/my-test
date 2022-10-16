@@ -10,11 +10,12 @@ import {userSelect} from '../redux/users/reducers';
 export default function useLogin() {
   const dispatch = useDispatch();
   const inform = useInform();
-
+  const navigation = useNavigation();
   const mutation = useMutation(login, {
     onSuccess: data => {
       if (data) {
         dispatch(userSelect(data.sessionUser));
+        navigation.navigate('MainTab');
         setHeaderToken(data.token);
         authStorage.set('token', data.token);
       }

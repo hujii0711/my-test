@@ -1,8 +1,11 @@
 import { Users } from '../../models/users';
 import bcrypt from 'bcryptjs';
+import { Op } from 'sequelize';
 
-export const getListUsers = async () => {
+export const getListUsers = async (userInfo: any) => {
+  const { user_id } = userInfo;
   const data = await Users.findAll({
+    where: { user_id: { [Op.ne]: user_id } },
     raw: true,
   });
   return data;

@@ -22,6 +22,13 @@ export const selectListArticle = async (query: any) => {
     type: QueryTypes.SELECT,
     replacements: { offset },
   });
+  // const data = await Articles.findAll({
+  //   attributes: ['id', 'title', 'contents', 'user_id', 'lookup', 'user_name', 'created_at', 'updated_at'],
+  //   order: [['id', 'DESC']],
+  //   limit: 10,
+  //   offset: Number(offset),
+  //   raw: true,
+  // });
 
   return data;
 };

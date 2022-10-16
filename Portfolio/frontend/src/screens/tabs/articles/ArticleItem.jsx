@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {memo} from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 import Color from '../../../commons/style/Color';
@@ -24,7 +24,7 @@ const ArticleItem = ({
       android_ripple={{color: Color.pressed}}>
       <View style={{flexDirection: 'row'}}>
         <Text style={styles.title}>{title}</Text>
-        <Badge style={styles.badge} size={14}></Badge>
+        {/* <Badge style={styles.badge} size={14}></Badge> */}
       </View>
       <View style={styles.footer}>
         <Text style={styles.smallText}>
@@ -64,4 +64,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ArticleItem;
+export default memo(ArticleItem);

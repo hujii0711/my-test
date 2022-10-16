@@ -54,11 +54,11 @@ const CommentModifyModal = ({
           />
           <View style={{flexDirection: 'row', justifyContent: 'flex-end'}}>
             <IconButton
-              icon="comment-check-outline"
+              icon="tooltip-check-outline"
               size={20}
               onPress={() => onSubmit(message)}
             />
-            <IconButton icon="close" size={20} onPress={onClose} />
+            <IconButton icon="undo" size={20} onPress={onClose} />
           </View>
         </Modal>
       </Portal>

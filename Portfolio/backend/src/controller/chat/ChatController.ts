@@ -32,9 +32,8 @@ export const selectListChatRoomMessage = catchAsync(async (req: Request, res: Re
 export const insertChatMessage = catchAsync(async (req: Request, res: Response) => {
   const userInfo = req.user;
   const paramPack = { ...req.params, ...req.body };
-
   const result = await ChatService.insertChatMessage(userInfo, paramPack);
-  req.app.get('io').of('/chat').to(paramPack.room_id).emit('receiveMessage', result);
+  req.app.get('io').of('/chat').to(paramPack.roomId).emit('receiveMessage', result);
   res.json(result).status(httpStatus.OK);
 });
 

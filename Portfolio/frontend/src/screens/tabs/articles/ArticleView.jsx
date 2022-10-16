@@ -20,7 +20,6 @@ const ArticleView = () => {
   const {id: articleRef} = useRoute().params;
   // 전역 상태
   const currentUser = useUser();
-  console.log('ArticleView >>>>>>> articleRef======', articleRef);
 
   // 조회수 증가
   useEffect(() => {
@@ -127,37 +126,39 @@ const ArticleViewItems = ({
           {user_name} | {createdAt} | 조회수: {lookup}
         </Text>
         {isMyArticle ? (
-          <>
+          <View style={{flexDirection: 'row'}}>
             <IconButton
-              icon="application-edit-outline"
+              icon="note-edit-outline"
               size={18}
               style={{alignSelf: 'flex-end'}}
               onPress={() => onPressNaviMove()}
             />
             <IconButton
-              icon="archive-remove-outline"
+              icon="note-remove-outline"
               size={18}
               style={{alignSelf: 'flex-end'}}
               onPress={() => onPressDeleteArticle()}
             />
-          </>
+          </View>
         ) : (
-          <>
+          <View style={{flexDirection: 'row'}}>
             <IconButton
               icon="thumb-up-outline"
               size={18}
               style={{alignSelf: 'flex-end'}}
               onPress={() => {}}
             />
-            <Text style={styles.small_text}>{liked}</Text>
+            <Text style={[{marginLeft: -10}, styles.small_text]}>{liked}</Text>
             <IconButton
               icon="thumb-up-outline"
               size={18}
               style={{alignSelf: 'flex-end'}}
               onPress={() => {}}
             />
-            <Text style={styles.small_text}>{unliked}</Text>
-          </>
+            <Text style={[{marginLeft: -10}, styles.small_text]}>
+              {unliked}
+            </Text>
+          </View>
         )}
       </View>
       <View style={styles.separator} />

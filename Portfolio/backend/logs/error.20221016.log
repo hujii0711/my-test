@@ -1,0 +1,305 @@
+2022-10-16 10:29:10 <error> (error.ts:35) ef895ea0-4cf1-11ed-a7bc-531879da845b [
+  ApiError: You have an error in your SQL syntax; check the manual that corresponds to your MySQL server version for the right syntax to use near ',B.participant_id as user_id
+                       ,(select participant_id from c' at line 2
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-10-16 10:50:47 <error> (error.ts:35) f45473e0-4cf4-11ed-855a-7355a00ada43 [
+  ApiError: Missing credentials
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-10-16 10:52:01 <error> (error.ts:35) 204a9290-4cf5-11ed-855a-7355a00ada43 [
+  ApiError: Missing credentials
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-10-16 11:26:03 <error> (error.ts:35) e1e878f0-4cf9-11ed-951a-a775356f8721 [
+  ApiError: Unknown column 'published_at' in 'field list'
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-10-16 12:45:11 <error> (error.ts:46) efcef880-4d04-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 12:45:12 <error> (error.ts:46) f07a7ac0-4d04-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 12:45:14 <error> (error.ts:46) f1b01490-4d04-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 12:45:18 <error> (error.ts:46) f417c5c0-4d04-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:03 <error> (error.ts:46) 4b148820-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:04 <error> (error.ts:46) 4bb2c3f0-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:06 <error> (error.ts:46) 4ce884d0-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:10 <error> (error.ts:46) 4f4fc0d0-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:29 <error> (error.ts:46) 5a7dd820-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:30 <error> (error.ts:46) 5b1adb70-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:32 <error> (error.ts:46) 5c509c50-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:02:36 <error> (error.ts:46) 5eb82670-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:04:47 <error> (error.ts:46) ac70d920-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:04:48 <error> (error.ts:46) ad0fb130-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:04:50 <error> (error.ts:46) ae45c030-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 13:04:54 <error> (error.ts:46) b0adbf80-4d07-11ed-a0cc-fd1055c1a42d [
+  Error: GET /chat/chatRoomMessage/?offset=0 라우터가 없습니다.
+      at error400Handler (C:\_git\Portfolio\backend\src\modules\error.ts:44:15)
+      at Layer.handle [as handle_request] (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:95:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:328:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at Immediate.next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Immediate._onImmediate (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:646:15)
+      at processImmediate (internal/timers.js:466:21)
+      at process.topLevelDomainCallback (domain.js:147:15)
+      at process.callbackTrampoline (internal/async_hooks.js:129:24)
+]
+2022-10-16 15:01:38 <error> (error.ts:35) ffa2f690-4d17-11ed-b1c4-7fa1a59d5c96 [
+  ApiError: Invalid value { ne: '20555f6b-6134-4190-a873-2b645dc1b0be' }
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-10-16 15:03:03 <error> (error.ts:35) 321f2850-4d18-11ed-91e0-c5e57b943a7c [
+  ApiError: Invalid value { ne: '20555f6b-6134-4190-a873-2b645dc1b0be' }
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]

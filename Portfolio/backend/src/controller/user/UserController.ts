@@ -4,7 +4,8 @@ import { catchAsync } from '../../modules/error';
 import httpStatus from 'http-status';
 
 export const getListUsers = catchAsync(async (req: Request, res: Response) => {
-  const result = await UserService.getListUsers();
+  const userInfo = req.user;
+  const result = await UserService.getListUsers(userInfo);
   res.json(result).status(httpStatus.OK);
 });
 

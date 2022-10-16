@@ -234,7 +234,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
                 commentId={item.id}
                 message={item.message}
                 createdAt={item.created_at}
-                username={item.user_id}
+                username={item.user_name}
                 articleRef={articleRef}
                 isMyComment={item.user_id === users.user_id}
                 initLike={item.liked}

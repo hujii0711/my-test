@@ -1,12 +1,13 @@
 import * as React from 'react';
 import {View, Text} from 'react-native';
 import {Button, Menu, Divider, Provider, IconButton} from 'react-native-paper';
-import {Ionicons} from '@expo/vector-icons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const MyComponent = () => {
+const MenuButton = ({isVisible}) => {
+  //console.log('MenuButton >>>> isVisible-----', isVisible);
   const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
   const closeMenu = () => setVisible(false);
+  const openMenu = () => setVisible(true);
 
   return (
     <Provider>
@@ -33,12 +34,7 @@ const MyComponent = () => {
           }>
           <Menu.Item
             leadingIcon={() => (
-              <Ionicons
-                name="md-checkmark-circle"
-                size={20}
-                color="#3a3a3a"
-                style={{}}
-              />
+              <Icon name="md-checkmark-circle" size={20} color="#3a3a3a" />
             )}
             titleStyle={{fontSize: 14}}
             contentStyle={{}}
@@ -49,12 +45,7 @@ const MyComponent = () => {
           <Divider />
           <Menu.Item
             leadingIcon={() => (
-              <Ionicons
-                name="md-checkmark-circle"
-                size={20}
-                color="#3a3a3a"
-                style={{}}
-              />
+              <Icon name="md-checkmark-circle" size={20} color="#3a3a3a" />
             )}
             titleStyle={{fontSize: 14}}
             contentStyle={{}}
@@ -68,4 +59,4 @@ const MyComponent = () => {
   );
 };
 
-export default MyComponent;
+export default MenuButton;

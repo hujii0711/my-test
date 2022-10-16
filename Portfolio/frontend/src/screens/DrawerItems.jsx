@@ -23,7 +23,7 @@ const DrawerItems = props => {
   const navigation = useNavigation();
   const inform = useInform();
   const dispatch = useDispatch();
-  const isUser = useUser();
+  const currentUser = useUser();
 
   const onLogout = () => {
     dispatch(userDelete());
@@ -107,6 +107,11 @@ const DrawerItems = props => {
       icon: 'voicemail',
       onPress: () => navigation.navigate('DialogScreen'),
     },
+    {
+      label: '12. MenuButton',
+      icon: 'voicemail',
+      onPress: () => navigation.navigate('MenuButton'),
+    },
   ];
 
   return (
@@ -118,7 +123,7 @@ const DrawerItems = props => {
             android_ripple={{color: Color.red4}}
             onPress={() => {}}>
             <Avatar.Icon size={50} icon="account" />
-            <Text>김형준</Text>
+            <Text>{currentUser?.user_name ?? '손님'}</Text>
           </Pressable>
         </TouchableRipple>
       </DrawerPaper.Section>
@@ -142,7 +147,7 @@ const DrawerItems = props => {
             console.log('footer press');
           }}>
           <View style={styles.footer}>
-            {isUser ? (
+            {currentUser ? (
               <IconButton icon="logout" size={24} onPress={onLogout} />
             ) : (
               <>

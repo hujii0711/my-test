@@ -49,6 +49,7 @@ export async function selectListChatRoomMessage({
   prevOffset = 0,
   roomId = '',
 }) {
+  console.log('selectListChatRoomMessage!!!!!!!!!!!!!!!!!!');
   const offset = nextOffset + prevOffset;
   const response = await client.get(`/chat/chatRoomMessage/${roomId}`, {
     params: {offset},

@@ -38,7 +38,6 @@ function CommentItem({
   };
 
   const onPressHate = () => {
-    console.log('selectedHate=====', selectedHate);
     if (selectedHate) {
       setHateCnt(hateCnt - 1);
       setSelectedHate(false);
@@ -137,16 +136,16 @@ function CommentItem({
               <Text style={{fontSize: 11, marginLeft: -10}}>{hateCnt}</Text>
             </View>
             <View style={styles.footer_right}>
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => onVisibleModify(commentId)}>
-                <Text style={styles.buttonText}>수정</Text>
-              </Pressable>
-              <Pressable
-                style={({pressed}) => pressed && styles.pressed}
-                onPress={() => onVisibleRemove(commentId)}>
-                <Text style={styles.buttonText}>삭제</Text>
-              </Pressable>
+              <IconButton
+                icon="comment-edit"
+                size={18}
+                onPress={() => onVisibleModify(commentId)}
+              />
+              <IconButton
+                icon="comment-remove"
+                size={18}
+                onPress={() => onVisibleRemove(commentId)}
+              />
             </View>
           </View>
         </View>

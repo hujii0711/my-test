@@ -2,6 +2,7 @@ import { Server as SocketIO } from 'socket.io';
 import cookieParser from 'cookie-parser';
 import env from '../modules/env';
 import cookie from 'cookie-signature';
+import * as UserService from '../service/user/UserService';
 
 // var cookie = require('cookie-signature');
 
@@ -33,13 +34,14 @@ export default (server: any, app: any, sessionMiddleware: any) => {
   //   //sessionMiddleware(socket.request, socket.request.res, next);
   // });
 
-  chat.on('connection', (socket: any) => {
-    console.log('chat 네임스페이스에 접속');
+  chat.on('connection', async (socket: any) => {
+    console.log('chat 네임스페이스에 접속======', socket.id);
+
     const req = socket.request;
-    // console.log('req.cookies========', req.cookies);
-    // console.log('req.user========', req.user);
-    // console.log('req.session========', req.session);
-    // console.log('req.sessionID========', req.sessionID);
+    const roomId = req._query.room_id; //클라이언트에서 접속시 보낸 room_id 파라미터
+
+    const user = await UserService.findByUserInfo(req.session.passport.user);
+
     // req.cookies======== {}
     // req.user======== undefined
     // req.session======== Session {
@@ -48,16 +50,14 @@ export default (server: any, app: any, sessionMiddleware: any) => {
     // }
     // req.sessionID======== fB44quwSGxmjqI9cXz13KWxkbjVxeGFe
 
-    const roomId = req._query.room_id; //클라이언트에서 접속시 보낸 room_id 파라미터
-
     socket.join(roomId);
 
     socket.to(roomId).emit('join', {
-      message: `테스터님이 입장하셨습니다.`,
+      message: `${user?.user_name}님이 입장하셨습니다.`,
     });
 
     socket.on('disconnect', () => {
-      console.log('chat 네임스페이스 접속 해제');
+      console.log('chat 네임스페이스 접속 해제', socket.id);
       socket.leave(roomId);
       const currentRoom = socket.adapter.rooms[roomId];
       const userCount = currentRoom ? currentRoom.length : 0;

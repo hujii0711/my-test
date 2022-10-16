@@ -86,7 +86,11 @@ const ArticleWrite = () => {
 
   return (
     <Card style={{flex: 1}}>
-      <Card.Title title="글 작성" subtitle="2022-09-05" left={LeftContent} />
+      <Card.Title
+        title={mode === 'modify' ? '글 수정' : '글 작성'}
+        subtitle="2022-09-05"
+        left={LeftContent}
+      />
       <Card.Content style={{flex: 1}}>
         <TextInput
           label="제목"
@@ -129,7 +133,7 @@ const ArticleWrite = () => {
         {mode === 'write' && (
           <Button
             mode="outlined"
-            icon="archive-edit-outline"
+            icon="text-box-plus"
             onPress={onSubmitWriteArticle}
             color={Color.text}
             style={styles.button}
@@ -139,7 +143,7 @@ const ArticleWrite = () => {
         )}
         <Button
           mode="outlined"
-          icon="archive-remove-outline"
+          icon="undo"
           onPress={() => navigation.goBack()}
           color={Color.text}
           style={styles.button}

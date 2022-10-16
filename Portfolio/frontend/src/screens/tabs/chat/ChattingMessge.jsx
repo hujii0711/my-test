@@ -1,12 +1,17 @@
-import React, {useState, useEffect, useMemo, useRef} from 'react';
+import React, {useState, useEffect, useMemo, memo, useRef} from 'react';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import {
   Avatar,
   IconButton,
   Button,
   ActivityIndicator,
+  Appbar,
+  Provider,
+  Menu,
+  Divider,
 } from 'react-native-paper';
 import {useRoute} from '@react-navigation/native';
-import {useMutation, useInfiniteQuery} from 'react-query';
+import {useMutation, useInfiniteQuery, useQueryClient} from 'react-query';
 import {
   View,
   Text,
@@ -16,6 +21,8 @@ import {
   StatusBar,
   SafeAreaView,
   RefreshControl,
+  StyleSheet,
+  FlatList,
 } from 'react-native';
 import io from 'socket.io-client';
 import Color from '../../../commons/style/Color';
@@ -24,8 +31,15 @@ import {
   insertChatMessage,
   insertChatMessageUpload,
 } from '../../../api/chat';
+import {useUser} from '../../../commons/hooks/useReduxState';
 
 const ChattingMessge = () => {
+  console.log('ChattingMessge 렌더링##################');
+  const currentUser = useUser();
+  const {id: roomId, participant_id: participantId} = useRoute().params;
+  const [message, setMessage] = useState('');
+  const [messageList, setMessageList] = useState([]);
+  //const queryClient = useQueryClient();
   // 웹소켓 통신 시작
   // 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드되는 것이다.
   // 웹 소켓을 지원하지 않는 브라우저는 폴링 방식으로, 지원하는 브라우저는 웹 소켓 방식으로 사용 가능한 것이다.
@@ -34,6 +48,7 @@ const ChattingMessge = () => {
   //기존 방이 있는지 여부 체크한후 콜백으로 웹소켓 통신을 시작한다.
   //웹소켓 통신시 파라미터로 roomId를 넘겨줬으면 좋겠다.
   useEffect(() => {
+    console.log('소켓 연동!!!!!!!!!!!!!!!');
     const socket = io('http://10.0.2.2:4000/chat', {
       path: '/socket.io',
       transports: ['websocket'],
@@ -47,30 +62,53 @@ const ChattingMessge = () => {
     });
 
     //메시지 수신
-    socket.on('receiveMessage', data => {
+    socket.on('receiveMessage', resp => {
+      console.log('receiveMessage >>> resp=====', resp);
       setMessageList(
-        messageList.concat(<YouView message={data.message} key={data.id} />),
+        messageList.concat(
+          resp?.sender_id === currentUser.user_id ? (
+            <MyView message={resp.message} key={resp.id} />
+          ) : (
+            <YouView message={resp.message} key={resp.id} />
+          ),
+        ),
       );
-      lastIndexToScrollMove(data.id);
+      // resp==== {"created_at": "2022-10-16T09:07:47.183Z", "id": 38, "message": "asdasdad", "receiver_id": "20555f6b-6134-4190-a873-2b645dc1b0be", "room_id": "177308a6-1242-4733-8526-d6cfab6c347f", "sender_id": "2bc11da5-b1e4-48b9-af2d-605f4bda9af3"}
+      // queryClient.setQueryData('selectListChatRoomMessage', chat => {
+      //   if (!chat) {
+      //     return {pageParams: [], pages: []};
+      //   }
+      //   console.log('resp====', resp);
+      //   //return {
+      //   //pageParams: chat.pageParams,
+      //   const pages = chat.pages.map(page =>
+      //     page.find(a => a.id === resp.id)
+      //       ? page.map(a => (a.id === resp.id ? resp : a))
+      //       : page,
+      //   );
+      //   console.log('pages====', pages);
+      //   //};
+      // });
+
+      //lastIndexToScrollMove(data.id);
     });
 
     socket.on('exit', data => {
       console.log(data.message); // XXX가 퇴장했습니다.
     });
+    //isFirstRender.current = isFirstRender.current + 1;
   }, []);
 
-  const [message, setMessage] = useState('');
-  const {id: roomId, participant_id: participantId} = useRoute().params;
-  const [messageList, setMessageList] = useState([]);
-  const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
+  //const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
+  //const isFirstRender = useRef(0);
 
-  const lastIndexToScrollMove = index => {
-    lastIndexToScroll.scrollToIndex({
-      animated: true,
-      index: index,
-      viewPosition: 0,
-    });
-  };
+  // const lastIndexToScrollMove = index => {
+  //   lastIndexToScroll.scrollToIndex({
+  //     animated: true,
+  //     index: index,
+  //     viewPosition: 0,
+  //   });
+  // };
 
   // 대화 내용 조회
   const {
@@ -84,30 +122,22 @@ const ChattingMessge = () => {
     ({pageParam}) => selectListChatRoomMessage({...pageParam, roomId}),
     {
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage?.length === 10) {
+        if (lastPage.length === 20) {
           return {
-            nextOffset: lastPage[lastPage.length - 1].id,
+            nextOffset: lastPage[lastPage.length - 1].row_num,
             roomId,
           };
         } else {
-          return {
-            roomId,
-            nextOffset: undefined,
-            prevOffset: undefined,
-          };
+          return undefined;
         }
       },
       getPreviousPageParam: (firstPage, allPages) => {
         const validPage = allPages.find(page => page?.length > 0);
         if (!validPage) {
-          return {
-            roomId,
-            nextOffset: undefined,
-            prevOffset: undefined,
-          };
+          return undefined;
         }
         return {
-          prevOffset: validPage[0].id,
+          prevOffset: validPage[0].row_num === 1 ? 0 : validPage[0].row_num,
           roomId,
         };
       },
@@ -121,41 +151,14 @@ const ChattingMessge = () => {
     return [].concat(...data.pages);
   }, [data]);
 
-  if (!items) {
-    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
-  }
-
-  // const selectListChatRoomMessageQuery = useQuery(
-  //   ['selectListChatRoomMessage', roomId],
-  //   () => selectListChatRoomMessage(roomId),
-  // );
-
-  // useMemo(() => {
-  //   if (
-  //     selectListChatRoomMessageQuery.data &&
-  //     selectListChatRoomMessageQuery.data.length > 0
-  //   ) {
-  //     const data = selectListChatRoomMessageQuery.data.reduce(
-  //       (accVal, curVal) => {
-  //         accVal.push(<MyView message={curVal.message} key={curVal.id} />);
-  //         return accVal;
-  //       },
-  //       [],
-  //     );
-  //     setMessageList(data);
-  //   }
-  // }, [selectListChatRoomMessageQuery.data]);
-
   // 메시지 송신
   const onSubmitSendMessage = () => {
     mutateInsertChatMessage({roomId, message, participantId});
   };
 
   const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
-    onSuccess: chat => {
-      setMessageList(
-        messageList.concat(<MyView message={chat.message} key={chat.id} />),
-      );
+    onSuccess: message => {
+      console.log('message======', message);
     },
   });
 
@@ -195,37 +198,41 @@ const ChattingMessge = () => {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={items}
-          ref={ref => {
-            setLastIndexToScroll(ref);
-          }}
-          renderItem={({item}) => {
+          // ref={ref => {
+          //   setLastIndexToScroll(ref);
+          // }}
+          renderItem={({item, index}) => {
+            if (!items) {
+              return (
+                <ActivityIndicator size="large" style={{flex: 1}} color="red" />
+              );
+            }
+
+            //if (isFirstRender.current === 1 && index + 1 === items.length) {
+            //  isFirstRender.current = isFirstRender.current - 1;
+            //  setTimeout(() => lastIndexToScrollMove(index), 500);
+            //}
             return <MyView message={item.message} key={item.id} />;
           }}
           keyExtractor={(item, index) => index.toString()}
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListHeaderComponent={
-            <View style={{flexDirection: 'row', backgroundColor: 'red'}}></View>
+            <View style={{backgroundColor: 'red'}}>
+              <Text>1111111</Text>
+            </View>
           }
           ListFooterComponent={items => (
-            <>
-              {items.length > 0 ? <View style={styles.separator} /> : null}
-              {isFetchingNextPage && (
-                <ActivityIndicator
-                  size="small"
-                  color="blue"
-                  style={{flex: 1}}
-                />
-              )}
-            </>
+            <View style={{backgroundColor: 'red'}}>
+              <Text>2222222222</Text>
+            </View>
           )}
           onEndReachedThreshold={0.5}
           onEndReached={fetchNextPage}
-          refreshControl={
-            <RefreshControl
-              onRefresh={fetchPreviousPage}
-              refreshing={isFetchingPreviousPage}
-            />
-          }
+          // refreshControl={
+          //   <RefreshControl
+          //     onRefresh={fetchPreviousPage}
+          //     refreshing={isFetchingPreviousPage}
+          //   />
+          // }
         />
         {messageList}
       </SafeAreaView>
@@ -379,4 +386,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ChattingMessge;
+export default memo(ChattingMessge);

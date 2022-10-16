@@ -18,6 +18,7 @@ import LinkScreen from './direct/LinkScreen';
 import LocationScreen from './direct/LocationScreen';
 import VoiceScreen from './direct/VoiceScreen';
 import DialogScreen from './direct/DialogScreen';
+import MenuButton from '../commons/component/MenuButton';
 
 export const MenuList = [
   {id: 'MainTab', component: MainTab},
@@ -40,4 +41,5 @@ export const MenuList = [
   {id: 'LocationScreen', component: LocationScreen},
   {id: 'VoiceScreen', component: VoiceScreen},
   {id: 'DialogScreen', component: DialogScreen},
+  {id: 'MenuButton', component: MenuButton},
 ];
