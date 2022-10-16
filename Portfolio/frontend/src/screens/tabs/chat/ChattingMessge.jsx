@@ -39,7 +39,7 @@ const ChattingMessge = () => {
   const {id: roomId, participant_id: participantId} = useRoute().params;
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
-  //const queryClient = useQueryClient();
+  const queryClient = useQueryClient();
   // 웹소켓 통신 시작
   // 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드되는 것이다.
   // 웹 소켓을 지원하지 않는 브라우저는 폴링 방식으로, 지원하는 브라우저는 웹 소켓 방식으로 사용 가능한 것이다.
@@ -63,7 +63,6 @@ const ChattingMessge = () => {
 
     //메시지 수신
     socket.on('receiveMessage', resp => {
-      console.log('receiveMessage >>> resp=====', resp);
       setMessageList(
         messageList.concat(
           resp?.sender_id === currentUser.user_id ? (
@@ -73,23 +72,25 @@ const ChattingMessge = () => {
           ),
         ),
       );
-      // resp==== {"created_at": "2022-10-16T09:07:47.183Z", "id": 38, "message": "asdasdad", "receiver_id": "20555f6b-6134-4190-a873-2b645dc1b0be", "room_id": "177308a6-1242-4733-8526-d6cfab6c347f", "sender_id": "2bc11da5-b1e4-48b9-af2d-605f4bda9af3"}
-      // queryClient.setQueryData('selectListChatRoomMessage', chat => {
-      //   if (!chat) {
-      //     return {pageParams: [], pages: []};
-      //   }
-      //   console.log('resp====', resp);
-      //   //return {
-      //   //pageParams: chat.pageParams,
-      //   const pages = chat.pages.map(page =>
-      //     page.find(a => a.id === resp.id)
-      //       ? page.map(a => (a.id === resp.id ? resp : a))
-      //       : page,
-      //   );
-      //   console.log('pages====', pages);
-      //   //};
-      // });
 
+      // resp==== {"created_at": "2022-10-16T09:07:47.183Z", "id": 38, "message": "asdasdad", "receiver_id": "20555f6b-6134-4190-a873-2b645dc1b0be", "room_id": "177308a6-1242-4733-8526-d6cfab6c347f", "sender_id": "2bc11da5-b1e4-48b9-af2d-605f4bda9af3"}
+
+      // queryClient.setQueryData('selectListChatRoomMessage', data => {
+      //   if (!data) {
+      //     return {
+      //       pageParams: [undefined],
+      //       pages: [[resp]],
+      //     };
+      //   }
+      //   const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
+      //   return {
+      //     ...data,
+      //     // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
+      //     pages: [[...firstPage, resp], ...rest],
+      //   };
+      // });
+      //const aaa = queryClient.getQueryData('selectListChatRoomMessage');
+      //console.log('aaa---', aaa.pages);
       //lastIndexToScrollMove(data.id);
     });
 
@@ -100,7 +101,7 @@ const ChattingMessge = () => {
   }, []);
 
   //const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
-  //const isFirstRender = useRef(0);
+  // const isFirstRender = useRef(0);
 
   // const lastIndexToScrollMove = index => {
   //   lastIndexToScroll.scrollToIndex({
@@ -131,16 +132,16 @@ const ChattingMessge = () => {
           return undefined;
         }
       },
-      getPreviousPageParam: (firstPage, allPages) => {
-        const validPage = allPages.find(page => page?.length > 0);
-        if (!validPage) {
-          return undefined;
-        }
-        return {
-          prevOffset: validPage[0].row_num === 1 ? 0 : validPage[0].row_num,
-          roomId,
-        };
-      },
+      // getPreviousPageParam: (firstPage, allPages) => {
+      //   const validPage = allPages.find(page => page?.length > 0);
+      //   if (!validPage) {
+      //     return undefined;
+      //   }
+      //   return {
+      //     prevOffset: validPage[0].row_num === 1 ? 0 : validPage[0].row_num,
+      //     roomId,
+      //   };
+      // },
     },
   );
 
@@ -198,9 +199,9 @@ const ChattingMessge = () => {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={items}
-          // ref={ref => {
-          //   setLastIndexToScroll(ref);
-          // }}
+          //ref={ref => {
+          //  setLastIndexToScroll(ref);
+          //}}
           renderItem={({item, index}) => {
             if (!items) {
               return (
@@ -211,7 +212,7 @@ const ChattingMessge = () => {
             //if (isFirstRender.current === 1 && index + 1 === items.length) {
             //  isFirstRender.current = isFirstRender.current - 1;
             //  setTimeout(() => lastIndexToScrollMove(index), 500);
-            //}
+            //rr}
             return <MyView message={item.message} key={item.id} />;
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -227,14 +228,14 @@ const ChattingMessge = () => {
           )}
           onEndReachedThreshold={0.5}
           onEndReached={fetchNextPage}
-          // refreshControl={
-          //   <RefreshControl
-          //     onRefresh={fetchPreviousPage}
-          //     refreshing={isFetchingPreviousPage}
-          //   />
-          // }
+          refreshControl={
+            <RefreshControl
+              onRefresh={fetchPreviousPage}
+              refreshing={isFetchingPreviousPage}
+            />
+          }
         />
-        {messageList}
+        {/* {messageList} */}
       </SafeAreaView>
       {/* <ScreenWrapper
         style={{

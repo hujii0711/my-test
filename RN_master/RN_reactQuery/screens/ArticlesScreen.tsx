@@ -20,10 +20,6 @@ function ArticlesScreen() {
     {
       getNextPageParam: lastPage => {
         if (lastPage.length === 10) {
-          console.log(
-            'getNextPageParam >>>> cursor====',
-            lastPage[lastPage.length - 1].id,
-          );
           return {
             cursor: lastPage[lastPage.length - 1].id,
           };
