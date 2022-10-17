@@ -63,8 +63,8 @@ export async function updateComment(params) {
   5. Comment 글 삭제 | /comment/delete/:id
 */
 export async function deleteComment(params) {
-  const {id} = params;
-  await client.delete(`/comment/delete/${id}`);
+  const {id, articleRef} = params;
+  await client.delete(`/comment/delete/${id}/${articleRef}`);
   return null;
 }
 

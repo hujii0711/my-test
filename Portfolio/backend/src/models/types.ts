@@ -4,7 +4,6 @@ export interface UsersAttributes {
   user_name?: string;
   email?: string;
   password?: string;
-  //jwt?: string;
   created_at?: Date;
   updated_at?: Date;
 }
@@ -13,6 +12,7 @@ export interface CommentsAttributes {
   id?: number;
   message: string;
   user_id?: string;
+  user_name?: string;
   article_ref?: number;
   liked?: number;
   unliked?: number;
@@ -29,6 +29,7 @@ export interface ArticlesAttributes {
   lookup?: number;
   liked?: number;
   unliked?: number;
+  comment_cnt?: number;
   created_at?: Date;
   updated_at?: Date;
 }

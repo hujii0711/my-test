@@ -57,6 +57,13 @@ const ChatRoomList = () => {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
 
+  const moveChattingMessage = (room_id, opponent_id) => {
+    navigation.navigate('ChattingMessge', {
+      id: room_id,
+      participant_id: opponent_id,
+    });
+  };
+
   return (
     <SafeAreaView style={styles.container}>
       <FlatList
@@ -67,7 +74,9 @@ const ChatRoomList = () => {
           const color = item.room_id === selectedRoomId ? 'white' : 'black';
           return (
             <TouchableOpacity
-              onPress={() => setSelectedRoomId(item.room_id)} //chat_rooms.id = room_id
+              onPress={() =>
+                moveChattingMessage(item.room_id, item.opponent_id)
+              } //chat_rooms.id = room_id
               style={{
                 flexDirection: 'row',
                 padding: 10,

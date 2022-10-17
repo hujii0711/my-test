@@ -9,7 +9,7 @@ import {
 } from 'react-native';
 import ArticleItem from './ArticleItem';
 import {FAB, ActivityIndicator} from 'react-native-paper';
-import {useInfiniteQuery} from 'react-query';
+import {useInfiniteQuery, useQueryClient} from 'react-query';
 55;
 import {selectListArticle} from '../../../api/articles';
 import Color from '../../../commons/style/Color';
@@ -17,7 +17,9 @@ import FloatingButton from '../../../commons/component/FloatingButton';
 
 const ArticleList = ({navigation}) => {
   console.log('ArticleList 렌더링!!!!!');
+  const queryClient = useQueryClient();
   const [floatButtonHidden, setFloatButtonHidden] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
 
   const onScrollVisibleFloatButtom = e => {
     const {contentSize, layoutMeasurement, contentOffset} = e.nativeEvent;
@@ -35,6 +37,17 @@ const ArticleList = ({navigation}) => {
 
   const onPressFloatButton = () => {
     navigation.navigate('ArticleWrite');
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    const articleData = queryClient.getQueryData('selectListArticle');
+    const [rest] = articleData;
+
+    console.log('rest======', rest);
+    var refreshData = rest.filter((_, idx) => idx < 10);
+    queryClient.setQueryData('selectListArticle', refreshData);
+    setRefreshing(false);
   };
 
   const {
@@ -62,27 +75,22 @@ const ArticleList = ({navigation}) => {
           // return 값이 undefined일 때 getNextPageParam을 더 이상 수행하지 않음
         }
       },
-      //refetchOnWindowFocus: false,
-      //refetchOnMount: true,
-      //refetchOnReconnect: true,
-      //retry: 1,
-      //getPreviousPageParam은 이전 api를 요청할 때 사용될 pageParam값을 정할 수 있습니다.
-      // getPreviousPageParam: (firstPage, allPages) => {
-      //   //firstPage는 useInfiniteQuery를 이용해 호출된 가장 처음에 있는 페이지 데이터를 의미합니다.
-      //   //allPages는 useInfiniteQuery를 이용rr해 호출된 모든 페이지 데이터를 의미합니다.
-      //   //console.log('getPreviousPageParam >>>> allPages=====', allPages);
-      //   // find로 인해 [[{0},{1},{2}]]의 데이터가 [{0},{1},{2}]으로 변경하여 검증
-      //   const validPage = allPages.find(page => page.length > 0); //allPages에 데이터가 있는지 확인
-      //   //console.log('getPreviousPageParam >>>> validPage========', validPage);
-      //   if (!validPage) {
-      //     return undefined; //{nextOffset = undefined, prevOffset = undefined}
-      //   }
+      getPreviousPageParam: (firstPage, allPages) => {
+        //firstPage는 useInfiniteQuery를 이용해 호출된 가장 처음에 있는 페이지 데이터를 의미합니다.
+        //allPages는 useInfiniteQuery를 이용rr해 호출된 모든 페이지 데이터를 의미합니다.
+        //console.log('getPreviousPageParam >>>> allPages=====', allPages);
+        // find로 인해 [[{0},{1},{2}]]의 데이터가 [{0},{1},{2}]으로 변경하여 검증
+        const validPage = allPages.find(page => page.length > 0); //allPages에 데이터가 있는지 확인
+        //console.log('getPreviousPageParam >>>> validPage========', validPage);
+        if (!validPage) {
+          return undefined; //{nextOffset = undefined, prevOffset = undefined}
+        }
 
-      //   return {
-      //     prevOffset: validPage[0].row_num === 1 ? 0 : validPage[0].row_num, //allPages 데이터중 첫번째 값
-      //     //{nextOffset = undefined, prevOffset = 11}
-      //   };
-      // },
+        return {
+          prevOffset: validPage[0].row_num === 1 ? 0 : validPage[0].row_num, //allPages 데이터중 첫번째 값
+          //{nextOffset = undefined, prevOffset = 11}
+        };
+      },
     },
   );
 
@@ -129,14 +137,16 @@ const ArticleList = ({navigation}) => {
             )}
           </>
         )}
+        // FlatList에서 무한 스크롤은 onEndReachedThreshold와 onEndReached prop을 통해 구현 한다.
+        // 스크롤이 onEndReachedThreshold에 설정한 값에 도달하면 onEndReachd 메서드가 실행된다.
+        // onEndReachedThreshold 는 스크롤 목록이 보이는 가장자리 길이 기준으로 목록의 아래쪽 가장자리가
+        // 콘텐츠이 끝에서부터 onEndReached 콜백을 트리거한다.
+        // 이 값이 0.5인경우 목록이 보이는 길이의 절반내에 있을때 onEndReached 메서드를 실행한다.
         onEndReachedThreshold={0.5}
         onEndReached={fetchNextPage}
         onScroll={onScrollVisibleFloatButtom}
         refreshControl={
-          <RefreshControl
-            onRefresh={fetchPreviousPage}
-            refreshing={isFetchingPreviousPage}
-          />
+          <RefreshControl onRefresh={onRefresh} refreshing={refreshing} />
         }
       />
       <FloatingButton

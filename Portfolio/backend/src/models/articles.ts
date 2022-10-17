@@ -11,6 +11,7 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
   public lookup!: number;
   public liked!: number;
   public unliked!: number;
+  public comment_cnt!: number;
   public created_at!: Date;
   public updated_at!: Date;
 
@@ -50,6 +51,11 @@ export class Articles extends Model<ArticlesAttributes> implements ArticlesAttri
           defaultValue: 0,
         },
         unliked: {
+          type: DataTypes.INTEGER,
+          allowNull: false,
+          defaultValue: 0,
+        },
+        comment_cnt: {
           type: DataTypes.INTEGER,
           allowNull: false,
           defaultValue: 0,

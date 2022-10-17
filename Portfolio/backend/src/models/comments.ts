@@ -6,6 +6,7 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
   public readonly id!: number;
   public message!: string;
   public user_id!: string;
+  public user_name!: string;
   public article_ref!: number;
   public liked!: number;
   public unliked!: number;
@@ -27,6 +28,10 @@ export class Comments extends Model<CommentsAttributes> implements CommentsAttri
         },
         user_id: {
           type: DataTypes.STRING(50),
+          allowNull: false,
+        },
+        user_name: {
+          type: DataTypes.STRING(30),
           allowNull: false,
         },
         article_ref: {

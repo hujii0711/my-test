@@ -38,8 +38,10 @@ export const updateComment = catchAsync(async (req: Request, res: Response) => {
 
 // /comment/delete/:id | DELETE | deleteComment | 댓글삭제
 export const deleteComment = catchAsync(async (req: Request, res: Response) => {
-  const { id } = req.params;
-  const result = await CommentService.deleteComment(id);
+  const articleRef = req.params.articleRef;
+  const id = req.params.id;
+  const params = { id, articleRef };
+  const result = await CommentService.deleteComment(params);
   res.json(result).status(httpStatus.OK);
 });
 

@@ -2,12 +2,7 @@ import React, {useMemo, useState, useCallback, memo, useEffect} from 'react';
 import {IconButton, TextInput, ActivityIndicator} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet, RefreshControl} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {
-  useMutation,
-  useQueryClient,
-  useInfiniteQuery,
-  useQuery,
-} from 'react-query';
+import {useMutation, useQueryClient, useInfiniteQuery} from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
 import {insertComment, selectListComment} from '../../../api/comments';
@@ -28,7 +23,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
   // mutate 댓글 입력
   const {mutate: mutateInsertComment} = useMutation(insertComment, {
     onSuccess: comment => {
-      // 게시글 목록 수정
+      //댓글 목록 리캐싱
       queryClient.setQueryData('selectListComment', data => {
         if (!data) {
           return {
@@ -44,6 +39,8 @@ const CommentList = ({refRBSheet, articleRef}) => {
           articleId: articleRef,
         };
       });
+      const cacheData = queryClient.getQueryData('selectListComment');
+      console.log('mutateInsertComment >>>>> cacheData=====', cacheData);
     },
   });
 
@@ -53,20 +50,22 @@ const CommentList = ({refRBSheet, articleRef}) => {
       // ☆ update 리턴 데이터 캐싱할 데이터 원본과 다름
       // LOG  ======= {"article_ref": 2, "created_at": "2022-10-03T05:36:37.000Z", "id": 8, "message": "test", "updated_at": "2022-10-03T05:36:37.000Z", "user_id": "f7d1176a-a503-4b4e-94cd-8d11b8eb990c"}
       // LOG  ======= {"id": 8, "message": "test1"}
-      // queryClient.setQueryData('selectListComment', data => {
-      //   if (!data) {
-      //     return {pageParams: [], pages: []};
-      //   }
-      //   return {
-      //     pageParams: data.pageParams,
-      //     pages: data.pages.map(page =>
-      //       page.find(a => a.id === selectedCommentId)
-      //         ? page.map(a => (a.id === selectedCommentId ? comment : a))
-      //         : page,
-      //     ),
-      //     articleId: articleRef,
-      //   };
-      // });
+      queryClient.setQueryData('selectListComment', data => {
+        if (!data) {
+          return {pageParams: [], pages: []};
+        }
+        return {
+          pageParams: data.pageParams,
+          pages: data.pages.map(page =>
+            page.find(a => a.id === selectedCommentId)
+              ? page.map(a => (a.id === selectedCommentId ? comment : a))
+              : page,
+          ),
+          articleId: articleRef,
+        };
+      });
+      const cacheData = queryClient.getQueryData('selectListComment');
+      console.log('mutateUpdateComment >>>>> cacheData=====', cacheData);
     },
   });
 
@@ -82,6 +81,11 @@ const CommentList = ({refRBSheet, articleRef}) => {
           pages: data.pages.map(page => page.filter(a => a.id !== id)),
         };
       });
+      const cacheData = queryClient.getQueryData('selectListComment');
+      console.log(
+        'mutateUpdateComment >>>>> mutateDeleteComment=====',
+        cacheData,
+      );
     },
   });
 
@@ -130,6 +134,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
     setAskDialogVisible(false);
     mutateDeleteComment({
       id: selectedCommentId,
+      articleRef,
     });
   };
 
@@ -228,7 +233,6 @@ const CommentList = ({refRBSheet, articleRef}) => {
         <FlatList
           data={items}
           renderItem={({item}) => {
-            console.log('=======', item);
             return (
               <CommentItem
                 commentId={item.id}

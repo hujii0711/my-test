@@ -40,6 +40,7 @@ const ChattingMessge = () => {
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
   const queryClient = useQueryClient();
+
   // 웹소켓 통신 시작
   // 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드되는 것이다.
   // 웹 소켓을 지원하지 않는 브라우저는 폴링 방식으로, 지원하는 브라우저는 웹 소켓 방식으로 사용 가능한 것이다.
@@ -63,17 +64,29 @@ const ChattingMessge = () => {
 
     //메시지 수신
     socket.on('receiveMessage', resp => {
-      setMessageList(
-        messageList.concat(
-          resp?.sender_id === currentUser.user_id ? (
-            <MyView message={resp.message} key={resp.id} />
+      // setMessageList(
+      //   messageList.concat(
+      //     resp?.sender_id === currentUser.user_id ? (
+      //       <MyView message={resp.message} key={resp.id} />
+      //     ) : (
+      //       <YouView message={resp.message} key={resp.id} />
+      //     ),
+      //   ),
+      // );
+
+      // resp==== {"created_at": "2022-10-16T09:07:47.183Z", "id": 38, "message": "asdasdad", "receiver_id": "20555f6b-6134-4190-a873-2b645dc1b0be", "room_id": "177308a6-1242-4733-8526-d6cfab6c347f", "sender_id": "2bc11da5-b1e4-48b9-af2d-605f4bda9af3"}
+      const chatData = queryClient.getQueryData('selectListChatRoomMessage');
+
+      queryClient.setQueryData(
+        'selectListChatRoomMessage',
+        chatData.concat(
+          chatData?.sender_id === currentUser.user_id ? (
+            <MyView message={chatData.message} key={chatData.id} />
           ) : (
-            <YouView message={resp.message} key={resp.id} />
+            <YouView message={chatData.message} key={chatData.id} />
           ),
         ),
       );
-
-      // resp==== {"created_at": "2022-10-16T09:07:47.183Z", "id": 38, "message": "asdasdad", "receiver_id": "20555f6b-6134-4190-a873-2b645dc1b0be", "room_id": "177308a6-1242-4733-8526-d6cfab6c347f", "sender_id": "2bc11da5-b1e4-48b9-af2d-605f4bda9af3"}
 
       // queryClient.setQueryData('selectListChatRoomMessage', data => {
       //   if (!data) {
@@ -160,6 +173,7 @@ const ChattingMessge = () => {
   const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
     onSuccess: message => {
       console.log('message======', message);
+      setMessage('');
     },
   });
 
@@ -258,7 +272,8 @@ const ChattingMessge = () => {
             flex: 5,
           }}
           onChangeText={text => setMessage(text)}
-          value={message}
+          onSubmitEditing={onSubmitSendMessage}
+          //value={message}
         />
         <IconButton
           icon="check"

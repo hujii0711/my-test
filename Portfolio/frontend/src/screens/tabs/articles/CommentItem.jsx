@@ -4,7 +4,7 @@ import {Avatar, IconButton} from 'react-native-paper';
 import {formatDaysAgo} from '../../../commons/utils/common';
 import {updateCommentPrefer} from '../../../api/comments';
 
-function CommentItem({
+const CommentItem = ({
   commentId,
   message,
   createdAt,
@@ -15,7 +15,7 @@ function CommentItem({
   onVisibleRemove,
   initLike = 0,
   initHate = 0,
-}) {
+}) => {
   const isFirstRender = useRef(false);
   const select = useRef(false);
 
@@ -152,7 +152,7 @@ function CommentItem({
       </View>
     </React.Fragment>
   );
-}
+};
 
 const styles = StyleSheet.create({
   block: {

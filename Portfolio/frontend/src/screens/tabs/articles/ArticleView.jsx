@@ -34,13 +34,13 @@ const ArticleView = () => {
   );
 
   // 게시판 댓글 수
-  const selectCommentCountQuery = useQuery(
-    ['selectCommentCount', articleRef],
-    () => selectCommentCount(articleRef),
-  );
+  //const selectCommentCountQuery = useQuery(
+  //  ['selectCommentCount', articleRef],
+  //  () => selectCommentCount(articleRef),
+  //);
 
   //selectArticleQuery OR selectCommentCountQuery 반환값이 없으면 로딩바 출력
-  if (!selectArticleQuery.data || !selectCommentCountQuery.data) {
+  if (!selectArticleQuery.data) {
     return (
       <ActivityIndicator size="small" style={{flex: 1}} color={Color.blue2} />
     );
@@ -52,12 +52,13 @@ const ArticleView = () => {
     created_at,
     user_id,
     user_name,
+    comment_cnt,
     lookup,
     liked,
     unliked,
   } = selectArticleQuery.data;
 
-  const {comment_cnt} = selectCommentCountQuery.data;
+  //const {comment_cnt} = selectCommentCountQuery.data;
 
   return (
     <>

@@ -41,6 +41,7 @@ export const selectArticle = async (id: string) => {
       'contents',
       'user_id',
       'user_name',
+      'comment_cnt',
       'lookup',
       'liked',
       'unliked',
