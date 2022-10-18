@@ -14,6 +14,7 @@ import Color from '../../../commons/style/Color';
 import {formatDaysAgo} from '../../../commons/utils/common';
 import CommentEntry from './CommentEntry';
 import CommentList from './CommentList';
+import CustomDialog from '../../../commons/utils/CustomDialog';
 
 const ArticleView = () => {
   const refRBSheet = useRef();
@@ -93,6 +94,19 @@ const ArticleViewItems = ({
   const createdAt = formatDaysAgo(created_at);
   const navigation = useNavigation();
   const queryClient = useQueryClient();
+  const [askDialogVisible, setAskDialogVisible] = useState(false);
+
+  const onPressDeleteArticle = useCallback(() => {
+    setAskDialogVisible(true);
+  }, [id]);
+
+  const onConfirmRemove = () => {
+    mutateDeleteArticle(id);
+  };
+
+  const onCancelRemove = () => {
+    setAskDialogVisible(false);
+  };
 
   const onPressNaviMove = () => {
     navigation.navigate('ArticleWrite', {id});
@@ -113,11 +127,6 @@ const ArticleViewItems = ({
       navigation.goBack();
     },
   });
-
-  // submit 댓글 삭제
-  const onPressDeleteArticle = useCallback(() => {
-    mutateDeleteArticle(id);
-  }, [mutateDeleteArticle, id]);
 
   return (
     <View style={styles.block}>
@@ -164,6 +173,17 @@ const ArticleViewItems = ({
       </View>
       <View style={styles.separator} />
       <Text style={styles.content}>{contents}</Text>
+
+      {isMyArticle && (
+        <CustomDialog
+          visible={askDialogVisible}
+          title="게시글 삭제"
+          message="게시글을 삭제하시겠습니까?"
+          confirmText="삭제"
+          onConfirm={onConfirmRemove}
+          onClose={onCancelRemove}
+        />
+      )}
     </View>
   );
 };
