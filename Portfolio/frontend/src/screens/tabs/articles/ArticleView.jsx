@@ -15,11 +15,11 @@ import {formatDaysAgo} from '../../../commons/utils/common';
 import CommentEntry from './CommentEntry';
 import CommentList from './CommentList';
 import CustomDialog from '../../../commons/utils/CustomDialog';
+import {updateArticlePrefer} from '../../../api/articles';
 
 const ArticleView = () => {
   const refRBSheet = useRef();
   const {id: articleRef} = useRoute().params;
-  // 전역 상태
   const currentUser = useUser();
 
   // 조회수 증가
@@ -96,6 +96,67 @@ const ArticleViewItems = ({
   const queryClient = useQueryClient();
   const [askDialogVisible, setAskDialogVisible] = useState(false);
 
+  // 좋아요, 싫어요 관리
+  const select = useRef(false);
+
+  const [likeCnt, setLikeCnt] = useState(initLike);
+  const [selectedLike, setSelectedLike] = useState(false);
+
+  const [hateCnt, setHateCnt] = useState(initHate);
+  const [selectedHate, setSelectedHate] = useState(false);
+
+  useEffect(() => {
+    if (selectedLike === false && selectedHate === false) {
+      if (select.current === 'like') {
+        updateArticlePrefer(id, 'likeDown');
+      } else if (select.current === 'hate') {
+        updateArticlePrefer(id, 'hateDown');
+      }
+      select.current = '';
+      return;
+    } else if (selectedLike === true && selectedHate === false) {
+      if (select.current === '') {
+        updateArticlePrefer(id, 'likeUp');
+      } else if (select.current === 'hate') {
+        updateArticlePrefer(id, 'likeUpAndhateDown');
+      }
+      select.current = 'like';
+      return;
+    } else if (selectedLike === false && selectedHate === true) {
+      if (select.current === '') {
+        updateArticlePrefer(id, 'hateUp');
+      } else if (select.current === 'like') {
+        updateArticlePrefer(id, 'likeDownAndhateUp');
+      }
+      select.current = 'hate';
+      return;
+    }
+  }, [selectedLike, selectedHate]);
+
+  const onPressLike = () => {
+    if (selectedLike) {
+      setLikeCnt(likeCnt - 1);
+      setSelectedLike(false);
+    } else {
+      setLikeCnt(likeCnt + 1);
+      setSelectedLike(true);
+    }
+    setSelectedHate(false);
+    setHateCnt(initHate);
+  };
+
+  const onPressHate = () => {
+    if (selectedHate) {
+      setHateCnt(hateCnt - 1);
+      setSelectedHate(false);
+    } else {
+      setHateCnt(hateCnt + 1);
+      setSelectedHate(true);
+    }
+    setSelectedLike(false);
+    setLikeCnt(initLike);
+  };
+
   const onPressDeleteArticle = useCallback(() => {
     setAskDialogVisible(true);
   }, [id]);
@@ -156,14 +217,14 @@ const ArticleViewItems = ({
               icon="thumb-up-outline"
               size={18}
               style={{alignSelf: 'flex-end'}}
-              onPress={() => {}}
+              onPress={onPressLike}
             />
             <Text style={[{marginLeft: -10}, styles.small_text]}>{liked}</Text>
             <IconButton
               icon="thumb-up-outline"
               size={18}
               style={{alignSelf: 'flex-end'}}
-              onPress={() => {}}
+              onPress={onPressHate}
             />
             <Text style={[{marginLeft: -10}, styles.small_text]}>
               {unliked}

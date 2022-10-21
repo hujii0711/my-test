@@ -257,12 +257,13 @@ const CommentList = ({refRBSheet, articleRef}) => {
                 selectionColor={Color.divider}
                 activeOutlineColor={Color.pink1}
                 outlineColor={Color.divider}
+                dense={true}
                 style={{
                   backgroundColor: Color.white,
                   fontSize: 11,
                   margin: 10,
                   width: '80%',
-                  height: 30,
+                  //height: 30,
                 }}
                 value={message}
                 onChangeText={text => setMessage(text)}
