@@ -1,12 +1,20 @@
 import * as React from 'react';
-import {Appbar} from 'react-native-paper';
 import {getHeaderTitle} from '@react-navigation/elements';
 import {createStackNavigator} from '@react-navigation/stack';
 import Color from '../commons/style/Color';
 import {MenuList} from './MenuList';
 import useAuthLoadEffect from '../commons/hooks/useAuthLoadEffect';
 import {useSelector} from 'react-redux';
-
+import {View} from 'react-native';
+import {
+  Appbar,
+  Menu,
+  Divider,
+  Provider,
+  IconButton,
+  Button,
+} from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const Stack = createStackNavigator();
 
 const RootNavigator = () => {
@@ -16,13 +24,17 @@ const RootNavigator = () => {
     users: userReducer.users,
   }));
 
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
   return (
     <Stack.Navigator
       screenOptions={({navigation}) => {
         return {
           header: ({navigation, route, options, back}) => {
             const title = getHeaderTitle(options, route.name);
-
+            const isChattingMessge = route.name === 'ChattingMessge';
             return (
               <Appbar.Header elevated style={{backgroundColor: Color.main}}>
                 {back ? (
@@ -41,6 +53,47 @@ const RootNavigator = () => {
                     console.log('userInfo===', users);
                   }}
                 />
+                {isChattingMessge && (
+                  <Provider>
+                    <View
+                      style={{
+                        flexDirection: 'row',
+                        justifyContent: 'flex-end',
+                      }}>
+                      <Menu
+                        visible={visible}
+                        onDismiss={closeMenu}
+                        style={{marginTop: 50}}
+                        contentStyle={{backgroundColor: '#f1f2f6'}}
+                        anchor={
+                          <IconButton
+                            onPress={openMenu}
+                            icon="folder-settings-outline"
+                            color="#ffffff"
+                            size={24}
+                          />
+                        }>
+                        <Menu.Item
+                          icon="folder-settings-outline"
+                          titleStyle={{fontSize: 14}}
+                          contentStyle={{}}
+                          style={{height: 30, marginBottom: 5}}
+                          onPress={() => {}}
+                          title="방나가기"
+                        />
+                        <Divider />
+                        <Menu.Item
+                          icon="folder-settings-outline"
+                          titleStyle={{fontSize: 14}}
+                          contentStyle={{}}
+                          style={{height: 30, marginTop: 5}}
+                          onPress={() => {}}
+                          title="차단"
+                        />
+                      </Menu>
+                    </View>
+                  </Provider>
+                )}
               </Appbar.Header>
             );
           },

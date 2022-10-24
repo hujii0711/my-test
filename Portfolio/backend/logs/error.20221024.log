@@ -1,0 +1,32 @@
+2022-10-24 10:28:20 <error> (error.ts:35) 24c32ca0-533b-11ed-bdbf-895a06c846a4 [
+  ApiError: 가입되지 않은 회원입니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2022-10-24 12:56:03 <error> (error.ts:35) c7e79c40-534f-11ed-bdbf-895a06c846a4 [
+  ApiError: 가입되지 않은 회원입니다.
+      at errorConverter (C:\_git\Portfolio\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (C:\_git\Portfolio\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:326:13)
+      at C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (C:\_git\Portfolio\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]

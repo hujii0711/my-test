@@ -12,6 +12,7 @@ import CustomDialog from '../../../commons/utils/CustomDialog';
 import {updateComment, deleteComment} from '../../../api/comments';
 
 const CommentList = ({refRBSheet, articleRef}) => {
+  console.log('CommentList 렌더링!!!');
   const users = useUser();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState('');
@@ -40,7 +41,10 @@ const CommentList = ({refRBSheet, articleRef}) => {
         };
       });
       const cacheData = queryClient.getQueryData('selectListComment');
-      console.log('mutateInsertComment >>>>> cacheData=====', cacheData);
+      console.log(
+        'mutateInsertComment >>>>> cacheData.pages=====',
+        cacheData.pages,
+      );
     },
   });
 
@@ -191,9 +195,9 @@ const CommentList = ({refRBSheet, articleRef}) => {
     return [].concat(...data.pages);
   }, [data]);
 
-  if (!items) {
-    return <ActivityIndicator color="red" />;
-  }
+  // if (!items) {
+  //   return <ActivityIndicator color="red" />;
+  // }
 
   return (
     <RBSheet
@@ -249,6 +253,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
             );
           }}
           keyExtractor={(item, index) => index.toString()}
+          ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListHeaderComponent={
             <View style={{flexDirection: 'row'}}>
               <TextInput
@@ -266,6 +271,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
                   //height: 30,
                 }}
                 value={message}
+                onSubmitEditing={() => onSubmitWriteComment(message)}
                 onChangeText={text => setMessage(text)}
               />
               <IconButton
@@ -289,15 +295,14 @@ const CommentList = ({refRBSheet, articleRef}) => {
             </>
           )}
           // ☆ 주석 해제시 렌더링 부하 발생
-          //onEndReachedThreshold={0.5}
-          //onEndReached={fetchNextPage}
+          onEndReachedThreshold={0.5}
+          onEndReached={fetchNextPage}
           refreshControl={
             <RefreshControl
               onRefresh={fetchPreviousPage}
               refreshing={isFetchingPreviousPage}
             />
           }
-          ItemSeparatorComponent={() => <View style={styles.separator} />}
         />
       </View>
       {selectedCommentId && (
@@ -327,6 +332,10 @@ const styles = StyleSheet.create({
   button: {
     position: 'absolute',
     right: 5,
+  },
+  separator: {
+    height: 1,
+    backgroundColor: Color.divider,
   },
 });
 

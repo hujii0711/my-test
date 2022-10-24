@@ -1,5 +1,5 @@
 import {useNavigation, useRoute} from '@react-navigation/native';
-import React, {useRef, useCallback, useEffect} from 'react';
+import React, {useRef, useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {ActivityIndicator, IconButton} from 'react-native-paper';
 import {useMutation, useQuery, useQueryClient} from 'react-query';
@@ -99,10 +99,10 @@ const ArticleViewItems = ({
   // 좋아요, 싫어요 관리
   const select = useRef(false);
 
-  const [likeCnt, setLikeCnt] = useState(initLike);
+  const [likeCnt, setLikeCnt] = useState(liked);
   const [selectedLike, setSelectedLike] = useState(false);
 
-  const [hateCnt, setHateCnt] = useState(initHate);
+  const [hateCnt, setHateCnt] = useState(unliked);
   const [selectedHate, setSelectedHate] = useState(false);
 
   useEffect(() => {
@@ -142,7 +142,7 @@ const ArticleViewItems = ({
       setSelectedLike(true);
     }
     setSelectedHate(false);
-    setHateCnt(initHate);
+    setHateCnt(unliked);
   };
 
   const onPressHate = () => {
@@ -154,7 +154,7 @@ const ArticleViewItems = ({
       setSelectedHate(true);
     }
     setSelectedLike(false);
-    setLikeCnt(initLike);
+    setLikeCnt(liked);
   };
 
   const onPressDeleteArticle = useCallback(() => {
@@ -219,7 +219,9 @@ const ArticleViewItems = ({
               style={{alignSelf: 'flex-end'}}
               onPress={onPressLike}
             />
-            <Text style={[{marginLeft: -10}, styles.small_text]}>{liked}</Text>
+            <Text style={[{marginLeft: -10}, styles.small_text]}>
+              {likeCnt}
+            </Text>
             <IconButton
               icon="thumb-up-outline"
               size={18}
@@ -227,7 +229,7 @@ const ArticleViewItems = ({
               onPress={onPressHate}
             />
             <Text style={[{marginLeft: -10}, styles.small_text]}>
-              {unliked}
+              {hateCnt}
             </Text>
           </View>
         )}

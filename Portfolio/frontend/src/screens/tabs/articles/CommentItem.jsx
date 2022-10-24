@@ -16,6 +16,9 @@ const CommentItem = ({
   initLike = 0,
   initHate = 0,
 }) => {
+  console.log('CommentItem 렌더링!!!');
+  //console.log('CommentItem >>> initLike===', initLike);
+  //console.log('CommentItem >>> initHate===', initHate);
   const isFirstRender = useRef(false);
   const select = useRef(false);
 
@@ -50,6 +53,12 @@ const CommentItem = ({
   };
 
   const created_at = formatDaysAgo(createdAt);
+
+  useEffect(() => {
+    return () => {
+      console.log('CommentItem 언마운트!!!');
+    };
+  }, []);
 
   useEffect(() => {
     //console.log('isFirstRender.current========', isFirstRender.current);

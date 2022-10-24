@@ -35,11 +35,12 @@ import {useUser} from '../../../commons/hooks/useReduxState';
 
 const ChattingMessge = () => {
   console.log('ChattingMessge 렌더링##################');
+  //const isFirstRender = useRef(0);
   const currentUser = useUser();
   const {id: roomId, participant_id: participantId} = useRoute().params;
   const [message, setMessage] = useState('');
-  const [messageList, setMessageList] = useState([]);
   const queryClient = useQueryClient();
+  //const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
 
   // 웹소켓 통신 시작
   // 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드되는 것이다.
@@ -64,46 +65,14 @@ const ChattingMessge = () => {
 
     //메시지 수신
     socket.on('receiveMessage', resp => {
-      // setMessageList(
-      //   messageList.concat(
-      //     resp?.sender_id === currentUser.user_id ? (
-      //       <MyView message={resp.message} key={resp.id} />
-      //     ) : (
-      //       <YouView message={resp.message} key={resp.id} />
-      //     ),
-      //   ),
-      // );
-
-      // resp==== {"created_at": "2022-10-16T09:07:47.183Z", "id": 38, "message": "asdasdad", "receiver_id": "20555f6b-6134-4190-a873-2b645dc1b0be", "room_id": "177308a6-1242-4733-8526-d6cfab6c347f", "sender_id": "2bc11da5-b1e4-48b9-af2d-605f4bda9af3"}
-      const chatData = queryClient.getQueryData('selectListChatRoomMessage');
-
-      queryClient.setQueryData(
-        'selectListChatRoomMessage',
-        chatData.concat(
-          chatData?.sender_id === currentUser.user_id ? (
-            <MyView message={chatData.message} key={chatData.id} />
-          ) : (
-            <YouView message={chatData.message} key={chatData.id} />
-          ),
-        ),
-      );
-
-      // queryClient.setQueryData('selectListChatRoomMessage', data => {
-      //   if (!data) {
-      //     return {
-      //       pageParams: [undefined],
-      //       pages: [[resp]],
-      //     };
-      //   }
-      //   const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
-      //   return {
-      //     ...data,
-      //     // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
-      //     pages: [[...firstPage, resp], ...rest],
-      //   };
-      // });
-      //const aaa = queryClient.getQueryData('selectListChatRoomMessage');
-      //console.log('aaa---', aaa.pages);
+      queryClient.setQueryData('selectListChatRoomMessage', data => {
+        const [firstPage, ...rest] = data.pages;
+        return {
+          // 이 부분을 리매치하면 됨
+          pages: [[...firstPage, ...rest], resp],
+        };
+      });
+      console.log('receiveMessage >>>> data.id------', data.id);
       //lastIndexToScrollMove(data.id);
     });
 
@@ -112,9 +81,6 @@ const ChattingMessge = () => {
     });
     //isFirstRender.current = isFirstRender.current + 1;
   }, []);
-
-  //const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
-  // const isFirstRender = useRef(0);
 
   // const lastIndexToScrollMove = index => {
   //   lastIndexToScroll.scrollToIndex({
@@ -172,7 +138,6 @@ const ChattingMessge = () => {
 
   const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
     onSuccess: message => {
-      console.log('message======', message);
       setMessage('');
     },
   });
@@ -223,10 +188,10 @@ const ChattingMessge = () => {
               );
             }
 
-            //if (isFirstRender.current === 1 && index + 1 === items.length) {
-            //  isFirstRender.current = isFirstRender.current - 1;
-            //  setTimeout(() => lastIndexToScrollMove(index), 500);
-            //rr}
+            // if (isFirstRender.current === 1 && index + 1 === items.length) {
+            //   isFirstRender.current = isFirstRender.current - 1;
+            //   setTimeout(() => lastIndexToScrollMove(index), 100);
+            // }
             return <MyView message={item.message} key={item.id} />;
           }}
           keyExtractor={(item, index) => index.toString()}
@@ -249,17 +214,7 @@ const ChattingMessge = () => {
             />
           }
         />
-        {/* {messageList} */}
       </SafeAreaView>
-      {/* <ScreenWrapper
-        style={{
-          backgroundColor: Color.faint_red,
-          margin: 10,
-        }}>
-        <Today />
-        {messageList}
-      </ScreenWrapper> */}
-
       <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
         <TextInput
           style={{
@@ -273,7 +228,7 @@ const ChattingMessge = () => {
           }}
           onChangeText={text => setMessage(text)}
           onSubmitEditing={onSubmitSendMessage}
-          //value={message}
+          value={message}
         />
         <IconButton
           icon="check"

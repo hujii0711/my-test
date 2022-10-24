@@ -16,7 +16,6 @@ import Color from '../../../commons/style/Color';
 import FloatingButton from '../../../commons/component/FloatingButton';
 
 const ArticleList = ({navigation}) => {
-  console.log('ArticleList 렌더링!!!!!');
   const queryClient = useQueryClient();
   const [floatButtonHidden, setFloatButtonHidden] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -42,12 +41,15 @@ const ArticleList = ({navigation}) => {
   const onRefresh = () => {
     setRefreshing(true);
     const articleData = queryClient.getQueryData('selectListArticle');
-    const [rest] = articleData;
-
-    console.log('rest======', rest);
+    const [rest] = articleData.pages;
     var refreshData = rest.filter((_, idx) => idx < 10);
-    queryClient.setQueryData('selectListArticle', refreshData);
-    setRefreshing(false);
+    queryClient.setQueryData('selectListArticle', () => {
+      setRefreshing(false);
+      return {
+        pageParams: undefined,
+        pages: [refreshData],
+      };
+    });
   };
 
   const {
