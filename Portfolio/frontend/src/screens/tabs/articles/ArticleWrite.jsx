@@ -36,6 +36,8 @@ const ArticleWrite = () => {
 
   const {mutate: mutateInsertArticle} = useMutation(insertArticle, {
     onSuccess: article => {
+      //pages: [[{}]]
+      //pageParams: [undefined]
       queryClient.setQueryData('selectListArticle', data => {
         if (!data) {
           return {
@@ -44,6 +46,12 @@ const ArticleWrite = () => {
           };
         }
         const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
+        const test = {
+          ...data,
+          // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
+          pages: [[article, ...firstPage], ...rest],
+        };
+        console.log('test=====', test);
         return {
           ...data,
           // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
@@ -70,6 +78,33 @@ const ArticleWrite = () => {
           ),
         };
       });
+      // const pages1 = data.map(function(page){
+      //   return page.find(function(elem1){
+      //     elem1.id === id
+      //   })
+      //   ? page.map(function(elem2){
+      //     elem2.id === id ? update : elem2
+      //   }) : page
+      // });
+      // console.log("pages1========", pages1)
+
+      // const pages2 = data.map(page =>
+      //   page.find(a => a.id === id)
+      //   ? page.map(a => (a.id === id ? update : a))
+      //   : page,
+      // );
+
+      // console.log("pages2========", pages2);
+
+      // const pages3 = data.map(page => {
+      //   return page.find(a => {
+      //     a.id === id
+      //   }) ? page.map(a => {
+      //     a.id === id ? update : a
+      //   }): page
+      // });
+
+      // console.log("pages3========", pages3);
       // 게시글 수정
       queryClient.setQueryData(['selectArticle', articleId], article);
       navigation.goBack();

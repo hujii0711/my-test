@@ -66,10 +66,12 @@ const ChattingMessge = () => {
     //메시지 수신
     socket.on('receiveMessage', resp => {
       queryClient.setQueryData('selectListChatRoomMessage', data => {
+        console.log('data=====', data);
         const [firstPage, ...rest] = data.pages;
         return {
+          //...data,
           // 이 부분을 리매치하면 됨
-          pages: [[...firstPage, ...rest], resp],
+          pages: [[...firstPage, ...rest, resp]],
         };
       });
       console.log('receiveMessage >>>> data.id------', data.id);
