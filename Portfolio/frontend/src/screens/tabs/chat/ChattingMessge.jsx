@@ -35,12 +35,12 @@ import {useUser} from '../../../commons/hooks/useReduxState';
 
 const ChattingMessge = () => {
   console.log('ChattingMessge 렌더링##################');
-  //const isFirstRender = useRef(0);
+  const isFirstRender = useRef(0);
   const currentUser = useUser();
   const {id: roomId, participant_id: participantId} = useRoute().params;
   const [message, setMessage] = useState('');
   const queryClient = useQueryClient();
-  //const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
+  const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
 
   // 웹소켓 통신 시작
   // 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드되는 것이다.
@@ -66,16 +66,13 @@ const ChattingMessge = () => {
     //메시지 수신
     socket.on('receiveMessage', resp => {
       queryClient.setQueryData('selectListChatRoomMessage', data => {
-        console.log('data=====', data);
         const [firstPage, ...rest] = data.pages;
         return {
-          //...data,
-          // 이 부분을 리매치하면 됨
-          pages: [[...firstPage, ...rest, resp]],
+          ...data,
+          pages: [firstPage, ...rest, [resp]],
         };
       });
-      console.log('receiveMessage >>>> data.id------', data.id);
-      //lastIndexToScrollMove(data.id);
+      //setTimeout(() => lastIndexToScrollMove('10'), 100);
     });
 
     socket.on('exit', data => {
@@ -84,13 +81,15 @@ const ChattingMessge = () => {
     //isFirstRender.current = isFirstRender.current + 1;
   }, []);
 
-  // const lastIndexToScrollMove = index => {
-  //   lastIndexToScroll.scrollToIndex({
-  //     animated: true,
-  //     index: index,
-  //     viewPosition: 0,
-  //   });
-  // };
+  const lastIndexToScrollMove = index => {
+    //scrollToEnd | scrollToIndex
+    lastIndexToScroll.scrollToIndex({
+      animated: true,
+      index: index,
+      viewPosition: 0,
+    });
+    //lastIndexToScroll.scrollToEnd();
+  };
 
   // 대화 내용 조회
   const {
@@ -113,16 +112,16 @@ const ChattingMessge = () => {
           return undefined;
         }
       },
-      // getPreviousPageParam: (firstPage, allPages) => {
-      //   const validPage = allPages.find(page => page?.length > 0);
-      //   if (!validPage) {
-      //     return undefined;
-      //   }
-      //   return {
-      //     prevOffset: validPage[0].row_num === 1 ? 0 : validPage[0].row_num,
-      //     roomId,
-      //   };
-      // },
+      getPreviousPageParam: (firstPage, allPages) => {
+        const validPage = allPages.find(page => page?.length > 0);
+        if (!validPage) {
+          return undefined;
+        }
+        return {
+          prevOffset: (allPages.length - 1) * 20,
+          roomId,
+        };
+      },
     },
   );
 
@@ -180,9 +179,9 @@ const ChattingMessge = () => {
       <SafeAreaView style={styles.container}>
         <FlatList
           data={items}
-          //ref={ref => {
-          //  setLastIndexToScroll(ref);
-          //}}
+          ref={ref => {
+            setLastIndexToScroll(ref);
+          }}
           renderItem={({item, index}) => {
             if (!items) {
               return (
@@ -190,11 +189,16 @@ const ChattingMessge = () => {
               );
             }
 
-            // if (isFirstRender.current === 1 && index + 1 === items.length) {
-            //   isFirstRender.current = isFirstRender.current - 1;
-            //   setTimeout(() => lastIndexToScrollMove(index), 100);
-            // }
-            return <MyView message={item.message} key={item.id} />;
+            if (isFirstRender.current === 0 && index + 1 === items.length) {
+              setTimeout(() => lastIndexToScrollMove(index), 100);
+              isFirstRender.current = isFirstRender.current - 1;
+            }
+
+            if (currentUser.user_id === item.sender_id) {
+              return <MyView message={item.message} key={item.id} />;
+            } else {
+              return <YouView message={item.message} key={item.id} />;
+            }
           }}
           keyExtractor={(item, index) => index.toString()}
           ListHeaderComponent={

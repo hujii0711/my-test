@@ -10,11 +10,14 @@ import {
   RefreshControl,
 } from 'react-native';
 import {Avatar, ActivityIndicator} from 'react-native-paper';
+import {useNavigation} from '@react-navigation/native';
 import {useInfiniteQuery} from 'react-query';
 import {selectListChatRoom} from '../../../api/chat';
 
 const ChatRoomList = () => {
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+
+  const navigation = useNavigation();
   const {
     data,
     isFetchingNextPage,

@@ -16,6 +16,7 @@ import Color from '../../../commons/style/Color';
 import FloatingButton from '../../../commons/component/FloatingButton';
 
 const ArticleList = ({navigation}) => {
+  console.log('ArticleList 렌더링!!!!!!!!!!');
   const queryClient = useQueryClient();
   const [floatButtonHidden, setFloatButtonHidden] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -66,7 +67,7 @@ const ArticleList = ({navigation}) => {
       getNextPageParam: (lastPage, allPages) => {
         //lastPage는 useInfiniteQuery를 이용해 호출된 가장 마지막에 있는 페이지 데이터를 의미합니다.
         //allPages는 useInfiniteQuery를 이용해 호출된 모든 페이지 데이터를 의미합니다.
-        //console.log('getNextPageParam >>>> allPages=====', allPages);
+        //console.log('getNextPageParam >>>> lastPage=====', lastPage);
         if (lastPage.length === 10) {
           return {
             nextOffset: lastPage[lastPage.length - 1].row_num, // 다음 페이지를 호출할 때 사용 될 pageParam

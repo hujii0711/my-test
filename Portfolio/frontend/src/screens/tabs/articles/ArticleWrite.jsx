@@ -38,6 +38,7 @@ const ArticleWrite = () => {
     onSuccess: article => {
       //pages: [[{}]]
       //pageParams: [undefined]
+      queryClient.invalidateQueries('selectListArticle');
       queryClient.setQueryData('selectListArticle', data => {
         if (!data) {
           return {
@@ -45,16 +46,10 @@ const ArticleWrite = () => {
             pages: [[article]],
           };
         }
-        const [firstPage, ...rest] = data.pages; // 첫번째 페이지와 나머지 페이지를 구분
-        const test = {
-          ...data,
-          // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
-          pages: [[article, ...firstPage], ...rest],
-        };
-        console.log('test=====', test);
+        const [firstPage, ...rest] = data.pages;
+
         return {
           ...data,
-          // 첫번째 페이지에 article을 맨 앞에 추가, 그리고 그 뒤에 나머지 페이지
           pages: [[article, ...firstPage], ...rest],
         };
       });

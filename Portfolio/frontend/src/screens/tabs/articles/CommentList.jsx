@@ -1,8 +1,13 @@
-import React, {useMemo, useState, useCallback, memo, useEffect} from 'react';
+import React, {useMemo, useState, useCallback, memo} from 'react';
 import {IconButton, TextInput, ActivityIndicator} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet, RefreshControl} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {useMutation, useQueryClient, useInfiniteQuery} from 'react-query';
+import {
+  useMutation,
+  useQueryClient,
+  useInfiniteQuery,
+  useQuery,
+} from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
 import {insertComment, selectListComment} from '../../../api/comments';
@@ -11,11 +16,17 @@ import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
 import {updateComment, deleteComment} from '../../../api/comments';
 
-const CommentList = ({refRBSheet, articleRef}) => {
+const CommentList = ({refRBSheet, articleRef, childUpdate}) => {
   console.log('CommentList 렌더링!!!');
   const users = useUser();
   const queryClient = useQueryClient();
   const [message, setMessage] = useState('');
+  const [, setCommentItemUpdate] = useState(false);
+
+  const setCommentItemState = () => {
+    setCommentItemUpdate(!false);
+  };
+
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [askDialogVisible, setAskDialogVisible] = useState(false);
   const [commentModifyModalVisible, setCommentModifyModalVisible] =
@@ -41,10 +52,10 @@ const CommentList = ({refRBSheet, articleRef}) => {
         };
       });
       const cacheData = queryClient.getQueryData('selectListComment');
-      console.log(
-        'mutateInsertComment >>>>> cacheData.pages=====',
-        cacheData.pages,
-      );
+
+      //ArticleView 리렌더링 시키기!!
+      queryClient.invalidateQueries(['selectArticle', articleRef]);
+      childUpdate();
     },
   });
 
@@ -249,6 +260,7 @@ const CommentList = ({refRBSheet, articleRef}) => {
                 initHate={item.unliked}
                 onVisibleModify={onVisibleModify}
                 onVisibleRemove={onVisibleRemove}
+                childUpdate={setCommentItemState}
               />
             );
           }}

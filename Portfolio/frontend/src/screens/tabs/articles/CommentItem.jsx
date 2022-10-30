@@ -3,6 +3,7 @@ import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
 import {formatDaysAgo} from '../../../commons/utils/common';
 import {updateCommentPrefer} from '../../../api/comments';
+import {useQueryClient} from 'react-query';
 
 const CommentItem = ({
   commentId,
@@ -15,10 +16,11 @@ const CommentItem = ({
   onVisibleRemove,
   initLike = 0,
   initHate = 0,
+  childUpdate,
 }) => {
   console.log('CommentItem 렌더링!!!');
-  //console.log('CommentItem >>> initLike===', initLike);
-  //console.log('CommentItem >>> initHate===', initHate);
+
+  const queryClient = useQueryClient();
   const isFirstRender = useRef(false);
   const select = useRef(false);
 
@@ -55,12 +57,6 @@ const CommentItem = ({
   const created_at = formatDaysAgo(createdAt);
 
   useEffect(() => {
-    return () => {
-      console.log('CommentItem 언마운트!!!');
-    };
-  }, []);
-
-  useEffect(() => {
     //console.log('isFirstRender.current========', isFirstRender.current);
     //console.log('select.current========', select.current);
 
@@ -81,6 +77,8 @@ const CommentItem = ({
         updateCommentPrefer(commentId, 'hateDown');
       }
       select.current = '';
+      queryClient.invalidateQueries('selectListComment');
+      childUpdate();
       return;
     } else if (selectedLike === true && selectedHate === false) {
       if (select.current === '') {
@@ -89,6 +87,8 @@ const CommentItem = ({
         updateCommentPrefer(commentId, 'likeUpAndhateDown');
       }
       select.current = 'like';
+      queryClient.invalidateQueries('selectListComment');
+      childUpdate();
       return;
     } else if (selectedLike === false && selectedHate === true) {
       if (select.current === '') {
@@ -97,6 +97,8 @@ const CommentItem = ({
         updateCommentPrefer(commentId, 'likeDownAndhateUp');
       }
       select.current = 'hate';
+      queryClient.invalidateQueries('selectListComment');
+      childUpdate();
       return;
     }
   }, [selectedLike, selectedHate]);

@@ -70,18 +70,22 @@ export const insertChatMakeRoom = async (userInfo: any, body: { participant_id: 
 // /chat/chatRoomMessage/:room_id| GET | selectListChatRoomMessage | 채팅방 입장
 export const selectListChatRoomMessage = async (paramPack: { roomId: string; offset: string }) => {
   const { roomId, offset } = paramPack;
-  const SQL = `select id
-                     ,room_id
-                     ,sender_id
-                     ,message
-                     ,receiver_id
-                     ,file_name
-                     ,created_at
-                     ,row_number() over(order by id asc) as row_num
-                from chat_messages
-                where room_id = :roomId
-                order by row_num asc
-                limit :offset, 20;`;
+  const SQL = `select A.* 
+                  from (
+                      select id
+                          ,room_id
+                          ,sender_id
+                          ,message
+                          ,receiver_id
+                          ,file_name
+                          ,created_at
+                          ,row_number() over(order by id asc) as row_num
+                      from chat_messages
+                      where room_id = :roomId
+                      order by row_num desc
+                      limit :offset, 20
+                      ) A
+                order by row_num asc`;
   const data = await sequelize.query(SQL, {
     type: QueryTypes.SELECT,
     replacements: { offset: Number(offset), roomId },

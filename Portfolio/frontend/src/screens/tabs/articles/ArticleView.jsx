@@ -18,9 +18,16 @@ import CustomDialog from '../../../commons/utils/CustomDialog';
 import {updateArticlePrefer} from '../../../api/articles';
 
 const ArticleView = () => {
+  console.log('ArticleView 렌더링!!!!!!!');
+
   const refRBSheet = useRef();
   const {id: articleRef} = useRoute().params;
   const currentUser = useUser();
+  const [, setCommentListUpdate] = useState(false);
+  const setCommentListState = () => {
+    console.log('setCommentListState!!!!!!!!!!');
+    setCommentListUpdate(!false);
+  };
 
   // 조회수 증가
   useEffect(() => {
@@ -34,13 +41,6 @@ const ArticleView = () => {
     selectArticle(articleRef),
   );
 
-  // 게시판 댓글 수
-  //const selectCommentCountQuery = useQuery(
-  //  ['selectCommentCount', articleRef],
-  //  () => selectCommentCount(articleRef),
-  //);
-
-  //selectArticleQuery OR selectCommentCountQuery 반환값이 없으면 로딩바 출력
   if (!selectArticleQuery.data) {
     return (
       <ActivityIndicator size="small" style={{flex: 1}} color={Color.blue2} />
@@ -59,7 +59,10 @@ const ArticleView = () => {
     unliked,
   } = selectArticleQuery.data;
 
-  //const {comment_cnt} = selectCommentCountQuery.data;
+  console.log(
+    'ArticleView >>>> selectArticleQuery.data============',
+    selectArticleQuery.data,
+  );
 
   return (
     <>
@@ -75,7 +78,11 @@ const ArticleView = () => {
         isMyArticle={currentUser.user_id === user_id}
       />
       <CommentEntry refRBSheet={refRBSheet} commentCnt={comment_cnt} />
-      <CommentList refRBSheet={refRBSheet} articleRef={articleRef} />
+      <CommentList
+        refRBSheet={refRBSheet}
+        articleRef={articleRef}
+        childUpdate={setCommentListState}
+      />
     </>
   );
 };
@@ -87,9 +94,9 @@ const ArticleViewItems = ({
   created_at,
   user_name,
   isMyArticle,
-  lookup,
-  liked,
-  unliked,
+  lookup = 0,
+  liked = 0,
+  unliked = 0,
 }) => {
   const createdAt = formatDaysAgo(created_at);
   const navigation = useNavigation();
@@ -130,7 +137,10 @@ const ArticleViewItems = ({
       }
       select.current = 'hate';
       return;
-    }
+    } // 컴포넌트가 언마운트(사라질때)시 실행
+    return () => {
+      console.log('타이머가 종료되었습니다.');
+    };
   }, [selectedLike, selectedHate]);
 
   const onPressLike = () => {
@@ -192,10 +202,10 @@ const ArticleViewItems = ({
   return (
     <View style={styles.block}>
       <Text style={styles.title}>{title}</Text>
+      <Text style={styles.small_text}>{user_name}</Text>
+      <Text style={styles.small_text}>{createdAt}</Text>
+      <Text style={styles.small_text}>조회수: {lookup}</Text>
       <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <Text style={styles.small_text}>
-          {user_name} | {createdAt} | 조회수: {lookup}
-        </Text>
         {isMyArticle ? (
           <View style={{flexDirection: 'row'}}>
             <IconButton
@@ -214,7 +224,7 @@ const ArticleViewItems = ({
         ) : (
           <View style={{flexDirection: 'row'}}>
             <IconButton
-              icon="thumb-up-outline"
+              icon={selectedLike ? 'thumb-up' : 'thumb-up-outline'}
               size={18}
               style={{alignSelf: 'flex-end'}}
               onPress={onPressLike}
@@ -223,7 +233,7 @@ const ArticleViewItems = ({
               {likeCnt}
             </Text>
             <IconButton
-              icon="thumb-up-outline"
+              icon={selectedHate ? 'thumb-down' : 'thumb-down-outline'}
               size={18}
               style={{alignSelf: 'flex-end'}}
               onPress={onPressHate}
