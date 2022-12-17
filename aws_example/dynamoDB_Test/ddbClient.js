@@ -2,8 +2,6 @@ const { DynamoDBClient } = require("@aws-sdk/client-dynamodb");
 const { DynamoDBDocumentClient } = require("@aws-sdk/lib-dynamodb");
 
 const dynamoDBClient = new DynamoDBClient({
-  accessKeyId: "AKIAT4BRYNERPMIWHEVD",
-  secretAccessKey: "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",
   region: "ap-northeast-2",
   endpoint: "http://dynamodb.ap-northeast-2.amazonaws.com",
 });
