@@ -1,4 +1,4 @@
-const { CreateTableCommand } = require("@aws-sdk/lib-dynamodb");
+const { CreateTableCommand } = require("@aws-sdk/client-dynamodb");
 const { ddbClient } = require("./ddbClient.js");
 const create = async () => {
   const params = {
