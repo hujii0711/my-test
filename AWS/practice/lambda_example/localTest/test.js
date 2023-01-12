@@ -2,8 +2,6 @@ var AWS = require("aws-sdk");
 
 AWS.config.update({
   region: "ap-northeast-2",
-  accessKeyId: "AKIAWUEQNUC6A6WEKEXP",
-  secretAccessKey: "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",
 });
 
 const lambda = new AWS.Lambda();
