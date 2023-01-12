@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript event propagation!</title>
+<style>
+    html{border:5px solid red;padding:30px;}
+    body{border:5px solid green;padding:30px;}
+    fieldset{border:5px solid blue;padding:30px;}
+    input{border:5px solid black;padding:30px;}
+</style>
+<script>
+	
+</script>
+</head>
+<body>
+      <fieldset>
+          <legend>event propagation</legend>
+          <input type="button" id="target" value="target">          
+      </fieldset>
+      <script>
+	    /* function handler(event){
+	        var phases = ['capturing', 'target', 'bubbling'];
+	        //console.log(event.eventPhase)
+	        console.log(event.target.nodeName, this.nodeName, phases[event.eventPhase-1]);
+	    }
+	    document.getElementById('target').addEventListener('click', handler, true);
+	    document.querySelector('fieldset').addEventListener('click', handler, true);
+	    document.querySelector('body').addEventListener('click', handler, true);
+	    document.querySelector('html').addEventListener('click', handler, true); */
+	      
+	    function handler(event){
+	    	var phases = ['capturing', 'target', 'bubbling']
+	    	//event.eventPhase: 현재 이벤트 핸들러가 호출될때 캡처링와중에 발생: 1
+	    	//현재 이벤트 핸들러가 호출될때 버를링와중에 발생 :3
+	    	//가장 말단의 자식엘리먼트에서 호출: 2
+	    	console.log("handler");
+	    	console.log(event.target.nodeName, this.nodeName, phases[event.eventPhase-1]);
+		}	      
+	    function handler2(event){
+	        var phases = ['capturing', 'target', 'bubbling']
+	        console.log("handler2");
+	        console.log(event.target.nodeName, this.nodeName, phases[event.eventPhase-1]);
+	    }
+	    
+		function stophandler(event){
+		    var phases = ['capturing', 'target', 'bubbling']
+		    console.log(event.target.nodeName, this.nodeName, phases[event.eventPhase-1]);
+		    event.stopPropagation();
+		}
+		document.getElementById('target').addEventListener('click', handler, false);
+		document.querySelector('fieldset').addEventListener('click', handler2, false);
+		document.querySelector('body').addEventListener('click', stophandler, false);
+		document.querySelector('html').addEventListener('click', handler, false);
+      </script>
+</body>
+</html>

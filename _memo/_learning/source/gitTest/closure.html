@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript closure!!</title>
+<script>
+  let l0 = 'l0';
+  
+  function fn1(){
+	  //함수안에 내부함수를 정의하면 클로저를 통해 내부함수에서 외부함수의 스코프에 접근할 수 있다.
+	  function fn2(){
+		  function fn3(){
+	          let l3 = 'l3';
+	          console.log(l0, l1, l2, l3); 
+	      }
+	      let l2 = 'l2';
+	      console.log(l0, l1, l2); //l1이 closure scope가 있어서 찾을 수 있음
+	      // 자바스크립트에서 함수의 유효범위는 그 함수가 어디서 실행되느냐에 따라 결정되는게 아니라 어디서 정의되었느냐에 따라 결정된다. --> 정적스코프(static scope = lexical scope)
+	      fn3();
+	  }
+	  let l1 = "l1";
+	  console.log(l0, l1);
+	  fn2(); 
+	  //어디에서 호출했느냐에따라 접근할수 있는 유효범위가 달라진다. : dynamic scope이다.
+	  //그러나 자바스크립트는 정적 스코프 기반이다.
+	  
+  }
+  
+  //function fn2(){
+  //  let l2 = 'l2';
+  //  console.log(l0, l1, l2); //l1에서 에러
+  //}
+  
+  fn1();
+  
+</script>
+</head>
+<body>
+</body>
+</html>

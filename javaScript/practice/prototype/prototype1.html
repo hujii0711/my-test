@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript ProtoType!!</title>
+<script>
+    // #.생성자 함수가 하는 일
+    // 1) 객체를 만든다
+    // 2) 그 객체의 초기 상태를 셋팅한다.
+    // 코딩 관례 : 생성자 함수 내부에 변수들은 선언해 놓으나, 함수는 prototype으로 별도로 빼서 선언하는게 관례 또는 패턴이다.
+	function Person(name, first, second, third){
+	    this.name=name;
+	    this.first=first;
+	    this.second=second;
+	    this.third=50;
+	    //this.sum이 생성자 내부에 선언되어 있으면 Person.prototype.sum() 내부 선언문이 수행되지 않는다.
+	    //this.sum이 생성자 내부에 선언되어 있으면 new Person할때마다 함수가 생성되어 메모리 비효율 발생함 --> prototype으로 극복
+	    //this.sum = function(){
+	    //   return this.first+this.second+this.third;
+	    //}
+	}
+	//Person이라는 생성자를 사용하는 모든 객체를 sum이라는 함수를 다 바꾸고 싶다(공유)
+	//생성자를 이용해서 만든 모든 객체가 공통적으로 사용하는 함수, 속성을 만들기
+	//new Person()할때마다 Person내부 객체가 만들어 지는 것이 아니라 딱 한번만 실행---> 성능 상승, 메모리 절약	
+	Person.prototype.sum = function(){
+	    return 'prototype : '+(this.first+this.second);
+	}
+	 
+	var kim = new Person('kim', 10, 20);
+	//kim.sum이라는 함수의 동작방식 바꿈 (prototype을 활용하지 않으면 일일이 바꿔야)--> kim,lee은 sum함수 공유하지 않음
+	//kim.sum() 재정의하면 kim.sum만 prototype으로 공유되지 않는 sum함수를 가질수 있다.
+	//kim은 자신이 sum을 가지고 있지 않으면 Person생성자 prototype에 sum이라고 정의되어 있는 함수를 찾고 그게 있으면 그것을 실행한다.
+	//kim.sum = function(){
+	//    return 'kim-this : '+(this.first+this.second);
+	//}
+	console.log("kim.sum==========", kim.sum());
+	
+	//lee.sum이라는 함수의 동작방식 바꿈 (prototype을 활용하지 않으면 일일이 바꿔야)--> kim,lee은 sum함수 공유하지 않음
+	var lee = new Person('lee', 10, 10);
+	//lee.sum = function(){
+    //   return 'lee-this : '+(this.first+this.second);
+    //}
+	console.log("lee.sum==========", lee.sum());
+</script>
+</head>
+<body>
+</body>
+</html>

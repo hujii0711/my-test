@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>JavaScript</title>
+<script>
+//function Func(){
+//    this.aaa = "AAA"; //new Func().aaa : 접근 가능
+//    //aaa = "AAA"; //Func.aaa 접근 불가 | new Func().aaa : 접근 불가
+//    //var aaa_ = "AAA_"; //Func.aaa_ 접근 불가 | new Func().aaa_ : 접근 불가
+//}
+
+function Func(){
+    this.aaa = "AAA";
+    //this.sum = function(){console.log("SUM")};
+}
+
+Func.prototype.bbb = function(){console.log("bbb!!!")}
+var inst = new Func();
+console.log("inst======", inst);
+console.log("[CASE1] inst.__proto__======", inst.__proto__);
+console.log("[CASE2] inst.prototype======", inst.prototype);
+console.log("[CASE3] inst.constructor======", inst.constructor);
+console.log("[CASE4] Object.getPrototypeOf(inst)======", Object.getPrototypeOf(inst));
+console.log("[CASE5] inst.hasOwnProperty('prototype')======", inst.hasOwnProperty('prototype'));
+console.log("############################1###############################");
+console.log("[!!!] inst.__proto__.constructor======", inst.__proto__.constructor);
+
+console.log("Func======", Func);
+console.log("Func()======", Func());
+console.log("Func.prototype.constructor======", Func.prototype.constructor);
+console.log("[CASE1] Func.__proto__======", Func.__proto__);
+console.log("[CASE2] Func.prototype======", Func.prototype);
+console.log("[CASE3] Func.constructor======", Func.constructor);
+console.log("[CASE4] Object.getPrototypeOf(Func)======", Object.getPrototypeOf(Func));
+console.log("[CASE5] Func.hasOwnProperty('prototype')======", Func.hasOwnProperty('prototype'));
+console.log("#############################2##############################");
+console.log("[!!!] Func.prototype.constructor======", Func.prototype.constructor);
+console.log("Func()======", Func());
+
+//[CASE1] inst.__proto__ = [CASE2] Func.prototype
+//{bbb: ƒ, constructor: ƒ}
+
+//[CASE3] inst.constructor = Func
+// ƒ Func(){
+//     this.aaa = "AAA";
+// }
+
+// inst====== Func {aaa: 'AAA'}
+// [CASE1] inst.__proto__====== {bbb: ƒ, constructor: ƒ}
+// [CASE2] inst.prototype====== undefined
+// [CASE3] inst.constructor====== ƒ Func(){
+//     this.aaa = "AAA";
+// }
+// [CASE4] Object.getPrototypeOf(inst)====== {bbb: ƒ, constructor: ƒ}
+// [CASE5] inst.hasOwnProperty('prototype')====== false
+// ############################1###############################
+// Func====== ƒ Func(){
+//     this.aaa = "AAA";
+// }
+// [CASE1] Func.__proto__====== ƒ () { [native code] }
+// [CASE2] Func.prototype====== {bbb: ƒ, constructor: ƒ}
+// [CASE3] Func.constructor====== ƒ Function() { [native code] }
+// [CASE4] Object.getPrototypeOf(Func)====== ƒ () { [native code] }
+// [CASE5] Func.hasOwnProperty('prototype')====== true
+// #############################2##############################
+
+//생성자 함수에 의해 생성된 객체는 constructor 프로퍼티를 통해 생성자 함수와 연결된다.
+//prototype과 constructor는 늘 함께 존재한다.
+//console.log("inst.constructor=====", inst.constructor === Func); //true
+
+//생성자 함수로 생성한 것이 아닌, 리터럴 표기법으로 생성하여도 constructor가 연결된다.
+//console.log("Func.constructor=====", Func.constructor === Function); //true
+
+//var obj = {};
+//console.log("obj.prototype======", obj.prototype);
+//console.log("obj.__proto__======", obj.__proto__);
+//console.log("obj.hasOwnProperty('prototype')======", obj.hasOwnProperty('prototype'));
+//console.log("Object.getPrototypeOf(obj)======", Object.getPrototypeOf(obj));
+//console.log("obj.constructor======", obj.constructor);
+
+//함수 객체의 prototype 프로퍼티
+//prototype 프로퍼티는 생성자 함수로 호출할 수 있는 객체, 즉 constructor를 소유하는 프로퍼티이다.
+//일반객체는 prototype 프로퍼티가 없다.
+
+// prototype 객체
+//ECMA-262에서 prototype은 ‘object that provides shared properties for other objects’로, 다른 객체에 공유 프로퍼티(메서드 포함)를 제공하는 객체이다.
+//모든 객체는 [[Prototype]]이라는 내부 슬롯(자바스크립트 엔진의 내부 로직)을 갖으며, 상속을 구현하는 프로토타입 객체를 가리킨다.
+//하지만 [[Prototype]] 내부 슬롯에는 직접 접근이 불가하다. 이는 프로토타입 체인의 단방향을 지키기 위해서다. 만약 직접 접근가능하다면, 
+//서로가 서로의 프로토타입이 되면서 프로토타입 체인이 무한으로 돈다. 따라서 __proto__ 프로퍼티로만 접근할 수 있다.
+
+//__proto__
+//모든 객체는 __proto__를 통해 자신의 프로토타입([[Prototype]] 내부 슬롯)에 접근할 수 있다.
+//ES6에서 __proto__를 표준으로 채택되었다. 하지만 여전히 코드 내에서 __proto__보다는 Object.getPrototypeOf()의 사용을 권장한다.
+
+// function sum(arg1, arg2){
+//     return arg1+arg2;
+// }
+// console.log(sum.apply(null, [1,2]))
+//{[native code]} --> apply는 sum이라는 객체에 담긴 메소드라는 것을 의미/ {[native code]}: apply이라고 하는 메소드가 브라우저에서 
+//여러분에게 제공(내장 메소드)하는 메소드이기에 코드를 보여줄 수 없다.(내장된 코드는 native code라는 것을 표시)
+</script>
+</head>
+<body>
+</body>
+</html>

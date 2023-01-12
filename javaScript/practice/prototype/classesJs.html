@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript ProtoType!!</title>
+<script>
+	class Person{
+		constructor(name, first, second){// 객체의 초기값 셋팅
+			this.name = name;
+	        this.first = first;
+	        this.second = second;
+			console.log("constructor!");
+		}
+	    //sum(){} //function sum(){}과 같음
+	    
+		// 메소드 추가하는 방법2 --> 권장(방법1 결과가 같음)
+	    sum(){
+	        return this.first+this.second;
+	    }
+	}
+	
+	// 상속 방법:PersonPlus은 Person의 기능을 공유
+	class PersonPlus extends Person{ //extends 라는 것은 장식에 불과 자바스크립트 내부 동작에 바뀐것은 없다. 편하게 쓰기위해 만든것에 불과
+        /* constructor(name, first, second){
+            this.name=name;
+            this.first=first;
+            this.second=second;
+            console.log("constructor!");
+        } 
+        
+        sum(){
+            return 'prototype : '+(this.first+this.second);
+        }중복 제거 필요 --> extends 이용 */
+        
+        // Person의 기능을 오버라이드
+        avg(){
+            return (this.first+this.second)/2;
+        }
+    }
+
+	// 메소드 추가하는 방법1
+	//Person.prototype.sum = function(){
+    //    return 'prototype : '+(this.first+this.second);
+    //}
+
+    // 객체가 생성될 때 (new AAA()) 그 객체의 초기 상태를 지정하기 위한, 그 객체가 만들어지기 직전에 실행되도록 만들어진 함수 ---> constructor
+    // 자바스크립트는 객체를 생성할 때 constructor라는 함수를 자동으로 호출
+	var kim = new Person('kim', 10, 20);
+    
+	//kim.sum() 재정의하면 kim.sum만 prototype으로 공유되지 않는 sum함수를 가질수 있다.
+    //kim은 자신이 sum을 가지고 있지 않으면 Person생성자 prototype에 sum이라고 정의되어 있는 함수를 찾고 그게 있으면 그것을 실행한다.
+    //kim.sum = function(){
+    //    return 'kim-this : '+(this.first+this.second);
+    //}
+	
+    console.log("kim====", kim); //kim보다 constructor!가 먼저 호출됨 그것은 constructor()함수가 객체가 생성되는 과정에서 실행되었다는 뜻
+    console.log("kim====", kim.sum());
+    
+    var kim2 = new PersonPlus('kim', 10, 20);
+    console.log("kim2_avg====", kim2.avg());
+    console.log("kim2_sum====", kim2.sum());
+    
+    //부모클래스를 불러서 부모클래스한테 일을시키고 부모가 못하는것은 자식만 하도록 --> super()
+    class PersonPlus2 extends Person{
+    	
+        constructor(name, first, second, third){
+            /* this.name=name;
+            this.first=first;
+            this.second=second; */
+            super(name, first, second); //부모의 생성자가 호출됨
+            this.third = third;
+            console.log("constructor!");
+        } 
+        
+        sum(){
+            return super.sum()+this.third; //super는 부모객체
+        }
+        
+        // Person의 기능을 오버라이드
+        avg(){
+            return (super.sum()+this.third)/3;
+        }
+    }
+    
+    var kim3 = new PersonPlus2('kim', 10, 20, 30);
+    console.log("kim3_avg====", kim3.avg());
+    console.log("kim3_sum====", kim3.sum());
+</script>
+</head>
+<body>
+</body>
+</html>

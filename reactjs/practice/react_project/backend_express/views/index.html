@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>{{title}}</title>
+    <meta name="viewport" content="width=device-width, user-scalable=no" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <link rel="stylesheet" href="/main.css" />
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      // function basicSubmitTest(){
+      //   axios.put('/')
+      //   .then((res) => {
+      //     console.log("res=======",res.data);
+      //   })
+      //   .catch((err) => {
+      //     console.error(err);
+      //   });
+      // }
+      async function basicSubmitTest(){
+        try{
+          var resp = await axios.put('/');
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function login(){
+        try{
+          const formData = {
+            userId: document.getElementById("join-id").value,
+            userPwd: document.getElementById("join-password").value
+          };
+          var resp = await axios.post('/users/login', formData);
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function getUserInfo(){
+        try{
+          var resp = await axios.post('/users/getUserInfo');
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function geneToken(){
+        try{
+          const formData = {
+            userId: document.getElementById("join-id").value,
+            userPwd: document.getElementById("join-password").value
+          };
+          var resp = await axios.post('/users/geneToken', formData);
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function validToken(){
+        try{
+          const formData = {
+            userId: document.getElementById("join-id").value,
+            userPwd: document.getElementById("join-password").value
+          };
+          var resp = await axios.post('/users/validToken', formData);
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function logout(){
+        try{
+          var resp = await axios.get('/users/logout');
+          console.log(resp.data);
+        }catch(err){
+          console.error(err);
+        }
+      };
+
+      async function goRegister(){
+        try{
+          //await axios.get('/user/goRegister');
+          location.href = "/users/goRegister";
+        }catch(err){
+          console.error(err);
+        }
+      };
+    </script>
+  </head>
+  <body>
+    <div class="container">
+      <div class="timeline">
+        <form id="join-form" action="" method="get" onsubmit="return false">
+          <div class="input-group">
+            <label for="join-id">아이디</label>
+            <input id="join-id" type="text" name="userId" />
+          </div>
+          <div class="input-group">
+            <label for="join-password">비밀번호</label>
+            <input id="join-password" type="password" name="userPwd" />
+          </div>
+          <button id="test-btn" type="submit" class="btn" onclick="basicSubmitTest()">서버통신</button>
+          <button id="login-btn" type="submit" class="btn" onclick="login()">로그인</button>
+          <button id="logout-btn" type="submit" class="btn" onclick="logout()">로그아웃</button>
+          <button id="register-btn" type="submit" class="btn" onclick="goRegister()">회원가입</button>
+           <!--<button id="user-btn" type="submit" class="btn" onclick="getUserInfo()">사용자정보</button>
+          <button id="token-btn" type="submit" class="btn" onclick="geneToken()">토큰생성</button>
+          <button id="valid-btn" type="submit" class="btn" onclick="validToken()">토큰검증</button> -->
+        </form>
+      </div>
+      <footer>
+        Made by&nbsp;
+        <a href="https://www.naver.com" target="_blank">김형준 개발자님</a>
+      </footer>
+    </div>
+  </body>
+</html>

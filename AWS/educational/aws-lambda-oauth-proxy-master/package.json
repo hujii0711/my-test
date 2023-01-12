@@ -1,0 +1,34 @@
+{
+  "name": "aws-oauth-proxy-lambda",
+  "version": "1.0.0",
+  "description": "An AWS Lambda Authorizer implementation of the Token Handler's OAuth Proxy module.",
+  "main": "src/index.ts",
+  "scripts": {
+    "build": "tsc --build"
+  },
+  "keywords": [
+    "oauth",
+    "oidc",
+    "curity",
+    "aws",
+    "lambda",
+    "authorizer",
+    "phantom-token"
+  ],
+  "author": "Curity AB",
+  "license": "Apache-2.0",
+  "devDependencies": {
+    "@types/aws-lambda": "^8.10.90",
+    "@types/cookie": "^0.4.1",
+    "@types/node": "^16.11.7",
+    "serverless-plugin-typescript": "^2.1.1",
+    "ts-loader": "^9.2.2",
+    "typescript": "^4.3.2",
+    "webpack": "^5.38.1",
+    "webpack-cli": "^4.7.0"
+  },
+  "dependencies": {
+    "cookie": "^0.4.1",
+    "dotenv": "^10.0.0"
+  }
+}

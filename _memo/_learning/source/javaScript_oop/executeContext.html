@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script>
+    // 변수의 scope의 변화무쌍 --> debugger를 통해 현재의 상태 파악하는게 핵심
+	n0='n0';        //scope: global
+	var v0='v0';    //scope: global
+	let l0='l0';    //scope: script(함수 안에서는 local)
+	const c0 = 'c0';//scope: script(함수 안에서는 local)
+	
+	console.log(v0, n0, l0, c0);
+	console.log(window.v0, window.n0, window.l0, window.c0); //window.l0, window.c0는 undefined --> window는 global scope
+	//global은 window에 저장
+	function fn2(){
+	    n2='n2';//변수 앞에 키워드를 붙이지 않으면 그 변수는 global scope이다.
+	    console.log(n0, n1, n2);
+	    var v2='v2'; // 함수안에서 var을 붙이면 local scope이다.
+	    console.log(v0, v2);
+	    // console.log(v1) // fn1()의 scope안에서 만들어지기 때문에 에러발생
+	    let l2='l2';  // 함수안에서 let을 붙이면 local scope이다.
+	    console.log(l0, l2);
+	    // console.log(l1);// fn1()의 scope안에서 만들어지기 때문에 에러발생
+	    const c2='c2;';
+	    console.log(c0, c2);
+	    // console.log(c1);
+	}
+	function fn1(){
+	    n1='n1'; //변수 앞에 키워드를 붙이지 않으면 그 변수는 global scope이다.
+	    var v1='v1';// 함수안에서 var을 붙이면 local scope이다.
+	    let l1='l1';// 함수안에서 let을 붙이면 local scope이다.
+	    const c1='c1';// 함수안에서 const을 붙이면 local scope이다.
+	    fn2();
+	}
+	fn1();
+	console.log(n2);
+	// console.log(v2, l2, c2);
+</script>
+</script>
+</head>
+<body>
+
+</body>
+</html>

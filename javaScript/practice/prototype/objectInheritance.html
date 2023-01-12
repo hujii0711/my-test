@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript 객체상속!!</title>
+<script>
+var kim = {
+	name : "kim",
+	first : 10,
+	second : 20,
+	sum : function(){return this.first+this.second}
+};
+
+var lee1 = {
+	name : "lee",
+    first : 10,
+    second : 20,
+    avg : function(){return (this.first+this.second)/2} //kim은 가지고 있지 않은 lee만의 기능
+};
+
+lee1.__proto__ = kim; //lee는 kim 객체를 상속 :sum() 기능이 없어도 사용가능, lee에 sum이 없으면 proto에서 sum을 찾는다.
+// lee는 kim의 자식 kim은 lee의 부모
+console.log("kim.sum()====", kim.sum());
+console.log("lee1.sum()====", lee1.sum());
+console.log("lee1.avg()====", lee1.avg());
+
+var lee2 = Object.create(kim); // 권장하는 방법 (__proto__ 쓰지말자) --> ie9부터 지원
+lee2.name = "lee";
+lee2.first = 10;
+lee2.second = 20;
+lee2.avg = function(){
+	return (this.first+this.second)/2;
+}
+
+console.log("lee2.sum()====", lee2.sum());
+console.log("lee2.avg()====", lee2.avg());
+
+// 자바스크립트에서 함수는 어떤의 객체에 종속될 수도 있으나 혼자 지낼수도 있고 필요에 따라 어떤 객체의 메소드도 될 수 있다.
+
+</script>
+</head>
+<body>
+</body>
+</html>

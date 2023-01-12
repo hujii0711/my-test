@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script>
+function timer(time){
+	return new Promise(function(resolve){
+		setTimeout(function(){
+			resolve(time);
+		}, time);
+	});	
+}
+/* console.time("Promise_All");
+
+Promise.all([timer(1000), timer(2000), timer(3000)]).then(function(result){
+	console.log("result----", result);
+	console.timeEnd("promise_All")
+}) */
+
+console.time("Promise_race");
+
+Promise.race([timer(1000), timer(2000), timer(3000)]).then(function(result){
+    console.log("result----", result);
+    console.timeEnd("Promise_race")
+})
+</script>
+</head>
+<body>
+</body>
+</html>

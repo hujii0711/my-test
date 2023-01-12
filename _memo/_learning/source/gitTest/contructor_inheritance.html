@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>JavaScript constructor 상속!!</title>
+<script>
+    // 상속: 객체와 객체간의 상속
+    // class 또는 contructor func 간의 상속: 개인적으로 class를 이용한 상속이 더 편리
+	//class Person{
+    //	// new Person()할때 초기화
+	//	constructor(name, first, second){
+	//		this.name = name;
+	//        this.first = first;
+	//        this.second = second;
+	//		console.log("constructor!");
+	//	}
+	//    sum(){ // 객체의 prototype의 소속, new Person()할때 공유할 수 있는 함수
+	//        return this.first+this.second;
+	//    }
+	//}
+    //
+	//var kim = new Person('kim', 10, 20);
+	//
+    //class PersonPlus extends Person{
+    //    
+    //    constructor(name, first, second, third){
+    //        super(name, first, second);
+    //        this.third = third;
+    //    } 
+    //    
+    //    sum(){
+    //        return super.sum()+this.third;
+    //    }
+    //    
+    //    avg(){
+    //        return (super.sum()+this.third)/3;
+    //    }
+    //}
+    //
+    //var kim2 = new PersonPlus('kim', 10, 20, 30);
+	
+	function Person(name, first, second){
+		this.name = name;
+        this.first = first;
+        this.second = second;
+	}
+	
+	//new Person()할때 공유할 수 있는 함수
+	Person.prototype.sum = function(){
+		return this.first+this.second;
+	}
+	
+	function PersonPlus(name, first, second, third){
+		//this.name = name;
+	    //this.first = first;
+	    //this.second = second;
+	    
+	    //this는 PersonPlus의 this이고
+	    //name, first, second, third가 this의 프로퍼티이다.
+	    console.log("this========", this)
+	    //PersonPlus의 this 객체를 전달
+	    Person.call(this, name, first, second); //super(name, first, second);와 같은 일을 한다.
+	    this.third = third;
+	}
+	
+	//PersonPlus.prototype.__proto__ = Person.prototype;
+	PersonPlus.prototype = Object.create(Person.prototype);
+	//kim.constructor 출력했을때 constructor가 Person이 아닌 PersonPlus가 되려면 아래와 같이
+	//PersonPlus.prototype.constructor = PersonPlus;
+	
+	PersonPlus.prototype.avg = function(){
+		return (this.first+this.second+this.third)/3;
+	}
+	
+	var kim = new PersonPlus("kim", 10, 20, 30)
+	console.log("kim.avg()----", kim.avg())
+	console.log("kim.sum()----", kim.sum())
+	console.log("kim.constructor----", kim.constructor)
+	
+
+    
+</script>
+</head>
+<body>
+</body>
+</html>

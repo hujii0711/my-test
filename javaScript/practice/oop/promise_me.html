@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+<script>
+//https://jsonplaceholder.typicode.com/users/1
+//https://jsonplaceholder.typicode.com/todos/1
+//https://jsonplaceholder.typicode.com/posts
+function fetchUser() {
+    return fetch("https://jsonplaceholder.typicode.com/users/1").then(function(response) {
+        return response.json();
+    });
+}
+
+/* function fetchTodo() {
+	 return fetch("https://jsonplaceholder.typicode.com/posts/1")
+	.then(function(response) {
+		return response.json();
+	})
+	.then(function(data) {
+		console.log(data);
+        return data;
+    })
+} */
+
+function fetchTodo() {
+    return fetch("https://jsonplaceholder.typicode.com/posts", {
+         method: "POST",
+         headers: {
+           "Content-Type": "application/json",
+         },
+         body: JSON.stringify({
+           title: "Test",
+           body: "I am testing!",
+           userId: 1,
+         }),
+    }).then(function(response){
+    	return response.json();
+    }).then(function(data){
+        console.log(data);
+    });
+}
+
+async function startFunc() {	
+	var user = await fetchTodo();
+}
+</script>
+</head>
+<body onload="fetchTodo()">
+
+</body>
+</html>

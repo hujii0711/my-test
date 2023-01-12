@@ -1,0 +1,40 @@
+1. screens/WriteScreen.tsx
+
+2. screens/ArticlesScreen.tsx
+----components/Articles.tsx
+--------components/ArticleItem.tsx
+--------components/WriteButton.tsx
+
+3. screens/ArticleScreen.tsx
+----components/ArticleView.tsx
+--------components/ArticleActionButtons.tsx
+------------components/AskDialog.tsx
+----components/CommentItem.tsx
+----components/CommentInput.tsx
+--------components/CommentModal.tsx
+----components/AskDialog.tsx
+----components/CommentModal.tsx
+
+4. screens/LoginScreen.tsx
+----components/AuthForm.tsx
+
+5. screens/MainTab.tsx
+----screens/ArticlesScreen.tsx
+----screens/UserMenuScreen.tsx
+
+6. screens/MyArticlesScreen.tsx
+----components/AuthForm.tsx
+
+7. screens/RegisterScreen.tsx
+----components/AuthForm.tsx
+
+8. screens/RootStack.tsx
+----screens/MainTab.tsx
+----screens/ArticleScreen.tsx
+----screens/RegisterScreen.tsx
+----screens/LoginScreen.tsx
+----screens/MyArticlesScreen.tsx
+----screens/WriteScreen.tsx
+
+9. screens/UserMenuScreen.tsx
+----components/MenuItem.tsx

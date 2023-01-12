@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="EUC-KR">
+<title>Insert title here</title>
+<script>
+function timer(time){
+	return new Promise(function(resolve){
+		setTimeout(function(){
+			resolve(time);
+		}, time);
+	});	
+}
+/*
+console.log("start");
+// timer의 리턴값은 Promise이므로 then() 쓴다.
+timer(1000).then(function(time){
+	console.log("time1====", time);
+	return timer(time+1000);
+}).then(function(time){
+	console.log("time2====", time);
+	return timer(time+1000);
+}).then(function(time){
+    console.log("time3====", time);
+    console.log("end가 마지막에 출력");
+})
+console.log("end");
+*/
+
+
+//async: 일반함수를 Promise를 리턴하는 비동기적인 함수를 만들어주는 키워드 
+//따라서 async함수 안에서 await라는 키워드를 사용할 수 있음 그리고 async함수도 await를 붙어 함수 호출할 수 있음
+async function run(){
+	console.log("start");
+	//timer가 비동기적 코드라는 것을 명시하기 위해 await를 붙인다
+	//await는 async 함수 안에서만 사용할 수 있다.
+	var time = await timer(1000); //await를 쓰면 then(data)의 data를 리턴값으로 받는다.
+	console.log("time1====", time);
+	time = await timer(time+1000); 
+	console.log("time2====", time);
+	time = await timer(time+1000); 
+	console.log("time3====", time);
+	console.log("end");
+}
+
+async function run2(){
+	console.log("parent_start====");
+	//console.log(run());//Promise를 리턴해줌 --> run()앞에 또 await를 붙일 수 있음
+	await run();
+	console.log("parent_end====");
+}
+console.log("parent > parent_start====");
+run2().then(function(){ //더이상 프로미스를 쓰지않을 경우 사용
+	console.log("parent > parent_end====");
+})
+</script>
+</head>
+<body>
+</body>
+</html>
