@@ -1,0 +1,12 @@
+webpack 모듈 설치
+npm install -D webpack webpack-cli webpack-dev-server html-webpack-plugin
+npm install -D @babel/core @babel/preset-env babel-loader
+
+-D : devDependencies 로 설정하여 배포 서버에서는 해당 모듈들을 설치하지 않을 수 있다.
+webpack : 번들러 모듈
+webpack-cli : webpack 명령어를 사용할 수 있게해주는 모듈
+webpack-dev-server : 실시간으로 변경사항을 보여주는 live server
+html-webpack-plugin : template html 파일에 번들 파일을 자동으로 추가해주는 플러그인
+@babel/core : 트랜스파일러 모듈
+@babel/preset-env : 트랜스파일링 기본 preset 모듈
+babel-loader : 트랜스파일링 하기위한 파일 loader
