@@ -10,9 +10,8 @@ test2Router.get("/type02", async (req, res, next) => {
 });
 
 const googleConfig = {
-  clientId:
-    "568088378939-jemtupaj1rsvcdasr82t8llc677d21j4.apps.googleusercontent.com",
-  clientSecret: "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",
+  clientId: "",
+  clientSecret: "",
   redirect: "http://localhost:3000/auth/google/callback",
 };
 

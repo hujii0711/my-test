@@ -2,9 +2,8 @@ const { default: axios } = require("axios");
 const url = require("url");
 const testRouter = require("express").Router();
 
-const CLIENT_ID =
-  "568088378939-jemtupaj1rsvcdasr82t8llc677d21j4.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
+const CLIENT_ID = "";
+const CLIENT_SECRET = "";
 const AUTHORIZE_URI = "https://accounts.google.com/o/oauth2/v2/auth";
 const REDIRECT_URL = "http://localhost:3000/auth/google/callback";
 const RESPONSE_TYPE = "code";
