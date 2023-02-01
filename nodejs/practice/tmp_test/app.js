@@ -3,6 +3,7 @@ const router = require("./routes");
 const app = express();
 const error = require("./commons/error");
 const nunjucks = require("nunjucks");
+const cookieParser = require("cookie-parser");
 
 app.set("view engine", "html");
 nunjucks.configure("views", {
@@ -13,6 +14,7 @@ nunjucks.configure("views", {
 app.set("port", 3000);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser("COOKIE_SECRET"));
 
 /*****************************************
  * 클라이언트의 모든 요청 로그 남김

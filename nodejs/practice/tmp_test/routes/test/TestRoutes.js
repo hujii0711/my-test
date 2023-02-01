@@ -27,13 +27,13 @@ testRouter.get("/auth/google/type01", (req, res) => {
 
 // #####.step02
 // NOTE 설정한 리다이렉트 페이지로 이동시 처리할 로직 /auth/google/callback
-// testRouter.get("/auth/google/callback", (req, res) => {
-//   const query = url.parse(req.url, true).query;
-//   if (query && query.code) {
-//     oauth2Api(query.code);
-//   }
-//   res.render("success");
-// });
+testRouter.get("/auth/google/callback1", (req, res) => {
+  const query = url.parse(req.url, true).query;
+  if (query && query.code) {
+    oauth2Api(query.code);
+  }
+  res.render("success");
+});
 
 // #####.step03
 const oauth2Api = async (code) => {
