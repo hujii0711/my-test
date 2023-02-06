@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>웹소켓 아주 기본 예제</title>
+  </head>
+  <body>
+    <div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
+    <script>
+      const socket = new WebSocket(
+        "wss://jbglmgd174.execute-api.ap-northeast-2.amazonaws.com/dev"
+      );
+
+      socket.onopen = function (event) {
+        console.log("onopen >>>> event===========", event);
+      };
+
+      socket.onmessage = function (event) {
+        console.log("onmessage >>>> event===========", event);
+      };
+
+      socket.onclose = function (event) {
+        if (event.wasClean) {
+          console.log("onclose >>>> wasClean >>>> event===========", event);
+          // console.log(
+          // `[close] 커넥션이 정상적으로 종료되었습니다(code=${event.code} reason=${event.reason})`
+          //);
+        } else {
+          console.log("onclose >>>> event===========", event);
+          // 예시: 프로세스가 죽거나 네트워크에 장애가 있는 경우
+          // event.code가 1006이 됩니다.
+          // console.log("[close] 커넥션이 죽었습니다.");
+        }
+      };
+
+      socket.onerror = function (error) {
+        console.log("onerror >>>> error===========", error);
+      };
+
+      // const socket = new WebSocket(
+      //   "wss://jbglmgd174.execute-api.ap-northeast-2.amazonaws.com/dev"
+      // );
+
+      // socket.addEventListener("open", (e) => {
+      //   console.log("open===========", e);
+      // });
+
+      // socket.addEventListener("close", (e) =>
+      //   console.log("WebSocket is closed")
+      // );
+
+      // socket.addEventListener("error", (e) =>
+      //   console.error("WebSocket is in error", e)
+      // );
+
+      // socket.addEventListener("message", (e) => {
+      //   console.log("WebSocket received a message:", e);
+      //   console.log("Your answer is:", JSON.parse(e.data).message);
+      // });
+
+      window.ask = function (msg) {
+        const payload = {
+          action: "message",
+          msg,
+        };
+        socket.send(JSON.stringify(payload));
+      };
+    </script>
+  </body>
+</html>
