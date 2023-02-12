@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>웹소켓 아주 기본 예제1</title>
+  </head>
+  <body>
+    <div>채팅방 최초 생성 유저</div>
+    <!-- 메시지 폼 -->
+    <form name="chat">
+      <input type="text" id="message" name="message" />
+      <input type="submit" value="전송" />
+    </form>
+
+    <!-- 수신받을 메시지가 노출될 div -->
+    <div id="messages"></div>
+    <script>
+      const roomId = "room1234";
+      const userId = "chat01";
+
+      const socket = new WebSocket(
+        "wss://jbglmgd174.execute-api.ap-northeast-2.amazonaws.com/dev"
+      );
+
+      socket.onopen = function (event) {
+        console.log("onopen >>>> event===========", event);
+        setTimeout(() => {
+          const payload = {
+            action: "join",
+            roomId: roomId,
+          };
+          socket.send(JSON.stringify(payload));
+        }, 1000);
+      };
+
+      socket.onmessage = function (event) {
+        console.log("onmessage >>>> event===========", event);
+        const message = event.data;
+
+        const messageElem = document.createElement("div");
+        messageElem.textContent = message;
+        document.getElementById("messages").prepend(messageElem);
+      };
+
+      socket.onclose = function (event) {
+        if (event.wasClean) {
+          console.log("onclose >>>> wasClean >>>> event===========", event);
+        } else {
+          console.log("onclose >>>> event===========", event);
+        }
+
+        if (socket) {
+          socket.close();
+        }
+      };
+
+      socket.onerror = function (error) {
+        console.log("onerror >>>> error===========", error);
+      };
+
+      // 폼에 있는 메시지를 전송합니다.
+      document.forms.chat.onsubmit = () => {
+        const payload = {
+          action: "send",
+          roomId: roomId,
+          message: this.message.value,
+          userId: userId,
+        };
+        socket.send(JSON.stringify(payload));
+
+        return false;
+      };
+    </script>
+  </body>
+</html>

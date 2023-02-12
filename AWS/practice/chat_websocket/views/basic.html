@@ -3,16 +3,18 @@
   <head>
     <meta charset="UTF-8" />
     <title>웹소켓 아주 기본 예제</title>
-  </head>
-  <body>
-    <div>F12를 눌러 console 탭과 network 탭을 확인하세요.</div>
     <script>
+      let timer;
       const socket = new WebSocket(
         "wss://jbglmgd174.execute-api.ap-northeast-2.amazonaws.com/dev"
       );
 
       socket.onopen = function (event) {
         console.log("onopen >>>> event===========", event);
+
+        /*timer = setInterval(() => {
+          socket.send(JSON.stringify({ action: "ping" }));
+        }, 60 * 1000);*/
       };
 
       socket.onmessage = function (event) {
@@ -31,40 +33,40 @@
           // event.code가 1006이 됩니다.
           // console.log("[close] 커넥션이 죽었습니다.");
         }
+
+        /*if (timer) {
+          clearInterval(timer);
+          timer;
+        }*/
+
+        if (socket) {
+          socket.close();
+        }
       };
 
       socket.onerror = function (error) {
         console.log("onerror >>>> error===========", error);
       };
 
-      // const socket = new WebSocket(
-      //   "wss://jbglmgd174.execute-api.ap-northeast-2.amazonaws.com/dev"
-      // );
-
-      // socket.addEventListener("open", (e) => {
-      //   console.log("open===========", e);
-      // });
-
-      // socket.addEventListener("close", (e) =>
-      //   console.log("WebSocket is closed")
-      // );
-
-      // socket.addEventListener("error", (e) =>
-      //   console.error("WebSocket is in error", e)
-      // );
-
-      // socket.addEventListener("message", (e) => {
-      //   console.log("WebSocket received a message:", e);
-      //   console.log("Your answer is:", JSON.parse(e.data).message);
-      // });
-
-      window.ask = function (msg) {
+      window.ask = function () {
         const payload = {
-          action: "message",
-          msg,
+          action: "send", //없는 action 값을 넣으면 "{\"message\": \"Forbidden\", \"connectionId\":\"ADH5AeSoIE0CFMg=\", \"requestId\":\"ADH6aG6qIE0Fnnw=\"}"
+          roomId: "AAA",
+          msg: "test_message",
         };
         socket.send(JSON.stringify(payload));
       };
     </script>
+  </head>
+  <body>
+    <div>채팅방 최초 생성 유저</div>
+    <!-- 메시지 폼 -->
+    <form name="publish">
+      <input type="text" name="message" />
+      <input type="submit" value="전송" />
+    </form>
+
+    <!-- 수신받을 메시지가 노출될 div -->
+    <div id="messages"></div>
   </body>
 </html>

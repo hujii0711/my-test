@@ -1,5 +1,6 @@
 const { OAuth2Client } = require("google-auth-library");
 const { default: axios } = require("axios");
+const com = require("../../commons/commonUtils");
 const testRouter = require("express").Router();
 
 let oAuth2Client;
@@ -9,6 +10,11 @@ testRouter.get("/", async (req, res, next) => {
 });
 
 testRouter.get("/intro", async (req, res, next) => {
+  var aaa = com.formatDaysAgo(1676022593698);
+  console.log("aaa=====", aaa);
+
+  var bbb = com.formatDate(1676022593698, "yyyy-MM-dd");
+  console.log("bbb=====", bbb);
   res.render("intro");
 });
 
