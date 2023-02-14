@@ -1,14 +1,25 @@
+/*
+    form에서 파일 업로드하여 s3 버킷에 업로드
+*/
+
 const AWS = require("aws-sdk");
 const multipart = require("parse-multipart");
 const s3 = new AWS.S3();
 const bluebird = require("bluebird");
+const UPLOAD_URL =
+  "https://polaris-upload-test.s3.ap-northeast-2.amazonaws.com";
+const BUCKET_NAME = "polaris-upload-test";
+const UPLOAD_FOLDER = "temp";
 
 exports.handler = function (event, context) {
   const result = [];
 
-  const bodyBuffer = new Buffer(event["body-json"].toString(), "base64");
+  const bodyBuffer = Buffer.from(event["body-json"].toString(), "base64");
+
   const boundary = multipart.getBoundary(event.params.header["Content-Type"]);
+
   const parts = multipart.Parse(bodyBuffer, boundary);
+
   const files = getFiles(parts);
 
   return bluebird
@@ -34,18 +45,13 @@ const upload = function (file) {
 
 const getFiles = function (parts) {
   const files = [];
-
   parts.forEach((part) => {
     const buffer = part.data;
-    const fileName = part.filename; //20221227_151033.png
-    const fileFullName = "temp/" + fileName; // /temp/20221227_151033.png
-
-    const filefullPath =
-      "https://s3-fujii0711-temp.s3.ap-northeast-2.amazonaws.com" +
-      fileFullName;
+    const fileFullName = `${UPLOAD_FOLDER}/${part.filename}`; //temp/part.filename
+    const filefullPath = `${UPLOAD_URL}/${fileFullName}`; //https://polaris-upload-test.s3.ap-northeast-2.amazonaws.com/temp/XXX.jpg
 
     const params = {
-      Bucket: "s3-fujii0711-temp",
+      Bucket: BUCKET_NAME,
       Key: fileFullName,
       Body: buffer,
     };
@@ -53,7 +59,7 @@ const getFiles = function (parts) {
     const uploadFile = {
       size: buffer.toString("ascii").length,
       type: part.type,
-      name: fileName,
+      name: fileFullName,
       full_path: filefullPath,
     };
 

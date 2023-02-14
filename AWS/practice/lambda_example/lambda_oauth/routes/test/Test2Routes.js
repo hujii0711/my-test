@@ -14,8 +14,8 @@ test2Router.get("/type02", async (req, res, next) => {
 //#####step01
 test2Router.get("/auth/google/type02", (req, res) => {
   oAuth2Client = new OAuth2Client(
-    "568088378939-jemtupaj1rsvcdasr82t8llc677d21j4.apps.googleusercontent.com",
-    "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",
+    "",
+    "",
     "http://localhost:3000/auth/google/callback"
   );
 
