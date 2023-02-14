@@ -3,7 +3,7 @@ const dbChatMessage = require("./db_chatMessage");
 const dbChatRooms = require("./db_chatRooms");
 
 const api = new AWS.ApiGatewayManagementApi({
-  endpoint: "1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev",
+  endpoint: process.env.API_GATEWAY_CHAT_URL + "/dev",
 });
 
 exports.handler = async (event) => {
@@ -12,6 +12,7 @@ exports.handler = async (event) => {
 
   if (route === "$connect") {
     console.log("■■■■■■■■■■■■■■■■■■$connect■■■■■■■■■■■■■■■■");
+    console.log("connectionId==========", connectionId);
     return {
       statusCode: 200,
       body: "connect occurred",

@@ -19,18 +19,18 @@
       const userId = "chat01";
 
       const socket = new WebSocket(
-        "wss://jbglmgd174.execute-api.ap-northeast-2.amazonaws.com/dev"
+        "wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev"
       );
 
       socket.onopen = function (event) {
         console.log("onopen >>>> event===========", event);
-        setTimeout(() => {
-          const payload = {
-            action: "join",
-            roomId: roomId,
-          };
-          socket.send(JSON.stringify(payload));
-        }, 1000);
+        // setTimeout(() => {
+        //   const payload = {
+        //     action: "join",
+        //     roomId: roomId,
+        //   };
+        //   socket.send(JSON.stringify(payload));
+        // }, 1000);
       };
 
       socket.onmessage = function (event) {

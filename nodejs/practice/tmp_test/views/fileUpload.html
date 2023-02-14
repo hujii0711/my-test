@@ -11,8 +11,9 @@
         const formData = new FormData();
         const file = document.getElementById("file");
         formData.append("file", file.files[0]);
+
         axios({
-          url: "https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev/upload",
+          url: "https://awxk4u2rc7.execute-api.ap-northeast-2.amazonaws.com/dev/imageupload",
           method: "POST",
           headers: {
             "Content-Type": "multipart/form-data",
