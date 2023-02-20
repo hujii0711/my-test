@@ -16,8 +16,8 @@ oAuthRouter.get("/authIndex", async (req, res, next) => {
 //"https://av485mvree.execute-api.ap-northeast-2.amazonaws.com/dev/auth/google/callback"
 oAuthRouter.get("/auth/google/page", (req, res) => {
   oAuth2Client = new OAuth2Client(
-    "568088378939-jemtupaj1rsvcdasr82t8llc677d21j4.apps.googleusercontent.com",
-    "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",
+    "",
+    "",
     "http://localhost:3000/auth/google/callback"
   );
 
