@@ -1,0 +1,84 @@
+2023-04-05 10:05:21 <info> (App.ts:27) undefined '✅DB connection success.'
+2023-04-05 10:05:21 <info> (App.ts:29) undefined '✅Success Create users Table'
+2023-04-05 10:08:21 <info> (error.ts:35) undefined [
+  ApiError: ER_NOT_SUPPORTED_AUTH_MODE: Client does not support authentication protocol requested by server; consider upgrading MySQL client
+      at errorConverter (D:\_git\Portfolio_aws\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2023-04-05 10:13:57 <info> (error.ts:35) undefined [
+  ApiError: ER_NO_SUCH_TABLE: Table 'example.sessions' doesn't exist
+      at errorConverter (D:\_git\Portfolio_aws\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2023-04-05 10:24:46 <info> (error.ts:35) undefined [
+  ApiError: ER_NO_SUCH_TABLE: Table 'example.sessions' doesn't exist
+      at errorConverter (D:\_git\Portfolio_aws\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2023-04-05 10:25:12 <info> (error.ts:35) undefined [
+  ApiError: ER_NO_SUCH_TABLE: Table 'example.sessions' doesn't exist
+      at errorConverter (D:\_git\Portfolio_aws\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2023-04-05 10:25:12 <info> (error.ts:35) undefined [
+  ApiError: ER_NO_SUCH_TABLE: Table 'example.sessions' doesn't exist
+      at errorConverter (D:\_git\Portfolio_aws\backend\src\modules\error.ts:15:13)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:71:5)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12)
+      at next (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:280:10)
+      at Layer.handle_error (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\layer.js:67:12)
+      at trim_prefix (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:326:13)
+      at D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:286:9
+      at Function.process_params (D:\_git\Portfolio_aws\backend\node_modules\express\lib\router\index.js:346:12) {
+    statusCode: 500,
+    isFatal: false
+  }
+]
+2023-04-05 10:30:03 <info> (App.ts:27) undefined '✅DB connection success.'
+2023-04-05 10:30:03 <info> (App.ts:29) undefined '✅Success Create users Table'
