@@ -1,7 +1,80 @@
 const {format, formatDistanceToNow} = require('date-fns');
 const {ko} = require('date-fns/locale');
 
-export const formatDaysAgo = date => {
+const com = {};
+
+/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  com.data
+  data 관련 기능 모음
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
+/************************************
+  json 추가 함수
+************************************/
+com.makeInsertJson = (orgJson, newObj) => {
+  return JSON.stringify((orgJson ?? []).concat(newObj));
+}
+
+/************************************
+  json 수정 함수
+************************************/
+com.makeUpdateJson = (orgJson, updateObj, key, keyVal) => {
+  return JSON.stringify(orgJson ? orgJson.map(elem => elem[key] === keyVal ? updateObj : elem) : []);
+}
+
+/************************************
+  json 삭제 함수
+************************************/
+com.makeDeleteJson = (orgJson, key, keyVal) => {
+  return JSON.stringify(orgJson ? orgJson.filter(elem => elem[key] !== keyVal) : []);
+}
+
+/************************************
+  특정 키로 obj 찾기
+************************************/
+com.findJson = (orgJson, key, keyVal) => {
+  return orgJson.find(elem => elem[key] === keyVal);
+}
+
+/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  com.str
+  문자열 관련 기능 모음
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
+/************************************
+  text 길이 100 넘을때 ... 표현
+************************************/
+com.truncate = text => {
+  // 정규식을 사용해 모든 줄 바꿈 문자 제거
+  const replaced = text.replace(/\n/g, ' ');
+  if (replaced.length <= 100) {
+    return replaced;
+  }
+  return replaced.slice(0, 100).concat('...');
+};
+
+/************************************
+  uuid 난수 추출
+************************************/
+com.uuidv4 = () => {
+  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+    var r = (Math.random() * 16) | 0,
+      v = c == "x" ? r : (r & 0x3) | 0x8;
+    return v.toString(16);
+  });
+};
+
+/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  com.date
+  날짜 관련 기능 모음
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
+/************************************
+  date 전일 형태 표시
+************************************/
+com.formatDaysAgo = date => {
+
+  if(typeof date === "string"){
+    date = Number(date);
+  }
+  
   const d = new Date(date);
   const now = Date.now();
   const diff = (now - d.getTime()) / 1000; // 현재 시간과의 차이(초)
@@ -16,64 +89,48 @@ export const formatDaysAgo = date => {
   return format(d, 'PPP EEE p', {locale: ko}); // 날짜 포맷
 };
 
-export const formatDate = (date, format) => {
+/************************************
+  date 포맷 출력 표현
+************************************/
+com.formatDate = (date, format) => {
   return format(new Date(date), format); //'yyyy-MM-dd'
 };
 
-export const truncate = text => {
-  // 정규식을 사용해 모든 줄 바꿈 문자 제거
-  const replaced = text.replace(/\n/g, ' ');
-  if (replaced.length <= 100) {
-    return replaced;
-  }
-  return replaced.slice(0, 100).concat('...');
+/************************************
+  timestamp 한국 날짜 출력
+************************************/
+com.krDate = () => {
+  return Date.now() + 1000 * 60 * 60 * 9;
 };
 
-export function isEmail(asValue) {
+/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  com.vad
+  검증 기능 모음
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
+
+/************************************
+  이메일 검증
+************************************/
+com.isEmail = (asValue) => {
   var regExp =
     /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
   return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
 }
 
-export function isPassword(asValue) {
+/************************************
+  비밀번호 조합 검증
+************************************/
+com.isPassword = (asValue) => {
   var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/; //  8 ~ 10자 영문, 숫자 조합
   return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
 }
 
-export function insertJson(orgJson, newObj){
-  return JSON.stringify((orgJson ?? []).concat(newObj));
-}
 
-export function updateJson(orgJson, updateObj, id){
-  return JSON.stringify(orgJson ? orgJson.map(elem => elem.id === id ? updateObj : elem) : []);
-}
+/*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
+  com.num
+  숫자 관련 기능 모음
+ ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
 
-export function deleteJson(orgJson, id){
-  return JSON.stringify(orgJson ? orgJson.filter(elem => elem.id !== id) : []);
-}
-
-/*const json = [
-  {
-    id : "1",
-    body : "body1"
-  },
-  {
-    id : "2",
-    body : "body2"
-  }
-];
-
-const newObj = {
-  id : "3",
-  body : "body3"
-}
-
-const updateObj = {
-  id : "2",
-  body : "body2-1"
-}
-
-const insert = insertJson(json, newObj);
-const update = updateJson(json, updateObj, "2");
-const remove = deleteJson(json, "2");*/
+ 
+module.exports = com;
 

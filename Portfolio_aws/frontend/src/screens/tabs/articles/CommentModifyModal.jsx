@@ -8,22 +8,20 @@ import {
   IconButton,
 } from 'react-native-paper';
 import {View} from 'react-native';
-import {useQuery} from 'react-query';
-import {selectComment} from '../../../api/comments';
+import {useQueryClient} from 'react-query';
+import com from '../../../commons/utils/common';
 
-const CommentModifyModal = ({
-  visible,
-  commentId,
-  articleRef,
-  onSubmit,
-  onClose,
-}) => {
-  // articleRef, commentId에 해당하는 댓글 조회 --> 수정에 활용
-  const selectCommentQuery = useQuery(['selectComment', commentId], () =>
-    selectComment(articleRef, commentId),
+const CommentModifyModal = ({_visible, _commentId, _onSubmit, _onClose}) => {
+  const queryClient = useQueryClient();
+
+  //comments 캐시 get
+  const selectListCommentQuery = queryClient.getQueryData('selectListComment');
+  const selectedCommentData = com.findJson(
+    selectListCommentQuery,
+    'id',
+    _commentId,
   );
 
-  const selectedCommentData = selectCommentQuery.data;
   const [message, setMessage] = useState('');
 
   useEffect(() => {
@@ -34,8 +32,8 @@ const CommentModifyModal = ({
     <Provider>
       <Portal>
         <Modal
-          visible={visible}
-          onDismiss={onClose}
+          visible={_visible}
+          onDismiss={_onClose}
           contentContainerStyle={{
             backgroundColor: '#F2F5F9',
             borderRadius: 20,
@@ -56,9 +54,9 @@ const CommentModifyModal = ({
             <IconButton
               icon="tooltip-check-outline"
               size={20}
-              onPress={() => onSubmit(message)}
+              onPress={() => _onSubmit(message)}
             />
-            <IconButton icon="undo" size={20} onPress={onClose} />
+            <IconButton icon="undo" size={20} onPress={_onClose} />
           </View>
         </Modal>
       </Portal>

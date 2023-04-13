@@ -2,20 +2,21 @@ import React, {memo} from 'react';
 import {View, Pressable, Text, StyleSheet} from 'react-native';
 import {Badge} from 'react-native-paper';
 import Color from '../../../commons/style/Color';
-import {formatDaysAgo} from '../../../commons/utils/common';
+import com from '../../../commons/utils/common';
 
-const ArticleItem = ({
-  navigation,
-  id,
-  title,
-  created_dt,
-  user_name,
-  lookup,
+const ArticleListItem = ({
+  _navigation,
+  _id,
+  _title,
+  _createdDt,
+  _userName,
+  _lookup,
 }) => {
-
-  const createdDt = formatDaysAgo(created_dt);
+  const createdDtAgo = com.formatDaysAgo(_createdDt);
   const onPressMove = () => {
-    navigation.navigate('ArticleView', {id});
+    //_navigation.navigate('ArticleView', {id: _id, createdDt: _createdDt}); {"_createdDt": 1680840905408, "_id": "f1bf24ed-b9d6-4597-bc58-bc99dc9d4af6"}
+    const move = {id: _id, createdDt: _createdDt}; //{"createdDt": 1680840905408, "id": "f1bf24ed-b9d6-4597-bc58-bc99dc9d4af6"}
+    _navigation.navigate('ArticleView', move);
   };
 
   return (
@@ -24,12 +25,12 @@ const ArticleItem = ({
       onPress={onPressMove}
       android_ripple={{color: Color.pressed}}>
       <View style={{flexDirection: 'row'}}>
-        <Text style={styles.title}>{title}</Text>
+        <Text style={styles.title}>{_title}</Text>
         {/* <Badge style={styles.badge} size={14}></Badge> */}
       </View>
       <View style={styles.footer}>
         <Text style={styles.smallText}>
-          {user_name} | {createdDt} | 조회수: {lookup}
+          {_userName} | {createdDtAgo} | 조회수: {_lookup}
         </Text>
       </View>
     </Pressable>
@@ -65,4 +66,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(ArticleItem);
+export default memo(ArticleListItem);

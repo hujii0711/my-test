@@ -1,6 +1,6 @@
 import React, {useEffect, useRef} from 'react';
 import {Platform, Pressable, StyleSheet, Animated} from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialIcons';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import Color from '../../commons/style/Color';
 
 const FloatingButton = ({hidden, onPressFloatButton}) => {
@@ -43,7 +43,7 @@ const FloatingButton = ({hidden, onPressFloatButton}) => {
         ]}
         android_ripple={{color: 'white'}}
         onPress={onPressFloatButton}>
-        <Icon name="add" size={24} style={styles.icon} />
+        <Icon name="plus" size={24} style={styles.icon} />
       </Pressable>
     </Animated.View>
   );

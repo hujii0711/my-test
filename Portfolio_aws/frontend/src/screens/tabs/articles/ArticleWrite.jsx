@@ -18,12 +18,13 @@ const LeftContent = props => (
 
 const ArticleWrite = () => {
   const articleId = useRoute().params?.id;
+  const createdDt = useRoute().params?.createdDt;
   const navigation = useNavigation();
   const queryClient = useQueryClient();
   const mode = articleId ? 'modify' : 'write';
 
   //글 수정시 articleId가 바뀌지 않는 한 캐싱 데이터 활용
-  const cachedArticle = useMemo(
+  const selectArticleCacheData = useMemo(
     () =>
       articleId
         ? queryClient.getQueryData(['selectArticle', articleId]) // 캐시 데이터 조회
@@ -31,16 +32,16 @@ const ArticleWrite = () => {
     [queryClient, articleId],
   );
 
-  const [title, setTitle] = useState(cachedArticle?.title ?? '');
-  const [contents, setContents] = useState(cachedArticle?.contents ?? '');
+  const [title, setTitle] = useState(selectArticleCacheData?.title ?? '');
+  const [contents, setContents] = useState(
+    selectArticleCacheData?.contents ?? '',
+  );
 
   const {mutate: mutateInsertArticle} = useMutation(insertArticle, {
     onSuccess: article => {
       //pages: [[{}]]
       //pageParams: [undefined]
-      console.log("article=============", article);
-      // 캐싱없이 바로 글 목록으로 이동
-      /*queryClient.invalidateQueries('selectArticlePagingList');
+      //queryClient.invalidateQueries('selectArticlePagingList');
       queryClient.setQueryData('selectArticlePagingList', data => {
         if (!data) {
           return {
@@ -54,23 +55,25 @@ const ArticleWrite = () => {
           ...data,
           pages: [[article, ...firstPage], ...rest],
         };
-      });*/
+      });
       navigation.goBack();
     },
   });
 
   const {mutate: mutateUpdateArticle} = useMutation(updateArticle, {
     onSuccess: article => {
+      console.log('mutateUpdateArticle >>>>> data======', data);
       // 게시글 목록 수정
       queryClient.setQueryData('selectArticlePagingList', data => {
+        console.log('mutateUpdateArticle >>>>> data======', data);
         if (!data) {
           return {pageParams: [], pages: []};
         }
         return {
           pageParams: data.pageParams,
           pages: data.pages.map(page =>
-            page.find(a => a.id === articleId)
-              ? page.map(a => (a.id === articleId ? article : a))
+            page.find(a => a.created_dt === createdDt)
+              ? page.map(a => (a.created_dt === createdDt ? article : a))
               : page,
           ),
         };
@@ -87,8 +90,8 @@ const ArticleWrite = () => {
   }, [mutateInsertArticle, title, contents]);
 
   const onSubmitModifyArticle = useCallback(() => {
-    mutateUpdateArticle({id: articleId, title, contents});
-  }, [mutateUpdateArticle, title, contents, articleId]);
+    mutateUpdateArticle({createdDt, title, contents});
+  }, [mutateUpdateArticle, title, contents, createdDt]);
 
   return (
     <Card style={{flex: 1}}>

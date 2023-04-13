@@ -2,31 +2,31 @@ import * as React from 'react';
 import {Button, Portal, Dialog, Provider, Paragraph} from 'react-native-paper';
 
 const CustomDialog = ({
-  visible,
-  title,
-  message,
-  confirmText,
-  onConfirm,
-  onClose,
+  _visible,
+  _title,
+  _message,
+  _confirmText,
+  _onConfirm,
+  _onClose,
 }) => {
   return (
     <Provider>
       <Portal>
         <Dialog
-          onDismiss={onClose}
+          onDismiss={_onClose}
           style={{
             backgroundColor: '#FEFEFE',
           }}
-          visible={visible}>
-          <Dialog.Title style={{color: '#3A3A3A'}}>{title}</Dialog.Title>
+          visible={_visible}>
+          <Dialog.Title style={{color: '#3A3A3A'}}>{_title}</Dialog.Title>
           <Dialog.Content>
-            <Paragraph style={{color: '#3A3A3A'}}>{message}</Paragraph>
+            <Paragraph style={{color: '#3A3A3A'}}>{_message}</Paragraph>
           </Dialog.Content>
           <Dialog.Actions>
-            <Button color="#3A3A3A" onPress={onConfirm}>
-              {confirmText}
+            <Button color="#3A3A3A" onPress={_onConfirm}>
+              {_confirmText}
             </Button>
-            <Button color="#3A3A3A" onPress={onClose}>
+            <Button color="#3A3A3A" onPress={_onClose}>
               취소
             </Button>
           </Dialog.Actions>

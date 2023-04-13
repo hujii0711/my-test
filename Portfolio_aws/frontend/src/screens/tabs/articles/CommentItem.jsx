@@ -1,22 +1,20 @@
 import React, {useState, useEffect, useRef, memo} from 'react';
 import {Pressable, StyleSheet, Text, View} from 'react-native';
 import {Avatar, IconButton} from 'react-native-paper';
-import {formatDaysAgo} from '../../../commons/utils/common';
-import {updateCommentPrefer} from '../../../api/comments';
+import {updateArticleCommentLikeUpDown} from '../../../api/articles';
 import {useQueryClient} from 'react-query';
+import com from '../../../commons/utils/common';
 
 const CommentItem = ({
-  commentId,
-  message,
-  createdDt,
-  username,
-  articleRef,
-  isMyComment,
-  onVisibleModify,
-  onVisibleRemove,
-  initLike = 0,
-  initHate = 0,
-  childUpdate,
+  _commentId,
+  _message,
+  _createdDt,
+  _userName,
+  _articleCreatedDt,
+  _initLike = 0,
+  _initHate = 0,
+  _onVisibleModify,
+  _onVisibleRemove,
 }) => {
   console.log('CommentItem 렌더링!!!');
 
@@ -24,11 +22,15 @@ const CommentItem = ({
   const isFirstRender = useRef(false);
   const select = useRef(false);
 
-  const [likeCnt, setLikeCnt] = useState(initLike);
+  const renderCount = useRef(1);
+
+  const [likeCnt, setLikeCnt] = useState(_initLike);
   const [selectedLike, setSelectedLike] = useState(false);
 
-  const [hateCnt, setHateCnt] = useState(initHate);
+  const [hateCnt, setHateCnt] = useState(_initHate);
   const [selectedHate, setSelectedHate] = useState(false);
+
+  const selectListCommentQuery = queryClient.getQueryData('selectListComment');
 
   const onPressLike = () => {
     if (selectedLike) {
@@ -39,7 +41,7 @@ const CommentItem = ({
       setSelectedLike(true);
     }
     setSelectedHate(false);
-    setHateCnt(initHate);
+    setHateCnt(_initHate);
   };
 
   const onPressHate = () => {
@@ -51,12 +53,46 @@ const CommentItem = ({
       setSelectedHate(true);
     }
     setSelectedLike(false);
-    setLikeCnt(initLike);
+    setLikeCnt(_initLike);
   };
 
-  const created_dt = formatDaysAgo(createdDt);
+  const makeCommentLikeJson = type => {
+    const updateObj = com.findJson(selectListCommentQuery, 'id', _commentId);
+
+    switch (type) {
+      case 'likeUp':
+        updateObj.liked = updateObj.liked + 1;
+        break;
+      case 'likeDown':
+        updateObj.liked = updateObj.liked - 1;
+        break;
+      case 'hateUp':
+        updateObj.unliked = updateObj.unliked + 1;
+        break;
+      case 'hateDown':
+        updateObj.unliked = updateObj.unliked - 1;
+        break;
+      case 'likeUpAndhateDown':
+        updateObj.liked = updateObj.liked + 1;
+        updateObj.unliked = updateObj.unliked - 1;
+        break;
+      case 'likeDownAndhateUp':
+        updateObj.liked = updateObj.liked - 1;
+        updateObj.unliked = updateObj.unliked + 1;
+        break;
+    }
+
+    return com.makeUpdateJson(
+      selectListCommentQuery,
+      updateObj,
+      'id',
+      _commentId,
+    );
+  };
 
   useEffect(() => {
+    renderCount.current = renderCount.current + 1;
+    console.log('렌더링 수 :::: ', renderCount.current);
     //console.log('isFirstRender.current========', isFirstRender.current);
     //console.log('select.current========', select.current);
 
@@ -72,39 +108,63 @@ const CommentItem = ({
     // 3. selectedLike=false | selectedHate=true
     if (selectedLike === false && selectedHate === false) {
       if (select.current === 'like') {
-        updateCommentPrefer(commentId, 'likeDown');
+        const commentBody = makeCommentLikeJson('likeDown');
+        updateArticleCommentLikeUpDown({
+          articleCreatedDt: _articleCreatedDt,
+          commentBody,
+        });
       } else if (select.current === 'hate') {
-        updateCommentPrefer(commentId, 'hateDown');
+        const commentBody = makeCommentLikeJson('hateDown');
+        updateArticleCommentLikeUpDown({
+          articleCreatedDt: _articleCreatedDt,
+          commentBody,
+        });
       }
       select.current = '';
-      queryClient.invalidateQueries('selectListComment');
-      childUpdate();
+      //queryClient.invalidateQueries('selectListComment');
+      //childUpdate();
       return;
     } else if (selectedLike === true && selectedHate === false) {
       if (select.current === '') {
-        updateCommentPrefer(commentId, 'likeUp');
+        const commentBody = makeCommentLikeJson('likeUp');
+        updateArticleCommentLikeUpDown({
+          articleCreatedDt: _articleCreatedDt,
+          commentBody,
+        });
       } else if (select.current === 'hate') {
-        updateCommentPrefer(commentId, 'likeUpAndhateDown');
+        const commentBody = makeCommentLikeJson('likeUpAndhateDown');
+        updateArticleCommentLikeUpDown({
+          articleCreatedDt: _articleCreatedDt,
+          commentBody,
+        });
       }
       select.current = 'like';
-      queryClient.invalidateQueries('selectListComment');
-      childUpdate();
+      //queryClient.invalidateQueries('selectListComment');
+      //childUpdate();
       return;
     } else if (selectedLike === false && selectedHate === true) {
       if (select.current === '') {
-        updateCommentPrefer(commentId, 'hateUp');
+        const commentBody = makeCommentLikeJson('hateUp');
+        updateArticleCommentLikeUpDown({
+          articleCreatedDt: _articleCreatedDt,
+          commentBody,
+        });
       } else if (select.current === 'like') {
-        updateCommentPrefer(commentId, 'likeDownAndhateUp');
+        const commentBody = makeCommentLikeJson('likeDownAndhateUp');
+        updateArticleCommentLikeUpDown({
+          articleCreatedDt: _articleCreatedDt,
+          commentBody,
+        });
       }
       select.current = 'hate';
-      queryClient.invalidateQueries('selectListComment');
-      childUpdate();
+      //queryClient.invalidateQueries('selectListComment');
+      //childUpdate();
       return;
     }
   }, [selectedLike, selectedHate]);
 
   return (
-    <React.Fragment key={commentId}>
+    <React.Fragment key={_commentId}>
       <View style={styles.block}>
         {/*left*/}
         <View style={styles.left}>
@@ -118,15 +178,15 @@ const CommentItem = ({
         <View style={styles.right}>
           {/*header*/}
           <View style={styles.header}>
-            <Text style={styles.header_text}>{username}</Text>
+            <Text style={styles.header_text}>{_userName}</Text>
             <View style={styles.space} />
-            <Text style={styles.header_text}>{created_dt}</Text>
+            <Text style={styles.header_text}>{_createdDt}</Text>
           </View>
           <View style={styles.divider} />
 
           {/*content*/}
           <View style={styles.content}>
-            <Text style={styles.content_text}>{message}</Text>
+            <Text style={styles.content_text}>{_message}</Text>
           </View>
           <View style={styles.divider} />
 
@@ -150,12 +210,12 @@ const CommentItem = ({
               <IconButton
                 icon="comment-edit"
                 size={18}
-                onPress={() => onVisibleModify(commentId)}
+                onPress={() => _onVisibleModify(_commentId)}
               />
               <IconButton
                 icon="comment-remove"
                 size={18}
-                onPress={() => onVisibleRemove(commentId)}
+                onPress={() => _onVisibleRemove(_commentId)}
               />
             </View>
           </View>

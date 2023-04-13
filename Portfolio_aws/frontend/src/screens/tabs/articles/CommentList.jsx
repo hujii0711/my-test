@@ -10,22 +10,42 @@ import {
 } from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
-import {insertComment, selectListComment} from '../../../api/comments';
 import {useUser} from '../../../commons/hooks/useReduxState';
 import CommentModifyModal from './CommentModifyModal';
 import CustomDialog from '../../../commons/utils/CustomDialog';
-import {updateComment, deleteComment} from '../../../api/comments';
+import {
+  insertArticleComment,
+  updateArticleComment,
+  deleteArticleComment,
+} from '../../../api/articles';
+import com from '../../../commons/utils/common';
 
-const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
+const CommentList = ({
+  _refRBSheet,
+  _articleId,
+  _articleCreatedDt,
+  _comments,
+  _childUpdate,
+}) => {
   console.log('CommentList 렌더링!!!');
-  const users = useUser();
-  const queryClient = useQueryClient();
-  const [message, setMessage] = useState('');
-  const [, setCommentItemUpdate] = useState(false);
 
-  const setCommentItemState = () => {
-    setCommentItemUpdate(!false);
-  };
+  const queryClient = useQueryClient();
+
+  //comments 캐시 set
+  const commentsJson = _comments ? JSON.parse(_comments) : [];
+  queryClient.setQueryData('selectListComment', () => {
+    return commentsJson;
+  });
+
+  const selectListCommentQuery = queryClient.getQueryData('selectListComment');
+
+  const users = useUser();
+  const [message, setMessage] = useState('');
+  //const [, setCommentItemUpdate] = useState(false);
+
+  //const setCommentItemState = () => {
+  //  setCommentItemUpdate(!false);
+  //};
 
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [askDialogVisible, setAskDialogVisible] = useState(false);
@@ -33,36 +53,39 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
     useState(false);
 
   // mutate 댓글 입력
-  const {mutate: mutateInsertComment} = useMutation(insertComment, {
-    onSuccess: comment => {
-      //댓글 목록 리캐싱
-      queryClient.setQueryData('selectListComment', data => {
+  const {mutate: mutateInsertArticleComment} = useMutation(
+    insertArticleComment,
+    {
+      onSuccess: comment => {
+        //댓글 목록 리캐싱
+        /*queryClient.setQueryData('selectListComment', data => {
         if (!data) {
           return {
             pageParams: [undefined],
             pages: [[comment]],
-            articleId: articleRef,
+            articleId: articleId,
           };
         }
         const [firstPage, ...rest] = data.pages;
         return {
           ...data,
           pages: [[comment, ...firstPage], ...rest],
-          articleId: articleRef,
+          articleId: articleId,
         };
       });
       const cacheData = queryClient.getQueryData('selectListComment');
 
       //ArticleView 리렌더링 시키기!!
-      queryClient.invalidateQueries(['selectArticle', articleRef]);
-      childUpdate();
+      queryClient.invalidateQueries(['selectArticle', articleId]);
+      childUpdate();*/
+      },
     },
-  });
+  );
 
   // mutate 댓글 수정
-  const {mutate: mutateUpdateComment} = useMutation(updateComment, {
+  const {mutate: mutateUpdateComment} = useMutation(updateArticleComment, {
     onSuccess: comment => {
-      // ☆ update 리턴 데이터 캐싱할 데이터 원본과 다름
+      /*// ☆ update 리턴 데이터 캐싱할 데이터 원본과 다름
       // LOG  ======= {"article_ref": 2, "created_at": "2022-10-03T05:36:37.000Z", "id": 8, "message": "test", "updated_at": "2022-10-03T05:36:37.000Z", "user_id": "f7d1176a-a503-4b4e-94cd-8d11b8eb990c"}
       // LOG  ======= {"id": 8, "message": "test1"}
       queryClient.setQueryData('selectListComment', data => {
@@ -76,18 +99,18 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
               ? page.map(a => (a.id === selectedCommentId ? comment : a))
               : page,
           ),
-          articleId: articleRef,
+          articleId: articleId,
         };
       });
       const cacheData = queryClient.getQueryData('selectListComment');
-      console.log('mutateUpdateComment >>>>> cacheData=====', cacheData);
+      console.log('mutateUpdateComment >>>>> cacheData=====', cacheData);*/
     },
   });
 
   // mutate 댓글 삭제
-  const {mutate: mutateDeleteComment} = useMutation(deleteComment, {
+  const {mutate: mutateDeleteComment} = useMutation(deleteArticleComment, {
     onSuccess: () => {
-      queryClient.setQueryData('selectListComment', data => {
+      /*queryClient.setQueryData('selectListComment', data => {
         if (!data) {
           return {pageParams: [], pages: []};
         }
@@ -100,19 +123,28 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
       console.log(
         'mutateUpdateComment >>>>> mutateDeleteComment=====',
         cacheData,
-      );
+      );*/
     },
   });
 
   // submit 댓글 입력
   const onSubmitWriteComment = useCallback(
     message => {
-      mutateInsertComment({
-        articleRef,
+      const newObj = {
+        id: com.uuidv4(),
         message,
-      });
+        user_id: 'fujii0711',
+        user_name: '김형준',
+        liked: 0,
+        unliked: 0,
+        created_dt: com.krDate(),
+        updated_dt: null,
+      };
+
+      const commentBody = com.makeInsertJson(commentsJson, newObj);
+      mutateInsertArticleComment({_articleCreatedDt, commentBody});
     },
-    [mutateInsertComment, articleRef],
+    [mutateInsertArticleComment, _articleCreatedDt],
   );
 
   //commentModifyModal
@@ -125,10 +157,21 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
   // 댓글 수정
   const onSubmitModify = message => {
     setCommentModifyModalVisible(false);
+
+    const updateObj = com.findJson(commentsJson, 'id', selectedCommentId);
+    updateObj.message = message;
+    updateObj.updated_dt = com.krDate();
+
+    const commentBody = com.makeUpdateJson(
+      commentsJson,
+      updateObj,
+      'id',
+      selectedCommentId,
+    );
+
     mutateUpdateComment({
-      id: selectedCommentId,
-      article_ref: articleRef,
-      message: message,
+      articleCreatedDt: _articleCreatedDt,
+      commentBody,
     });
   };
 
@@ -147,9 +190,16 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
   // 댓글 삭제
   const onConfirmRemove = () => {
     setAskDialogVisible(false);
+
+    const commentBody = com.makeDeleteJson(
+      commentsJson,
+      'id',
+      selectedCommentId,
+    );
+
     mutateDeleteComment({
-      id: selectedCommentId,
-      articleRef,
+      articleCreatedDt: _articleCreatedDt,
+      commentBody,
     });
   };
 
@@ -166,17 +216,17 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
     fetchPreviousPage,
   } = useInfiniteQuery(
     'selectListComment',
-    ({pageParam}) => selectListComment({...pageParam, articleId: articleRef}),
+    ({pageParam}) => selectListComment({...pageParam, articleId: articleId}),
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage?.length === 10) {
           return {
             nextOffset: lastPage[lastPage.length - 1].id,
-            articleId: articleRef,
+            articleId: articleId,
           };
         } else {
           return {
-            articleId: articleRef,
+            articleId: articleId,
             nextOffset: undefined,
             prevOffset: undefined,
           };
@@ -186,33 +236,33 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
         const validPage = allPages.find(page => page?.length > 0);
         if (!validPage) {
           return {
-            articleId: articleRef,
+            articleId: articleId,
             nextOffset: undefined,
             prevOffset: undefined,
           };
         }
         return {
           prevOffset: validPage[0].id,
-          articleId: articleRef,
+          articleId: articleId,
         };
       },
     },
   );
+  */
 
   const items = useMemo(() => {
-    if (!data) {
+    if (!commentsJson) {
       return null;
     }
-    return [].concat(...data.pages);
-  }, [data]);*/
+    return commentsJson;
+  }, [commentsJson]);
 
-  // if (!items) {
-  //   return <ActivityIndicator color="red" />;
-  // }
-
+  if (!items) {
+    return <ActivityIndicator color="red" />;
+  }
   return (
     <RBSheet
-      ref={refRBSheet}
+      ref={_refRBSheet}
       height={400}
       closeOnDragDown={true}
       closeOnPressMask={true}
@@ -243,28 +293,26 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
           iconColor={Color.background}
           style={styles.button}
           size={26}
-          onPress={() => refRBSheet.current.close()}
+          onPress={() => _refRBSheet.current.close()}
         />
         <FlatList
           data={items}
-          renderItem={({comments}) => {
+          renderItem={({item}) => {
             return (
               <CommentItem
-                commentId={item.id}
-                message={item.message}
-                createdDt={item.created_dt}
-                username={item.user_name}
-                articleRef={articleRef}
-                isMyComment={item.user_id === users.user_id}
-                initLike={item.liked}
-                initHate={item.unliked}
-                onVisibleModify={onVisibleModify}
-                onVisibleRemove={onVisibleRemove}
-                childUpdate={setCommentItemState}
+                _commentId={item.id}
+                _message={item.message}
+                _createdDt={item.created_dt}
+                _userName={item.user_name ?? '김형준'}
+                _articleCreatedDt={_articleCreatedDt}
+                _initLike={item.liked}
+                _initHate={item.unliked}
+                _onVisibleModify={onVisibleModify}
+                _onVisibleRemove={onVisibleRemove}
               />
             );
           }}
-          keyExtractor={(item, index) => index.toString()}
+          keyExtractor={(item, index) => item.id}
           ItemSeparatorComponent={() => <View style={styles.separator} />}
           ListHeaderComponent={
             <View style={{flexDirection: 'row'}}>
@@ -297,42 +345,41 @@ const CommentList = ({refRBSheet, articleRef, childUpdate, comments}) => {
           ListFooterComponent={items => (
             <>
               {items.length > 0 ? <View style={styles.separator} /> : null}
-              {isFetchingNextPage && (
+              {/* {isFetchingNextPage && (
                 <ActivityIndicator
                   size="small"
                   color="blue"
                   style={{flex: 1}}
                 />
-              )}
+              )} */}
             </>
           )}
           // ☆ 주석 해제시 렌더링 부하 발생
-          onEndReachedThreshold={0.5}
-          onEndReached={fetchNextPage}
-          refreshControl={
-            <RefreshControl
-              onRefresh={fetchPreviousPage}
-              refreshing={isFetchingPreviousPage}
-            />
-          }
+          //onEndReachedThreshold={0.5}
+          // onEndReached={fetchNextPage}
+          // refreshControl={
+          //   <RefreshControl
+          //     onRefresh={fetchPreviousPage}
+          //     refreshing={isFetchingPreviousPage}
+          //   />
+          // }
         />
       </View>
       {selectedCommentId && (
         <>
           <CommentModifyModal
-            visible={commentModifyModalVisible}
-            commentId={selectedCommentId}
-            articleRef={articleRef}
-            onSubmit={onSubmitModify}
-            onClose={onCancelModify}
+            _visible={commentModifyModalVisible}
+            _commentId={selectedCommentId}
+            _onSubmit={onSubmitModify}
+            _onClose={onCancelModify}
           />
           <CustomDialog
-            visible={askDialogVisible}
-            title="댓글 삭제"
-            message="댓글을 삭제하시겠습니까?"
-            confirmText="삭제"
-            onConfirm={onConfirmRemove}
-            onClose={onCancelRemove}
+            _visible={askDialogVisible}
+            _title="댓글 삭제"
+            _message="댓글을 삭제하시겠습니까?"
+            _confirmText="삭제"
+            _onConfirm={onConfirmRemove}
+            _onClose={onCancelRemove}
           />
         </>
       )}

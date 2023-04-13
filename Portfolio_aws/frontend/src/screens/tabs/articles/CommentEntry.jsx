@@ -3,19 +3,19 @@ import {Badge, IconButton, ActivityIndicator} from 'react-native-paper';
 import {View, StyleSheet, Text} from 'react-native';
 import Color from '../../../commons/style/Color';
 
-const CommentEntry = ({refRBSheet, commentCnt = 0}) => {
+const CommentEntry = ({_refRBSheet, _commentCnt = 0}) => {
   return (
     <View style={styles.block}>
       <Text style={styles.text}>댓글</Text>
       <Badge style={styles.badge} visible={true} size={16}>
-        {commentCnt}
+        {_commentCnt}
       </Badge>
       <IconButton
         icon="unfold-more-horizontal"
         iconColor={Color.text}
         style={styles.button}
         size={18}
-        onPress={() => refRBSheet.current.open()}
+        onPress={() => _refRBSheet.current.open()}
       />
     </View>
   );

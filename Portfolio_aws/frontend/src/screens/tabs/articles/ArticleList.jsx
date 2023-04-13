@@ -7,7 +7,7 @@ import {
   StatusBar,
   RefreshControl,
 } from 'react-native';
-import ArticleItem from './ArticleItem';
+import ArticleListItem from './ArticleListItem';
 import {FAB, ActivityIndicator} from 'react-native-paper';
 import {useInfiniteQuery, useQueryClient} from 'react-query';
 import {selectArticlePagingList} from '../../../api/articles';
@@ -68,7 +68,7 @@ const ArticleList = ({navigation}) => {
         //allPages는 useInfiniteQuery를 이용해 호출된 모든 페이지 데이터를 의미합니다.
         if (lastPage.length === 10) {
           return {
-            nextCreatedDt: lastPage[lastPage.length-1].created_dt, // 다음 페이지를 호출할 때 사용 될 pageParam
+            nextCreatedDt: lastPage[lastPage.length - 1].created_dt, // 다음 페이지를 호출할 때 사용 될 pageParam
             //{nextCreatedDt = 15, prevCreatedDt = undefined}
           };
         } else {
@@ -88,7 +88,8 @@ const ArticleList = ({navigation}) => {
         }
 
         return {
-          prevCreatedDt: validPage[0].created_dt === 1 ? 0 : validPage[0].created_dt, //allPages 데이터중 첫번째 값
+          prevCreatedDt:
+            validPage[0].created_dt === 1 ? 0 : validPage[0].created_dt, //allPages 데이터중 첫번째 값
           //{nextCreatedDt = undefined, prevCreatedDt = 11}
         };
       },
@@ -99,7 +100,7 @@ const ArticleList = ({navigation}) => {
     if (!data) {
       return null;
     }
-    
+
     return [].concat(...data.pages);
   }, [data]);
 
@@ -115,13 +116,13 @@ const ArticleList = ({navigation}) => {
         data={items}
         renderItem={({item}) => {
           return (
-            <ArticleItem
-              navigation={navigation}
-              id={item.id}
-              title={item.title}
-              created_dt={item.created_dt}
-              user_name={item.user_name}
-              lookup={item.lookup}
+            <ArticleListItem
+              _navigation={navigation}
+              _id={item.id}
+              _title={item.title}
+              _createdDt={item.created_dt}
+              _userName={item.user_name}
+              _lookup={item.lookup}
             />
           );
         }}

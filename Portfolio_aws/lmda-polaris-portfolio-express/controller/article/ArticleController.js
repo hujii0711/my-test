@@ -3,7 +3,7 @@ const { catchAsync } = require("../../modules/error");
 const httpStatus = require("http-status");
 
 /********************************** 
- 0. 조회 페이징
+ 1. 조회 페이징
 **********************************/
 exports.selectArticlePagingList = catchAsync(async (req, res) => {
   const query = req.query;
@@ -12,7 +12,7 @@ exports.selectArticlePagingList = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 1. 조회 상세
+ 2. 조회 상세
 **********************************/
 exports.selectArticle = catchAsync(async (req, res) => {
   const query = req.query;
@@ -21,7 +21,7 @@ exports.selectArticle = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 2. 등록
+ 3. 등록
 **********************************/
 exports.insertArticle = catchAsync(async (req, res) => {
   const body = req.body;
@@ -30,7 +30,7 @@ exports.insertArticle = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 3. 수정
+ 4. 수정
 **********************************/
 exports.updateArticle = catchAsync(async (req, res) => {
   const body = req.body;
@@ -39,7 +39,7 @@ exports.updateArticle = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 4. 삭제
+ 5. 삭제
 **********************************/
 exports.deleteArticle = catchAsync(async (req, res) => {
   const body = req.body;
@@ -48,7 +48,7 @@ exports.deleteArticle = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 5. 조회수 up
+ 6. 조회수 up
 **********************************/
 exports.updateArticleLookUpCnt = catchAsync(async (req, res) => {
   const body = req.body;
@@ -57,25 +57,16 @@ exports.updateArticleLookUpCnt = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 6. 좋아요 up
+ 7. 좋아요 싫어요 up, down
 **********************************/
-exports.updateArticleLikeCnt = catchAsync(async (req, res) => {
+exports.updateArticleLikeUpDown = catchAsync(async (req, res) => {
   const body = req.body;
-  const result = await ArticleService.updateArticleLikeCnt(body);
+  const result = await ArticleService.updateArticleLikeUpDown(body);
   res.json(result).status(httpStatus.OK);
 });
 
 /********************************** 
- 7. 싫어요 up
-**********************************/
-exports.updateArticleUnLikeCnt = catchAsync(async (req, res) => {
-  const body = req.body;
-  const result = await ArticleService.updateArticleUnLikeCnt(body);
-  res.json(result).status(httpStatus.OK);
-});
-
-/********************************** 
- 8. 댓글 등록 (실질 update)
+ 8. 댓글 등록
 **********************************/
 exports.insertArticleComment = catchAsync(async (req, res) => {
   const body = req.body;
@@ -84,7 +75,7 @@ exports.insertArticleComment = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 9. 댓글 수정 (실질 update)
+ 9. 댓글 수정
 **********************************/
 exports.updateArticleComment = catchAsync(async (req, res) => {
   const body = req.body;
@@ -93,7 +84,7 @@ exports.updateArticleComment = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 10. 댓글 삭제 (실질 update)
+ 10. 댓글 삭제
 **********************************/
 exports.deleteArticleComment = catchAsync(async (req, res) => {
   const body = req.body;
@@ -102,19 +93,10 @@ exports.deleteArticleComment = catchAsync(async (req, res) => {
 });
 
 /********************************** 
- 11. 댓글 좋아요 up (실질 update)
+ 11.댓글 좋아요 싫어요 up, down
 **********************************/
-exports.updateArticleCommentLikeCnt = catchAsync(async (req, res) => {
+exports.updateArticleCommentLikeUpDown = catchAsync(async (req, res) => {
   const body = req.body;
-  const result = await ArticleService.updateArticleCommentLikeCnt(body);
-  res.json(result).status(httpStatus.OK);
-});
-
-/********************************** 
- 12. 댓글 싫어요 up (실질 update)
-**********************************/
-exports.updateArticleCommentUnLikeCnt = catchAsync(async (req, res) => {
-  const body = req.body;
-  const result = await ArticleService.updateArticleCommentUnLikeCnt(body);
+  const result = await ArticleService.updateArticleCommentLikeUpDown(body);
   res.json(result).status(httpStatus.OK);
 });
