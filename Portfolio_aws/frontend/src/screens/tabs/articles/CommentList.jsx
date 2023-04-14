@@ -1,13 +1,15 @@
-import React, {useMemo, useState, useCallback, memo} from 'react';
+import React, {
+  useMemo,
+  useState,
+  useCallback,
+  memo,
+  useRef,
+  useEffect,
+} from 'react';
 import {IconButton, TextInput, ActivityIndicator} from 'react-native-paper';
 import {View, FlatList, Text, StyleSheet, RefreshControl} from 'react-native';
 import RBSheet from 'react-native-raw-bottom-sheet';
-import {
-  useMutation,
-  useQueryClient,
-  useInfiniteQuery,
-  useQuery,
-} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
 import CommentItem from './CommentItem';
 import Color from '../../../commons/style/Color';
 import {useUser} from '../../../commons/hooks/useReduxState';
@@ -20,33 +22,26 @@ import {
 } from '../../../api/articles';
 import com from '../../../commons/utils/common';
 
-const CommentList = ({
-  _refRBSheet,
-  _articleId,
-  _articleCreatedDt,
-  _comments,
-  _childUpdate,
-}) => {
-  console.log('CommentList 렌더링!!!');
-
-  const queryClient = useQueryClient();
-
-  //comments 캐시 set
-  const commentsJson = _comments ? JSON.parse(_comments) : [];
-  queryClient.setQueryData('selectListComment', () => {
-    return commentsJson;
-  });
-
-  const selectListCommentQuery = queryClient.getQueryData('selectListComment');
+const CommentList = ({_refRBSheet, _articleCreatedDt, _comments}) => {
+  console.log('&&&&&&&&&&&&&&&&&CommentList 렌더링&&&&&&&&&&&&&&&&&');
 
   const users = useUser();
+  const queryClient = useQueryClient();
+
+  const cachedSelectListComment = queryClient.getQueryData('selectListComment');
+
+  const [selectListCommentData, setSelectListCommentData] = useState(() =>
+    cachedSelectListComment
+      ? typeof cachedSelectListComment === 'string'
+        ? JSON.parse(cachedSelectListComment)
+        : cachedSelectListComment
+      : _comments,
+  );
+
+  // 초기 selectListCommentData 캐시 지정
+  queryClient.setQueryData('selectListComment', selectListCommentData);
+
   const [message, setMessage] = useState('');
-  //const [, setCommentItemUpdate] = useState(false);
-
-  //const setCommentItemState = () => {
-  //  setCommentItemUpdate(!false);
-  //};
-
   const [selectedCommentId, setSelectedCommentId] = useState(null);
   const [askDialogVisible, setAskDialogVisible] = useState(false);
   const [commentModifyModalVisible, setCommentModifyModalVisible] =
@@ -56,74 +51,40 @@ const CommentList = ({
   const {mutate: mutateInsertArticleComment} = useMutation(
     insertArticleComment,
     {
-      onSuccess: comment => {
-        //댓글 목록 리캐싱
-        /*queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {
-            pageParams: [undefined],
-            pages: [[comment]],
-            articleId: articleId,
-          };
-        }
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [[comment, ...firstPage], ...rest],
-          articleId: articleId,
-        };
-      });
-      const cacheData = queryClient.getQueryData('selectListComment');
-
-      //ArticleView 리렌더링 시키기!!
-      queryClient.invalidateQueries(['selectArticle', articleId]);
-      childUpdate();*/
+      onSuccess: insertedData => {
+        queryClient.invalidateQueries('selectListComment');
+        queryClient.setQueryData(
+          'selectListComment',
+          typeof insertedData === 'string'
+            ? JSON.parse(insertedData)
+            : insertedData,
+        );
+        setSelectListCommentData(queryClient.getQueryData('selectListComment'));
       },
     },
   );
 
   // mutate 댓글 수정
   const {mutate: mutateUpdateComment} = useMutation(updateArticleComment, {
-    onSuccess: comment => {
-      /*// ☆ update 리턴 데이터 캐싱할 데이터 원본과 다름
-      // LOG  ======= {"article_ref": 2, "created_at": "2022-10-03T05:36:37.000Z", "id": 8, "message": "test", "updated_at": "2022-10-03T05:36:37.000Z", "user_id": "f7d1176a-a503-4b4e-94cd-8d11b8eb990c"}
-      // LOG  ======= {"id": 8, "message": "test1"}
-      queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {pageParams: [], pages: []};
-        }
-        return {
-          pageParams: data.pageParams,
-          pages: data.pages.map(page =>
-            page.find(a => a.id === selectedCommentId)
-              ? page.map(a => (a.id === selectedCommentId ? comment : a))
-              : page,
-          ),
-          articleId: articleId,
-        };
-      });
-      const cacheData = queryClient.getQueryData('selectListComment');
-      console.log('mutateUpdateComment >>>>> cacheData=====', cacheData);*/
+    onSuccess: updatedData => {
+      queryClient.invalidateQueries('selectListComment');
+      queryClient.setQueryData(
+        'selectListComment',
+        typeof updatedData === 'string' ? JSON.parse(updatedData) : updatedData,
+      );
+      setSelectListCommentData(queryClient.getQueryData('selectListComment'));
     },
   });
 
   // mutate 댓글 삭제
   const {mutate: mutateDeleteComment} = useMutation(deleteArticleComment, {
     onSuccess: () => {
-      /*queryClient.setQueryData('selectListComment', data => {
-        if (!data) {
-          return {pageParams: [], pages: []};
-        }
-        return {
-          pageParams: data.pageParams,
-          pages: data.pages.map(page => page.filter(a => a.id !== id)),
-        };
+      queryClient.invalidateQueries('selectListComment');
+      queryClient.setQueryData('selectListComment', cache => {
+        const jsonData = typeof cache === 'string' ? JSON.parse(cache) : cache;
+        return jsonData ? jsonData.filter(a => a.id !== selectedCommentId) : [];
       });
-      const cacheData = queryClient.getQueryData('selectListComment');
-      console.log(
-        'mutateUpdateComment >>>>> mutateDeleteComment=====',
-        cacheData,
-      );*/
+      setSelectListCommentData(queryClient.getQueryData('selectListComment'));
     },
   });
 
@@ -141,8 +102,11 @@ const CommentList = ({
         updated_dt: null,
       };
 
-      const commentBody = com.makeInsertJson(commentsJson, newObj);
-      mutateInsertArticleComment({_articleCreatedDt, commentBody});
+      const commentBody = com.makeInsertJson(selectListCommentData, newObj);
+      mutateInsertArticleComment({
+        articleCreatedDt: _articleCreatedDt,
+        commentBody,
+      });
     },
     [mutateInsertArticleComment, _articleCreatedDt],
   );
@@ -158,12 +122,21 @@ const CommentList = ({
   const onSubmitModify = message => {
     setCommentModifyModalVisible(false);
 
-    const updateObj = com.findJson(commentsJson, 'id', selectedCommentId);
+    console.log(
+      'onSubmitModify >>>> selectListCommentData===',
+      selectListCommentData,
+    );
+    console.log('onSubmitModify >>>> selectedCommentId===', selectedCommentId);
+    const updateObj = com.findJson(
+      selectListCommentData,
+      'id',
+      selectedCommentId,
+    );
     updateObj.message = message;
     updateObj.updated_dt = com.krDate();
 
     const commentBody = com.makeUpdateJson(
-      commentsJson,
+      selectListCommentData,
       updateObj,
       'id',
       selectedCommentId,
@@ -192,11 +165,13 @@ const CommentList = ({
     setAskDialogVisible(false);
 
     const commentBody = com.makeDeleteJson(
-      commentsJson,
+      selectListCommentData,
       'id',
       selectedCommentId,
     );
-
+    console.log(
+      'onConfirmRemove&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&',
+    );
     mutateDeleteComment({
       articleCreatedDt: _articleCreatedDt,
       commentBody,
@@ -208,54 +183,12 @@ const CommentList = ({
     setAskDialogVisible(false);
   };
 
-  /*const {
-    data,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    fetchNextPage,
-    fetchPreviousPage,
-  } = useInfiniteQuery(
-    'selectListComment',
-    ({pageParam}) => selectListComment({...pageParam, articleId: articleId}),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage?.length === 10) {
-          return {
-            nextOffset: lastPage[lastPage.length - 1].id,
-            articleId: articleId,
-          };
-        } else {
-          return {
-            articleId: articleId,
-            nextOffset: undefined,
-            prevOffset: undefined,
-          };
-        }
-      },
-      getPreviousPageParam: (firstPage, allPages) => {
-        const validPage = allPages.find(page => page?.length > 0);
-        if (!validPage) {
-          return {
-            articleId: articleId,
-            nextOffset: undefined,
-            prevOffset: undefined,
-          };
-        }
-        return {
-          prevOffset: validPage[0].id,
-          articleId: articleId,
-        };
-      },
-    },
-  );
-  */
-
   const items = useMemo(() => {
-    if (!commentsJson) {
+    if (!selectListCommentData) {
       return null;
     }
-    return commentsJson;
-  }, [commentsJson]);
+    return selectListCommentData;
+  }, [selectListCommentData]);
 
   if (!items) {
     return <ActivityIndicator color="red" />;

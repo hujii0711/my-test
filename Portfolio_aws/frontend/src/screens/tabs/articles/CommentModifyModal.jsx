@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useMemo} from 'react';
 import {
   Modal,
   Portal,
@@ -6,12 +6,14 @@ import {
   Provider,
   TextInput,
   IconButton,
+  ActivityIndicator,
 } from 'react-native-paper';
 import {View} from 'react-native';
 import {useQueryClient} from 'react-query';
 import com from '../../../commons/utils/common';
 
 const CommentModifyModal = ({_visible, _commentId, _onSubmit, _onClose}) => {
+  console.log('&&&&&&&&&&&&&&&&&CommentModifyModal 렌더링&&&&&&&&&&&&&&&&&');
   const queryClient = useQueryClient();
 
   //comments 캐시 get
@@ -24,9 +26,21 @@ const CommentModifyModal = ({_visible, _commentId, _onSubmit, _onClose}) => {
 
   const [message, setMessage] = useState('');
 
-  useEffect(() => {
-    setMessage(selectedCommentData?.message);
-  }, [selectedCommentData?.message]);
+  const items = useMemo(() => {
+    if (!selectedCommentData) {
+      return null;
+    }
+    setMessage(selectedCommentData.message);
+    return true;
+  }, [selectedCommentData]);
+
+  if (!items) {
+    return <ActivityIndicator color="red" />;
+  }
+
+  //useEffect(() => {
+  //  setMessage(selectedCommentData?.message);
+  //}, []);
 
   return (
     <Provider>

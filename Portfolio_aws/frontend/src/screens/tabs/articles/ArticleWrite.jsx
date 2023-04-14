@@ -17,6 +17,7 @@ const LeftContent = props => (
 );
 
 const ArticleWrite = () => {
+  console.log('&&&&&&&&&&&&&&&&&ArticleWrite 렌더링&&&&&&&&&&&&&&&&&');
   const articleId = useRoute().params?.id;
   const createdDt = useRoute().params?.createdDt;
   const navigation = useNavigation();
@@ -38,34 +39,33 @@ const ArticleWrite = () => {
   );
 
   const {mutate: mutateInsertArticle} = useMutation(insertArticle, {
-    onSuccess: article => {
-      //pages: [[{}]]
+    onSuccess: insertedData => {
+      //pages: [[{},{}...]]
       //pageParams: [undefined]
       //queryClient.invalidateQueries('selectArticlePagingList');
       queryClient.setQueryData('selectArticlePagingList', data => {
         if (!data) {
           return {
             pageParams: [undefined],
-            pages: [[article]],
+            pages: [[insertedData]],
           };
         }
         const [firstPage, ...rest] = data.pages;
 
         return {
           ...data,
-          pages: [[article, ...firstPage], ...rest],
+          pages: [[insertedData, ...firstPage], ...rest],
         };
       });
-      navigation.goBack();
+      navigation.goBack(); // articleList로 이동
     },
   });
 
   const {mutate: mutateUpdateArticle} = useMutation(updateArticle, {
-    onSuccess: article => {
-      console.log('mutateUpdateArticle >>>>> data======', data);
-      // 게시글 목록 수정
+    onSuccess: updatedData => {
+      //pages: [[{},{}...]]
+      //pageParams: [undefined]
       queryClient.setQueryData('selectArticlePagingList', data => {
-        console.log('mutateUpdateArticle >>>>> data======', data);
         if (!data) {
           return {pageParams: [], pages: []};
         }
@@ -73,15 +73,16 @@ const ArticleWrite = () => {
           pageParams: data.pageParams,
           pages: data.pages.map(page =>
             page.find(a => a.created_dt === createdDt)
-              ? page.map(a => (a.created_dt === createdDt ? article : a))
+              ? page.map(b => (b.created_dt === createdDt ? updatedData : b))
               : page,
           ),
         };
       });
 
       // 게시글 수정
-      queryClient.setQueryData(['selectArticle', articleId], article);
-      navigation.goBack();
+      //queryClient.invalidateQueries('selectArticle');
+      queryClient.setQueryData(['selectArticle', articleId], updatedData);
+      navigation.goBack(); // articleView로 이동
     },
   });
 

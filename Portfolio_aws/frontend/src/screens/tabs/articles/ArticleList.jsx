@@ -15,7 +15,8 @@ import Color from '../../../commons/style/Color';
 import FloatingButton from '../../../commons/component/FloatingButton';
 
 const ArticleList = ({navigation}) => {
-  console.log('ArticleList 렌더링!!!!!!!!!!');
+  console.log('&&&&&&&&&&&&&&&&&ArticleList 렌더링&&&&&&&&&&&&&&&&&');
+
   const queryClient = useQueryClient();
   const [floatButtonHidden, setFloatButtonHidden] = useState(false);
   const [refreshing, setRefreshing] = useState(false);
@@ -126,7 +127,7 @@ const ArticleList = ({navigation}) => {
             />
           );
         }}
-        keyExtractor={item => item.id.toString()}
+        keyExtractor={item => item.id}
         ItemSeparatorComponent={() => <View style={styles.separator} />}
         ListFooterComponent={items => (
           <>
@@ -169,13 +170,6 @@ const styles = StyleSheet.create({
     height: 1,
     backgroundColor: Color.divider,
   },
-  // fab: {
-  //   position: 'absolute',
-  //   margin: 16,
-  //   right: 0,
-  //   bottom: 0,
-  //   backgroundColor: Color.sub_main,
-  // },
 });
 
 export default ArticleList;

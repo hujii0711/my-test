@@ -2,7 +2,7 @@ import {useNavigation} from '@react-navigation/native';
 import React, {useRef, useCallback, useEffect, useState} from 'react';
 import {StyleSheet, Text, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
-import {useMutation} from 'react-query';
+import {useMutation, useQueryClient} from 'react-query';
 import {deleteArticle, updateArticleLikeUpDown} from '../../../api/articles';
 import Color from '../../../commons/style/Color';
 import com from '../../../commons/utils/common';
@@ -19,9 +19,10 @@ const ArticleViewItem = ({
   _liked = 0,
   _unliked = 0,
 }) => {
-  console.log('ArticleViewItem 렌더링!!!!');
+  console.log('&&&&&&&&&&&&&&&&&ArticleViewItem 렌더링&&&&&&&&&&&&&&&&&');
   const createdDtAgo = com.formatDaysAgo(_createdDt);
   const navigation = useNavigation();
+  const queryClient = useQueryClient();
   const [askDialogVisible, setAskDialogVisible] = useState(false);
 
   // 좋아요, 싫어요 관리
@@ -108,15 +109,18 @@ const ArticleViewItem = ({
   // mutate 댓글 삭제
   const {mutate: mutateDeleteArticle} = useMutation(deleteArticle, {
     onSuccess: () => {
-      // queryClient.setQueryData('selectArticlePagingList', data => {
-      //   if (!data) {
-      //     return {pageParams: [], pages: []};
-      //   }
-      //   return {
-      //     pageParams: data.pageParams,
-      //     pages: data.pages.map(page => page.filter(a => a.id !== id)),
-      //   };
-      // });
+      queryClient.setQueryData('selectArticlePagingList', data => {
+        console.log('mutateDeleteArticle >>>>> data======', data);
+        if (!data) {
+          return {pageParams: [], pages: []};
+        }
+        return {
+          pageParams: data.pageParams,
+          pages: data.pages.map(page =>
+            page.filter(a => a.created_dt !== _createdDt),
+          ),
+        };
+      });
       navigation.goBack();
     },
   });

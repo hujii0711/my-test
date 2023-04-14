@@ -16,13 +16,9 @@ const CommentItem = ({
   _onVisibleModify,
   _onVisibleRemove,
 }) => {
-  console.log('CommentItem 렌더링!!!');
-
+  console.log('&&&&&&&&&&&&&&&&&CommentItem 렌더링&&&&&&&&&&&&&&&&&');
   const queryClient = useQueryClient();
-  const isFirstRender = useRef(false);
   const select = useRef(false);
-
-  const renderCount = useRef(1);
 
   const [likeCnt, setLikeCnt] = useState(_initLike);
   const [selectedLike, setSelectedLike] = useState(false);
@@ -91,17 +87,6 @@ const CommentItem = ({
   };
 
   useEffect(() => {
-    renderCount.current = renderCount.current + 1;
-    console.log('렌더링 수 :::: ', renderCount.current);
-    //console.log('isFirstRender.current========', isFirstRender.current);
-    //console.log('select.current========', select.current);
-
-    // 최초 렌더링시 skip
-    // if (isFirstRender.current === false) {
-    //   isFirstRender.current = true;
-    //   return;
-    // }
-
     // 경우의 수
     // 1. selectedLike=false | selectedHate=false
     // 2. selectedLike=true | selectedHate=false
@@ -121,8 +106,6 @@ const CommentItem = ({
         });
       }
       select.current = '';
-      //queryClient.invalidateQueries('selectListComment');
-      //childUpdate();
       return;
     } else if (selectedLike === true && selectedHate === false) {
       if (select.current === '') {
@@ -139,8 +122,6 @@ const CommentItem = ({
         });
       }
       select.current = 'like';
-      //queryClient.invalidateQueries('selectListComment');
-      //childUpdate();
       return;
     } else if (selectedLike === false && selectedHate === true) {
       if (select.current === '') {
@@ -157,8 +138,6 @@ const CommentItem = ({
         });
       }
       select.current = 'hate';
-      //queryClient.invalidateQueries('selectListComment');
-      //childUpdate();
       return;
     }
   }, [selectedLike, selectedHate]);

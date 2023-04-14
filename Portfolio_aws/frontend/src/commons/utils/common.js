@@ -12,28 +12,34 @@ const com = {};
 ************************************/
 com.makeInsertJson = (orgJson, newObj) => {
   return JSON.stringify((orgJson ?? []).concat(newObj));
-}
+};
 
 /************************************
   json 수정 함수
 ************************************/
 com.makeUpdateJson = (orgJson, updateObj, key, keyVal) => {
-  return JSON.stringify(orgJson ? orgJson.map(elem => elem[key] === keyVal ? updateObj : elem) : []);
-}
+  return JSON.stringify(
+    orgJson
+      ? orgJson.map(elem => (elem[key] === keyVal ? updateObj : elem))
+      : [],
+  );
+};
 
 /************************************
   json 삭제 함수
 ************************************/
 com.makeDeleteJson = (orgJson, key, keyVal) => {
-  return JSON.stringify(orgJson ? orgJson.filter(elem => elem[key] !== keyVal) : []);
-}
+  return JSON.stringify(
+    orgJson ? orgJson.filter(elem => elem[key] !== keyVal) : [],
+  );
+};
 
 /************************************
   특정 키로 obj 찾기
 ************************************/
 com.findJson = (orgJson, key, keyVal) => {
   return orgJson.find(elem => elem[key] === keyVal);
-}
+};
 
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
   com.str
@@ -55,9 +61,9 @@ com.truncate = text => {
   uuid 난수 추출
 ************************************/
 com.uuidv4 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, (c) => {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
     var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -70,11 +76,10 @@ com.uuidv4 = () => {
   date 전일 형태 표시
 ************************************/
 com.formatDaysAgo = date => {
-
-  if(typeof date === "string"){
+  if (typeof date === 'string') {
     date = Number(date);
   }
-  
+
   const d = new Date(date);
   const now = Date.now();
   const diff = (now - d.getTime()) / 1000; // 현재 시간과의 차이(초)
@@ -111,26 +116,23 @@ com.krDate = () => {
 /************************************
   이메일 검증
 ************************************/
-com.isEmail = (asValue) => {
+com.isEmail = asValue => {
   var regExp =
     /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i;
   return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
-}
+};
 
 /************************************
   비밀번호 조합 검증
 ************************************/
-com.isPassword = (asValue) => {
+com.isPassword = asValue => {
   var regExp = /^(?=.*\d)(?=.*[a-zA-Z])[0-9a-zA-Z]{8,10}$/; //  8 ~ 10자 영문, 숫자 조합
   return regExp.test(asValue); // 형식에 맞는 경우 true 리턴
-}
-
+};
 
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
   com.num
   숫자 관련 기능 모음
  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
 
- 
 module.exports = com;
-

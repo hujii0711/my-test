@@ -12,7 +12,9 @@ const ArticleListItem = ({
   _userName,
   _lookup,
 }) => {
+  console.log('&&&&&&&&&&&&&&&&&ArticleListItem 렌더링&&&&&&&&&&&&&&&&&');
   const createdDtAgo = com.formatDaysAgo(_createdDt);
+
   const onPressMove = () => {
     //_navigation.navigate('ArticleView', {id: _id, createdDt: _createdDt}); {"_createdDt": 1680840905408, "_id": "f1bf24ed-b9d6-4597-bc58-bc99dc9d4af6"}
     const move = {id: _id, createdDt: _createdDt}; //{"createdDt": 1680840905408, "id": "f1bf24ed-b9d6-4597-bc58-bc99dc9d4af6"}

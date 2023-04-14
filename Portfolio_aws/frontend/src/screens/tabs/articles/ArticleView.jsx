@@ -10,7 +10,7 @@ import CommentList from './CommentList';
 import ArticleViewItem from './ArticleViewItem';
 
 const ArticleView = () => {
-  console.log('ArticleView 렌더링!!!!!!!');
+  console.log('&&&&&&&&&&&&&&&&&ArticleView 렌더링&&&&&&&&&&&&&&&&&');
   const refRBSheet = useRef();
   const {id: articleId, createdDt} = useRoute().params;
   const currentUser = useUser();
@@ -45,6 +45,16 @@ const ArticleView = () => {
     unliked,
   } = selectArticleQuery.data;
 
+  let l_comments;
+  if (comments === null || comments === 'null') {
+    l_comments = [];
+  } else {
+    if (typeof comments === 'string') {
+      l_comments = JSON.parse(comments);
+    } else if (typeof comments === 'object') {
+      l_comments = l_comments;
+    }
+  }
   return (
     <>
       <ArticleViewItem
@@ -59,15 +69,11 @@ const ArticleView = () => {
         //isMyArticle={currentUser?.user_id === user_id}
         _isMyArticle={true}
       />
-      <CommentEntry
-        _refRBSheet={refRBSheet}
-        _commentCnt={comments === null ? 0 : JSON.parse(comments).length}
-      />
+      <CommentEntry _refRBSheet={refRBSheet} _commentCnt={l_comments.length} />
       <CommentList
         _refRBSheet={refRBSheet}
-        _articleId={articleId}
         _articleCreatedDt={created_dt}
-        _comments={comments === null ? undefined : comments}
+        _comments={l_comments}
       />
     </>
   );

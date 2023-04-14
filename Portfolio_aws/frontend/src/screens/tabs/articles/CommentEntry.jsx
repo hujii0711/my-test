@@ -4,6 +4,7 @@ import {View, StyleSheet, Text} from 'react-native';
 import Color from '../../../commons/style/Color';
 
 const CommentEntry = ({_refRBSheet, _commentCnt = 0}) => {
+  console.log('&&&&&&&&&&&&&&&&&CommentEntry 렌더링&&&&&&&&&&&&&&&&&');
   return (
     <View style={styles.block}>
       <Text style={styles.text}>댓글</Text>

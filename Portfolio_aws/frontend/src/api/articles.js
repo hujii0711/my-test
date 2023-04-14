@@ -45,6 +45,10 @@ export async function selectArticle(id) {
   const response = await client.get('/article/selectArticle', {
     params: {id},
   });
+  console.log(
+    'selectArticle >>>> response.data.Items[0]=====',
+    typeof response.data.Items[0],
+  );
   return response.data.Items[0];
 }
 
@@ -70,7 +74,6 @@ export async function updateArticle(params) {
     title,
     contents,
   });
-  console.log('updateArticle >>>>>> response=========', response);
   return response.data;
 }
 
@@ -83,26 +86,31 @@ export async function deleteArticle(createdDt) {
   //  params: {createdDt},
   //});
   // body로 보낼 때
-  await client.delete('/article/deleteArticle', {
+  const response = await client.delete('/article/deleteArticle', {
     data: {createdDt},
   });
-  return null;
+  return response;
 }
 
 /*
   6. 조회수 up: updateArticleLookUpCnt | /article/updateArticleLookUpCnt | patch
 */
 export async function updateArticleLookUpCnt(createdDt) {
-  await client.patch('/article/updateArticleLookUpCnt', {createdDt});
-  return null;
+  const response = await client.patch('/article/updateArticleLookUpCnt', {
+    createdDt,
+  });
+  return response;
 }
 
 /*
   7. 좋아요 싫어요 up, down: updateArticleLikeUpDown | /article/updateArticleLikeUpDown | patch // 좋아요 싫어요 하나로 묶은거 같음
 */
 export async function updateArticleLikeUpDown(createdDt, type) {
-  await client.patch('/article/updateArticleLikeUpDown', {createdDt, type});
-  return null;
+  const response = await client.patch('/article/updateArticleLikeUpDown', {
+    createdDt,
+    type,
+  });
+  return response;
 }
 
 /*
@@ -110,11 +118,12 @@ export async function updateArticleLikeUpDown(createdDt, type) {
 */
 export async function insertArticleComment(params) {
   const {articleCreatedDt, commentBody} = params;
-  await client.patch('/article/insertArticleComment', {
+  const response = await client.patch('/article/insertArticleComment', {
     articleCreatedDt,
     commentBody,
   });
-  return null;
+  console.log('insertArticleComment >>>>> response========', response);
+  return response.data;
 }
 
 /*
@@ -122,11 +131,12 @@ export async function insertArticleComment(params) {
 */
 export async function updateArticleComment(params) {
   const {articleCreatedDt, commentBody} = params;
-  await client.patch('/article/updateArticleComment', {
+  const response = await client.patch('/article/updateArticleComment', {
     articleCreatedDt,
     commentBody,
   });
-  return null;
+  console.log('updateArticleComment >>>>> response========', response);
+  return response.data;
 }
 
 /*
@@ -134,11 +144,12 @@ export async function updateArticleComment(params) {
 */
 export async function deleteArticleComment(params) {
   const {articleCreatedDt, commentBody} = params;
-  await client.patch('/article/deleteArticleComment', {
+  const response = await client.patch('/article/deleteArticleComment', {
     articleCreatedDt,
     commentBody,
   });
-  return null;
+  console.log('deleteArticleComment >>>>> response========', response);
+  return response.data;
 }
 
 /*
@@ -146,9 +157,12 @@ export async function deleteArticleComment(params) {
 */
 export async function updateArticleCommentLikeUpDown(params) {
   const {articleCreatedDt, commentBody} = params;
-  await client.patch('/article/updateArticleCommentLikeUpDown', {
-    articleCreatedDt,
-    commentBody,
-  });
-  return null;
+  const response = await client.patch(
+    '/article/updateArticleCommentLikeUpDown',
+    {
+      articleCreatedDt,
+      commentBody,
+    },
+  );
+  return response;
 }
