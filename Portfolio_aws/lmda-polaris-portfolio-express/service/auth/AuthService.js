@@ -1,11 +1,17 @@
 const tokenConfig = require("../../modules/passport/token");
 const { ddbClient } = require("../../modules/ddbClient.js");
-const { PutCommand, UpdateCommand } = require("@aws-sdk/lib-dynamodb");
+const {
+  PutCommand,
+  UpdateCommand,
+  QueryCommand,
+} = require("@aws-sdk/lib-dynamodb");
 const com = require("../../modules/common.js");
 
+/********************************** 
+ 1. 회원가입
+**********************************/
 exports.register = async (body) => {
   console.log("AuthService >>>> register >>>> body====", body);
-  // { email: 'test2@daum.net', user_name: 'fujii0711', password: '1234' }
 
   const params = {
     TableName: "users",
@@ -28,6 +34,9 @@ exports.register = async (body) => {
   }
 };
 
+/********************************** 
+ 2. 자동 로그인
+**********************************/
 exports.autoLogin = async (_token) => {
   const data = tokenConfig.verifyToken(_token);
   /*{
@@ -42,6 +51,9 @@ exports.autoLogin = async (_token) => {
   return data;
 };
 
+/********************************** 
+ 3. users 테이블 token 정보 update
+**********************************/
 exports.updateUserToken = async (body) => {
   console.log("AuthService >>>> updateUserToken >>>> body====", body);
   const params = {
@@ -70,8 +82,11 @@ exports.updateUserToken = async (body) => {
   }
 };
 
-exports.getLoginStatus = async (query) => {
-  console.log("AuthService >>>> getLoginStatus >>>> query====", query);
+/********************************** 
+ 4. 로그인 여부 확인
+**********************************/
+exports.loginStatus = async (query) => {
+  console.log("AuthService >>>> loginStatus >>>> query====", query);
   const params = {
     TableName: "articles",
     KeyConditionExpression: "id = :param1",

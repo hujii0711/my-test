@@ -4,12 +4,18 @@ const { catchAsync } = require("../../modules/error");
 const AuthService = require("../../service/auth/AuthService");
 const httpStatus = require("http-status");
 
+/********************************** 
+ 1. 회원가입
+**********************************/
 exports.register = (req, res) => {
   const body = req.body;
   const result = AuthService.register(body);
   res.json(result).status(httpStatus.OK);
 };
 
+/********************************** 
+ 2. 로컬 전략 로그인 수행
+**********************************/
 exports.login = catchAsync(async (req, res, next) => {
   console.log("AuthController >>> login >>> req =====", req);
   passport.authenticate("local", (authError, user, options) => {
@@ -48,6 +54,9 @@ exports.login = catchAsync(async (req, res, next) => {
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
 });
 
+/********************************** 
+ 3. 로그아웃
+**********************************/
 exports.logout = catchAsync(async (req, res) => {
   console.log("AuthController >>> logout >>> body =====", req.body);
   const body = req.body;
@@ -62,17 +71,20 @@ exports.logout = catchAsync(async (req, res) => {
   return res.json({}).status(httpStatus.OK);
 });
 
-exports.getLoginStatus = catchAsync(async (req, res) => {
-  console.log(
-    "AuthController >>> getLoginStatus >>> req.query =====",
-    req.query
-  );
+/********************************** 
+ 4. 로그인 여부 확인
+**********************************/
+exports.loginStatus = catchAsync(async (req, res) => {
+  console.log("AuthController >>> loginStatus >>> req.query =====", req.query);
   const query = req.query;
-  const result = await AuthService.getLoginStatus(query);
-  console.log("AuthController >>> getLoginStatus >>> result =====", result);
+  const result = await AuthService.loginStatus(query);
+  console.log("AuthController >>> loginStatus >>> result =====", result);
   res.json(result).status(httpStatus.OK);
 });
 
+/********************************** 
+ 5. 자동 로그인
+**********************************/
 exports.autoLogin = catchAsync(async (req, res) => {
   console.log("AuthController >>>>>> autoLogin >>>> req.query=====", req.query);
   const token = req.query.token;

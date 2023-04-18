@@ -1,24 +1,24 @@
 import client from './client';
 /*
   1. 회원가입: register | /auth/register | post
-  2. 로그인 수행: login | /auth/login | post
+  2. 로컬 전략 로그인 수행: login | /auth/login | post
   3. 로그아웃: logout | /auth/logout | get
-  4. 세션 및 토큰 상태 확인: getLoginStatus | /auth/status | get
+  4. 로그인 여부 확인: loginStatus | /auth/loginStatus | get
   5. 자동로그인: autoLogin | /auth/autoLogin | get
 */
 
-/*
+/**********************************
   1. 회원가입: register | /auth/register | post
-*/
+**********************************/
 export async function register(params) {
   console.log('api >>>> register >>>> params ====', params);
   const response = await client.post('/auth/register', params);
   return response.data;
 }
 
-/*
+/**********************************
   2. 로그인 수행: login | /auth/login | post
-*/
+**********************************/
 export async function login(params) {
   console.log('api >>>> login >>>> params =====', params);
   const response = await client.post('/auth/login', params);
@@ -38,32 +38,40 @@ export async function login(params) {
   return response.data;
 }
 
-/*
+/**********************************
   3. 로그아웃: logout | /auth/logout | get
-*/
+**********************************/
 export async function logout(params) {
   console.log('api >>>> logout >>>> params ==============', params);
   const response = await client.post('/auth/logout', params);
   return response.data;
 }
 
-/*
-  4. 세션 및 토큰 상태 확인: getLoginStatus | /auth/status | get
-*/
-export async function getLoginStatus(id) {
-  const response = await client.get('/auth/status', {
+/**********************************
+  4. 로그인 여부 확인: loginStatus | /auth/loginStatus | get
+**********************************/
+export async function loginStatus(id) {
+  const response = await client.get('/auth/loginStatus', {
     params: {id},
   });
   return response.data;
 }
 
-/*
+/**********************************
   5. 자동로그인: autoLogin | /auth/autoLogin | get
-*/
+**********************************/
 export async function autoLogin(token) {
   console.log('api >>>> autoLogin >>>> token ====', token);
   const response = await client.get('/auth/autoLogin', {
     params: {token},
   });
   return response.data;
+}
+
+/**********************************
+  6. 구글 oauth2 로그인 수행: googleLogin | /auth/google/login | get
+**********************************/
+export async function googleLogin() {
+  console.log('api >>>> googleLogin====');
+  await client.get('/auth/google/login');
 }
