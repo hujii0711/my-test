@@ -16,7 +16,6 @@ import FloatingButton from '../../../commons/component/FloatingButton';
 
 const ArticleList = ({navigation}) => {
   console.log('&&&&&&&&&&&&&&&&&ArticleList 렌더링&&&&&&&&&&&&&&&&&');
-
   const queryClient = useQueryClient();
   const [floatButtonHidden, setFloatButtonHidden] = useState(false);
   const [refreshing, setRefreshing] = useState(false);

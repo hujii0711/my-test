@@ -12,9 +12,7 @@ import {
   Divider,
   Provider,
   IconButton,
-  Button,
 } from 'react-native-paper';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 const Stack = createStackNavigator();
 
 const RootNavigator = () => {

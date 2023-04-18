@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {Alert, Platform, ToastAndroid} from 'react-native';
-const baseURL = __DEV__ ? 'http://10.0.2.2:4000' : 'https://classloader.kr';
+const baseURL =
+  'https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev';
 const client = axios.create({
   baseURL,
   timeout: 30 * 1000,
@@ -11,8 +12,75 @@ const client = axios.create({
   요청 성공 직전 호출
 ********************************************/
 client.interceptors.request.use(
-  config => config,
-  err => Promise.reject(err),
+  config => {
+    //console.log('interceptors.request >>> config=====', config);
+    /*{
+      "adapter":[
+         "Function xhrAdapter"
+      ],
+      "baseURL":"https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev",
+      "data":{
+         "identifier":"hujii0711@gmail.com",
+         "password":"1234"
+      },
+      "env":{
+         "FormData":null
+      },
+      "headers":{
+         "common":{
+            "Accept":"application/json, text/plain,"
+         },
+         "delete":{
+            
+         },
+         "get":{
+            
+         },
+         "head":{
+            
+         },
+         "patch":{
+            "Content-Type":"application/x-www-form-urlencoded"
+         },
+         "post":{
+            "Content-Type":"application/x-www-form-urlencoded"
+         },
+         "put":{
+            "Content-Type":"application/x-www-form-urlencoded"
+         }
+      },
+      "maxBodyLength":-1,
+      "maxContentLength":-1,
+      "method":"post",
+      "timeout":30000,
+      "transformRequest":[
+         [
+            "Function transformRequest"
+         ]
+      ],
+      "transformResponse":[
+         [
+            "Function transformResponse"
+         ]
+      ],
+      "transitional":{
+         "clarifyTimeoutError":false,
+         "forcedJSONParsing":true,
+         "silentJSONParsing":true
+      },
+      "url":"/auth/localLogin",
+      "validateStatus":[
+         "Function validateStatus"
+      ],
+      "xsrfCookieName":"XSRF-TOKEN",
+      "xsrfHeaderName":"X-XSRF-TOKEN"
+   }*/
+    return config;
+  },
+  err => {
+    console.log('interceptors.request >>> err=====', err);
+    return Promise.reject(err);
+  },
 );
 
 /*******************************************
@@ -21,22 +89,170 @@ client.interceptors.request.use(
 ********************************************/
 client.interceptors.response.use(
   //http status가 200인 경우 응답 성공 직전 호출. .then() 으로 이어짐.
-  response => response,
+  response => {
+    //console.log('interceptors.response >>> response=====', response);
+    /*{
+      "config":{
+         "adapter":[
+            "Function xhrAdapter"
+         ],
+         "baseURL":"https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev",
+         "data":"{\"identifier\":\"hujii0711@gmail.com\",\"password\":\"1234\"}",
+         "env":{
+            "FormData":null
+         },
+         "headers":{
+            "Accept":"application/json, text/plain",
+            "Content-Type":"application/json"
+         },
+         "maxBodyLength":-1,
+         "maxContentLength":-1,
+         "method":"post",
+         "timeout":30000,
+         "transformRequest":[
+            [
+               "Function transformRequest"
+            ]
+         ],
+         "transformResponse":[
+            [
+               "Function transformResponse"
+            ]
+         ],
+         "transitional":{
+            "clarifyTimeoutError":false,
+            "forcedJSONParsing":true,
+            "silentJSONParsing":true
+         },
+         "url":"/auth/localLogin",
+         "validateStatus":[
+            "Function validateStatus"
+         ],
+         "xsrfCookieName":"XSRF-TOKEN",
+         "xsrfHeaderName":"X-XSRF-TOKEN"
+      },
+      "data":{
+         "sessionUser":{
+            "created_dt":1681739061104,
+            "email":"hujii0711@gmail.com",
+            "id":"3d7fb383-f0f7-4904-8f6c-cf2bb93247f1",
+            "language":"ko",
+            "pwd":"1234",
+            "token":"ya29.a0Ael9sCOMfUjS7J_CgXqQOtfYN2ofuTjZcV521mpfInGF4b4kj0ud85zVvryD26fBv5Qlv7aTs5t3chRf7ft2YseBQx7IEUVkrzwqhDiVQxMX04dzWjenmfnQLc3d34sI-xfxKSHRS_MJKxop3J1FXH01-G2JaCgYKAQkSARISFQF4udJhiz2e6HuaSIpIeCoWUi9pTQ0163",
+            "user_id":"106317194300034085005",
+            "user_name":"김형준"
+         },
+         "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkN2ZiMzgzLWYwZjctNDkwNC04ZjZjLWNmMmJiOTMyNDdmMSIsInVzZXJJZCI6IjEwNjMxNzE5NDMwMDAzNDA4NTAwNSIsImVtYWlsIjoiaHVqaWkwNzExQGdtYWlsLmNvbSIsImlhdCI6MTY4MTc4MjkzMCwiZXhwIjoxNjg0Mzc0OTMwfQ.EsH_nkNdUc1rGoHfVS93w1o2LBbfyJpNNhgqDSsYJ5Y"
+      },
+      "headers":{
+         "content-length":"708",
+         "content-type":"application/json; charset=utf-8",
+         "date":"Tue, 18 Apr 2023 01:55:31 GMT",
+         "etag":"W/\"2c4-5hILpDxFsSHQmsVnyO3sWToLN9M\"",
+         "set-cookie":[
+            "connect.sid=s%3AymH5jBEdEmfZtxt5BahZ6tKglOR8kNlx.dj2%2FqOW268sSIyLBY6BuJYAo0xT%2BALVH8ehc6JUOGDE; Path=/; HttpOnly"
+         ],
+         "x-amz-apigw-id":"DjPGcGCzIE0FbGw=",
+         "x-amzn-remapped-connection":"close",
+         "x-amzn-remapped-content-length":"708",
+         "x-amzn-remapped-date":"Tue, 18 Apr 2023 01:55:30 GMT",
+         "x-amzn-requestid":"bc051c0b-1d0d-47ea-94c6-9f18c9f0fec7",
+         "x-amzn-trace-id":"Root=1-643df88f-404276bd63d694c25d618e30;Sampled=0;lineage=9d27ee90:0",
+         "x-powered-by":"Express"
+      },
+      "request":{
+         "DONE":4,
+         "HEADERS_RECEIVED":2,
+         "LOADING":3,
+         "OPENED":1,
+         "UNSENT":0,
+         "_aborted":false,
+         "_cachedResponse":"undefined",
+         "_hasError":false,
+         "_headers":{
+            "accept":"application/json, text/plain,",
+            "content-type":"application/json"
+         },
+         "_incrementalEvents":false,
+         "_lowerCaseResponseHeaders":{
+            "content-length":"708",
+            "content-type":"application/json; charset=utf-8",
+            "date":"Tue, 18 Apr 2023 01:55:31 GMT",
+            "etag":"W/\"2c4-5hILpDxFsSHQmsVnyO3sWToLN9M\"",
+            "set-cookie":"connect.sid=s%3AymH5jBEdEmfZtxt5BahZ6tKglOR8kNlx.dj2%2FqOW268sSIyLBY6BuJYAo0xT%2BALVH8ehc6JUOGDE; Path=/; HttpOnly",
+            "x-amz-apigw-id":"DjPGcGCzIE0FbGw=",
+            "x-amzn-remapped-connection":"close",
+            "x-amzn-remapped-content-length":"708",
+            "x-amzn-remapped-date":"Tue, 18 Apr 2023 01:55:30 GMT",
+            "x-amzn-requestid":"bc051c0b-1d0d-47ea-94c6-9f18c9f0fec7",
+            "x-amzn-trace-id":"Root=1-643df88f-404276bd63d694c25d618e30;Sampled=0;lineage=9d27ee90:0",
+            "x-powered-by":"Express"
+         },
+         "_method":"POST",
+         "_perfKey":"network_XMLHttpRequest_https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev/auth/localLogin",
+         "_performanceLogger":{
+            "_closed":false,
+            "_extras":[
+               "Object"
+            ],
+            "_pointExtras":[
+               "Object"
+            ],
+            "_points":[
+               "Object"
+            ],
+            "_timespans":[
+               "Object"
+            ]
+         },
+         "_requestId":null,
+         "_response":"{\"sessionUser\":{\"created_dt\":1681739061104,\"user_id\":\"106317194300034085005\",\"token\":\"ya29.a0Ael9sCOMfUjS7J_CgXqQOtfYN2ofuTjZcV521mpfInGF4b4kj0ud85zVvryD26fBv5Qlv7aTs5t3chRf7ft2YseBQx7IEUVkrzwqhDiVQxMX04dzWjenmfnQLc3d34sI-xfxKSHRS_MJKxop3J1FXH01-G2JaCgYKAQkSARISFQF4udJhiz2e6HuaSIpIeCoWUi9pTQ0163\",\"id\":\"3d7fb383-f0f7-4904-8f6c-cf2bb93247f1\",\"email\":\"hujii0711@gmail.com\",\"user_name\":\"김형준\",\"language\":\"ko\",\"pwd\":\"1234\"},\"token\":\"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkN2ZiMzgzLWYwZjctNDkwNC04ZjZjLWNmMmJiOTMyNDdmMSIsInVzZXJJZCI6IjEwNjMxNzE5NDMwMDAzNDA4NTAwNSIsImVtYWlsIjoiaHVqaWkwNzExQGdtYWlsLmNvbSIsImlhdCI6MTY4MTc4MjkzMCwiZXhwIjoxNjg0Mzc0OTMwfQ.EsH_nkNdUc1rGoHfVS93w1o2LBbfyJpNNhgqDSsYJ5Y\"}",
+         "_responseType":"",
+         "_sent":true,
+         "_subscriptions":[
+            
+         ],
+         "_timedOut":false,
+         "_trackingName":"unknown",
+         "_url":"https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev/auth/localLogin",
+         "readyState":4,
+         "responseHeaders":{
+            "content-length":"708",
+            "content-type":"application/json; charset=utf-8",
+            "date":"Tue, 18 Apr 2023 01:55:31 GMT",
+            "etag":"W/\"2c4-5hILpDxFsSHQmsVnyO3sWToLN9M\"",
+            "set-cookie":"connect.sid=s%3AymH5jBEdEmfZtxt5BahZ6tKglOR8kNlx.dj2%2FqOW268sSIyLBY6BuJYAo0xT%2BALVH8ehc6JUOGDE; Path=/; HttpOnly",
+            "x-amz-apigw-id":"DjPGcGCzIE0FbGw=",
+            "x-amzn-remapped-connection":"close",
+            "x-amzn-remapped-content-length":"708",
+            "x-amzn-remapped-date":"Tue, 18 Apr 2023 01:55:30 GMT",
+            "x-amzn-requestid":"bc051c0b-1d0d-47ea-94c6-9f18c9f0fec7",
+            "x-amzn-trace-id":"Root=1-643df88f-404276bd63d694c25d618e30;Sampled=0;lineage=9d27ee90:0",
+            "x-powered-by":"Express"
+         },
+         "responseURL":"https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev/auth/localLogin",
+         "status":200,
+         "timeout":30000,
+         "upload":{
+            
+         },
+         "withCredentials":true
+      },
+      "status":200,
+      "statusText":"undefined"
+    }*/
+    return response;
+  },
 
   //http status가 200이 아닌 경우 응답 에러 직전 호출. .then() 으로 이어짐.
   err => {
+    console.log('interceptors.response >>> err=====', err);
     if (Platform.OS === 'ios') {
-      Alert.alert('알림', err.response.data.message);
+      //Alert.alert('알림', err.response.data.message);
+      Alert.alert('알림', err);
     } else {
-      ToastAndroid.show(err.response.data.message, ToastAndroid.SHORT);
-    }
-
-    if (err.response.data.returnType === 'list') {
-      return {data: []};
-    } else if (err.response.data.returnType === 'map') {
-      return {data: {}};
-    } else if (err.response.data.returnType === 'int') {
-      return {data: 0};
+      //ToastAndroid.show(err.response.data.message, ToastAndroid.SHORT);
+      ToastAndroid.show(err, ToastAndroid.SHORT);
     }
   },
 );
@@ -45,14 +261,13 @@ client.interceptors.response.use(
   서버 요청시 토큰 정보 저장
 ********************************************/
 export function setHeaderToken(jwt) {
-  //client.defaults.headers.authorization = `Bearer ${jwt}`;
   client.defaults.headers.common['authorization'] = `${jwt}`;
 }
 
 /*******************************************
   서버 요청시 토큰 정보 삭제
 ********************************************/
-export function setHeaderRemoveToken() {
+export function deleteHeaderToken() {
   delete client.defaults.headers.common['authorization'];
 }
 

@@ -5,34 +5,31 @@ import {setHeaderToken} from '../../api/client';
 import {login} from '../../api/login';
 import authStorage from '../storage/authStorage';
 import useInform from './useInform';
-import {userSelect} from '../redux/users/reducers';
+import {userSelect, userDelete} from '../redux/users/reducers';
 
 export default function useLogin() {
   const dispatch = useDispatch();
   const inform = useInform();
   const navigation = useNavigation();
+
   const mutation = useMutation(login, {
     onSuccess: data => {
       if (data) {
-        dispatch(userSelect(data.sessionUser));
+        const sessionUser = data.sessionUser;
+        const l_token = data.token;
+        const l_sessionUser = {...sessionUser, token: l_token};
+        dispatch(userSelect(l_sessionUser));
+        setHeaderToken(l_token);
+        authStorage.set('token', l_token);
         navigation.navigate('MainTab');
-        setHeaderToken(data.token);
-        authStorage.set('token', data.token);
       }
     },
-    // const response = {
-    //   code: statusCode,
-    //   message,
-    //   stack: err.stack,
-    //   returnType: req.headers.returntype as unknown as string,
-    // };
     onError: error => {
       console.log('useLogin >>> onError >>> error---------', error);
-      const message =
-        error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
+      dispatch(userDelete());
       inform({
         title: '오류',
-        message,
+        message: '로그인 실패',
       });
     },
   });

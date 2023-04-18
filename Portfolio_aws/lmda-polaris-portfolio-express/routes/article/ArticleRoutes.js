@@ -3,6 +3,7 @@ const ArticleController = require("../../controller/article/ArticleController");
 
 articleRouter.use("/article", (req, res, next) => {
   console.log("article 라우터 호출!!!!");
+  console.log("auth >>>> req======", req);
   next();
 });
 

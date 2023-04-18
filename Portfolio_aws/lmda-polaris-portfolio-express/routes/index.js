@@ -1,10 +1,10 @@
 const indexRouter = require("express").Router();
-const testRoute = require("./test/TestRoutes");
-const testRoute2 = require("./test2/Test2Routes");
 const articleRoute = require("./article/ArticleRoutes");
+const googleStrategyRoute = require("./auth/GoogleStrategyRoute");
+const localStrategyRoute = require("./auth/LocalStrategyRoute");
 
-indexRouter.use(testRoute.router);
-indexRouter.use(testRoute2.router);
 indexRouter.use(articleRoute.router);
+indexRouter.use(localStrategyRoute.router);
+indexRouter.use(googleStrategyRoute.router);
 
 module.exports = indexRouter;

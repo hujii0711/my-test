@@ -1,4 +1,4 @@
-//import client from './client';
+import client from './client';
 /*
   1. 조회 페이징: selectArticlePagingList | /article/selectArticlePagingList | get
   2. 조회 상세: selectArticle | /article/selectArticle | get
@@ -14,15 +14,6 @@
   12. 댓글 좋아요 up: updateArticleCommentLikeCnt | /article/updateArticleCommentLikeCnt | patch
   13. 댓글 싫어요 up: updateArticleCommentUnLikeCnt | /article/updateArticleCommentUnLikeCnt | patch
 */
-
-import axios from 'axios';
-
-const baseURL =
-  'https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev';
-const client = axios.create({
-  baseURL,
-  timeout: 30 * 1000,
-});
 
 /*
   1. 조회 페이징: selectArticlePagingList | /article/selectArticlePagingList | get

@@ -12,7 +12,7 @@ const Login = ({navigation}) => {
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
 
-  const {mutate: login, isLoading: loginLoading} = useLogin();
+  const {mutate: mutateLogin, isLoading: loginLoading} = useLogin();
   const isLoading = loginLoading;
 
   const onPressLogin = () => {
@@ -23,7 +23,7 @@ const Login = ({navigation}) => {
     // 자동로그인 체크 정보 AsyncStorage에 저장
     authStorage.set('autoLogin', isSwitchOn ? 'Y' : 'N');
 
-    login({
+    mutateLogin({
       identifier,
       password,
     });

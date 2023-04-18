@@ -9,47 +9,18 @@ import {
   IconButton,
   Avatar,
 } from 'react-native-paper';
-import {useDispatch} from 'react-redux';
-import {useMutation} from 'react-query';
-import {logout, getLoginStatus} from '../api/login';
-import {setHeaderRemoveToken} from '../api/client';
-import authStorage from '../commons/storage/authStorage';
-import useInform from '../commons/hooks/useInform';
-import {userDelete} from '../commons/redux/users/reducers';
+import useLogout from '../commons/hooks/useLogout';
 import Color from '../commons/style/Color';
 import {useUser} from '../commons/hooks/useReduxState';
 
 const DrawerItems = props => {
   const navigation = useNavigation();
-  const inform = useInform();
-  const dispatch = useDispatch();
   const currentUser = useUser();
+  const {mutate: mutateLogout} = useLogout();
 
   const onLogout = () => {
-    dispatch(userDelete());
-    setHeaderRemoveToken();
-    //authStorage.clear();
-    authStorage.clear('token');
-    mutateLogout();
+    mutateLogout({id: currentUser?.id, token: 'logout'});
   };
-
-  const {mutate: mutateLogout} = useMutation(logout, {
-    onSuccess: data => {
-      inform({
-        title: '성공',
-        message: data.message,
-      });
-    },
-    onError: error => {
-      console.log('DrawerItems logout >>> onError >>> error---------', error);
-      const message =
-        error.response?.data?.data?.[0]?.messages[0].message ?? '로그인 실패';
-      inform({
-        title: '오류',
-        message,
-      });
-    },
-  });
 
   const DrawerMenuData = [
     {

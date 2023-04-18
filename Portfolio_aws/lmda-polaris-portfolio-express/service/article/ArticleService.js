@@ -7,7 +7,7 @@ const {
 } = require("@aws-sdk/lib-dynamodb");
 const { ddbClient } = require("../../modules/ddbClient.js");
 const com = require("../../modules/common.js");
-const { addSeconds } = require("date-fns");
+
 /* article table 모델링
   id
   title
@@ -267,7 +267,7 @@ exports.updateArticleLikeUpDown = async (body) => {
  8. 댓글 등록
 **********************************/
 exports.insertArticleComment = async (body) => {
-  console.log("insertArticleComment111111111111 >>>> body===========", body);
+  console.log("insertArticleComment >>>> body===========", body);
 
   const { articleCreatedDt, commentBody } = body;
 
