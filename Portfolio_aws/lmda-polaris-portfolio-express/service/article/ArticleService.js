@@ -145,24 +145,20 @@ exports.updateArticle = async (body) => {
     },
   };
 
-  try {
-    const result = await ddbClient.send(new UpdateCommand(params));
+  const result = await ddbClient.send(new UpdateCommand(params));
 
-    // update 수행이 정상이면 방금 수정 내용 조회한 데이터 리턴
-    if (result.$metadata.httpStatusCode === 200) {
-      const _params = {
-        TableName: "articles",
-        KeyConditionExpression: "pt_key = :param1 AND created_dt = :param2",
-        ExpressionAttributeValues: {
-          ":param1": "ALL",
-          ":param2": Number(createdDt),
-        },
-      };
-      const updatedData = await ddbClient.send(new QueryCommand(_params));
-      return updatedData.Items[0];
-    }
-  } catch (err) {
-    return null;
+  // update 수행이 정상이면 방금 수정 내용 조회한 데이터 리턴
+  if (result.$metadata.httpStatusCode === 200) {
+    const _params = {
+      TableName: "articles",
+      KeyConditionExpression: "pt_key = :param1 AND created_dt = :param2",
+      ExpressionAttributeValues: {
+        ":param1": "ALL",
+        ":param2": Number(createdDt),
+      },
+    };
+    const updatedData = await ddbClient.send(new QueryCommand(_params));
+    return updatedData.Items[0];
   }
 };
 
@@ -182,11 +178,7 @@ exports.deleteArticle = async (body) => {
     },
   };
 
-  try {
-    return await ddbClient.send(new DeleteCommand(params));
-  } catch (err) {
-    return null;
-  }
+  return await ddbClient.send(new DeleteCommand(params));
 };
 
 /********************************** 
@@ -283,15 +275,11 @@ exports.insertArticleComment = async (body) => {
     },
   };
 
-  try {
-    const result = await ddbClient.send(new UpdateCommand(params));
+  const result = await ddbClient.send(new UpdateCommand(params));
 
-    // update 수행이 정상이면 방금 수정 내용 조회한 데이터 리턴
-    if (result.$metadata.httpStatusCode === 200) {
-      return commentBody;
-    }
-  } catch (err) {
-    return null;
+  // update 수행이 정상이면 방금 수정 내용 조회한 데이터 리턴
+  if (result.$metadata.httpStatusCode === 200) {
+    return commentBody;
   }
 };
 
@@ -315,15 +303,11 @@ exports.updateArticleComment = async (body) => {
     },
   };
 
-  try {
-    const result = await ddbClient.send(new UpdateCommand(params));
+  const result = await ddbClient.send(new UpdateCommand(params));
 
-    // update 수행이 정상이면 방금 수정 내용 조회한 데이터 리턴
-    if (result.$metadata.httpStatusCode === 200) {
-      return commentBody;
-    }
-  } catch (err) {
-    return null;
+  // update 수행이 정상이면 방금 수정 내용 조회한 데이터 리턴
+  if (result.$metadata.httpStatusCode === 200) {
+    return commentBody;
   }
 };
 
@@ -347,11 +331,7 @@ exports.deleteArticleComment = async (body) => {
     },
   };
 
-  try {
-    return await ddbClient.send(new UpdateCommand(params));
-  } catch (err) {
-    return null;
-  }
+  return await ddbClient.send(new UpdateCommand(params));
 };
 
 /********************************** 

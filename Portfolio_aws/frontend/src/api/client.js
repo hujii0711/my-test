@@ -260,8 +260,8 @@ client.interceptors.response.use(
 /*******************************************
   서버 요청시 토큰 정보 저장
 ********************************************/
-export function setHeaderToken(jwt) {
-  client.defaults.headers.common['authorization'] = `${jwt}`;
+export function putHeaderToken(jwt) {
+  client.defaults.headers.common['authorization'] = `Bearer ${jwt}`;
 }
 
 /*******************************************

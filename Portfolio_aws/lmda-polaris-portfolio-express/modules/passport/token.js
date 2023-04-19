@@ -1,4 +1,6 @@
 const jwt = require("jsonwebtoken");
+const { ApiError } = require("../../modules/error");
+const httpStatus = require("http-status");
 
 const tokenConfig = {};
 
@@ -6,12 +8,15 @@ tokenConfig.generateToken = (id, userId, email) => {
   console.log("########### token.js > token.generateToken () ###########");
   try {
     const payload = { id, userId, email };
-    const options = { expiresIn: "30d" }; // 유효기간 30일
+    const options = { expiresIn: 60 }; // 유효기간 90일(90d) | 1시간(1h, 60*60) | 기본 초단위(millisecond 단위 아님)
     const token = jwt.sign(payload, "kimHyungJun", options);
     console.log("token.js > token.generateToken > token============", token);
     return token;
   } catch (err) {
-    console.error(err);
+    throw new ApiError(
+      httpStatus.UNAUTHORIZED,
+      "토큰이 발급 도중 오류가 발생하였습니다."
+    );
   }
 };
 

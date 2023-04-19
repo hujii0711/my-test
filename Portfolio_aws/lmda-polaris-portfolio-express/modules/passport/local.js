@@ -9,13 +9,13 @@ const { ddbClient } = require("../ddbClient.js");
 
 exports.passportLocalConfig = () => {
   passport.serializeUser((user, done) => {
-    console.log("serializeUser >>> user=====", user);
+    console.log("3passportLocalConfig >>> serializeUser >>> user=====", user);
     done(null, user);
   });
 
   passport.deserializeUser((user, done) => {
     // 세션에 저장된 사용자 정보를 복원
-    console.log("deserializeUser >>> user=====", user);
+    console.log("passportLocalConfig >>> deserializeUser >>> user=====", user);
     done(null, user);
   });
 
@@ -28,6 +28,7 @@ exports.passportLocalConfig = () => {
       },
       async (identifier, password, done) => {
         try {
+          console.log("2LocalStrategy >>> identifier=====", identifier);
           if (password && password !== "freepass") {
             const params = {
               TableName: "users", // 테이블 이름
@@ -58,7 +59,6 @@ exports.passportLocalConfig = () => {
             done(null, result.Count === 1 ? result.Items[0] : {});
           }
         } catch (error) {
-          console.error("LocalStrategy >>>> error-----", error);
           done(error);
         }
       }

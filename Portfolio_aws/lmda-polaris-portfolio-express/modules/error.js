@@ -2,6 +2,20 @@ const httpStatus = require("http-status");
 
 Error.stackTraceLimit = 10;
 
+/*try{
+  const error = new ApiError(400, "errorMessage", {stack:"stackMessage", isFatal:true})
+  console.log("error----", error.message);
+  console.log("error----", error.stack);
+  console.log("error----", error.isFatal);
+  console.log("error----", error.statusCode);
+  throw new ApiError(400, "errorMessage1", {stack:"stackMessage1", isFatal:true});
+}catch(err){
+  console.log("err----", err.message);
+  console.log("err----", err.stack);
+  console.log("err----", err.isFatal);
+  console.log("err----", err.statusCode);
+}*/
+
 class ApiError extends Error {
   constructor(statusCode, message, option) {
     super(message);
@@ -20,10 +34,13 @@ class ApiError extends Error {
   }
 }
 
+exports.ApiError = ApiError;
+
 /**
  * 에러객체를 확인하고, 지정된 에러객체가 아니면 에러객체를 수정함
  */
 exports.errorConverter = (err, req, res, next) => {
+  console.log("errorConverter!!!");
   let error = err;
   if (!(err instanceof ApiError)) {
     const statusCode = error.statusCode || httpStatus.INTERNAL_SERVER_ERROR;

@@ -12,12 +12,16 @@ export default function useLogout() {
   const dispatch = useDispatch();
   const navigation = useNavigation();
 
+  const logoutCallback = () => {
+    dispatch(userDelete());
+    deleteHeaderToken();
+    authStorage.clear('token');
+    authStorage.clear('autoLogin');
+  };
+
   const mutation = useMutation(logout, {
     onSuccess: data => {
-      dispatch(userDelete());
-      deleteHeaderToken();
-      authStorage.clear('token');
-      authStorage.clear('autoLogin');
+      logoutCallback();
       inform({
         title: '성공',
         message: '로그아웃 성공',
@@ -26,10 +30,6 @@ export default function useLogout() {
     },
     onError: error => {
       console.log('useLogout >>> onError >>> error---------', error);
-      dispatch(userDelete());
-      deleteHeaderToken();
-      authStorage.clear('token');
-      authStorage.clear('autoLogin');
       inform({
         title: '오류',
         message: '로그아웃 실패',

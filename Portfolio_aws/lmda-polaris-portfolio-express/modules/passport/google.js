@@ -16,13 +16,13 @@ const CALLBACK_URL = "/auth/google/callback";
 exports.passportGoogleConfig = () => {
   passport.serializeUser((user, done) => {
     // 사용자 정보를 세션에 저장
-    console.log("serializeUser >>> user=====", user);
+    console.log("passportGoogleConfig >>> serializeUser >>> user=====", user);
     done(null, user);
   });
 
   passport.deserializeUser((user, done) => {
     // 세션에 저장된 사용자 정보를 복원
-    console.log("deserializeUser >>> user=====", user);
+    console.log("passportGoogleConfig >>> deserializeUser >>> user=====", user);
     done(null, user);
   });
 

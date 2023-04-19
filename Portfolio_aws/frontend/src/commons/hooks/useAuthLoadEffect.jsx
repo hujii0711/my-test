@@ -10,6 +10,13 @@ export default function useAuthLoadEffect() {
 
   const {mutate: mutateAutoLogin} = useAutoLogin();
 
+  const useEffectCallback = () => {
+    dispatch(userDelete());
+    deleteHeaderToken();
+    authStorage.clear('autoLogin');
+    authStorage.clear('token');
+  };
+
   useEffect(() => {
     (async () => {
       const autoLogin = await authStorage.get('autoLogin');
@@ -18,6 +25,7 @@ export default function useAuthLoadEffect() {
       console.log('useAuthLoadEffect >>>> token=========', token);
 
       if (!autoLogin) {
+        useEffectCallback();
         return;
       }
 
@@ -29,10 +37,7 @@ export default function useAuthLoadEffect() {
         //자동 로그인 언체크한 경우
       } else if (autoLogin === 'N') {
         console.log('NOT 자동 로그인 !!!!');
-        dispatch(userDelete());
-        deleteHeaderToken();
-        authStorage.clear('autoLogin');
-        authStorage.clear('token');
+        useEffectCallback();
       }
     })();
   }, []);

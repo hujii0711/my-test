@@ -1,10 +1,9 @@
 import client from './client';
 /*
-  1. 회원가입: register | /auth/register | post
+  1. 로컬 전략 회원가입: register | /auth/register | post
   2. 로컬 전략 로그인 수행: login | /auth/login | post
-  3. 로그아웃: logout | /auth/logout | get
-  4. 로그인 여부 확인: loginStatus | /auth/loginStatus | get
-  5. 자동로그인: autoLogin | /auth/autoLogin | get
+  3. 로컬 전략 로그아웃: logout | /auth/logout | get
+  4. 로컬 전략 자동로그인: autoLogin | /auth/autoLogin | get
 */
 
 /**********************************
@@ -48,23 +47,21 @@ export async function logout(params) {
 }
 
 /**********************************
-  4. 로그인 여부 확인: loginStatus | /auth/loginStatus | get
-**********************************/
-export async function loginStatus(id) {
-  const response = await client.get('/auth/loginStatus', {
-    params: {id},
-  });
-  return response.data;
-}
-
-/**********************************
-  5. 자동로그인: autoLogin | /auth/autoLogin | get
+  4. 자동로그인: autoLogin | /auth/autoLogin | get
 **********************************/
 export async function autoLogin(token) {
   console.log('api >>>> autoLogin >>>> token ====', token);
   const response = await client.get('/auth/autoLogin', {
     params: {token},
   });
+  return response.data;
+}
+
+/**********************************
+  5. 로그인 이후 session 저장소 expires 갱신: updateSessionExpires | /auth/updateSessionExpires | get
+**********************************/
+export async function updateSessionExpires() {
+  const response = await client.get('/auth/updateSessionExpires');
   return response.data;
 }
 
