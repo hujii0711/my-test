@@ -1,15 +1,6 @@
 const passport = require("passport");
 const googleStrategyRouter = require("express").Router();
 const httpStatus = require("http-status");
-const {
-  passportGoogleConfig,
-  sessionMiddleware,
-} = require("../../modules/passport/google");
-
-passportGoogleConfig();
-googleStrategyRouter.use(sessionMiddleware);
-googleStrategyRouter.use(passport.initialize());
-googleStrategyRouter.use(passport.session());
 
 googleStrategyRouter.use("/auth/google", (req, res, next) => {
   console.log("auth/google 라우터 호출!!!!");
@@ -17,7 +8,7 @@ googleStrategyRouter.use("/auth/google", (req, res, next) => {
   next();
 });
 
-/*
+/* 웹이 아닌 모바일 앱에서는 passport를 활용하여 구글 로그인을 수행할 수 없음 해당 소스 사문화됨
   1. 구글 oauth2 로그인 수행: /auth/google/login | get
   2. 구글 oauth2 로그인 수행 후 콜백: /auth/google/callback | get
   3. 구글 oauth2 로그인 수행 실패 처리: /auth/google/fail | get

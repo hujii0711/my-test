@@ -1,15 +1,5 @@
-const passport = require("passport");
 const localStrategyRouter = require("express").Router();
 const AuthController = require("../../controller/auth/AuthController");
-const {
-  passportLocalConfig,
-  sessionMiddleware,
-} = require("../../modules/passport/local");
-
-passportLocalConfig();
-localStrategyRouter.use(sessionMiddleware);
-localStrategyRouter.use(passport.initialize());
-localStrategyRouter.use(passport.session());
 
 localStrategyRouter.use("/auth", (req, res, next) => {
   console.log("auth 라우터 호출!!!!");

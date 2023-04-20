@@ -1,4 +1,4 @@
-package com.frontend.newarchitecture.modules;
+package polaris.portfolio.frontend.dev.newarchitecture.modules;
 
 import com.facebook.jni.HybridData;
 import com.facebook.react.ReactPackage;

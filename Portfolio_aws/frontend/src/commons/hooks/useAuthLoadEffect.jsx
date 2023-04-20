@@ -21,8 +21,8 @@ export default function useAuthLoadEffect() {
     (async () => {
       const autoLogin = await authStorage.get('autoLogin');
       const token = await authStorage.get('token');
-      console.log('useAuthLoadEffect >>>> autoLogin=========', autoLogin);
-      console.log('useAuthLoadEffect >>>> token=========', token);
+      console.log('useAuthLoadEffect >>>> autoLogin==========', autoLogin);
+      console.log('useAuthLoadEffect >>>> token==========', token);
 
       if (!autoLogin) {
         useEffectCallback();

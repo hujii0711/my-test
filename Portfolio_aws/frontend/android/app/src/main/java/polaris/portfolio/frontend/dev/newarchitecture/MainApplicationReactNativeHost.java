@@ -1,4 +1,4 @@
-package com.frontend.newarchitecture;
+package polaris.portfolio.frontend.dev.newarchitecture;
 
 import android.app.Application;
 import androidx.annotation.NonNull;
@@ -19,9 +19,9 @@ import com.facebook.react.fabric.CoreComponentsRegistry;
 import com.facebook.react.fabric.EmptyReactNativeConfig;
 import com.facebook.react.fabric.FabricJSIModuleProvider;
 import com.facebook.react.uimanager.ViewManagerRegistry;
-import com.frontend.BuildConfig;
-import com.frontend.newarchitecture.components.MainComponentsRegistry;
-import com.frontend.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
+import polaris.portfolio.frontend.dev.BuildConfig;
+import polaris.portfolio.frontend.dev.newarchitecture.components.MainComponentsRegistry;
+import polaris.portfolio.frontend.dev.newarchitecture.modules.MainApplicationTurboModuleManagerDelegate;
 import java.util.ArrayList;
 import java.util.List;
 

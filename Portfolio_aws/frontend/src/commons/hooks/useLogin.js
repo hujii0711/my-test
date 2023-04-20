@@ -21,7 +21,7 @@ export default function useLogin() {
   const mutation = useMutation(login, {
     onSuccess: data => {
       if (data) {
-        console.log('login >>> onSuccess >>> data---------', data);
+        console.log('login >>> onSuccess >>>> data---------', data);
         const sessionUser = data.sessionUser;
         const l_token = data.token;
         const l_sessionUser = {...sessionUser, token: l_token};

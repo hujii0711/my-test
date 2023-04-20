@@ -1,4 +1,4 @@
-package com.frontend;
+package polaris.portfolio.frontend.dev;
 
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;

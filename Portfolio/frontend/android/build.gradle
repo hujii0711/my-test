@@ -25,6 +25,12 @@ buildscript {
         classpath("com.android.tools.build:gradle:7.0.4")
         classpath("com.facebook.react:react-native-gradle-plugin")
         classpath("de.undercouch:gradle-download-task:4.1.2")
+        /* google cloud platform API 활용시 추가 사항
+        implementation 'androidx.appcompat:appcompat:1.4.1'
+        implementation 'com.google.android.gms:play-services-auth:20.0.1'
+        implementation 'com.google.api-client:google-api-client:1.31.2'
+        implementation 'com.google.api-client:google-api-client-android:1.31.2'
+        implementation project(':@react-native-community_google-signin')*/
         // NOTE: Do not place your application dependencies here; they belong
         // in the individual module build.gradle files
     }
@@ -51,3 +57,12 @@ allprojects {
         maven { url 'https://www.jitpack.io' }
     }
 }
+
+/* google cloud platform API 활용시 추가 사항
+    dependencies {
+    implementation 'androidx.appcompat:appcompat:1.4.1'
+    implementation 'com.google.android.gms:play-services-auth:20.0.1'
+    implementation 'com.google.api-client:google-api-client:1.31.2'
+    implementation 'com.google.api-client:google-api-client-android:1.31.2'
+    implementation project(':@react-native-community_google-signin')
+}*/

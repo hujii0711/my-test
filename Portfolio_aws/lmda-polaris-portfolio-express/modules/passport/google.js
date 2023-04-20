@@ -7,22 +7,18 @@ const { ddbClient } = require("../ddbClient.js");
 const { PutCommand } = require("@aws-sdk/lib-dynamodb");
 const com = require("../common");
 
+/* 웹이 아닌 모바일 앱에서는 passport를 활용하여 구글 로그인을 수행할 수 없음 해당 소스 사문화됨 */
 // 구글 OAuth2 설정
-const GOOGLE_CLIENT_ID =
-  "568088378939-jemtupaj1rsvcdasr82t8llc677d21j4.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
+const GOOGLE_CLIENT_ID = "";
+const GOOGLE_CLIENT_SECRET = "";
 const CALLBACK_URL = "/auth/google/callback";
 
 exports.passportGoogleConfig = () => {
   passport.serializeUser((user, done) => {
-    // 사용자 정보를 세션에 저장
-    console.log("passportGoogleConfig >>> serializeUser >>> user=====", user);
     done(null, user);
   });
 
   passport.deserializeUser((user, done) => {
-    // 세션에 저장된 사용자 정보를 복원
-    console.log("passportGoogleConfig >>> deserializeUser >>> user=====", user);
     done(null, user);
   });
 
