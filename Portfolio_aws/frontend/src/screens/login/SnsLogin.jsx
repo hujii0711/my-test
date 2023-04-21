@@ -102,6 +102,14 @@ const SnsLogin = () => {
     }*/
   };
 
+  // id: com.uuidv4(),
+  // email,
+  // user_id: user.id,
+  // pwd: "google",
+  // user_name: user.name,
+  // created_dt: com.krDate(),
+  // type: "google",
+
   /*signOut = async () => {
     try {
       await GoogleSignin.revokeAccess();

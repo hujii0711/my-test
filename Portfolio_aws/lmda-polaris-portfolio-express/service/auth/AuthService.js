@@ -24,7 +24,7 @@ exports.register = async (body) => {
       pwd: password,
       user_name: user_name,
       created_dt: com.krDate(),
-      type: "local",
+      login_type: "local",
     },
   };
 
@@ -38,12 +38,11 @@ exports.register = async (body) => {
 /********************************** 
  2. 자동 로그인
 **********************************/
-exports.autoLogin = async (_token) => {
-  const data = tokenConfig.verifyToken(_token);
+exports.autoLogin = async (token) => {
+  const data = tokenConfig.verifyToken(token);
   /*{
     status: "S",
     message: "토큰이 정상입니다.",
-    user_id: decoded.userId,
     email: decoded.email,
     password: "freepass",
     token,
@@ -53,42 +52,11 @@ exports.autoLogin = async (_token) => {
 };
 
 /********************************** 
- 3. users 테이블 token 정보 update
-**********************************/
-exports.updateUserToken = async (body) => {
-  console.log("AuthService >>>> updateUserToken >>>> body====", body);
-  const { id, token } = body;
-  const params = {
-    TableName: "users",
-    Key: {
-      id,
-    },
-    UpdateExpression: "set #setToken = :param1", //token은 예약어라서 바로 사용 불가
-    ExpressionAttributeNames: {
-      "#setToken": "token",
-    },
-    ExpressionAttributeValues: {
-      ":param1": token === "logout" ? "" : token,
-    },
-  };
-
-  const result = await ddbClient.send(new UpdateCommand(params));
-  if (result.$metadata.httpStatusCode === 200) {
-    return true;
-  }
-  return false;
-};
-
-/********************************** 
-4. sessions 테이블 expires 항목 변경
+ 3. sessions.expires TTL 만료기간 갱신
 **********************************/
 exports.updateSessionExpires = async (sessId) => {
-  console.log(
-    "AuthService >>>> updateSessionExpires >>>> sessionId====",
-    sessId
-  );
-  //const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90; //90일(10자리 숫자)
-  const expires = Math.floor(Date.now() / 1000) + 60; //1분
+  const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90; //90일(10자리 숫자)
+  //const expires = Math.floor(Date.now() / 1000) + 60; //1분
   console.log(
     "AuthService >>>> updateSessionExpires >>>> expires====",
     expires
@@ -112,10 +80,35 @@ exports.updateSessionExpires = async (sessId) => {
 };
 
 /********************************** 
- 5. 로그인 여부 확인
+ users 테이블 token 정보 update(미사용)
+**********************************/
+exports.updateUserToken = async (body) => {
+  const { id, token } = body;
+  const params = {
+    TableName: "users",
+    Key: {
+      id,
+    },
+    UpdateExpression: "set #setToken = :param1", //token은 예약어라서 바로 사용 불가
+    ExpressionAttributeNames: {
+      "#setToken": "token",
+    },
+    ExpressionAttributeValues: {
+      ":param1": token === "logout" ? "" : token,
+    },
+  };
+
+  const result = await ddbClient.send(new UpdateCommand(params));
+  if (result.$metadata.httpStatusCode === 200) {
+    return true;
+  }
+  return false;
+};
+
+/********************************** 
+ 로그인 여부 확인 (미사용)
 **********************************/
 exports.loginStatus = async (token) => {
-  console.log("AuthService >>>> loginStatus >>>> token====", token);
   const l_token = token.substring(7); //Bearer는 제거
   const params = {
     TableName: "users",

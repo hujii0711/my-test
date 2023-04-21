@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {View, Text, KeyboardAvoidingView} from 'react-native';
 import {Avatar, Button, TextInput, Switch} from 'react-native-paper';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';

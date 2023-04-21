@@ -4,11 +4,11 @@ const httpStatus = require("http-status");
 
 const tokenConfig = {};
 
-tokenConfig.generateToken = (id, userId, email) => {
-  console.log("########### token.js > token.generateToken () ###########");
+tokenConfig.generateToken = (id, email) => {
+  console.log("########### tokenConfig.generateToken () ###########");
   try {
-    const payload = { id, userId, email };
-    const options = { expiresIn: 60 }; // 유효기간 90일(90d) | 1시간(1h, 60*60) | 기본 초단위(millisecond 단위 아님)
+    const payload = { id, email };
+    const options = { expiresIn: "90d" }; // 유효기간 90일(90d) | 1시간(1h, 60*60) | 기본 초단위(millisecond 단위 아님)
     const token = jwt.sign(payload, "kimHyungJun", options);
     console.log("token.js > token.generateToken > token============", token);
     return token;
@@ -21,7 +21,7 @@ tokenConfig.generateToken = (id, userId, email) => {
 };
 
 tokenConfig.verifyToken = (token) => {
-  console.log("########### token.js > verifyToken() ###########");
+  console.log("########### tokenConfig.verifyToken() ###########");
   if (!token) {
     return {
       status: "E",
@@ -33,13 +33,15 @@ tokenConfig.verifyToken = (token) => {
     const decoded = jwt.verify(token, "kimHyungJun");
 
     console.log(
-      "########### token.js > verifyToken() >>>> decoded==============",
+      "########### tokenConfig.verifyToken() >>>> decoded==============",
       decoded
     );
+    // iat(Issued At)은 토큰 발급 시간
+    // exp(Expiration Time)은 토큰의 만료 시간: jwt.sign시 expiresIn에 설정한 값
     return {
       status: "S",
       message: "토큰이 정상입니다.",
-      user_id: decoded.userId,
+      id: decoded.id,
       email: decoded.email,
       password: "freepass",
       token,

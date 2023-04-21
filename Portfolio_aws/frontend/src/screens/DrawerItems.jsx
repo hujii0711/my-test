@@ -19,7 +19,7 @@ const DrawerItems = props => {
   const {mutate: mutateLogout} = useLogout();
 
   const onLogout = () => {
-    mutateLogout({id: currentUser?.id, token: 'logout'});
+    mutateLogout();
   };
 
   const DrawerMenuData = [

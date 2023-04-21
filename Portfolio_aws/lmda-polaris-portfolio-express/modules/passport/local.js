@@ -29,7 +29,9 @@ exports.passportLocalConfig = () => {
       async (identifier, password, done) => {
         try {
           console.log("2LocalStrategy >>> identifier=====", identifier);
-          if (password && password !== "freepass") {
+          console.log("2LocalStrategy >>> password=====", password);
+
+          if (password !== "freepass") {
             const params = {
               TableName: "users", // 테이블 이름
               FilterExpression: "email = :param1 AND pwd = :param2",
@@ -39,14 +41,15 @@ exports.passportLocalConfig = () => {
               },
             };
             const result = await ddbClient.send(new ScanCommand(params));
-
             if (result.Count === 0) {
               done(null, false, {
                 message: "비밀번호가 일치하지 않거나 가입되지 않은 회원입니다.",
               });
+            } else if (result.Count === 1) {
+              done(null, result.Items[0]);
             }
-            done(null, result.Count === 1 ? result.Items[0] : {});
           } else if (password === "freepass") {
+            console.log("2LocalStrategy >>> 자동 로그인");
             const params = {
               TableName: "users", // 테이블 이름
               FilterExpression: "email = :param1",
@@ -55,8 +58,11 @@ exports.passportLocalConfig = () => {
               },
             };
             const result = await ddbClient.send(new ScanCommand(params));
-
-            done(null, result.Count === 1 ? result.Items[0] : {});
+            if (result.Count === 0) {
+              done(null, false, { message: "가입되지 않은 회원입니다." });
+            } else if (result.Count === 1) {
+              done(null, result.Items[0]);
+            }
           }
         } catch (error) {
           done(error);
@@ -72,6 +78,6 @@ exports.sessionMiddleware = session({
   saveUninitialized: false,
   store: new DynamoDBStore({
     AWS: AWS,
-    tableName: "users", // 사용할 DynamoDB 테이블 이름
+    tableName: "portfolio_sessions", // 사용할 DynamoDB 테이블 이름
   }),
 });

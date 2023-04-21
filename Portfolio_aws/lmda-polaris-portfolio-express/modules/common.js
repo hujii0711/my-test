@@ -1,12 +1,30 @@
 const { format, formatDistanceToNow } = require("date-fns");
 const { ko } = require("date-fns/locale");
+const httpStatus = require("http-status");
 
 const com = {};
 
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
   com.data
-  data 관련 기능 모음
+  data 관련 기능 모음 
  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
+com.httpRespMsg = (status, message) => {
+  const _status = status || "success";
+  const _message = message || "";
+
+  // 성공 메시지
+  if (_status === "S") {
+    return {
+      message: _message,
+      statusCode: httpStatus.OK,
+    };
+  } else if (_status === "F") {
+    return {
+      message: _message,
+      statusCode: httpStatus.OK,
+    };
+  }
+};
 
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
   com.str

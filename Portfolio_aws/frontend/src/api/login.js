@@ -1,26 +1,29 @@
 import client from './client';
 /*
-  1. 로컬 전략 회원가입: register | /auth/register | post
-  2. 로컬 전략 로그인 수행: login | /auth/login | post
-  3. 로컬 전략 로그아웃: logout | /auth/logout | get
-  4. 로컬 전략 자동로그인: autoLogin | /auth/autoLogin | get
+  1. 로컬 전략 회원가입: register | /auth/local/register | post
+  2. 로컬 전략 로그인 수행: login | /auth/local/login | post
+  3. 로컬 전략 로그아웃: logout | /auth/local/logout | get
+  4. 로컬 전략 자동로그인: autoLogin | /auth/local/autoLogin | get
 */
 
 /**********************************
-  1. 회원가입: register | /auth/register | post
+  1. 로컬 전략 회원가입: register | /auth/local/register | post
 **********************************/
 export async function register(params) {
   console.log('api >>>> register >>>> params ====', params);
-  const response = await client.post('/auth/register', params);
-  return response.data;
+  const response = await client.post('/auth/local/register', params);
+  return response?.data;
 }
 
 /**********************************
-  2. 로그인 수행: login | /auth/login | post
+  2. 로컬 전략 로그인 수행: login | /auth/local/login | post
 **********************************/
 export async function login(params) {
   console.log('api >>>> login >>>> params =====', params);
-  const response = await client.post('/auth/login', params);
+  //client.interceptors.response에서 에러에 걸리면 응답 값을 undefined가 됨
+  const response = await client.post('/auth/local/login', params);
+  return response?.data;
+
   /*{
     "sessionUser":{
        "created_dt":1681739061104,
@@ -34,41 +37,40 @@ export async function login(params) {
     },
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkN2ZiMzgzLWYwZjctNDkwNC04ZjZjLWNmMmJiOTMyNDdmMSIsInVzZXJJZCI6IjEwNjMxNzE5NDMwMDAzNDA4NTAwNSIsImVtYWlsIjoiaHVqaWkwNzExQGdtYWlsLmNvbSIsImlhdCI6MTY4MTc4MDk2NywiZXhwIjoxNjg0MzcyOTY3fQ.QDUnXLXzxKDe-sIqAWIo27vbX-NynKjcY9CHIV4X9sg"
   }*/
-  return response.data;
 }
 
 /**********************************
-  3. 로그아웃: logout | /auth/logout | get
+  3. 로컬 전략 로그아웃: logout | /auth/local/logout | get
 **********************************/
-export async function logout(params) {
-  console.log('api >>>> logout >>>> params ==============', params);
-  const response = await client.post('/auth/logout', params);
-  return response.data;
+export async function logout() {
+  console.log('api >>>> logout!!!!');
+  const response = await client.get('/auth/local/logout');
+  return response?.data;
 }
 
 /**********************************
-  4. 자동로그인: autoLogin | /auth/autoLogin | get
+  4. 로컬 전략 자동로그인: autoLogin | /auth/local/autoLogin | get
 **********************************/
 export async function autoLogin(token) {
   console.log('api >>>> autoLogin >>>> token ====', token);
-  const response = await client.get('/auth/autoLogin', {
+  const response = await client.get('/auth/local/autoLogin', {
     params: {token},
   });
-  return response.data;
+  return response?.data;
 }
 
 /**********************************
-  5. 로그인 이후 session 저장소 expires 갱신: updateSessionExpires | /auth/updateSessionExpires | get
-**********************************/
-export async function updateSessionExpires() {
-  const response = await client.get('/auth/updateSessionExpires');
-  return response.data;
-}
-
-/**********************************
-  6. 구글 oauth2 로그인 수행: googleLogin | /auth/google/login | get
+  5. 구글 oauth2 로그인 수행: googleLogin | /auth/google/login | get
 **********************************/
 export async function googleLogin() {
   console.log('api >>>> googleLogin====');
   await client.get('/auth/google/login');
+}
+
+/**********************************
+ 6. 로그인 이후 session 저장소 expires 갱신: updateSessionExpires | /auth/local/updateSessionExpires | get
+**********************************/
+export async function updateSessionExpires() {
+  const response = await client.get('/auth/local/updateSessionExpires');
+  return response?.data;
 }

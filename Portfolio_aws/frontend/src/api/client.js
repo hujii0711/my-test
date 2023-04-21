@@ -5,8 +5,21 @@ const baseURL =
 const client = axios.create({
   baseURL,
   timeout: 30 * 1000,
+  //   validateStatus: status => {
+  //     console.debug('axios response statusCode========', status);
+  //     return false;
+  //   },
 });
 
+/*
+validateStatus
+- validateStatus는 주어진 HTTP응답 상태 코드에 대해 promise의 반환 값이 resolve 또는 reject 할지 지정하도록 하는 옵션입니다.
+- 만약 validateStatus의 반환 값을 true 로 한다면 promise는 resolve가 된다. 만약 false라면 promise는 reject를 반환합니다.
+validateStatus: function (status) {
+   return status >= 200 && status < 300; // default
+}
+
+*/
 /*******************************************
   요청 인터셉터 2개의 콜백 함수를 받음
   요청 성공 직전 호출
@@ -90,6 +103,7 @@ client.interceptors.request.use(
 client.interceptors.response.use(
   //http status가 200인 경우 응답 성공 직전 호출. .then() 으로 이어짐.
   response => {
+    //console.log('interceptors.response >>> response=====', response);
     //console.log('interceptors.response >>> response=====', response);
     /*{
       "config":{
@@ -246,13 +260,13 @@ client.interceptors.response.use(
 
   //http status가 200이 아닌 경우 응답 에러 직전 호출. .then() 으로 이어짐.
   err => {
-    console.log('interceptors.response >>> err=====', err);
     if (Platform.OS === 'ios') {
       //Alert.alert('알림', err.response.data.message);
       Alert.alert('알림', err);
     } else {
-      //ToastAndroid.show(err.response.data.message, ToastAndroid.SHORT);
-      ToastAndroid.show(err, ToastAndroid.SHORT);
+      if (err.response.status === 500) {
+        ToastAndroid.show(err.response.data.message, ToastAndroid.SHORT);
+      }
     }
   },
 );

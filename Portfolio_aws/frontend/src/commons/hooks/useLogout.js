@@ -1,7 +1,6 @@
 import {useMutation} from 'react-query';
 import {logout} from '../../api/login';
 import useInform from './useInform';
-import {deleteHeaderToken} from '../../api/client';
 import authStorage from '../../commons/storage/authStorage';
 import {userDelete} from '../../commons/redux/users/reducers';
 import {useDispatch} from 'react-redux';
@@ -14,13 +13,14 @@ export default function useLogout() {
 
   const logoutCallback = () => {
     dispatch(userDelete());
-    deleteHeaderToken();
     authStorage.clear('token');
     authStorage.clear('autoLogin');
+    authStorage.clear('loginType');
   };
 
   const mutation = useMutation(logout, {
     onSuccess: data => {
+      console.log('useLogout >>> onSuccess >>> data---------', data);
       logoutCallback();
       inform({
         title: '성공',

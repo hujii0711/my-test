@@ -37,7 +37,7 @@ class ApiError extends Error {
 exports.ApiError = ApiError;
 
 /**
- * 에러객체를 확인하고, 지정된 에러객체가 아니면 에러객체를 수정함
+ * 에러객체를 확인하고, 지정된 ApiError 에러객체가 아니면 에러객체를 수정함
  */
 exports.errorConverter = (err, req, res, next) => {
   console.log("errorConverter!!!");
@@ -63,6 +63,7 @@ exports.errorHandler = (err, req, res, next) => {
     message,
     stack: err.stack,
   };
+  console.error("errorHandler500 >>>>> response=====", response);
   res.status(statusCode).json(response);
 };
 
@@ -82,5 +83,8 @@ exports.error400Handler = (req, res, next) => {
  * try catch 처리
  */
 exports.catchAsync = (fn) => (req, res, next) => {
-  Promise.resolve(fn(req, res, next)).catch((err) => next(err));
+  Promise.resolve(fn(req, res, next)).catch((err) => {
+    console.log("catchAsync >>> err =========", err);
+    return next(err);
+  });
 };

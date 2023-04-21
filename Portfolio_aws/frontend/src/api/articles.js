@@ -26,7 +26,7 @@ export async function selectArticlePagingList({
   const response = await client.get('/article/selectArticlePagingList', {
     params: {createdDt},
   });
-  return response.data.Items;
+  return response?.data?.Items;
 }
 
 /********************************** 
@@ -40,7 +40,7 @@ export async function selectArticle(id) {
     'selectArticle >>>> response.data.Items[0]=====',
     typeof response.data.Items[0],
   );
-  return response.data.Items[0];
+  return response?.data?.Items[0];
 }
 
 /**********************************
@@ -52,7 +52,7 @@ export async function insertArticle(params) {
     title,
     contents,
   });
-  return response.data;
+  return response?.data;
 }
 
 /**********************************
@@ -65,7 +65,7 @@ export async function updateArticle(params) {
     title,
     contents,
   });
-  return response.data;
+  return response?.data;
 }
 
 /**********************************
@@ -114,7 +114,7 @@ export async function insertArticleComment(params) {
     commentBody,
   });
   console.log('insertArticleComment >>>>> response========', response);
-  return response.data;
+  return response?.data;
 }
 
 /**********************************
@@ -127,7 +127,7 @@ export async function updateArticleComment(params) {
     commentBody,
   });
   console.log('updateArticleComment >>>>> response========', response);
-  return response.data;
+  return response?.data;
 }
 
 /**********************************
@@ -140,7 +140,7 @@ export async function deleteArticleComment(params) {
     commentBody,
   });
   console.log('deleteArticleComment >>>>> response========', response);
-  return response.data;
+  return response?.data;
 }
 
 /**********************************

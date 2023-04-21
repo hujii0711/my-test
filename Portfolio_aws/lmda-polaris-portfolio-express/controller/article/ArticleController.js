@@ -8,7 +8,7 @@ const httpStatus = require("http-status");
 exports.selectArticlePagingList = catchAsync(async (req, res) => {
   const query = req.query;
   const result = await ArticleService.selectArticlePagingList(query);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -17,7 +17,7 @@ exports.selectArticlePagingList = catchAsync(async (req, res) => {
 exports.selectArticle = catchAsync(async (req, res) => {
   const query = req.query;
   const result = await ArticleService.selectArticle(query);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -26,7 +26,7 @@ exports.selectArticle = catchAsync(async (req, res) => {
 exports.insertArticle = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.insertArticle(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -35,7 +35,7 @@ exports.insertArticle = catchAsync(async (req, res) => {
 exports.updateArticle = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.updateArticle(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -44,7 +44,7 @@ exports.updateArticle = catchAsync(async (req, res) => {
 exports.deleteArticle = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.deleteArticle(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -53,7 +53,7 @@ exports.deleteArticle = catchAsync(async (req, res) => {
 exports.updateArticleLookUpCnt = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.updateArticleLookUpCnt(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -62,7 +62,7 @@ exports.updateArticleLookUpCnt = catchAsync(async (req, res) => {
 exports.updateArticleLikeUpDown = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.updateArticleLikeUpDown(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -71,7 +71,7 @@ exports.updateArticleLikeUpDown = catchAsync(async (req, res) => {
 exports.insertArticleComment = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.insertArticleComment(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -80,7 +80,7 @@ exports.insertArticleComment = catchAsync(async (req, res) => {
 exports.updateArticleComment = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.updateArticleComment(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -89,7 +89,7 @@ exports.updateArticleComment = catchAsync(async (req, res) => {
 exports.deleteArticleComment = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.deleteArticleComment(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
@@ -98,5 +98,5 @@ exports.deleteArticleComment = catchAsync(async (req, res) => {
 exports.updateArticleCommentLikeUpDown = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await ArticleService.updateArticleCommentLikeUpDown(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });

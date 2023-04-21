@@ -12,17 +12,6 @@ const Dashboard = () => {
   const users = useUser();
   console.log('Dashboard >>> users======', users);
 
-  useEffect(() => {
-    (async () => {
-      const isSigned = await GoogleSignin.isSignedIn();
-      const currentUser = await GoogleSignin.getCurrentUser();
-      const tokens = await GoogleSignin.getTokens();
-      console.log('isSigned=====', isSigned);
-      console.log('currentUser=====', currentUser);
-      console.log('tokens=====', tokens);
-    })();
-  }, []);
-
   const data = [
     {
       id: 'share',
