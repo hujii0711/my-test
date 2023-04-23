@@ -18,8 +18,9 @@ exports.register = catchAsync(async (req, res) => {
  2. 로컬 전략 로그인 수행
 **********************************/
 exports.login = catchAsync(async (req, res, next) => {
-  console.log("11AuthController >>> login >>> req =====", req);
+  //console.log("step1__AuthController >>> login >>> req =====", req);
   passport.authenticate("local", (authError, user, options) => {
+    //console.log("step3__AuthController >>> authenticate >>> user =====", user);
     if (authError) {
       return next(authError);
     }
@@ -33,9 +34,10 @@ exports.login = catchAsync(async (req, res, next) => {
       if (loginError) {
         return next(loginError);
       }
-      console.log("4AuthController >>> req.login >>> user =====", user);
+      //console.log("step5__AuthController >>> req.login >>> user =====", user);
 
-      //토큰 생성
+      //토큰 생성(토큰은 굳이 필요 없음 AsyncStorage에 users.id 정보만 저장해도됨)
+      //passport는 결국 세션 기반 로그인이다.
       const id = user.id;
       const email = user.email;
       const token = tokenConfig.generateToken(id, email);
