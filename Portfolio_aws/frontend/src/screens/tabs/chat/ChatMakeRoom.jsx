@@ -2,7 +2,7 @@ import React, {useCallback, useRef} from 'react';
 import {Image, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {useMutation, useQuery} from 'react-query';
-import {insertChatMakeRoom, selectExistRoomCheck} from '../../../api/chat';
+import {insertChatMakeRoom, selectIsChatRoom} from '../../../api/chat';
 import {useNavigation} from '@react-navigation/native';
 import {useUser} from '../../../commons/hooks/useReduxState';
 
@@ -16,21 +16,21 @@ const ChatMakeRoom = ({
   const currentUser = useUser();
 
   // 채팅 상대방에 대해 기존 방이 있는지 유무 체크
-  const selectExistRoomCheckQuery = useQuery(
-    ['selectExistRoomCheck', currentUser.user_id],
-    () => selectExistRoomCheck(currentUser.user_id, selectedUserId),
+  const selectIsChatRoomQuery = useQuery(
+    ['selectIsChatRoom', currentUser.user_id],
+    () => selectIsChatRoom(currentUser.user_id, selectedUserId),
   );
 
   if (
-    selectExistRoomCheckQuery.data &&
-    selectExistRoomCheckQuery.data.length === 0
+    selectIsChatRoomCheckQuery.data &&
+    selectIsChatRoomCheckQuery.data.length === 0
   ) {
     roomId.current = '';
   } else if (
-    selectExistRoomCheckQuery.data &&
-    selectExistRoomCheckQuery.data.length > 0
+    selectIsChatRoomQuery.data &&
+    selectIsChatRoomQuery.data.length > 0
   ) {
-    roomId.current = selectExistRoomCheckQuery.data[0].room_id;
+    roomId.current = selectIsChatRoomQuery.data[0].room_id;
   }
 
   // 기존 방 없을 때 새로운 채팅방 생성

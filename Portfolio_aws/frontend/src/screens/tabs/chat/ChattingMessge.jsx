@@ -27,8 +27,8 @@ import {
 import io from 'socket.io-client';
 import Color from '../../../commons/style/Color';
 import {
-  selectListChatRoomMessage,
-  insertChatMessage,
+  selectChatRoomMessagePagingList,
+  insertSendMessge,
   insertChatMessageUpload,
 } from '../../../api/chat';
 import {useUser} from '../../../commons/hooks/useReduxState';
@@ -42,43 +42,47 @@ const ChattingMessge = () => {
   const queryClient = useQueryClient();
   const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
 
-  // 웹소켓 통신 시작
-  // 폴링 연결 후, 웹 소켓을 사용할 수 있다면 웹 소켓으로 업그레이드되는 것이다.
-  // 웹 소켓을 지원하지 않는 브라우저는 폴링 방식으로, 지원하는 브라우저는 웹 소켓 방식으로 사용 가능한 것이다.
-  // 처음부터 웹 소켓만 사용하고 싶으면, 클라이언트에서 연결할 때 다음처럼 transport 옵션을 추가하면 된다.
-
-  //기존 방이 있는지 여부 체크한후 콜백으로 웹소켓 통신을 시작한다.
-  //웹소켓 통신시 파라미터로 roomId를 넘겨줬으면 좋겠다.
   useEffect(() => {
     console.log('소켓 연동!!!!!!!!!!!!!!!');
-    const socket = io('http://10.0.2.2:4000/chat', {
-      path: '/socket.io',
-      transports: ['websocket'],
-      query: {
-        room_id: roomId,
-      },
-    });
+    const roomId = 'room1234';
+    const userId = 'chat01';
+
+    const socket = new WebSocket(
+      'wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev',
+    );
 
     socket.on('join', data => {
       console.log(data.message); // XXX가 입장했습니다.
     });
 
-    //메시지 수신
-    socket.on('receiveMessage', resp => {
-      queryClient.setQueryData('selectListChatRoomMessage', data => {
-        const [firstPage, ...rest] = data.pages;
-        return {
-          ...data,
-          pages: [firstPage, ...rest, [resp]],
-        };
-      });
-      //setTimeout(() => lastIndexToScrollMove('10'), 100);
-    });
+    socket.onopen = function (event) {
+      console.log('onopen >>>> event===========', event);
+    };
 
-    socket.on('exit', data => {
-      console.log(data.message); // XXX가 퇴장했습니다.
-    });
-    //isFirstRender.current = isFirstRender.current + 1;
+    socket.onmessage = function (event) {
+      console.log('onmessage >>>> event===========', event);
+      const message = event.data;
+
+      //const messageElem = document.createElement("div");
+      //messageElem.textContent = message;
+      //document.getElementById("messages").prepend(messageElem);
+    };
+
+    socket.onclose = function (event) {
+      if (event.wasClean) {
+        console.log('onclose >>>> wasClean >>>> event===========', event);
+      } else {
+        console.log('onclose >>>> event===========', event);
+      }
+
+      if (socket) {
+        socket.close();
+      }
+    };
+
+    socket.onerror = function (error) {
+      console.log('onerror >>>> error===========', error);
+    };
   }, []);
 
   const lastIndexToScrollMove = index => {
@@ -92,6 +96,7 @@ const ChattingMessge = () => {
   };
 
   // 대화 내용 조회
+  // 메시지 전송시 캐시를 이용한다.
   const {
     data,
     isFetchingNextPage,
@@ -99,8 +104,8 @@ const ChattingMessge = () => {
     fetchNextPage,
     fetchPreviousPage,
   } = useInfiniteQuery(
-    'selectListChatRoomMessage',
-    ({pageParam}) => selectListChatRoomMessage({...pageParam, roomId}),
+    'selectChatRoomMessagePagingList',
+    ({pageParam}) => selectChatRoomMessagePagingList({...pageParam, roomId}),
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage.length === 20) {
@@ -134,10 +139,10 @@ const ChattingMessge = () => {
 
   // 메시지 송신
   const onSubmitSendMessage = () => {
-    mutateInsertChatMessage({roomId, message, participantId});
+    mutateInsertSendMessge({roomId, message, participantId});
   };
 
-  const {mutate: mutateInsertChatMessage} = useMutation(insertChatMessage, {
+  const {mutate: mutateInsertSendMessge} = useMutation(insertSendMessge, {
     onSuccess: message => {
       setMessage('');
     },

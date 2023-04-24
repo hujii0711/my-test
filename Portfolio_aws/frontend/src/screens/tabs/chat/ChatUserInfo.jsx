@@ -12,7 +12,7 @@ import {
 import {Avatar, ActivityIndicator} from 'react-native-paper';
 import {useInfiniteQuery} from 'react-query';
 import ChatMakeRoom from './ChatMakeRoom';
-import {selectListUserInfo} from '../../../api/chat';
+import {selectUserPagingList} from '../../../api/chat';
 
 const ChatUserInfo = () => {
   const [selectedUserId, setSelectedUserId] = useState(null);
@@ -30,8 +30,8 @@ const ChatUserInfo = () => {
     fetchNextPage,
     fetchPreviousPage,
   } = useInfiniteQuery(
-    'selectListUserInfo',
-    ({pageParam}) => selectListUserInfo({...pageParam}),
+    'selectUserPagingList',
+    ({pageParam}) => selectUserPagingList({...pageParam}),
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage?.length === 10) {
