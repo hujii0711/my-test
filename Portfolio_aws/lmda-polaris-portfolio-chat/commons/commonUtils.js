@@ -8,4 +8,8 @@ com.uuidv4 = () => {
   });
 };
 
+com.krDate = () => {
+  return Date.now() + 1000 * 60 * 60 * 9;
+};
+
 module.exports = com;

@@ -24,7 +24,6 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
-import io from 'socket.io-client';
 import Color from '../../../commons/style/Color';
 import {
   selectChatRoomMessagePagingList,
@@ -37,105 +36,137 @@ const ChattingMessge = () => {
   console.log('ChattingMessge 렌더링##################');
   const isFirstRender = useRef(0);
   const currentUser = useUser();
-  const {id: roomId, participant_id: participantId} = useRoute().params;
+  //const {id: roomId, participant_id: participantId} = useRoute().params;
+  const roomId = 'room1234';
+  const userId = 'chat01';
+
   const [message, setMessage] = useState('');
   const queryClient = useQueryClient();
   const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
+  const ws = useRef(null);
+  const [serverState, setServerState] = useState('Loading...');
 
   useEffect(() => {
     console.log('소켓 연동!!!!!!!!!!!!!!!');
-    const roomId = 'room1234';
-    const userId = 'chat01';
 
-    const socket = new WebSocket(
+    ws.current = new WebSocket(
       'wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev',
     );
 
-    socket.on('join', data => {
-      console.log(data.message); // XXX가 입장했습니다.
-    });
-
-    socket.onopen = function (event) {
+    ws.current.onopen = event => {
       console.log('onopen >>>> event===========', event);
+      /* 
+        event.isTrusted 속성은 이벤트가 브라우저에 의해 발생된 것인지, 아니면 코드에서 명시적으로 발생시킨 것인지 여부를 나타냅니다.
+        event.isTrusted 값이 true이면, 이벤트가 브라우저에 의해 자동으로 발생된 것이므로 신뢰성이 높습니다.
+        반면에 event.isTrusted 값이 false이면, 이벤트가 코드에서 명시적으로 발생시킨 것이므로 신뢰성이 낮습니다.
+      */
+      setServerState('Connected');
+      chatRoomJoin();
+      chatRoomMessage();
     };
 
-    socket.onmessage = function (event) {
+    ws.current.onmessage = event => {
       console.log('onmessage >>>> event===========', event);
       const message = event.data;
-
-      //const messageElem = document.createElement("div");
-      //messageElem.textContent = message;
-      //document.getElementById("messages").prepend(messageElem);
     };
 
-    socket.onclose = function (event) {
+    ws.current.onclose = event => {
+      setServerState('Disconnected');
+
+      //서버 측에서 close 이벤트를 발생, 클라이언트 측에서 onclose 이벤트가 발생, 클라이언트가 close() 메서드를 호출
       if (event.wasClean) {
         console.log('onclose >>>> wasClean >>>> event===========', event);
+        //WebSocket 연결이 비정상적으로 닫혔음
       } else {
         console.log('onclose >>>> event===========', event);
       }
 
-      if (socket) {
-        socket.close();
+      if (ws.current) {
+        ws.current.close();
       }
     };
 
-    socket.onerror = function (error) {
+    ws.current.onerror = error => {
       console.log('onerror >>>> error===========', error);
+      setServerState(error.message);
+    };
+
+    return () => {
+      console.log('=========== useEffect 언마운트 ===========');
+      ws.current.close();
     };
   }, []);
 
-  const lastIndexToScrollMove = index => {
-    //scrollToEnd | scrollToIndex
-    lastIndexToScroll.scrollToIndex({
-      animated: true,
-      index: index,
-      viewPosition: 0,
-    });
-    //lastIndexToScroll.scrollToEnd();
+  const chatRoomMessage = () => {
+    ws.current.send(
+      JSON.stringify({
+        action: 'message',
+        message: 'chatRoomMessage!!',
+      }),
+    );
   };
 
-  // 대화 내용 조회
-  // 메시지 전송시 캐시를 이용한다.
-  const {
-    data,
-    isFetchingNextPage,
-    isFetchingPreviousPage,
-    fetchNextPage,
-    fetchPreviousPage,
-  } = useInfiniteQuery(
-    'selectChatRoomMessagePagingList',
-    ({pageParam}) => selectChatRoomMessagePagingList({...pageParam, roomId}),
-    {
-      getNextPageParam: (lastPage, allPages) => {
-        if (lastPage.length === 20) {
-          return {
-            nextOffset: lastPage[lastPage.length - 1].row_num,
-            roomId,
-          };
-        } else {
-          return undefined;
-        }
-      },
-      getPreviousPageParam: (firstPage, allPages) => {
-        const validPage = allPages.find(page => page?.length > 0);
-        if (!validPage) {
-          return undefined;
-        }
-        return {
-          prevOffset: (allPages.length - 1) * 20,
-          roomId,
-        };
-      },
-    },
-  );
+  const chatRoomJoin = () => {
+    ws.current.send(
+      JSON.stringify({
+        action: 'message',
+        roomId,
+        userId,
+      }),
+    );
+  };
 
-  const items = useMemo(() => {
-    if (!data) {
-      return null;
-    }
-    return [].concat(...data.pages);
-  }, [data]);
+  // const lastIndexToScrollMove = index => {
+  //   //scrollToEnd | scrollToIndex
+  //   lastIndexToScroll.scrollToIndex({
+  //     animated: true,
+  //     index: index,
+  //     viewPosition: 0,
+  //   });
+  //   //lastIndexToScroll.scrollToEnd();
+  // };
+
+  // // 대화 내용 조회
+  // // 메시지 전송시 캐시를 이용한다.
+  // const {
+  //   data,
+  //   isFetchingNextPage,
+  //   isFetchingPreviousPage,
+  //   fetchNextPage,
+  //   fetchPreviousPage,
+  // } = useInfiniteQuery(
+  //   'selectChatRoomMessagePagingList',
+  //   ({pageParam}) => selectChatRoomMessagePagingList({...pageParam, roomId}),
+  //   {
+  //     getNextPageParam: (lastPage, allPages) => {
+  //       if (lastPage.length === 20) {
+  //         return {
+  //           nextOffset: lastPage[lastPage.length - 1].row_num,
+  //           roomId,
+  //         };
+  //       } else {
+  //         return undefined;
+  //       }
+  //     },
+  //     getPreviousPageParam: (firstPage, allPages) => {
+  //       const validPage = allPages.find(page => page?.length > 0);
+  //       if (!validPage) {
+  //         return undefined;
+  //       }
+  //       return {
+  //         prevOffset: (allPages.length - 1) * 20,
+  //         roomId,
+  //       };
+  //     },
+  //   },
+  // );
+
+  // const items = useMemo(() => {
+  //   if (!data) {
+  //     return null;
+  //   }
+  //   return [].concat(...data.pages);
+  // }, [data]);
 
   // 메시지 송신
   const onSubmitSendMessage = () => {
@@ -182,7 +213,7 @@ const ChattingMessge = () => {
       style={{flex: 1}}
       keyboardVerticalOffset={80}>
       <SafeAreaView style={styles.container}>
-        <FlatList
+        {/* <FlatList
           data={items}
           ref={ref => {
             setLastIndexToScroll(ref);
@@ -224,7 +255,7 @@ const ChattingMessge = () => {
               refreshing={isFetchingPreviousPage}
             />
           }
-        />
+        /> */}
       </SafeAreaView>
       <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
         <TextInput

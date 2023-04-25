@@ -19,7 +19,7 @@ exports.insertChatMessage = async (params) => {
         user_id: userId,
         user_name: "김형준",
         message,
-        created_date: Date.now(),
+        created_date: com.krDate(),
       },
     };
     const data = await ddbClient.send(new PutCommand(params));

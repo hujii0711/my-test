@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>receiver</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+      defer
+    ></script>
+    <script>
+      const userId = "receiver1";
+      const roomId = "room1";
+
+      const socket = new WebSocket(
+        `wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev?userId=${userId}&roomId=${roomId}`
+      );
+
+      socket.onopen = (event) => {
+        console.log("onopen >>>> event===========", event);
+      };
+
+      socket.onmessage = (event) => {
+        console.log("onmessage >>>> event===========", event);
+        const message = event.data;
+      };
+
+      socket.onclose = (event) => {
+        if (event.wasClean) {
+          console.log("onclose >>>> wasClean >>>> event===========", event);
+        } else {
+          console.log("onclose >>>> event===========", event);
+        }
+
+        if (socket) {
+          socket.close();
+        }
+      };
+
+      socket.onerror = (error) => {
+        console.log("onerror >>>> error===========", error);
+      };
+
+      const sendMessage = () => {
+        socket.send(
+          JSON.stringify({
+            action: "message",
+            message: "응답하라 김형준!!",
+          })
+        );
+      };
+
+      const chatRoomJoin = () => {
+        socket.send(
+          JSON.stringify({
+            action: "join",
+            room: roomId,
+            userId,
+            userNm,
+          })
+        );
+      };
+    </script>
+  </head>
+  <body>
+    <input id="message" />
+    <button id="btn1" onclick="chatRoomJoin()">방입장</button>
+    <button id="btn2" onclick="sendMessage()">메시지전송</button>
+  </body>
+</html>

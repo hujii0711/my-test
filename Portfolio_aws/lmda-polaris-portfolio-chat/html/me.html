@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    <title>sender</title>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js" defer></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"
+      defer
+    ></script>
+    <script>
+      const userId = "sender1";
+      const roomId = "room1";
+      //let timer = undefined;
+
+      const socket = new WebSocket(
+        `wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev?userId=${userId}&roomId=${roomId}&createdDt=100000`
+      );
+
+      socket.onopen = (event) => {
+        console.log("onopen >>>> event===========", event);
+        //timer = setInterval(() => {
+        //  socket.send(JSON.stringify({ action: "ping" }));
+        //}, 60 * 1000);
+      };
+
+      socket.onmessage = (event) => {
+        console.log("onmessage >>>> event===========", event);
+        const message = event.data;
+      };
+
+      socket.onclose = (event) => {
+        if (event.wasClean) {
+          console.log("onclose >>>> wasClean >>>> event===========", event);
+        } else {
+          console.log("onclose >>>> event===========", event);
+        }
+
+        //if (timer) {
+        //  clearInterval(timer);
+        //  timer = null;
+        //}
+        if (socket) {
+          socket.close();
+        }
+      };
+
+      socket.onerror = (error) => {
+        console.log("onerror >>>> error===========", error);
+      };
+
+      const sendMessage = () => {
+        socket.send(
+          JSON.stringify({
+            action: "message",
+            message: "응답하라 김해주!!",
+            roomId,
+            userId,
+          })
+        );
+      };
+
+      const chatRoomJoin = () => {
+        socket.send(
+          JSON.stringify({
+            action: "join",
+            roomId,
+            userId,
+          })
+        );
+      };
+      const chatRoomExit = () => {
+        socket.close();
+      };
+    </script>
+  </head>
+  <body>
+    <input id="message" />
+    <button id="btn1" onclick="chatRoomJoin()">방입장</button>
+    <button id="btn2" onclick="sendMessage()">메시지전송</button>
+    <button id="btn3" onclick="chatRoomExit()">방나가기</button>
+  </body>
+</html>
