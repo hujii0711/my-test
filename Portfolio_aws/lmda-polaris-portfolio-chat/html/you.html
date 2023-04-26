@@ -9,11 +9,11 @@
       defer
     ></script>
     <script>
-      const userId = "receiver1";
-      const roomId = "room1";
+      const g_userId = "receiver1";
+      let g_roomId = "31415fc8-53cf-408f-b324-e1770614919c";
 
       const socket = new WebSocket(
-        `wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev?userId=${userId}&roomId=${roomId}`
+        "wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev"
       );
 
       socket.onopen = (event) => {
@@ -22,7 +22,18 @@
 
       socket.onmessage = (event) => {
         console.log("onmessage >>>> event===========", event);
-        const message = event.data;
+        const response = JSON.parse(event.data);
+        console.log("onmessage >>>> response===========", response);
+
+        if (response.type === "join") {
+          g_roomId = response.newRoomId;
+        }
+        if (response.type === "chatSend") {
+          console.log(
+            "onmessage >>>> chatSend >>>> response===========",
+            response
+          );
+        }
       };
 
       socket.onclose = (event) => {
@@ -46,6 +57,8 @@
           JSON.stringify({
             action: "message",
             message: "응답하라 김형준!!",
+            roomId: g_roomId,
+            userId: g_userId,
           })
         );
       };
@@ -54,11 +67,14 @@
         socket.send(
           JSON.stringify({
             action: "join",
-            room: roomId,
-            userId,
-            userNm,
+            roomId: g_roomId,
+            userId: g_userId,
           })
         );
+      };
+
+      const chatRoomExit = () => {
+        socket.close();
       };
     </script>
   </head>
@@ -66,5 +82,6 @@
     <input id="message" />
     <button id="btn1" onclick="chatRoomJoin()">방입장</button>
     <button id="btn2" onclick="sendMessage()">메시지전송</button>
+    <button id="btn3" onclick="chatRoomExit()">방나가기</button>
   </body>
 </html>

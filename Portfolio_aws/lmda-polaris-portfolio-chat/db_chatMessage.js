@@ -1,59 +1,27 @@
-const { QueryCommand, PutCommand } = require("@aws-sdk/lib-dynamodb");
+const { PutCommand } = require("@aws-sdk/lib-dynamodb");
 const { ddbClient } = require("./commons/ddbClient");
 const com = require("./commons/commonUtils");
 
 /*
-    chat_message Table 데이터 생성
-    param: room_id, message
-    return: undefined
-    ws: $send시 생성
+ 1. 메시지 저장 : insertSendMessge
 */
-exports.insertChatMessage = async (params) => {
-  const { roomId, userId, message } = params;
+
+/********************************** 
+ 1. 메시지 저장
+**********************************/
+exports.insertSendMessge = async (roomId, userId, message) => {
   try {
     const params = {
-      TableName: "chat_message",
+      TableName: "chat_messages",
       Item: {
         id: com.uuidv4(),
         room_id: roomId,
-        user_id: userId,
-        user_name: "김형준",
         message,
-        created_date: com.krDate(),
+        send_user_id: userId,
+        created_dt: com.krDate(),
       },
     };
-    const data = await ddbClient.send(new PutCommand(params));
-    console.log("db_chatRooms > insertChatMessage >>>> data ======", data);
-  } catch (err) {
-    console.log("Error", err);
-  }
-};
-
-/*
-    chat_message Table 데이터 조회
-    param: room_id
-    return: Items
-    ws: $join시 조회
-*/
-exports.selectChatMessage = async (room_id) => {
-  try {
-    const params = {
-      TableName: "chat_message",
-      IndexName: "room_id-index",
-      KeyConditionExpression: "#HashKey = :hkey",
-      ExpressionAttributeNames: { "#HashKey": "room_id" },
-      ExpressionAttributeValues: {
-        ":hkey": room_id,
-      },
-    };
-
-    const result = await ddbClient.send(new QueryCommand(params));
-    console.log("db_chatRooms > selectChatMessage >>>> result ======", result);
-    if (result.Items) {
-      return result.Items;
-    } else {
-      return;
-    }
+    return await ddbClient.send(new PutCommand(params));
   } catch (err) {
     console.log("Error", err);
   }

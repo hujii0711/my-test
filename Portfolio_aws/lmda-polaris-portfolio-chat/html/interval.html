@@ -11,29 +11,22 @@
     <script>
       const g_userId = "sender1";
       let g_roomId = "";
+      //let timer = undefined;
 
       const socket = new WebSocket(
-        "wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev"
+        `wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev`
       );
 
       socket.onopen = (event) => {
         console.log("onopen >>>> event===========", event);
+        //timer = setInterval(() => {
+        //  socket.send(JSON.stringify({ action: "ping" }));
+        //}, 60 * 1000);
       };
 
       socket.onmessage = (event) => {
         console.log("onmessage >>>> event===========", event);
-        const response = JSON.parse(event.data);
-        console.log("onmessage >>>> response===========", response);
-
-        if (response.type === "join") {
-          g_roomId = response.newRoomId;
-        }
-        if (response.type === "chatSend") {
-          console.log(
-            "onmessage >>>> chatSend >>>> response===========",
-            response
-          );
-        }
+        const message = event.data;
       };
 
       socket.onclose = (event) => {
@@ -43,6 +36,10 @@
           console.log("onclose >>>> event===========", event);
         }
 
+        //if (timer) {
+        //  clearInterval(timer);
+        //  timer = null;
+        //}
         if (socket) {
           socket.close();
         }
@@ -53,7 +50,6 @@
       };
 
       const sendMessage = () => {
-        console.log("sendMessage >>>> g_roomId=========", g_roomId);
         socket.send(
           JSON.stringify({
             action: "message",
@@ -65,7 +61,6 @@
       };
 
       const chatRoomJoin = () => {
-        console.log("chatRoomJoin >>>> g_roomId=========", g_roomId);
         socket.send(
           JSON.stringify({
             action: "join",

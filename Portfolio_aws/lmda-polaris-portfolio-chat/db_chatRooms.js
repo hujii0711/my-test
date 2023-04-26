@@ -2,88 +2,167 @@ const {
   QueryCommand,
   PutCommand,
   DeleteCommand,
+  UpdateCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { ddbClient } = require("./commons/ddbClient");
 const com = require("./commons/commonUtils");
 
 /*
-    chat_userlist Table 데이터 조회
-    param: room_id
-    return: undefined
-    ws: $join시 조회
+ 1. 새로운 채팅방 생성 : insertChatRoomNewRegister
+ 2. 초대받은자 채팅방 생성 : insertChatRoomRegister
+ 3. 특정 사용자에게 기존 채팅방이 있는지 체크 : selectIsChatRoomUser
+ 4. room_id로 항목 조회 : selectChatRoomItemsAtRoomId
+ 5. Connection_id로 항목 조회 : selectChatRoomItemsAtConnectionId
+ 6. connection_id 수정 : updateConnectionId
+ 7. 채팅방 삭제: deleteChatRoom
 */
-exports.selectChatRoomInfo = async (room_id) => {
-  try {
-    const params = {
-      TableName: "chat_rooms",
-      IndexName: "room_id-index",
-      KeyConditionExpression: "#HashKey = :hkey",
-      ExpressionAttributeNames: { "#HashKey": "room_id" },
-      ExpressionAttributeValues: {
-        ":hkey": room_id,
-      },
-    };
 
-    // 파티션키(connection_id)가 아니면 검색이 되지 않아 글로벌 인덱스 추가
-    const result = await ddbClient.send(new QueryCommand(params));
-    console.log("db_chatRooms > selectChatRoomInfo >>>> result ======", result);
-
-    if (result.Items) {
-      return {
-        connection_id: result.Items[0].connection_id,
-        room_id: result.Items[0].room_id,
-      };
-    } else {
-      return;
-    }
-  } catch (err) {
-    console.log("Error", err);
-  }
-};
-
-/*
-    chat_userlist Table 데이터 생성
-    param: room_id, connection_id
-    return: undefined
-    ws: $join시 생성
-*/
-exports.insertChatRoom = async (room_id, connection_id) => {
+/********************************** 
+ 1. 새로운 채팅방 생성
+**********************************/
+exports.insertChatRoomNewRegister = async (connectionId, userId) => {
   try {
     const params = {
       TableName: "chat_rooms",
       Item: {
-        room_id: room_id ?? com.uuidv4(), // 최초 채팅방 생성시 com.uuidv4 사용하고 두번째 부터는 클라이언트에서 넘어온 room_id 사용
-        connection_id, // 웹소켓 연결시 부여된 connection_id
-        user_id: "fujii0711", //stateless ==> 접속한 유저정보 DB에서 확인
-        user_name: "김형준", //stateless ==> 접속한 유저정보 DB에서 확인
-        created_date: Date.now(),
+        id: com.uuidv4(),
+        connection_id: connectionId,
+        user_id: userId,
+        created_room_user_id: userId,
+        created_dt: Number(com.krDate()),
       },
     };
-    const data = await ddbClient.send(new PutCommand(params));
-    console.log("db_chatRooms > insertChatRoom >>>> data ======", data);
+
+    const result = await ddbClient.send(new PutCommand(params));
+    if (result.$metadata.httpStatusCode === 200) {
+      return params.Item;
+    }
   } catch (err) {
-    console.log("Error", err);
+    console.log("insertChatRoomNewRegister >>> err==========", err);
   }
 };
 
-/*
-    chat_userlist Table 데이터 삭제
-    param: connection_id
-    return: undefined
-    ws: $disconnect시 삭제
-*/
-exports.deleteChatRoom = async (connection_id) => {
-  const params = {
-    TableName: "chat_rooms",
-    Key: {
-      connection_id,
-    },
-  };
-
+/********************************** 
+ 2. 초대받은자 채팅방 생성
+**********************************/
+exports.insertChatRoomRegister = async (connectionId, roomId, userId) => {
   try {
-    const data = await ddbClient.send(new DeleteCommand(params));
-    console.log("db_chatRooms > deleteChatRoom >>>> data ======", data);
+    const params = {
+      TableName: "chat_rooms",
+      Item: {
+        id: roomId,
+        connection_id: connectionId,
+        user_id: userId,
+        created_dt: Number(com.krDate()),
+      },
+    };
+    await ddbClient.send(new PutCommand(params));
   } catch (err) {
-    console.log("Error", err);
+    console.log("insertChatRoomRegister >>> err==========", err);
+  }
+};
+
+/********************************** 
+ 3. 특정 사용자에게 기존 채팅방이 있는지 체크
+  [GSI와 파티션키 조합으로 조회]
+**********************************/
+exports.selectIsChatRoomUser = async (userId, roomId) => {
+  try {
+    const params = {
+      TableName: "chat_rooms",
+      IndexName: "id-index",
+      KeyConditionExpression: "id = :param1",
+      ExpressionAttributeValues: {
+        ":param1": roomId,
+        ":param2": userId,
+      },
+      FilterExpression: "user_id =:param2",
+    };
+    const data = await ddbClient.send(new QueryCommand(params));
+    console.log("selectIsChatRoom >>> data==========", data);
+  } catch (err) {
+    console.log("selectIsChatRoom >>> err==========", err);
+  }
+};
+
+/********************************** 
+ 4. room_id로 항목 조회
+  [GSI 만으로 조회]
+**********************************/
+exports.selectChatRoomItemsAtRoomId = async (roomId) => {
+  try {
+    const params = {
+      TableName: "chat_rooms",
+      IndexName: "id-index",
+      KeyConditionExpression: "id = :param1",
+      ExpressionAttributeValues: {
+        ":param1": roomId,
+      },
+    };
+    return await ddbClient.send(new QueryCommand(params));
+  } catch (err) {
+    console.log("selectChatRoomItemsAtRoomId >>> err==========", err);
+  }
+};
+
+/********************************** 
+ 5. Connection_id 조건에 맞는 항목 조회
+  [GSI 만으로 조회]
+**********************************/
+exports.selectChatRoomItemsAtConnectionId = async (connectionId) => {
+  try {
+    const params = {
+      TableName: "chat_rooms",
+      IndexName: "connection_id-index",
+      KeyConditionExpression: "connection_id = :param1",
+      ExpressionAttributeValues: {
+        ":param1": connectionId,
+      },
+    };
+
+    return await ddbClient.send(new QueryCommand(params));
+  } catch (err) {
+    console.log("selectChatRoomItemsAtConnectionId >>> err==========", err);
+  }
+};
+
+/********************************** 
+ 6. connection_id 수정
+**********************************/
+exports.updateConnectionId = async (userId, createdDt, connectionId) => {
+  try {
+    const params = {
+      TableName: "chat_rooms",
+      Key: {
+        user_id: userId,
+        created_dt: Number(createdDt),
+      },
+      UpdateExpression: "set connection_id = :param1, updated_dt = :param2",
+      ExpressionAttributeValues: {
+        ":param1": connectionId,
+        ":param2": com.krDate(),
+      },
+    };
+    return await ddbClient.send(new UpdateCommand(params));
+  } catch (err) {
+    console.log("updateConnectionId >>> err==========", err);
+  }
+};
+
+/********************************** 
+ 7. 채팅방 삭제
+**********************************/
+exports.deleteChatRoom = async (userId, createdDt) => {
+  try {
+    const params = {
+      TableName: "chat_rooms",
+      Key: {
+        user_id: userId,
+        created_dt: Number(createdDt),
+      },
+    };
+    return await ddbClient.send(new DeleteCommand(params));
+  } catch (err) {
+    console.log("deleteChatRoom >>> err==========", err);
   }
 };
