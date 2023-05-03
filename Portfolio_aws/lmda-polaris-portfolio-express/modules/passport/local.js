@@ -4,18 +4,21 @@ const passportLocal = require("passport-local");
 const session = require("express-session");
 const DynamoDBStore = require("dynamodb-store");
 const LocalStrategy = passportLocal.Strategy;
-const { ScanCommand } = require("@aws-sdk/lib-dynamodb");
-const { ddbClient } = require("../ddbClient.js");
+const bcrypt = require("bcryptjs");
+const AuthService = require("../../service/auth/AuthService");
 
 exports.passportLocalConfig = () => {
   passport.serializeUser((user, done) => {
-    //console.log("step4__passportLocalConfig >>> serializeUser >>> user=====", user);
+    console.log(
+      "step4__passportLocalConfig >>> serializeUser >>> user=====",
+      user
+    );
     done(null, user);
   });
 
   passport.deserializeUser((user, done) => {
     // 세션에 저장된 사용자 정보를 복원
-    //console.log("passportLocalConfig >>> deserializeUser >>> user=====", user);
+    console.log("passportLocalConfig >>> deserializeUser >>> user=====", user);
     done(null, user);
   });
 
@@ -28,37 +31,27 @@ exports.passportLocalConfig = () => {
       },
       async (identifier, password, done) => {
         try {
-          //console.log("step2__LocalStrategy >>> identifier=====", identifier);
-          if (password !== "freepass") {
-            const params = {
-              TableName: "users", // 테이블 이름
-              FilterExpression: "email = :param1 AND pwd = :param2",
-              ExpressionAttributeValues: {
-                ":param1": identifier,
-                ":param2": password,
-              },
-            };
-            const result = await ddbClient.send(new ScanCommand(params));
-            if (result.Count === 0) {
+          console.log("step2__LocalStrategy >>> identifier=====", identifier);
+
+          const { Items: userItems, Count } =
+            await AuthService.selectFindUserInfo(identifier);
+
+          // 자동로그인 대상
+          if (password === "freepass") {
+            done(null, userItems[0]);
+          } else {
+            if (Count > 0) {
+              const isPwdSame = bcrypt.compareSync(password, userItems[0].pwd);
+              //const isPwdSame = await bcrypt.compare(password, userItems[0].pwd); // controller에서 response를 못보냄
+              if (isPwdSame) {
+                done(null, userItems[0]);
+              } else {
+                done(null, false, { message: "비밀번호가 일치하지 않습니다." });
+              }
+            } else {
               done(null, false, {
-                message: "비밀번호가 일치하지 않거나 가입되지 않은 회원입니다.",
+                message: "가입되지 않은 회원입니다.",
               });
-            } else if (result.Count === 1) {
-              done(null, result.Items[0]);
-            }
-          } else if (password === "freepass") {
-            const params = {
-              TableName: "users", // 테이블 이름
-              FilterExpression: "email = :param1",
-              ExpressionAttributeValues: {
-                ":param1": identifier,
-              },
-            };
-            const result = await ddbClient.send(new ScanCommand(params));
-            if (result.Count === 0) {
-              done(null, false, { message: "가입되지 않은 회원입니다." });
-            } else if (result.Count === 1) {
-              done(null, result.Items[0]);
             }
           }
         } catch (error) {

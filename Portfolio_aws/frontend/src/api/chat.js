@@ -2,12 +2,9 @@ import client from './client';
 
 /*
   1. 채팅방 목록 조회 | /chat/selectChatRoomPagingList | get
-  2. 채팅방 개설 | /chat/insertChatRoomRegister | post
-  3. 기존 방 있는지 유무 체크| /chat/selectIsChatRoom | post
-  4. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/selectChatRoomMessagePagingList | get
-  5. 채팅방 메시지 전송 | /chat/insertSendMessge | post
-  6. 채팅방 나가기 | /chat/deleteChatRoom | delete
-  7. 사용자 정보 조회 /chat/selectUserPagingList | get
+  2. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/selectChatRoomMessagePagingList | get
+  3. 사용자 정보 조회 /chat/selectChatUserPagingList | get
+  4. 기존 방 있는지 유무 체크| /chat/selectIsChatRoom | post
   
   8. 파일업로드 메시지 전송 | /chat/insertChatMessageUpload | post
 */
@@ -18,80 +15,76 @@ import client from './client';
 export async function selectChatRoomPagingList({
   nextCreatedDt = '1',
   prevCreatedDt = '1',
+  userId = '',
 }) {
+  console.log(
+    'selectChatRoomPagingList >>> nextCreatedDt===========',
+    nextCreatedDt,
+  );
+  console.log('selectChatRoomPagingList >>> userId===========', userId);
   const createdDt = nextCreatedDt;
   const response = await client.get('/chat/selectChatRoomPagingList', {
-    params: {createdDt},
+    params: {createdDt, userId},
   });
-
+  console.log(
+    'selectChatRoomPagingList >>> response?.data?.Items===========',
+    response?.data?.Items,
+  );
   return response?.data?.Items;
 }
 
 /********************************** 
- 2. 채팅방 개설 | /chat/insertChatRoomRegister | post
-**********************************/
-export async function insertChatRoomRegister(params) {
-  const {} = params;
-  const response = await client.post('/chat/insertChatRoomRegister', params);
-  return response?.data;
-}
-
-/********************************** 
- 3. 기존 방 있는지 유무 체크| /chat/selectIsChatRoom | post
-**********************************/
-export async function selectIsChatRoom(userId, selectedId) {
-  const response = await client.post(`/chat/selectIsChatRoom`, {
-    userId,
-    selectedId,
-  });
-  return response?.data;
-}
-
-/********************************** 
- 4. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/selectChatRoomMessagePagingList | get
+ 2. 채팅방 입장하면서 채팅 메시지 목록 조회 | /chat/selectChatRoomMessagePagingList | get
 **********************************/
 export async function selectChatRoomMessagePagingList({
   nextCreatedDt = '1',
   prevCreatedDt = '1',
   roomId = '',
 }) {
+  console.log('selectChatRoomMessagePagingList >>> roomId===========', roomId);
   const createdDt = nextCreatedDt;
   const response = await client.get('/chat/selectChatRoomMessagePagingList', {
     params: {createdDt, roomId},
   });
+  onsole.log(
+    'selectChatRoomMessagePagingList >>> response===========',
+    response,
+  );
   return response?.data;
 }
 
 /********************************** 
- 5. 채팅방 메시지 전송 | /chat/insertSendMessge | post
+ 3. 사용자 정보 조회 /chat/selectChatUserPagingList | get
 **********************************/
-export async function insertSendMessge(params) {
-  const {roomId, participantId: receiverId, message} = params;
-  const response = await client.post('/chat/insertSendMessge', {
-    roomId,
-    receiverId,
-    message,
+export async function selectChatUserPagingList({
+  nextCreatedDt = '1',
+  prevCreatedDt = '1',
+}) {
+  console.log(
+    'selectChatUserPagingList >>> nextCreatedDt===========',
+    nextCreatedDt,
+  );
+  const createdDt = nextCreatedDt;
+  const response = await client.get('/chat/selectChatUserPagingList', {
+    params: {createdDt},
   });
-  return response.data;
+  return response?.data?.Items;
 }
 
 /********************************** 
- 6. 채팅방 나가기 | /chat/deleteChatRoom | delete
+ 4. 기존 방 있는지 유무 체크| /chat/selectIsChatRoom | post
 **********************************/
-export async function deleteChatRoom(params) {
-  const {createdDt} = params;
-  const response = await client.delete('/chat/deleteChatRoom', {
-    data: {createdDt},
+export async function selectIsChatRoom(userId, selectedUserId) {
+  console.log(
+    'selectIsChatRoomㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ >>> userId===========',
+    userId,
+  );
+  console.log('selectIsChatRoom >>> userId===========', selectedUserId);
+  const response = await client.post(`/chat/selectIsChatRoom`, {
+    userId,
+    selectedUserId,
   });
-  return response?.data;
-}
-
-/********************************** 
- 7. 사용자 정보 조회 /chat/selectUserPagingList | get
-**********************************/
-export async function selectUserPagingList() {
-  const response = await client.get('/chat/selectUserPagingList');
-  return response?.data;
+  return response?.data?.Items;
 }
 
 /********************************** 

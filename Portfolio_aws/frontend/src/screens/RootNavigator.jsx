@@ -6,13 +6,7 @@ import {MenuList} from './MenuList';
 import useAuthLoadEffect from '../commons/hooks/useAuthLoadEffect';
 import {useSelector} from 'react-redux';
 import {View} from 'react-native';
-import {
-  Appbar,
-  Menu,
-  Divider,
-  Provider,
-  IconButton,
-} from 'react-native-paper';
+import {Appbar, Menu, Divider, Provider, IconButton} from 'react-native-paper';
 const Stack = createStackNavigator();
 
 const RootNavigator = () => {
@@ -32,7 +26,7 @@ const RootNavigator = () => {
         return {
           header: ({navigation, route, options, back}) => {
             const title = getHeaderTitle(options, route.name);
-            const isChattingMessge = route.name === 'ChattingMessge';
+            const isChatSocketMessage = route.name === 'ChatSocketMessage';
             return (
               <Appbar.Header elevated style={{backgroundColor: Color.main}}>
                 {back ? (
@@ -51,7 +45,7 @@ const RootNavigator = () => {
                     console.log('userInfo===', users);
                   }}
                 />
-                {isChattingMessge && (
+                {isChatSocketMessage && (
                   <Provider>
                     <View
                       style={{

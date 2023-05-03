@@ -1,12 +1,13 @@
 const { catchAsync } = require("../../modules/error");
-const ChatService = require("../../service/auth/ChatService");
+const ChatService = require("../../service/chat/ChatService");
 const httpStatus = require("http-status");
 const com = require("../../modules/common");
 
 /*
   1. 채팅방 목록 조회 | /chat/selectChatRoomPagingList | get
   2. 채팅 메시지 목록 조회 | /chat/selectChatRoomMessagePagingList | get
-  3. 사용자 정보 조회 /chat/selectUserPagingList | get
+  3. 사용자 정보 조회 | /chat/selectChatUserPagingList | get
+  4. 사용자와 선택된 사용자에 대해 채팅방이 있는지 유무 체크 | /chat/selectIsChatRoom | post
 */
 
 /********************************** 
@@ -14,7 +15,19 @@ const com = require("../../modules/common");
 **********************************/
 exports.selectChatRoomPagingList = catchAsync(async (req, res) => {
   const query = req.query;
+  console.log(
+    "ChatController >>> selectChatRoomPagingList >>> req==========",
+    req
+  );
+  console.log(
+    "ChatController >>> selectChatRoomPagingList >>> req.query==========",
+    req.query
+  );
   const result = await ChatService.selectChatRoomPagingList(query);
+  console.log(
+    "ChatController >>> selectChatRoomPagingList >>> result=========",
+    result
+  );
   res.status(httpStatus.OK).json(result);
 });
 
@@ -30,8 +43,17 @@ exports.selectChatRoomMessagePagingList = catchAsync(async (req, res) => {
 /********************************** 
  3. 사용자 정보 조회
 **********************************/
-exports.selectUserPagingList = catchAsync(async (req, res) => {
+exports.selectChatUserPagingList = catchAsync(async (req, res) => {
   const query = req.query;
-  const result = await ChatService.selectUserPagingList(query);
+  const result = await ChatService.selectChatUserPagingList(query);
+  res.status(httpStatus.OK).json(result);
+});
+
+/********************************** 
+ 4. 사용자와 선택된 사용자에 대해 채팅방이 있는지 유무 체크
+**********************************/
+exports.selectIsChatRoom = catchAsync(async (req, res) => {
+  const body = req.body;
+  const result = await ChatService.selectIsChatRoom(body);
   res.status(httpStatus.OK).json(result);
 });

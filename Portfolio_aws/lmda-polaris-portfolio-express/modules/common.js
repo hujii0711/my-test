@@ -9,17 +9,19 @@ const com = {};
   data 관련 기능 모음 
  ■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■*/
 com.httpRespMsg = (status, message) => {
-  const _status = status || "success";
+  const _status = status || "S";
   const _message = message || "";
 
   // 성공 메시지
   if (_status === "S") {
     return {
+      customResponse: "T",
       message: _message,
       statusCode: httpStatus.OK,
     };
   } else if (_status === "F") {
     return {
+      customResponse: "T",
       message: _message,
       statusCode: httpStatus.OK,
     };
@@ -40,6 +42,12 @@ com.uuidv4 = () => {
     return v.toString(16);
   });
 };
+
+/************************************
+  검색한 특정 문자열 부터 전체 문자열에서 제거 하여 반환
+************************************/
+com.setConvStrRemoveIndex = (str, removeFindIndex) =>
+  str.substring(0, str.lastIndexOf(removeFindIndex));
 
 /*■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■■
   com.date

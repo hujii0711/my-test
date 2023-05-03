@@ -1,6 +1,7 @@
 const AWS = require("aws-sdk");
 const dbChatRooms = require("./db_chatRooms");
 const dbChatMessage = require("./db_chatMessage");
+const dbChatSocketConnect = require("./db_chatSocketConnect");
 
 const api = new AWS.ApiGatewayManagementApi({
   endpoint: process.env.API_GATEWAY_CHAT_URL + "/dev",
@@ -33,13 +34,13 @@ exports.handler = async (event) => {
     console.log("■■■■■■■■■■■■■■■■■■$disconnect■■■■■■■■■■■■■■■■■■");
 
     // dynamoDB에서는 GSI 속성만으로는 삭제 불가능하여 connection_id로 items 조회
-    const result = await dbChatRooms.selectChatRoomItemsAtConnectionId(
+    const result = await dbChatSocketConnect.selectChatSocketConnectInfo(
       connectionId
     );
 
     if (result.Count === 1) {
       const { user_id: userId, created_dt: createdDt } = result.Items[0];
-      await dbChatRooms.deleteChatRoom(userId, createdDt);
+      await dbChatSocketConnect.deleteChatSocketConnect(userId, createdDt);
     }
 
     return {
@@ -57,13 +58,14 @@ exports.handler = async (event) => {
       userId,
       message
     );
-    console.log("$message >>> insertResult =====", insertResult);
+
     if (insertResult.$metadata.httpStatusCode === 200) {
       //채팅방에 있는 사용자 정보 조회
-      const result = await dbChatRooms.selectChatRoomItemsAtRoomId(roomId);
+      const connectInfo =
+        await dbChatSocketConnect.selectChatSocketConnectInfoAtRoomId(roomId);
 
-      if (result.Count > 0) {
-        const postCalls = result.Items.map(async ({ connection_id }) => {
+      if (connectInfo.Count > 0) {
+        const postCalls = connectInfo.Items.map(async ({ connection_id }) => {
           const dt = {
             ConnectionId: connection_id,
             Data: JSON.stringify({ type: "chatSend", message }),
@@ -77,14 +79,17 @@ exports.handler = async (event) => {
                 `Found stale connection, deleting ${connection_id}`
               );
               const result =
-                await dbChatRooms.selectChatRoomItemsAtConnectionId(
+                await dbChatSocketConnect.selectChatSocketConnectInfo(
                   connection_id
                 );
 
               if (result.Count === 1) {
-                const userId = result.Items[0].user_id;
-                const createdDt = result.Items[0].created_dt;
-                await dbChatRooms.deleteChatRoom(userId, createdDt);
+                const { user_id: userId, created_dt: createdDt } =
+                  result.Items[0];
+                await dbChatSocketConnect.deleteChatSocketConnect(
+                  userId,
+                  createdDt
+                );
               }
             }
           }
@@ -106,25 +111,20 @@ exports.handler = async (event) => {
   } else if (route === "join") {
     console.log("■■■■■■■■■■■■■■■■■■$message■■■■■■■■■■■■■■■■■■");
 
-    const { roomId, userId } = JSON.parse(event.body);
+    const { roomId, userId, selectedUserId } = JSON.parse(event.body);
 
-    let newRoomId = roomId;
-
-    if (roomId) {
-      await dbChatRooms.insertChatRoomRegister(connectionId, roomId, userId);
-    } else {
-      const data = await dbChatRooms.insertChatRoomNewRegister(
-        connectionId,
-        userId
-      );
-      newRoomId = data.id;
+    const roomInfo = await dbChatRooms.selectIsChatRoomUser(roomId, userId);
+    console.log("roomInfo=================", roomInfo);
+    // 기존 방이 있다면 chat_room에는 skip
+    if (roomInfo.Count === 0) {
+      await dbChatRooms.insertChatRoomRegister(roomId, userId, selectedUserId);
     }
 
     try {
       await api
         .postToConnection({
           ConnectionId: connectionId,
-          Data: JSON.stringify({ type: "join", newRoomId }), // json 데이터 응답시에는 stringify하여 보낸다.
+          Data: JSON.stringify({ type: "join", newRoomId: roomId }), // json 데이터 응답시에는 stringify하여 보낸다.
         })
         .promise();
     } catch (err) {

@@ -2,62 +2,49 @@ import React, {useCallback, useRef} from 'react';
 import {Image, View} from 'react-native';
 import {IconButton} from 'react-native-paper';
 import {useMutation, useQuery} from 'react-query';
-import {insertChatMakeRoom, selectIsChatRoom} from '../../../api/chat';
 import {useNavigation} from '@react-navigation/native';
 import {useUser} from '../../../commons/hooks/useReduxState';
+import {selectIsChatRoom} from '../../../api/chat';
 
 const ChatMakeRoom = ({
   selectedUserId,
   selectedUserNm,
   onPressSelectUserInfo,
 }) => {
+  console.log('ChatMakeRoom 렌더링@@@@@@@@@!!!!');
+  console.log('ChatMakeRoom >>>> selectedUserId======', selectedUserId);
+  console.log('ChatMakeRoom >>>> selectedUserNm======', selectedUserNm);
+
   const roomId = useRef('');
   const navigation = useNavigation();
-  const currentUser = useUser();
+  const {user_id: userId} = useUser();
+  console.log('ChatMakeRoom >>>> userId======', userId);
 
   // 채팅 상대방에 대해 기존 방이 있는지 유무 체크
-  const selectIsChatRoomQuery = useQuery(
-    ['selectIsChatRoom', currentUser.user_id],
-    () => selectIsChatRoom(currentUser.user_id, selectedUserId),
+  const selectIsChatRoomQuery = useQuery(['selectIsChatRoom', userId], () =>
+    selectIsChatRoom(userId, selectedUserId),
+  );
+  console.log(
+    'ChatMakeRoom >>>> selectIsChatRoomQuery======',
+    selectIsChatRoomQuery,
   );
 
-  if (
-    selectIsChatRoomCheckQuery.data &&
-    selectIsChatRoomCheckQuery.data.length === 0
-  ) {
-    roomId.current = '';
-  } else if (
-    selectIsChatRoomQuery.data &&
-    selectIsChatRoomQuery.data.length > 0
-  ) {
+  if (selectIsChatRoomQuery.data && selectIsChatRoomQuery.data.length > 0) {
     roomId.current = selectIsChatRoomQuery.data[0].room_id;
   }
 
-  // 기존 방 없을 때 새로운 채팅방 생성
-  const {mutate: mutateInsertChatMakeRoom} = useMutation(insertChatMakeRoom, {
-    onSuccess: chat => {
-      navigation.navigate('ChattingMessge', {
-        id: chat.id, //chat_rooms.id (room_id에 해당)
-        participant_id: selectedUserId,
-      });
-    },
-  });
-
-  const onSubmitInsertChatMakeRoom = useCallback(() => {
-    if (roomId.current) {
-      moveChattingMessage(roomId.current);
-    } else {
-      mutateInsertChatMakeRoom({
-        participant_id: selectedUserId,
-        participant_name: selectedUserNm,
-      });
-    }
+  const onPressMoveChattingMessage = useCallback(() => {
+    console.log(
+      'onPressMoveChattingMessage >>>> roomId.current======',
+      roomId.current,
+    );
+    moveChattingMessage(roomId.current);
   }, [selectedUserId]);
 
-  const moveChattingMessage = room_id => {
-    navigation.navigate('ChattingMessge', {
-      id: room_id,
-      participant_id: selectedUserId,
+  const moveChattingMessage = roomId => {
+    navigation.navigate('ChatSocketMessage', {
+      roomId,
+      selectedUserId,
     });
   };
 
@@ -91,7 +78,7 @@ const ChatMakeRoom = ({
           icon="chat-plus"
           iconColor="#227093"
           size={50}
-          onPress={onSubmitInsertChatMakeRoom}
+          onPress={onPressMoveChattingMessage}
         />
         <IconButton
           icon="undo"

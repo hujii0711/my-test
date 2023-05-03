@@ -104,7 +104,7 @@ const Today = () => {
   );
 };
 
-const ChattingMessge = () => {
+const ChatSocketMessage = () => {
   const [text, onChangeText] = React.useState('대화 내용을 입력하세요.');
   const [messageList, setMessageList] = React.useState([]);
 
@@ -145,4 +145,4 @@ const ChattingMessge = () => {
   );
 };
 
-export default ChattingMessge;
+export default ChatSocketMessage;

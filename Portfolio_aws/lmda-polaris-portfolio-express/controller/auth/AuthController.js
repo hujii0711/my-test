@@ -11,30 +11,32 @@ const com = require("../../modules/common");
 exports.register = catchAsync(async (req, res) => {
   const body = req.body;
   const result = await AuthService.register(body);
-  res.json(result).status(httpStatus.OK);
+  res.status(httpStatus.OK).json(result);
 });
 
 /********************************** 
  2. 로컬 전략 로그인 수행
+ cf.) catchAsync(async 사용시 res.json()으로 클라이언트에 넘겨주지 못함
 **********************************/
-exports.login = catchAsync(async (req, res, next) => {
-  //console.log("step1__AuthController >>> login >>> req =====", req);
+exports.login = catchAsync((req, res, next) => {
+  console.log("step1__AuthController >>> login >>> req =====", req);
   passport.authenticate("local", (authError, user, options) => {
-    //console.log("step3__AuthController >>> authenticate >>> user =====", user);
+    console.log("step3__AuthController >>> authenticate >>> user =====", user);
     if (authError) {
       return next(authError);
     }
 
     if (!user) {
-      const err = new Error(options.message);
+      //const err = new Error(options.message);
+      const err = new ApiError(httpStatus.UNAUTHORIZED, options.message);
       return next(err);
     }
 
-    return req.login(user, async (loginError) => {
+    return req.login(user, (loginError) => {
       if (loginError) {
         return next(loginError);
       }
-      //console.log("step5__AuthController >>> req.login >>> user =====", user);
+      console.log("step5__AuthController >>> req.login >>> user =====", user);
 
       //토큰 생성(토큰은 굳이 필요 없음 AsyncStorage에 users.id 정보만 저장해도됨)
       //passport는 결국 세션 기반 로그인이다.
@@ -46,6 +48,7 @@ exports.login = catchAsync(async (req, res, next) => {
         sessionUser: user, //세션에 있는 정보: redux 저장
         token, //취득한 토큰 : AsyncStorage에 저장
       };
+      console.log("step5__AuthController >>> data =====", data);
       res.status(httpStatus.OK).json(data);
     });
   })(req, res, next); // 미들웨어 내의 미들웨어에는 (req, res, next)를 붙입니다.
@@ -54,7 +57,7 @@ exports.login = catchAsync(async (req, res, next) => {
 /********************************** 
  3. 로그아웃
 **********************************/
-exports.logout = catchAsync(async (req, res, next) => {
+exports.logout = catchAsync((req, res, next) => {
   console.log("AuthController >>>>>> logout =====");
 
   //req.logout() 메소드를 사용하여 Passport에서 인증된 세션을 제거

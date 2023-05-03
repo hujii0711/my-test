@@ -1,12 +1,13 @@
 const tokenConfig = require("../../modules/passport/token");
-const { ddbClient } = require("../../modules/ddbClient.js");
+const { ddbClient } = require("../../modules/ddbClient");
 const {
   PutCommand,
   UpdateCommand,
   QueryCommand,
   ScanCommand,
 } = require("@aws-sdk/lib-dynamodb");
-const com = require("../../modules/common.js");
+const com = require("../../modules/common");
+const bcrypt = require("bcryptjs");
 
 /********************************** 
  1. 회원가입
@@ -15,13 +16,23 @@ exports.register = async (body) => {
   console.log("AuthService >>>> register >>>> body====", body);
   const { email, password, user_name } = body;
 
+  // 아이디 중복 체크
+  const isRegister = await this.selectIsRegister(email);
+  console.log("AuthService >>>> register >>>> isRegister====", isRegister);
+  if (isRegister) {
+    return com.httpRespMsg("F", "아이디가 중복되었습니다.");
+  }
+
+  // 비밀번호 암호화
+  const encodedPwd = await bcrypt.hash(password, 10); //두번째 인자 12로 설정시 오류오류
+  console.log("AuthService >>>> encodedPwd >>>> encodedPwd====", encodedPwd);
   const params = {
     TableName: "users",
     Item: {
       id: com.uuidv4(),
       email,
-      user_id: email,
-      pwd: password,
+      user_id: com.setConvStrRemoveIndex(email, "@"),
+      pwd: encodedPwd,
       user_name: user_name,
       created_dt: com.krDate(),
       login_type: "local",
@@ -36,7 +47,48 @@ exports.register = async (body) => {
 };
 
 /********************************** 
- 2. 자동 로그인
+ 2. 회원가입시 아이디 중복 체크
+**********************************/
+exports.selectIsRegister = async (email) => {
+  console.log("AuthService >>>> selectIsRegister >>>> email====", email);
+
+  const params = {
+    TableName: "users",
+    IndexName: "email-index",
+    KeyConditionExpression: "email = :param1",
+    ExpressionAttributeValues: {
+      ":param1": email,
+    },
+  };
+  const result = await ddbClient.send(new QueryCommand(params));
+  const { Count = 0 } = result;
+  return Count > 0 ? true : false;
+};
+
+/********************************** 
+ 3. 회원 정보 조회
+**********************************/
+exports.selectFindUserInfo = async (email) => {
+  console.log("AuthService >>>> selectFindUserInfo >>>> email====", email);
+
+  const params = {
+    TableName: "users",
+    IndexName: "email-index",
+    KeyConditionExpression: "email = :param1",
+    ExpressionAttributeValues: {
+      ":param1": email,
+    },
+  };
+
+  const result = await ddbClient.send(new QueryCommand(params));
+  console.log("AuthService >>>> selectFindUserInfo >>>> result====", result);
+  if (result) {
+    return result;
+  }
+};
+
+/********************************** 
+ 4. 자동 로그인
 **********************************/
 exports.autoLogin = async (token) => {
   const data = tokenConfig.verifyToken(token);
@@ -52,7 +104,7 @@ exports.autoLogin = async (token) => {
 };
 
 /********************************** 
- 3. sessions.expires TTL 만료기간 갱신
+ 5. sessions.expires TTL 만료기간 갱신
 **********************************/
 exports.updateSessionExpires = async (sessId) => {
   const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90; //90일(10자리 숫자)

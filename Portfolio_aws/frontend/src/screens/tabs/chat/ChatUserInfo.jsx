@@ -1,4 +1,4 @@
-import React, {useState, useMemo} from 'react';
+import React, {useState, useMemo, useEffect} from 'react';
 import {
   FlatList,
   SafeAreaView,
@@ -12,16 +12,27 @@ import {
 import {Avatar, ActivityIndicator} from 'react-native-paper';
 import {useInfiniteQuery} from 'react-query';
 import ChatMakeRoom from './ChatMakeRoom';
-import {selectUserPagingList} from '../../../api/chat';
+import {selectChatUserPagingList} from '../../../api/chat';
 
 const ChatUserInfo = () => {
-  const [selectedUserId, setSelectedUserId] = useState(null);
+  console.log('ChatUserInfo 렌더링!!!!');
+  const [selectedUserId, setSelectedUserId] = useState('');
   const [selectedUserNm, setSelectedUserNm] = useState('');
 
   const onPressSelectUserInfo = (userId, userNm) => {
     setSelectedUserId(userId);
     setSelectedUserNm(userNm);
   };
+
+  useEffect(() => {
+    return () => {
+      console.log(
+        '=========== ChatUserInfo >>>> useEffect 언마운트 ===========',
+      );
+      setSelectedUserId('');
+      setSelectedUserNm('');
+    };
+  }, []);
 
   const {
     data,
@@ -30,13 +41,13 @@ const ChatUserInfo = () => {
     fetchNextPage,
     fetchPreviousPage,
   } = useInfiniteQuery(
-    'selectUserPagingList',
-    ({pageParam}) => selectUserPagingList({...pageParam}),
+    'selectChatUserPagingList',
+    ({pageParam}) => selectChatUserPagingList({...pageParam}),
     {
       getNextPageParam: (lastPage, allPages) => {
-        if (lastPage?.length === 10) {
+        if (lastPage.length === 10) {
           return {
-            nextOffset: lastPage[lastPage.length - 1].id,
+            nextCreatedDt: lastPage[lastPage.length - 1].created_dt,
           };
         } else {
           return undefined;
@@ -47,8 +58,10 @@ const ChatUserInfo = () => {
         if (!validPage) {
           return undefined;
         }
+
         return {
-          prevOffset: validPage[0].id,
+          prevCreatedDt:
+            validPage[0].created_dt === 1 ? 0 : validPage[0].created_dt,
         };
       },
     },
@@ -60,7 +73,8 @@ const ChatUserInfo = () => {
     }
     return [].concat(...data.pages);
   }, [data]);
-
+  console.log('ChatUserInfo >>>> items=========', items);
+  console.log('ChatUserInfo >>>> selectedUserId=========', selectedUserId);
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
@@ -126,13 +140,15 @@ const ChatUserInfo = () => {
             />
           }
         />
-        {selectedUserId && (
-          <ChatMakeRoom
-            selectedUserId={selectedUserId}
-            selectedUserNm={selectedUserNm}
-            onPressSelectUserInfo={onPressSelectUserInfo}
-          />
-        )}
+        <Text>
+          {selectedUserId && (
+            <ChatMakeRoom
+              selectedUserId={selectedUserId}
+              selectedUserNm={selectedUserNm}
+              onPressSelectUserInfo={onPressSelectUserInfo}
+            />
+          )}
+        </Text>
       </>
     </SafeAreaView>
   );

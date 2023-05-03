@@ -5,8 +5,8 @@ const {
   DeleteCommand,
   ScanCommand,
 } = require("@aws-sdk/lib-dynamodb");
-const { ddbClient } = require("../../modules/ddbClient.js");
-const com = require("../../modules/common.js");
+const { ddbClient } = require("../../modules/ddbClient");
+const com = require("../../modules/common");
 
 /* article table 모델링
   id
@@ -70,6 +70,25 @@ exports.selectArticlePagingList = async (query) => {
 **********************************/
 exports.selectArticle = async (query) => {
   console.log("selectArticle >>>> query===========", query);
+
+  const { id } = query;
+
+  const params = {
+    TableName: "articles",
+    IndexName: "id-index",
+    KeyConditionExpression: "id = :param1",
+    ExpressionAttributeValues: {
+      ":param1": id,
+    },
+  };
+  return await ddbClient.send(new QueryCommand(params));
+};
+
+/********************************** 
+ 2-1. 조회 상세 scan 방식
+**********************************/
+exports.selectArticleScan = async (query) => {
+  console.log("selectArticleScan >>>> query===========", query);
 
   const { id } = query;
 

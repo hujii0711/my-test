@@ -9,6 +9,17 @@ export default function useRegister() {
 
   const mutation = useMutation(register, {
     onSuccess: data => {
+      if (data.customResponse) {
+        inform({
+          title: '오류',
+          message: data.message,
+        });
+        return;
+      }
+      inform({
+        title: '성공',
+        message: '회원가입이 성공하였습니다.\n로그인을 수행해주세요.',
+      });
       navigation.navigate('Login');
     },
     onError: error => {

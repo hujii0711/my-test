@@ -12,12 +12,17 @@ import {
 import {Avatar, ActivityIndicator} from 'react-native-paper';
 import {useNavigation} from '@react-navigation/native';
 import {useInfiniteQuery} from 'react-query';
-import {selectListChatRoom} from '../../../api/chat';
+import {selectChatRoomPagingList} from '../../../api/chat';
+import {useUser} from '../../../commons/hooks/useReduxState';
 
 const ChatRoomList = () => {
+  console.log('ChatRoomList 렌더링!!!!');
   const [selectedRoomId, setSelectedRoomId] = useState(null);
+  const {user_id: userId} = useUser();
+  console.log('ChatRoomList >>>> userId==========', userId);
 
   const navigation = useNavigation();
+
   const {
     data,
     isFetchingNextPage,
@@ -25,13 +30,14 @@ const ChatRoomList = () => {
     fetchNextPage,
     fetchPreviousPage,
   } = useInfiniteQuery(
-    'selectListChatRoom',
-    ({pageParam}) => selectListChatRoom({...pageParam}),
+    'selectChatRoomPagingList',
+    ({pageParam}) => selectChatRoomPagingList({...pageParam, userId}),
     {
       getNextPageParam: (lastPage, allPages) => {
         if (lastPage?.length === 10) {
           return {
-            nextOffset: lastPage[lastPage.length - 1].id,
+            nextCreatedDt: lastPage[lastPage.length - 1].created_dt,
+            userId,
           };
         } else {
           return undefined;
@@ -42,8 +48,11 @@ const ChatRoomList = () => {
         if (!validPage) {
           return undefined;
         }
+
         return {
-          prevOffset: validPage[0].id,
+          prevCreatedDt:
+            validPage[0].created_dt === 1 ? 0 : validPage[0].created_dt,
+          userId,
         };
       },
     },
@@ -55,15 +64,15 @@ const ChatRoomList = () => {
     }
     return [].concat(...data.pages);
   }, [data]);
-
+  console.log('ChatRoomList >>>> items==========', items);
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
 
-  const moveChattingMessage = (room_id, opponent_id) => {
-    navigation.navigate('ChattingMessge', {
-      id: room_id,
-      participant_id: opponent_id,
+  const moveChatSocketMessage = (roomId, receivedUserId) => {
+    navigation.navigate('ChatSocketMessage', {
+      roomId,
+      selectedUserId: receivedUserId,
     });
   };
 
@@ -73,12 +82,12 @@ const ChatRoomList = () => {
         data={items}
         renderItem={({item}) => {
           const background_color =
-            item.room_id === selectedRoomId ? '#34ace0' : '#f7f1e3';
-          const color = item.room_id === selectedRoomId ? 'white' : 'black';
+            item.id === selectedRoomId ? '#34ace0' : '#f7f1e3';
+          const color = item.id === selectedRoomId ? 'white' : 'black';
           return (
             <TouchableOpacity
               onPress={() =>
-                moveChattingMessage(item.room_id, item.opponent_id)
+                moveChatSocketMessage(item.id, item.received_user_id)
               } //chat_rooms.id = room_id
               style={{
                 flexDirection: 'row',
@@ -89,7 +98,7 @@ const ChatRoomList = () => {
                 size={30}
                 labelStyle={{fontSize: 12, color: 'white'}}
                 style={{backgroundColor: '#ff5252'}}
-                label={item.opponent_name}
+                label={item.received_user_id}
               />
               <Text
                 style={{
@@ -98,7 +107,7 @@ const ChatRoomList = () => {
                   alignSelf: 'center',
                   color: color,
                 }}>
-                대화 상대방 :{item.opponent_name}
+                대화 상대방 :{item.received_user_id}
               </Text>
             </TouchableOpacity>
           );

@@ -5,7 +5,7 @@ import MainTab from './tabs/MainTab';
 import ArticleView from './tabs/articles/ArticleView';
 import ArticleWrite from './tabs/articles/ArticleWrite';
 import ChatMain from './tabs/chat/ChatMain';
-import ChattingMessge from './tabs/chat/ChattingMessge';
+import ChatSocketMessage from './tabs/chat/ChatSocketMessage';
 
 import ShareScreen from './direct/ShareScreen';
 import NotifyPushScreen from './direct/NotifyPushScreen';
@@ -28,7 +28,7 @@ export const MenuList = [
   {id: 'Register', component: Register},
   {id: 'SnsLogin', component: SnsLogin},
   {id: 'ChatMain', component: ChatMain},
-  {id: 'ChattingMessge', component: ChattingMessge},
+  {id: 'ChatSocketMessage', component: ChatSocketMessage},
 
   {id: 'ShareScreen', component: ShareScreen},
   {id: 'NotifyPushScreen', component: NotifyPushScreen},

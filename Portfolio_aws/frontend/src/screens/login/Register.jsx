@@ -105,16 +105,34 @@ import React, {useState} from 'react';
 import {TextInput, Button, Checkbox} from 'react-native-paper';
 import {View, Text, Pressable} from 'react-native';
 import useRegister from '../../commons/hooks/useRegister';
+import com from '../../commons/utils/common';
+import useInform from '../../commons/hooks/useInform';
 
 const Register = () => {
   const [email, setEmail] = useState('');
   const [user_name, setUserName] = useState('');
   const [password, setPassword] = useState('');
   const [checked, setChecked] = useState(false);
-
   const {mutate: mutateRegister} = useRegister();
+  const inform = useInform();
 
   const onPressRegister = () => {
+    if (!com.isEmail(email)) {
+      inform({
+        title: '오류',
+        message: '이메일 형식이 맞지 않습니다.',
+      });
+      return;
+    }
+
+    /*if (!com.isPassword(password)) {
+      inform({
+        title: '오류',
+        message: '비밀번호 형식이 맞지 않습니다.\n(8 ~ 10자 영문, 숫자 조합)',
+      });
+      return;
+    }*/
+
     mutateRegister({
       user_name,
       email,

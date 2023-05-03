@@ -31,20 +31,21 @@ import {
   insertChatMessageUpload,
 } from '../../../api/chat';
 import {useUser} from '../../../commons/hooks/useReduxState';
+import com from '../../../commons/utils/common';
 
-const ChattingMessge = () => {
-  console.log('ChattingMessge 렌더링##################');
+const ChatSocketMessage = () => {
+  console.log('ChatSocketMessage 렌더링##################');
   const isFirstRender = useRef(0);
-  const currentUser = useUser();
-  //const {id: roomId, participant_id: participantId} = useRoute().params;
-  const roomId = 'room1234';
-  const userId = 'chat01';
+  const {user_id: userId} = useUser();
+  const {roomId: p_roomId, selectedUserId} = useRoute().params;
+  const [roomId, setRoomId] = useState(p_roomId ? p_roomId : com.uuidv4());
 
+  console.log('ChatSocketMessage >>>> roomId======', roomId);
+  console.log('ChatSocketMessage >>>> selectedUserId======', selectedUserId);
   const [message, setMessage] = useState('');
   const queryClient = useQueryClient();
   const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
   const ws = useRef(null);
-  const [serverState, setServerState] = useState('Loading...');
 
   useEffect(() => {
     console.log('소켓 연동!!!!!!!!!!!!!!!');
@@ -60,19 +61,24 @@ const ChattingMessge = () => {
         event.isTrusted 값이 true이면, 이벤트가 브라우저에 의해 자동으로 발생된 것이므로 신뢰성이 높습니다.
         반면에 event.isTrusted 값이 false이면, 이벤트가 코드에서 명시적으로 발생시킨 것이므로 신뢰성이 낮습니다.
       */
-      setServerState('Connected');
       chatRoomJoin();
-      chatRoomMessage();
     };
 
     ws.current.onmessage = event => {
       console.log('onmessage >>>> event===========', event);
-      const message = event.data;
+      const response = JSON.parse(event.data);
+      console.log('onmessage >>>> response===========', response);
+      if (response.type === 'join') {
+        setRoomId(response.newRoomId);
+      } else if (response.type === 'chatSend') {
+        console.log(
+          'onmessage >>>> chatSend >>>> response===========',
+          response,
+        );
+      }
     };
 
     ws.current.onclose = event => {
-      setServerState('Disconnected');
-
       //서버 측에서 close 이벤트를 발생, 클라이언트 측에서 onclose 이벤트가 발생, 클라이언트가 close() 메서드를 호출
       if (event.wasClean) {
         console.log('onclose >>>> wasClean >>>> event===========', event);
@@ -88,7 +94,6 @@ const ChattingMessge = () => {
 
     ws.current.onerror = error => {
       console.log('onerror >>>> error===========', error);
-      setServerState(error.message);
     };
 
     return () => {
@@ -101,7 +106,9 @@ const ChattingMessge = () => {
     ws.current.send(
       JSON.stringify({
         action: 'message',
-        message: 'chatRoomMessage!!',
+        message: '응답하라 김해주!!',
+        roomId,
+        userId,
       }),
     );
   };
@@ -109,9 +116,10 @@ const ChattingMessge = () => {
   const chatRoomJoin = () => {
     ws.current.send(
       JSON.stringify({
-        action: 'message',
+        action: 'join',
         roomId,
         userId,
+        selectedUserId,
       }),
     );
   };
@@ -399,4 +407,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default memo(ChattingMessge);
+export default memo(ChatSocketMessage);

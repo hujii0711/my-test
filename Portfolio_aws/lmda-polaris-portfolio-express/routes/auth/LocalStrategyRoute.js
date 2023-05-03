@@ -3,7 +3,6 @@ const AuthController = require("../../controller/auth/AuthController");
 
 localStrategyRouter.use("/auth", (req, res, next) => {
   console.log("auth 라우터 호출!!!!");
-  console.log("auth >>>> req======", req);
   next();
 });
 

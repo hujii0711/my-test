@@ -12,6 +12,7 @@ import client from './client';
 export async function register(params) {
   console.log('api >>>> register >>>> params ====', params);
   const response = await client.post('/auth/local/register', params);
+  console.log('api >>>> register >>>> response ====', response);
   return response?.data;
 }
 
@@ -22,6 +23,7 @@ export async function login(params) {
   console.log('api >>>> login >>>> params =====', params);
   //client.interceptors.response에서 에러에 걸리면 응답 값을 undefined가 됨
   const response = await client.post('/auth/local/login', params);
+  //console.log('api >>>> login >>>> response =====', response);
   return response?.data;
 
   /*{
