@@ -21,7 +21,13 @@ exports.insertSendMessge = async (roomId, userId, message) => {
         created_dt: com.krDate(),
       },
     };
-    return await ddbClient.send(new PutCommand(params));
+
+    const result = await ddbClient.send(new PutCommand(params)); //result.$metadata.httpStatusCode === 200
+
+    // insert 수행이 정상이면 방금 등록한 내용 리턴
+    if (result.$metadata.httpStatusCode === 200) {
+      return params.Item;
+    }
   } catch (err) {
     console.log("Error", err);
   }

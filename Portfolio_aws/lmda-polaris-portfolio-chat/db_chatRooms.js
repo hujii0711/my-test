@@ -8,12 +8,12 @@ const com = require("./commons/commonUtils");
 
 /*
  1. 새로운 채팅방 생성 : insertChatRoomNewRegister X
- 2. 채팅방 생성 : insertChatRoomRegister
- 3. 특정 사용자에게 기존 채팅방이 있는지 체크 : selectIsChatRoomUser
- 4. room_id로 항목 조회 : selectChatRoomItemsAtRoomId X
+ 2. 채팅방 생성 : insertChatRoomRegister O
+ 3. 특정 사용자에게 기존 채팅방이 있는지 체크 : selectIsChatRoomUser X
+ 4. room_id로 항목 조회 : selectChatRoomItemsAtRoomId O
  5. Connection_id로 항목 조회 : selectChatRoomItemsAtConnectionId X
  6. connection_id 수정 : updateConnectionId X
- 7. 채팅방 삭제: deleteChatRoom
+ 7. 채팅방 삭제: deleteChatRoom O
 */
 
 /********************************** 
@@ -66,31 +66,7 @@ exports.insertChatRoomRegister = async (roomId, userId, selectedUserId) => {
  3. 특정 사용자에게 기존 채팅방이 있는지 체크
   [GSI와 파티션키 조합으로 조회]
 **********************************/
-exports.selectIsChatRoomUser = async (roomId, userId) => {
-  try {
-    const params = {
-      TableName: "chat_rooms",
-      IndexName: "id-index",
-      KeyConditionExpression: "id = :param1",
-      ExpressionAttributeValues: {
-        ":param1": roomId,
-        ":param2": userId,
-      },
-      FilterExpression: "user_id =:param2",
-    };
-    const data = await ddbClient.send(new QueryCommand(params));
-    console.log("selectIsChatRoomUser  >>> data==========", data);
-    return data;
-  } catch (err) {
-    console.log("selectIsChatRoomUser >>> err==========", err);
-  }
-};
-
-/********************************** 
- 4. room_id로 항목 조회
-  [GSI 만으로 조회]
-**********************************/
-// exports.selectChatRoomItemsAtRoomId = async (roomId) => {
+// exports.selectIsChatRoomUser = async (roomId, userId) => {
 //   try {
 //     const params = {
 //       TableName: "chat_rooms",
@@ -98,13 +74,36 @@ exports.selectIsChatRoomUser = async (roomId, userId) => {
 //       KeyConditionExpression: "id = :param1",
 //       ExpressionAttributeValues: {
 //         ":param1": roomId,
+//         ":param2": userId,
 //       },
+//       FilterExpression: "user_id =:param2",
 //     };
-//     return await ddbClient.send(new QueryCommand(params));
+//     const data = await ddbClient.send(new QueryCommand(params));
+//     console.log("selectIsChatRoomUser  >>> data==========", data);
+//     return data;
 //   } catch (err) {
-//     console.log("selectChatRoomItemsAtRoomId >>> err==========", err);
+//     console.log("selectIsChatRoomUser >>> err==========", err);
 //   }
 // };
+
+/********************************** 
+ 4. room_id로 항목 조회
+**********************************/
+exports.selectChatRoomItemsAtRoomId = async (roomId) => {
+  try {
+    const params = {
+      TableName: "chat_rooms",
+      IndexName: "id-index",
+      KeyConditionExpression: "id = :param1",
+      ExpressionAttributeValues: {
+        ":param1": roomId,
+      },
+    };
+    return await ddbClient.send(new QueryCommand(params));
+  } catch (err) {
+    console.log("selectChatRoomItemsAtRoomId >>> err==========", err);
+  }
+};
 
 /********************************** 
  5. Connection_id 조건에 맞는 항목 조회

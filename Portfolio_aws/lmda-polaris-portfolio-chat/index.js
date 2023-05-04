@@ -23,6 +23,7 @@ const api = new AWS.ApiGatewayManagementApi({
 exports.handler = async (event) => {
   const route = event.requestContext.routeKey;
   const connectionId = event.requestContext.connectionId;
+  console.log("connectionId ===============", connectionId);
 
   if (route === "$connect") {
     console.log("■■■■■■■■■■■■■■■■■■$connect■■■■■■■■■■■■■■■■");
@@ -39,8 +40,8 @@ exports.handler = async (event) => {
     );
 
     if (result.Count === 1) {
-      const { user_id: userId, created_dt: createdDt } = result.Items[0];
-      await dbChatSocketConnect.deleteChatSocketConnect(userId, createdDt);
+      const { id, created_dt: createdDt } = result.Items[0];
+      await dbChatSocketConnect.deleteChatSocketConnect(id, createdDt);
     }
 
     return {
@@ -51,6 +52,9 @@ exports.handler = async (event) => {
     console.log("■■■■■■■■■■■■■■■■■■$message■■■■■■■■■■■■■■■■■■");
 
     const { roomId, message, userId } = JSON.parse(event.body);
+    console.log("$message >>>> roomId===========", roomId);
+    console.log("$message >>>> message===========", message);
+    console.log("$message >>>> userId===========", userId);
 
     //채팅 메시지 저장
     const insertResult = await dbChatMessage.insertSendMessge(
@@ -58,67 +62,75 @@ exports.handler = async (event) => {
       userId,
       message
     );
+    insertResult.type = "chatSend";
 
-    if (insertResult.$metadata.httpStatusCode === 200) {
-      //채팅방에 있는 사용자 정보 조회
-      const connectInfo =
-        await dbChatSocketConnect.selectChatSocketConnectInfoAtRoomId(roomId);
+    //채팅방에 있는 사용자 정보 조회
+    const connectInfo =
+      await dbChatSocketConnect.selectChatSocketConnectInfoAtRoomId(roomId);
+    console.log("$message >>>> insertResult===========", insertResult);
+    console.log("$message >>>> connectInfo===========", connectInfo);
 
-      if (connectInfo.Count > 0) {
-        const postCalls = connectInfo.Items.map(async ({ connection_id }) => {
-          const dt = {
-            ConnectionId: connection_id,
-            Data: JSON.stringify({ type: "chatSend", message }),
-          };
-          try {
-            await api.postToConnection(dt).promise();
-          } catch (err) {
-            //만약 끊긴 접속이라면, DB에서 삭제한다.
-            if (err.statusCode === 410) {
-              console.error(
-                `Found stale connection, deleting ${connection_id}`
+    if (connectInfo.Count > 0) {
+      const postCalls = connectInfo.Items.map(async ({ id }) => {
+        const dt = {
+          ConnectionId: id,
+          Data: JSON.stringify(insertResult),
+        };
+        try {
+          await api.postToConnection(dt).promise();
+        } catch (err) {
+          //만약 끊긴 접속이라면, DB에서 삭제한다.
+          if (err.statusCode === 410) {
+            console.error(`Found stale connection, deleting ${id}`);
+            const result =
+              await dbChatSocketConnect.selectChatSocketConnectInfo(
+                connectionId
               );
-              const result =
-                await dbChatSocketConnect.selectChatSocketConnectInfo(
-                  connection_id
-                );
 
-              if (result.Count === 1) {
-                const { user_id: userId, created_dt: createdDt } =
-                  result.Items[0];
-                await dbChatSocketConnect.deleteChatSocketConnect(
-                  userId,
-                  createdDt
-                );
-              }
+            if (result.Count === 1) {
+              const { user_id: userId, created_dt: createdDt } =
+                result.Items[0];
+              await dbChatSocketConnect.deleteChatSocketConnect(
+                userId,
+                createdDt
+              );
             }
           }
-        });
-
-        try {
-          await Promise.all(postCalls);
-          //Promise.all에 전달되는 프라미스 중 하나라도 거부되면, Promise.all이 반환하는 프라미스는 에러와 함께 바로 거부
-        } catch (e) {
-          return { statusCode: 500, body: e.stack };
         }
+      });
+
+      try {
+        await Promise.all(postCalls);
+        //Promise.all에 전달되는 프라미스 중 하나라도 거부되면, Promise.all이 반환하는 프라미스는 에러와 함께 바로 거부
+      } catch (e) {
+        return { statusCode: 500, body: e.stack };
+      } finally {
+        return {
+          statusCode: 200,
+          body: "##########<From server message>##########",
+        };
       }
     }
-
-    return {
-      statusCode: 200,
-      body: "##########<From server message>##########",
-    };
   } else if (route === "join") {
-    console.log("■■■■■■■■■■■■■■■■■■$message■■■■■■■■■■■■■■■■■■");
+    console.log("■■■■■■■■■■■■■■■■■■$join■■■■■■■■■■■■■■■■■■");
 
+    // 대화 상대방과 채팅방이 있는지는 클라이언트에서 체크하여
+    // 채팅방이 없다면 roomId에 emptyRoom이라고 서버에 보낸다.
     const { roomId, userId, selectedUserId } = JSON.parse(event.body);
+    console.log("$join >>>> roomId===========", roomId);
+    console.log("$join >>>> userId===========", userId);
+    console.log("$join >>>> selectedUserId===========", selectedUserId);
+    //const roomInfo = await dbChatRooms.selectIsChatRoomUser(roomId, userId);
 
-    const roomInfo = await dbChatRooms.selectIsChatRoomUser(roomId, userId);
-    console.log("roomInfo=================", roomInfo);
-    // 기존 방이 있다면 chat_room에는 skip
-    if (roomInfo.Count === 0) {
+    if (roomId === "emptyRoom") {
       await dbChatRooms.insertChatRoomRegister(roomId, userId, selectedUserId);
     }
+
+    await dbChatSocketConnect.insertChatSocketRegister(
+      connectionId,
+      userId,
+      roomId
+    );
 
     try {
       await api
@@ -135,8 +147,25 @@ exports.handler = async (event) => {
         body: "##########<From server join>##########",
       };
     }
+  } else if (route === "exit") {
+    console.log("■■■■■■■■■■■■■■■■■■$exit■■■■■■■■■■■■■■■■■■");
+    const { roomId } = JSON.parse(event.body);
+
+    // dynamoDB에서는 GSI 속성만으로는 삭제 불가능하여 connection_id로 items 조회
+    const result = await dbChatRooms.selectChatRoomItemsAtRoomId(roomId);
+
+    if (result.Count === 1) {
+      const { user_id: userId, created_dt: createdDt } = result.Items[0];
+      await dbChatRooms.deleteChatRoom(userId, createdDt);
+    }
+
+    return {
+      statusCode: 200,
+      body: "##########<From server $exit>##########",
+    };
   } else if (route === "ping") {
-    console.log("■■■■■■■■■■■■■■■■■■$ping");
+    console.log("■■■■■■■■■■■■■■■■■■$ping■■■■■■■■■■■■■■■■■■");
+
     try {
       await api
         .postToConnection({

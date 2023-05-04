@@ -63,7 +63,7 @@ exports.passportLocalConfig = () => {
 };
 
 exports.sessionMiddleware = session({
-  secret: "hj@1560813", // 세션 데이터를 암호화하기 위한 비밀 키
+  secret: process.env.PASSPORT_SECRET_KEY, // 세션 데이터를 암호화하기 위한 비밀 키
   resave: false,
   saveUninitialized: false,
   store: new DynamoDBStore({

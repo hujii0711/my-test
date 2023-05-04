@@ -15,19 +15,7 @@ const com = require("../../modules/common");
 **********************************/
 exports.selectChatRoomPagingList = catchAsync(async (req, res) => {
   const query = req.query;
-  console.log(
-    "ChatController >>> selectChatRoomPagingList >>> req==========",
-    req
-  );
-  console.log(
-    "ChatController >>> selectChatRoomPagingList >>> req.query==========",
-    req.query
-  );
   const result = await ChatService.selectChatRoomPagingList(query);
-  console.log(
-    "ChatController >>> selectChatRoomPagingList >>> result=========",
-    result
-  );
   res.status(httpStatus.OK).json(result);
 });
 

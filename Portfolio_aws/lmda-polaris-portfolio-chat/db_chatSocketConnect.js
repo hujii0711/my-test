@@ -2,13 +2,15 @@ const {
   QueryCommand,
   PutCommand,
   DeleteCommand,
-  UpdateCommand,
 } = require("@aws-sdk/lib-dynamodb");
 const { ddbClient } = require("./commons/ddbClient");
 const com = require("./commons/commonUtils");
 
 /*
-
+ 1. chat_socket_connect 테이블 등록
+ 2. room_id로 항목 조회
+ 3. Connection_id 조건에 맞는 항목 조회
+ 4. chat_socket_connect 테이블 삭제
 */
 
 /********************************** 
@@ -51,7 +53,7 @@ exports.selectChatSocketConnectInfoAtRoomId = async (roomId) => {
     };
     return await ddbClient.send(new QueryCommand(params));
   } catch (err) {
-    console.log("selectChatSocketConnectionAtRoomId >>> err==========", err);
+    console.log("selectChatSocketConnectInfoAtRoomId >>> err==========", err);
   }
 };
 
@@ -71,24 +73,24 @@ exports.selectChatSocketConnectInfo = async (connectionId) => {
 
     return await ddbClient.send(new QueryCommand(params));
   } catch (err) {
-    console.log("selectChatRoomItemsAtConnectionId >>> err==========", err);
+    console.log("selectChatSocketConnectInfo >>> err==========", err);
   }
 };
 
 /********************************** 
  4. chat_socket_connect 테이블 삭제
 **********************************/
-exports.deleteChatSocketConnect = async (roomId, createdDt) => {
+exports.deleteChatSocketConnect = async (id, createdDt) => {
   try {
     const params = {
       TableName: "chat_socket_connect",
       Key: {
-        room_id: roomId,
+        id,
         created_dt: Number(createdDt),
       },
     };
     return await ddbClient.send(new DeleteCommand(params));
   } catch (err) {
-    console.log("deleteChatRoom >>> err==========", err);
+    console.log("deleteChatSocketConnect >>> err==========", err);
   }
 };

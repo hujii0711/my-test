@@ -1,7 +1,8 @@
 import axios from 'axios';
 import {Alert, Platform, ToastAndroid} from 'react-native';
-const baseURL =
-  'https://ies21c23jl.execute-api.ap-northeast-2.amazonaws.com/dev';
+import Config from 'react-native-config';
+
+const baseURL = Config.API_GATEWAY_EXPRESS_URL;
 const client = axios.create({
   baseURL,
   timeout: 30 * 1000,

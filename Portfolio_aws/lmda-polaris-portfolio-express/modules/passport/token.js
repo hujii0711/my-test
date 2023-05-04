@@ -9,7 +9,7 @@ tokenConfig.generateToken = (id, email) => {
   try {
     const payload = { id, email };
     const options = { expiresIn: "90d" }; // 유효기간 90일(90d) | 1시간(1h, 60*60) | 기본 초단위(millisecond 단위 아님)
-    const token = jwt.sign(payload, "kimHyungJun", options);
+    const token = jwt.sign(payload, process.env.TOKEN_SECRET_KEY, options);
     console.log("token.js > token.generateToken > token============", token);
     return token;
   } catch (err) {
@@ -30,7 +30,7 @@ tokenConfig.verifyToken = (token) => {
   }
 
   try {
-    const decoded = jwt.verify(token, "kimHyungJun");
+    const decoded = jwt.verify(token, process.env.PASSPORT_SECRET_KEY);
 
     console.log(
       "########### tokenConfig.verifyToken() >>>> decoded==============",

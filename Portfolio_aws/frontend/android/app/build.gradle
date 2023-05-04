@@ -1,6 +1,5 @@
 apply plugin: 'com.android.application'
 apply plugin: 'com.google.gms.google-services'
-
 import com.android.build.OutputFile
 import org.apache.tools.ant.taskdefs.condition.Os
 
@@ -338,3 +337,6 @@ project.ext.vectoricons = [
 ]
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
+
+//20230504 환경변수 설정 위해 추가
+apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"

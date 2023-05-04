@@ -25,24 +25,18 @@ import {
   FlatList,
 } from 'react-native';
 import Color from '../../../commons/style/Color';
-import {
-  selectChatRoomMessagePagingList,
-  insertSendMessge,
-  insertChatMessageUpload,
-} from '../../../api/chat';
+import {selectChatRoomMessagePagingList} from '../../../api/chat';
 import {useUser} from '../../../commons/hooks/useReduxState';
-import com from '../../../commons/utils/common';
+import Config from 'react-native-config';
 
 const ChatSocketMessage = () => {
   console.log('ChatSocketMessage 렌더링##################');
-  const isFirstRender = useRef(0);
+  //const isFirstRender = useRef(0);
   const {user_id: userId} = useUser();
   const {roomId: p_roomId, selectedUserId} = useRoute().params;
-  const [roomId, setRoomId] = useState(p_roomId ? p_roomId : com.uuidv4());
-
-  console.log('ChatSocketMessage >>>> roomId======', roomId);
-  console.log('ChatSocketMessage >>>> selectedUserId======', selectedUserId);
+  const [roomId, setRoomId] = useState(p_roomId ? p_roomId : 'emptyRoom');
   const [message, setMessage] = useState('');
+
   const queryClient = useQueryClient();
   const [lastIndexToScroll, setLastIndexToScroll] = useState(null);
   const ws = useRef(null);
@@ -50,9 +44,7 @@ const ChatSocketMessage = () => {
   useEffect(() => {
     console.log('소켓 연동!!!!!!!!!!!!!!!');
 
-    ws.current = new WebSocket(
-      'wss://1dn9e7min0.execute-api.ap-northeast-2.amazonaws.com/dev',
-    );
+    ws.current = new WebSocket(Config.API_GATEWAY_CHAT_URL);
 
     ws.current.onopen = event => {
       console.log('onopen >>>> event===========', event);
@@ -67,14 +59,24 @@ const ChatSocketMessage = () => {
     ws.current.onmessage = event => {
       console.log('onmessage >>>> event===========', event);
       const response = JSON.parse(event.data);
-      console.log('onmessage >>>> response===========', response);
+
       if (response.type === 'join') {
         setRoomId(response.newRoomId);
       } else if (response.type === 'chatSend') {
-        console.log(
-          'onmessage >>>> chatSend >>>> response===========',
-          response,
-        );
+        // 메시지 전송후 캐싱 데이터 활용하여 출력
+        queryClient.setQueryData('selectChatRoomMessagePagingList', data => {
+          if (!data) {
+            return {
+              pageParams: [undefined],
+              pages: [[response]],
+            };
+          }
+          const [firstPage, ...rest] = data.pages;
+          return {
+            ...data,
+            pages: [[response, ...firstPage], ...rest],
+          };
+        });
       }
     };
 
@@ -98,15 +100,16 @@ const ChatSocketMessage = () => {
 
     return () => {
       console.log('=========== useEffect 언마운트 ===========');
+      queryClient.invalidateQueries('selectChatRoomMessagePagingList');
       ws.current.close();
     };
   }, []);
 
-  const chatRoomMessage = () => {
+  const sendMessage = () => {
     ws.current.send(
       JSON.stringify({
         action: 'message',
-        message: '응답하라 김해주!!',
+        message,
         roomId,
         userId,
       }),
@@ -124,68 +127,74 @@ const ChatSocketMessage = () => {
     );
   };
 
-  // const lastIndexToScrollMove = index => {
-  //   //scrollToEnd | scrollToIndex
-  //   lastIndexToScroll.scrollToIndex({
-  //     animated: true,
-  //     index: index,
-  //     viewPosition: 0,
-  //   });
-  //   //lastIndexToScroll.scrollToEnd();
-  // };
+  const lastIndexToScrollMove = index => {
+    //scrollToEnd | scrollToIndex
+    lastIndexToScroll.scrollToIndex({
+      animated: true,
+      index: index,
+      viewPosition: 0,
+    });
+    //lastIndexToScroll.scrollToEnd();
+  };
 
-  // // 대화 내용 조회
-  // // 메시지 전송시 캐시를 이용한다.
-  // const {
-  //   data,
-  //   isFetchingNextPage,
-  //   isFetchingPreviousPage,
-  //   fetchNextPage,
-  //   fetchPreviousPage,
-  // } = useInfiniteQuery(
-  //   'selectChatRoomMessagePagingList',
-  //   ({pageParam}) => selectChatRoomMessagePagingList({...pageParam, roomId}),
-  //   {
-  //     getNextPageParam: (lastPage, allPages) => {
-  //       if (lastPage.length === 20) {
-  //         return {
-  //           nextOffset: lastPage[lastPage.length - 1].row_num,
-  //           roomId,
-  //         };
-  //       } else {
-  //         return undefined;
-  //       }
-  //     },
-  //     getPreviousPageParam: (firstPage, allPages) => {
-  //       const validPage = allPages.find(page => page?.length > 0);
-  //       if (!validPage) {
-  //         return undefined;
-  //       }
-  //       return {
-  //         prevOffset: (allPages.length - 1) * 20,
-  //         roomId,
-  //       };
-  //     },
-  //   },
-  // );
+  // 대화 내용 조회
+  // 메시지 전송시 캐시를 이용한다.
+  const {
+    data,
+    isFetchingNextPage,
+    isFetchingPreviousPage,
+    fetchNextPage,
+    fetchPreviousPage,
+  } = useInfiniteQuery(
+    'selectChatRoomMessagePagingList',
+    ({pageParam}) => selectChatRoomMessagePagingList({...pageParam, roomId}),
+    {
+      getNextPageParam: (lastPage, allPages) => {
+        if (lastPage.length === 10) {
+          return {
+            nextCreatedDt: lastPage[lastPage.length - 1].created_dt,
+            roomId,
+          };
+        } else {
+          return undefined;
+        }
+      },
+      getPreviousPageParam: (firstPage, allPages) => {
+        const validPage = allPages.find(page => page.length > 0);
+        if (!validPage) {
+          return undefined;
+        }
 
-  // const items = useMemo(() => {
-  //   if (!data) {
-  //     return null;
-  //   }
-  //   return [].concat(...data.pages);
-  // }, [data]);
+        return {
+          prevCreatedDt:
+            validPage[0].created_dt === 1 ? 0 : validPage[0].created_dt,
+          roomId,
+        };
+      },
+    },
+  );
+
+  // 캐싱 데이터 가져오기
+  const chacheData = queryClient.getQueryData([
+    'selectChatRoomMessagePagingList',
+  ]);
+
+  const items = useMemo(() => {
+    if (!chacheData) {
+      return null;
+    }
+    return [].concat(...chacheData.pages);
+  }, [chacheData]);
+
+  if (!items) {
+    return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
+  }
 
   // 메시지 송신
   const onSubmitSendMessage = () => {
-    mutateInsertSendMessge({roomId, message, participantId});
+    console.log('onSubmitSendMessage!!!!!!!!');
+    sendMessage();
   };
-
-  const {mutate: mutateInsertSendMessge} = useMutation(insertSendMessge, {
-    onSuccess: message => {
-      setMessage('');
-    },
-  });
 
   // const onSubmitSendMessageUpload = useCallback(() => {
   //   const localUri = '/uploads/sss/aaaa.png';
@@ -221,7 +230,7 @@ const ChatSocketMessage = () => {
       style={{flex: 1}}
       keyboardVerticalOffset={80}>
       <SafeAreaView style={styles.container}>
-        {/* <FlatList
+        <FlatList
           data={items}
           ref={ref => {
             setLastIndexToScroll(ref);
@@ -233,12 +242,12 @@ const ChatSocketMessage = () => {
               );
             }
 
-            if (isFirstRender.current === 0 && index + 1 === items.length) {
-              setTimeout(() => lastIndexToScrollMove(index), 100);
-              isFirstRender.current = isFirstRender.current - 1;
-            }
+            // if (isFirstRender.current === 0 && index + 1 === items.length) {
+            //   setTimeout(() => lastIndexToScrollMove(index), 100);
+            //   isFirstRender.current = isFirstRender.current - 1;
+            // }
 
-            if (currentUser.user_id === item.sender_id) {
+            if (userId === item.send_user_id) {
               return <MyView message={item.message} key={item.id} />;
             } else {
               return <YouView message={item.message} key={item.id} />;
@@ -247,12 +256,12 @@ const ChatSocketMessage = () => {
           keyExtractor={(item, index) => index.toString()}
           ListHeaderComponent={
             <View style={{backgroundColor: 'red'}}>
-              <Text>1111111</Text>
+              <Text>TOP</Text>
             </View>
           }
           ListFooterComponent={items => (
             <View style={{backgroundColor: 'red'}}>
-              <Text>2222222222</Text>
+              <Text>BOTTOM</Text>
             </View>
           )}
           onEndReachedThreshold={0.5}
@@ -263,7 +272,7 @@ const ChatSocketMessage = () => {
               refreshing={isFetchingPreviousPage}
             />
           }
-        /> */}
+        />
       </SafeAreaView>
       <View style={{flexDirection: 'row', alignItems: 'flex-end'}}>
         <TextInput

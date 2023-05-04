@@ -17,19 +17,11 @@ export async function selectChatRoomPagingList({
   prevCreatedDt = '1',
   userId = '',
 }) {
-  console.log(
-    'selectChatRoomPagingList >>> nextCreatedDt===========',
-    nextCreatedDt,
-  );
   console.log('selectChatRoomPagingList >>> userId===========', userId);
   const createdDt = nextCreatedDt;
   const response = await client.get('/chat/selectChatRoomPagingList', {
     params: {createdDt, userId},
   });
-  console.log(
-    'selectChatRoomPagingList >>> response?.data?.Items===========',
-    response?.data?.Items,
-  );
   return response?.data?.Items;
 }
 
@@ -46,11 +38,7 @@ export async function selectChatRoomMessagePagingList({
   const response = await client.get('/chat/selectChatRoomMessagePagingList', {
     params: {createdDt, roomId},
   });
-  onsole.log(
-    'selectChatRoomMessagePagingList >>> response===========',
-    response,
-  );
-  return response?.data;
+  return response?.data?.Items;
 }
 
 /********************************** 
@@ -75,11 +63,6 @@ export async function selectChatUserPagingList({
  4. 기존 방 있는지 유무 체크| /chat/selectIsChatRoom | post
 **********************************/
 export async function selectIsChatRoom(userId, selectedUserId) {
-  console.log(
-    'selectIsChatRoomㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋㅋ >>> userId===========',
-    userId,
-  );
-  console.log('selectIsChatRoom >>> userId===========', selectedUserId);
   const response = await client.post(`/chat/selectIsChatRoom`, {
     userId,
     selectedUserId,

@@ -64,7 +64,7 @@ const ChatRoomList = () => {
     }
     return [].concat(...data.pages);
   }, [data]);
-  console.log('ChatRoomList >>>> items==========', items);
+
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
@@ -88,7 +88,7 @@ const ChatRoomList = () => {
             <TouchableOpacity
               onPress={() =>
                 moveChatSocketMessage(item.id, item.received_user_id)
-              } //chat_rooms.id = room_id
+              }
               style={{
                 flexDirection: 'row',
                 padding: 10,

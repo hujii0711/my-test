@@ -45,9 +45,12 @@ exports.selectChatRoomPagingList = async (query) => {
 **********************************/
 exports.selectChatRoomMessagePagingList = async (query) => {
   const { roomId, createdDt } = query;
-
+  console.log(
+    "ChatService >>>> selectChatRoomMessagePagingList >>> query==========",
+    query
+  );
   const params = {
-    TableName: "chat_rooms",
+    TableName: "chat_messages",
     KeyConditionExpression: "room_id = :param1",
     ExpressionAttributeValues: {
       ":param1": roomId,

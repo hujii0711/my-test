@@ -11,22 +11,14 @@ const ChatMakeRoom = ({
   selectedUserNm,
   onPressSelectUserInfo,
 }) => {
-  console.log('ChatMakeRoom 렌더링@@@@@@@@@!!!!');
-  console.log('ChatMakeRoom >>>> selectedUserId======', selectedUserId);
-  console.log('ChatMakeRoom >>>> selectedUserNm======', selectedUserNm);
-
+  console.log('ChatMakeRoom 렌더링!!!!');
   const roomId = useRef('');
   const navigation = useNavigation();
   const {user_id: userId} = useUser();
-  console.log('ChatMakeRoom >>>> userId======', userId);
 
   // 채팅 상대방에 대해 기존 방이 있는지 유무 체크
   const selectIsChatRoomQuery = useQuery(['selectIsChatRoom', userId], () =>
     selectIsChatRoom(userId, selectedUserId),
-  );
-  console.log(
-    'ChatMakeRoom >>>> selectIsChatRoomQuery======',
-    selectIsChatRoomQuery,
   );
 
   if (selectIsChatRoomQuery.data && selectIsChatRoomQuery.data.length > 0) {
@@ -34,10 +26,6 @@ const ChatMakeRoom = ({
   }
 
   const onPressMoveChattingMessage = useCallback(() => {
-    console.log(
-      'onPressMoveChattingMessage >>>> roomId.current======',
-      roomId.current,
-    );
     moveChattingMessage(roomId.current);
   }, [selectedUserId]);
 
@@ -84,7 +72,7 @@ const ChatMakeRoom = ({
           icon="undo"
           iconColor="#227093"
           size={50}
-          onPress={() => onPressSelectUserInfo(null, null)}
+          onPress={() => onPressSelectUserInfo('', '')}
         />
       </View>
     </View>

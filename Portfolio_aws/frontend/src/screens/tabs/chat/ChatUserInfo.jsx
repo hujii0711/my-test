@@ -73,8 +73,7 @@ const ChatUserInfo = () => {
     }
     return [].concat(...data.pages);
   }, [data]);
-  console.log('ChatUserInfo >>>> items=========', items);
-  console.log('ChatUserInfo >>>> selectedUserId=========', selectedUserId);
+
   if (!items) {
     return <ActivityIndicator size="large" style={{flex: 1}} color="red" />;
   }
