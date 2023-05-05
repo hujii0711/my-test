@@ -9,7 +9,7 @@ import authStorage from '../../commons/storage/authStorage';
 const Login = ({navigation}) => {
   const [isSwitchOn, setIsSwitchOn] = useState(true);
   const onToggleSwitch = () => setIsSwitchOn(!isSwitchOn);
-  const [identifier, setIdentifier] = useState('');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const {mutate: mutateLogin, isLoading: loginLoading} = useLogin();
@@ -24,7 +24,7 @@ const Login = ({navigation}) => {
     authStorage.set('autoLogin', isSwitchOn ? 'Y' : 'N');
 
     mutateLogin({
-      identifier,
+      email,
       password,
     });
   };
@@ -57,8 +57,8 @@ const Login = ({navigation}) => {
             activeOutlineColor="#919191" //editmode
             outlineColor="#919191" // input border
             style={{backgroundColor: '#ffffff', fontSize: 12}}
-            value={identifier}
-            onChangeText={setIdentifier}
+            value={email}
+            onChangeText={setEmail}
           />
           <TextInput
             mode="outlined"

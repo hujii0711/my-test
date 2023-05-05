@@ -4,7 +4,7 @@ const passportLocal = require("passport-local");
 const session = require("express-session");
 const DynamoDBStore = require("dynamodb-store");
 const LocalStrategy = passportLocal.Strategy;
-const bcrypt = require("bcryptjs");
+//const bcrypt = require("bcryptjs");
 const AuthService = require("../../service/auth/AuthService");
 
 exports.passportLocalConfig = () => {
@@ -26,22 +26,23 @@ exports.passportLocalConfig = () => {
   passport.use(
     new LocalStrategy(
       {
-        usernameField: "identifier",
+        usernameField: "email",
         passwordField: "password",
       },
-      async (identifier, password, done) => {
+      async (email, password, done) => {
         try {
-          console.log("step2__LocalStrategy >>> identifier=====", identifier);
-
           const { Items: userItems, Count } =
-            await AuthService.selectFindUserInfo(identifier);
+            await AuthService.selectFindUserInfo(email);
 
           // 자동로그인 대상
-          if (password === "freepass") {
+          //if (password === "freepass") {
+          if (password === userItems[0].id) {
             done(null, userItems[0]);
           } else {
             if (Count > 0) {
-              const isPwdSame = bcrypt.compareSync(password, userItems[0].pwd);
+              //const isPwdSame = bcrypt.compareSync(password, userItems[0].pwd);
+              const isPwdSame = password === userItems[0].pwd ? true : false;
+
               //const isPwdSame = await bcrypt.compare(password, userItems[0].pwd); // controller에서 response를 못보냄
               if (isPwdSame) {
                 done(null, userItems[0]);
@@ -67,7 +68,7 @@ exports.sessionMiddleware = session({
   resave: false,
   saveUninitialized: false,
   store: new DynamoDBStore({
-    AWS: AWS,
+    AWS,
     tableName: "portfolio_sessions", // 사용할 DynamoDB 테이블 이름
   }),
 });

@@ -24,15 +24,15 @@ exports.register = async (body) => {
   }
 
   // 비밀번호 암호화
-  const encodedPwd = await bcrypt.hash(password, 10); //두번째 인자 12로 설정시 오류오류
-  console.log("AuthService >>>> encodedPwd >>>> encodedPwd====", encodedPwd);
+  //const encodedPwd = await bcrypt.hash(password, 10); //두번째 인자 12로 설정시 오류
+  //console.log("AuthService >>>> encodedPwd >>>> encodedPwd====", encodedPwd);
   const params = {
     TableName: "users",
     Item: {
       id: com.uuidv4(),
       email,
       user_id: com.setConvStrRemoveIndex(email, "@"),
-      pwd: encodedPwd,
+      pwd: password,
       user_name: user_name,
       created_dt: com.krDate(),
       login_type: "local",
@@ -66,7 +66,7 @@ exports.selectIsRegister = async (email) => {
 };
 
 /********************************** 
- 3. 회원 정보 조회
+ 3. 회원 정보 조회 (이메일조건)
 **********************************/
 exports.selectFindUserInfo = async (email) => {
   console.log("AuthService >>>> selectFindUserInfo >>>> email====", email);
@@ -88,23 +88,42 @@ exports.selectFindUserInfo = async (email) => {
 };
 
 /********************************** 
- 4. 자동 로그인
+4. 회원 정보 조회 (id 조건)
 **********************************/
-exports.autoLogin = async (token) => {
-  const data = tokenConfig.verifyToken(token);
+exports.selectUserInfo = async (id) => {
+  const params = {
+    TableName: "users",
+    KeyConditionExpression: "id = :param1",
+    ExpressionAttributeValues: {
+      ":param1": id,
+    },
+  };
+
+  const result = await ddbClient.send(new QueryCommand(params));
+  if (result.Count === 1) {
+    return result.Items[0];
+  }
+};
+
+/********************************** 
+ 5. 자동 로그인
+**********************************/
+exports.autoLogin = async (id) => {
+  const result = await this.selectUserInfo(id);
+  const data = tokenConfig.verifyToken(result.token);
   /*{
     status: "S",
     message: "토큰이 정상입니다.",
+    id: decoded.id,
     email: decoded.email,
-    password: "freepass",
-    token,
+    password: decoded.id
   };*/
   console.log("AuthService >>>> autoLogin >>>> data====", data);
   return data;
 };
 
 /********************************** 
- 5. sessions.expires TTL 만료기간 갱신
+6. sessions.expires TTL 만료기간 갱신
 **********************************/
 exports.updateSessionExpires = async (sessId) => {
   const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90; //90일(10자리 숫자)
@@ -132,10 +151,9 @@ exports.updateSessionExpires = async (sessId) => {
 };
 
 /********************************** 
- users 테이블 token 정보 update(미사용)
+ 7. users 테이블 token 정보 update
 **********************************/
-exports.updateUserToken = async (body) => {
-  const { id, token } = body;
+exports.updateUserToken = async (id, token) => {
   const params = {
     TableName: "users",
     Key: {
@@ -146,7 +164,7 @@ exports.updateUserToken = async (body) => {
       "#setToken": "token",
     },
     ExpressionAttributeValues: {
-      ":param1": token === "logout" ? "" : token,
+      ":param1": token ?? "emptyToken",
     },
   };
 

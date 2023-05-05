@@ -12,7 +12,7 @@ export default function useAuthLoadEffect() {
   const useEffectCallback = () => {
     dispatch(userDelete());
     authStorage.clear('autoLogin');
-    authStorage.clear('token');
+    authStorage.clear('autoId');
   };
 
   // useEffect(() => {
@@ -30,12 +30,14 @@ export default function useAuthLoadEffect() {
     (async () => {
       const loginType = await authStorage.get('loginType');
       const autoLogin = await authStorage.get('autoLogin');
-      const token = await authStorage.get('token');
+      const autoId = await authStorage.get('autoId');
       console.log('useAuthLoadEffect >>>> loginType=====', loginType);
+      console.log('useAuthLoadEffect >>>> autoLogin=====', autoLogin);
+      console.log('useAuthLoadEffect >>>> autoId=====', autoId);
 
       if (loginType === 'local') {
-        if (autoLogin === 'Y' && token) {
-          mutateAutoLogin(token);
+        if (autoLogin === 'Y' && autoId) {
+          mutateAutoLogin(autoId);
           return;
         }
         useEffectCallback();

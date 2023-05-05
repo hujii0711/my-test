@@ -13,10 +13,11 @@ const {
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// 순서 주의!
+passportLocalConfig();
 app.use(sessionMiddleware);
 app.use(passport.initialize()); // passport.initialize() 미들웨어는 request에 passport 설정을 담는다.
 app.use(passport.session()); // passport.session() 미들웨어는 request.session 객체에 passport 정보를 저장한다.
-passportLocalConfig();
 
 /*****************************************
  * 클라이언트의 모든 요청

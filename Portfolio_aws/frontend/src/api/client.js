@@ -5,7 +5,7 @@ import Config from 'react-native-config';
 const baseURL = Config.API_GATEWAY_EXPRESS_URL;
 const client = axios.create({
   baseURL,
-  timeout: 30 * 1000,
+  timeout: 35 * 1000,
   //   validateStatus: status => {
   //     console.debug('axios response statusCode========', status);
   //     return false;
@@ -18,7 +18,7 @@ validateStatus
 - 만약 validateStatus의 반환 값을 true 로 한다면 promise는 resolve가 된다. 만약 false라면 promise는 reject를 반환합니다.
 validateStatus: function (status) {
    return status >= 200 && status < 300; // default
-}
+} 
 
 */
 /*******************************************

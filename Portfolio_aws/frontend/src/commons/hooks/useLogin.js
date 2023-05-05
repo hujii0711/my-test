@@ -13,31 +13,31 @@ export default function useLogin() {
 
   const loginCallback = async sessionUser => {
     dispatch(userSelect(sessionUser));
-    authStorage.clear('token');
+    authStorage.clear('autoId');
     authStorage.clear('loginType');
 
     const _loginType = await authStorage.get('loginType');
-    const _token = await authStorage.get('token');
+    const _autoId = await authStorage.get('autoId');
     const _autoLogin = await authStorage.get('autoLogin');
 
     console.log('1loginCallback >>>> loginType=======', _loginType);
-    console.log('1loginCallback >>>> token=======', _token);
+    console.log('1loginCallback >>>> autoId=======', _autoId);
     console.log('1loginCallback >>>> autoLogin=======', _autoLogin);
   };
 
-  const autoLoginCallback = async (sessionUser, token) => {
+  const autoLoginCallback = async sessionUser => {
     dispatch(userSelect(sessionUser));
-    authStorage.set('token', token);
+    authStorage.set('autoId', sessionUser.id);
     authStorage.set('loginType', sessionUser.login_type);
     // session 테이블 동시성 문제로 req.login 이후 ession.expires 항목 update가 되지 않아서 로그인 성공이후 api 호출
     mutateUpdateSessionExpires();
 
     const _loginType = await authStorage.get('loginType');
-    const _token = await authStorage.get('token');
+    const _autoId = await authStorage.get('autoId');
     const _autoLogin = await authStorage.get('autoLogin');
 
     console.log('2autoLoginCallback >>>> loginType=======', _loginType);
-    console.log('2autoLoginCallback >>>> token=======', _token);
+    console.log('2autoLoginCallback >>>> autoId=======', _autoId);
     console.log('2autoLoginCallback >>>> autoLogin=======', _autoLogin);
   };
 
@@ -48,13 +48,11 @@ export default function useLogin() {
         console.log('login >>> onSuccess1 >>>> data---------', data);
         console.log('login >>> onSuccess >>>> autoLogin---------', autoLogin);
         const sessionUser = data.sessionUser;
-        const l_token = data.token;
-        const l_sessionUser = {...sessionUser, token: l_token};
 
         if (autoLogin === 'Y') {
-          autoLoginCallback(l_sessionUser, l_token);
+          autoLoginCallback(sessionUser);
         } else {
-          loginCallback(l_sessionUser);
+          loginCallback(sessionUser);
         }
         navigation.navigate('MainTab');
       }

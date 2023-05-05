@@ -13,7 +13,7 @@ export default function useLogout() {
 
   const logoutCallback = () => {
     dispatch(userDelete());
-    authStorage.clear('token');
+    authStorage.clear('autoId');
     authStorage.clear('autoLogin');
     authStorage.clear('loginType');
   };

@@ -10,7 +10,15 @@ export default function useAutoLogin() {
   const mutation = useMutation(autoLogin, {
     onSuccess: data => {
       // 로그인 수행 : 세션 취득, 토큰 재취득
-      mutateLogin({identifier: data.email, password: data.password});
+      // jwt.verify decode 데이터
+      // {
+      //   status: "S",
+      //   message: "토큰이 정상입니다.",
+      //   id: decoded.id,
+      //   email: decoded.email,
+      //   password: decoded.id,
+      // }
+      mutateLogin({email: data.email, password: data.password});
     },
     onError: error => {
       console.log('useAutoLogin >>> onError >>> error---------', error);

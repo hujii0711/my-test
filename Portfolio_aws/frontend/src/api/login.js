@@ -23,7 +23,7 @@ export async function login(params) {
   console.log('api >>>> login >>>> params =====', params);
   //client.interceptors.response에서 에러에 걸리면 응답 값을 undefined가 됨
   const response = await client.post('/auth/local/login', params);
-  //console.log('api >>>> login >>>> response =====', response);
+  console.log('api >>>> login >>>> response =====', response);
   return response?.data;
 
   /*{
@@ -53,11 +53,12 @@ export async function logout() {
 /**********************************
   4. 로컬 전략 자동로그인: autoLogin | /auth/local/autoLogin | get
 **********************************/
-export async function autoLogin(token) {
-  console.log('api >>>> autoLogin >>>> token ====', token);
+export async function autoLogin(autoId) {
+  console.log('api >>>> autoLogin >>>> autoId ====', autoId);
   const response = await client.get('/auth/local/autoLogin', {
-    params: {token},
+    params: {autoId},
   });
+  //console.log('api >>>> autoLogin >>>> response ====', response);
   return response?.data;
 }
 
