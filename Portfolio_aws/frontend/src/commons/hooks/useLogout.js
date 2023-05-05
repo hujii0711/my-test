@@ -20,7 +20,6 @@ export default function useLogout() {
 
   const mutation = useMutation(logout, {
     onSuccess: data => {
-      console.log('useLogout >>> onSuccess >>> data---------', data);
       logoutCallback();
       inform({
         title: '성공',
@@ -29,7 +28,6 @@ export default function useLogout() {
       navigation.dispatch(DrawerActions.closeDrawer());
     },
     onError: error => {
-      console.log('useLogout >>> onError >>> error---------', error);
       inform({
         title: '오류',
         message: '로그아웃 실패',

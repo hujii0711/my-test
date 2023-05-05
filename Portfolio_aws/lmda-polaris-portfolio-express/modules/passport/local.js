@@ -32,7 +32,7 @@ exports.passportLocalConfig = () => {
       async (email, password, done) => {
         try {
           const { Items: userItems, Count } =
-            await AuthService.selectFindUserInfo(email);
+            await AuthService.selectUserInfoWhereEmail(email);
 
           // 자동로그인 대상
           //if (password === "freepass") {

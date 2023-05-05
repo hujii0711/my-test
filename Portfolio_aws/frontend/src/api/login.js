@@ -10,9 +10,7 @@ import client from './client';
   1. 로컬 전략 회원가입: register | /auth/local/register | post
 **********************************/
 export async function register(params) {
-  console.log('api >>>> register >>>> params ====', params);
   const response = await client.post('/auth/local/register', params);
-  console.log('api >>>> register >>>> response ====', response);
   return response?.data;
 }
 
@@ -20,10 +18,8 @@ export async function register(params) {
   2. 로컬 전략 로그인 수행: login | /auth/local/login | post
 **********************************/
 export async function login(params) {
-  console.log('api >>>> login >>>> params =====', params);
   //client.interceptors.response에서 에러에 걸리면 응답 값을 undefined가 됨
   const response = await client.post('/auth/local/login', params);
-  console.log('api >>>> login >>>> response =====', response);
   return response?.data;
 
   /*{
@@ -45,7 +41,6 @@ export async function login(params) {
   3. 로컬 전략 로그아웃: logout | /auth/local/logout | get
 **********************************/
 export async function logout() {
-  console.log('api >>>> logout!!!!');
   const response = await client.get('/auth/local/logout');
   return response?.data;
 }
@@ -54,7 +49,6 @@ export async function logout() {
   4. 로컬 전략 자동로그인: autoLogin | /auth/local/autoLogin | get
 **********************************/
 export async function autoLogin(autoId) {
-  console.log('api >>>> autoLogin >>>> autoId ====', autoId);
   const response = await client.get('/auth/local/autoLogin', {
     params: {autoId},
   });
@@ -65,9 +59,9 @@ export async function autoLogin(autoId) {
 /**********************************
   5. 구글 oauth2 로그인 수행: googleLogin | /auth/google/login | get
 **********************************/
-export async function googleLogin() {
-  console.log('api >>>> googleLogin====');
-  await client.get('/auth/google/login');
+export async function googleLogin(params) {
+  const response = await client.post('/auth/google/login', params);
+  return response?.data;
 }
 
 /**********************************

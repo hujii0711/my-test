@@ -10,16 +10,25 @@ import {
   Avatar,
 } from 'react-native-paper';
 import useLogout from '../commons/hooks/useLogout';
+import useGoogleLogout from '../commons/hooks/useGoogleLogout';
 import Color from '../commons/style/Color';
 import {useUser} from '../commons/hooks/useReduxState';
+import authStorage from '../commons/storage/authStorage';
 
 const DrawerItems = props => {
   const navigation = useNavigation();
   const currentUser = useUser();
   const {mutate: mutateLogout} = useLogout();
+  const googleLogout = useGoogleLogout();
 
-  const onLogout = () => {
-    mutateLogout();
+  const onLogout = async () => {
+    const loginType = await authStorage.get('loginType');
+
+    if (loginType === 'local') {
+      mutateLogout();
+    } else if (loginType === 'google') {
+      googleLogout();
+    }
   };
 
   const DrawerMenuData = [

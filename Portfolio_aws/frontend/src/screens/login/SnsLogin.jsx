@@ -3,29 +3,14 @@ import {View} from 'react-native';
 import {Button, Chip} from 'react-native-paper';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import Color from '../../commons/style/Color';
-import {useMutation} from 'react-query';
-import {googleLogin} from '../../api/login';
-import {useNavigation} from '@react-navigation/core';
 import useInform from '../../commons/hooks/useInform';
+import useGoogleLogin from '../../commons/hooks/useGoogleLogin';
 import {GoogleSignin} from '@react-native-community/google-signin';
+import Config from 'react-native-config';
 
 const SnsLogin = () => {
-  const navigation = useNavigation();
   const inform = useInform();
-
-  const {mutate: mutateGoogleLogin} = useMutation(googleLogin, {
-    onSuccess: data => {
-      console.log('mutateGoogleLogin >>> onSuccess >>> data---------', data);
-      navigation.navigate('MainTab');
-    },
-    onError: error => {
-      console.log('mutateGoogleLogin >>> onError >>> error---------', error);
-      inform({
-        title: '오류',
-        message: '구글 로그인 실패',
-      });
-    },
-  });
+  const {mutate: mutateGoogleLogin} = useGoogleLogin();
 
   useEffect(() => {
     console.log('GoogleSignin 초기화!!!!!!!!');
@@ -33,7 +18,7 @@ const SnsLogin = () => {
     // GoogleSignin 초기화
     GoogleSignin.configure({
       scopes: ['profile', 'email'],
-      webClientId: '',
+      webClientId: Config.GOOGLE_WEB_CLIENT_ID,
       packageName: 'polaris.portfolio.frontend.dev',
       offlineAccess: true,
       //offlineAccess 속성은 액세스 토큰과 함께 리프레시 토큰을 받을 수 있도록 설정합니다.
@@ -44,7 +29,6 @@ const SnsLogin = () => {
   }, []);
 
   const onPressGooleLogin = async () => {
-    //mutateGoogleLogin();
     /*
     GoogleSignIn.configure(options): GoogleSignIn을 구성합니다. options 매개 변수는 webClientId, offlineAccess, hostedDomain, forceCodeForRefreshToken, accountName 등의 구성 옵션을 설정할 수 있습니다
     GoogleSignIn.signIn(): 사용자가 Google 계정으로 로그인하도록 요청합니다.
@@ -66,7 +50,14 @@ const SnsLogin = () => {
     try {
       await GoogleSignin.hasPlayServices();
       const userInfo = await GoogleSignin.signIn();
-      navigation.navigate('MainTab');
+      console.log('onPressGooleLogin >>>> userInfo============', userInfo);
+
+      // 기존 유저 확인하여 없으면 users 테이블에 유저 등록
+      const email = userInfo.user.email;
+      const googleId = userInfo.user.id;
+      const userName = userInfo.user.name;
+      console.log('onPressGooleLogin >>>>> googleId============', googleId);
+      mutateGoogleLogin({googleId, email, userName});
     } catch (error) {
       inform({
         title: '오류',

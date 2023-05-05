@@ -68,8 +68,11 @@ exports.selectIsRegister = async (email) => {
 /********************************** 
  3. 회원 정보 조회 (이메일조건)
 **********************************/
-exports.selectFindUserInfo = async (email) => {
-  console.log("AuthService >>>> selectFindUserInfo >>>> email====", email);
+exports.selectUserInfoWhereEmail = async (email) => {
+  console.log(
+    "AuthService >>>> selectUserInfoWhereEmail >>>> email====",
+    email
+  );
 
   const params = {
     TableName: "users",
@@ -81,7 +84,10 @@ exports.selectFindUserInfo = async (email) => {
   };
 
   const result = await ddbClient.send(new QueryCommand(params));
-  console.log("AuthService >>>> selectFindUserInfo >>>> result====", result);
+  console.log(
+    "AuthService >>>> selectUserInfoWhereEmail >>>> result====",
+    result
+  );
   if (result) {
     return result;
   }
@@ -91,6 +97,7 @@ exports.selectFindUserInfo = async (email) => {
 4. 회원 정보 조회 (id 조건)
 **********************************/
 exports.selectUserInfo = async (id) => {
+  console.log("AuthService >>>> selectUserInfo >>>> id====", id);
   const params = {
     TableName: "users",
     KeyConditionExpression: "id = :param1",
@@ -100,13 +107,42 @@ exports.selectUserInfo = async (id) => {
   };
 
   const result = await ddbClient.send(new QueryCommand(params));
+
   if (result.Count === 1) {
     return result.Items[0];
   }
 };
 
 /********************************** 
- 5. 자동 로그인
+ 5. 회원 정보 조회 (user_id 조건)
+**********************************/
+exports.selectUserInfoWhereUserId = async (userId) => {
+  console.log(
+    "AuthService >>>> selectUserInfoWhereUserId >>>> userId====",
+    userId
+  );
+
+  const params = {
+    TableName: "users",
+    IndexName: "user_id-index",
+    KeyConditionExpression: "user_id = :param1",
+    ExpressionAttributeValues: {
+      ":param1": userId,
+    },
+  };
+
+  const result = await ddbClient.send(new QueryCommand(params));
+  console.log(
+    "AuthService >>>> selectUserInfoWhereUserId >>>> result====",
+    result
+  );
+  if (result.Count === 1) {
+    return result.Items[0];
+  }
+};
+
+/********************************** 
+ 6. 자동 로그인
 **********************************/
 exports.autoLogin = async (id) => {
   const result = await this.selectUserInfo(id);
@@ -123,7 +159,7 @@ exports.autoLogin = async (id) => {
 };
 
 /********************************** 
-6. sessions.expires TTL 만료기간 갱신
+ 7. sessions.expires TTL 만료기간 갱신
 **********************************/
 exports.updateSessionExpires = async (sessId) => {
   const expires = Math.floor(Date.now() / 1000) + 60 * 60 * 24 * 90; //90일(10자리 숫자)
@@ -151,7 +187,7 @@ exports.updateSessionExpires = async (sessId) => {
 };
 
 /********************************** 
- 7. users 테이블 token 정보 update
+ 8. users 테이블 token 정보 update
 **********************************/
 exports.updateUserToken = async (id, token) => {
   const params = {
@@ -173,6 +209,40 @@ exports.updateUserToken = async (id, token) => {
     return true;
   }
   return false;
+};
+
+/********************************** 
+ 9. 구글 로그인
+**********************************/
+exports.googleLogin = async (body) => {
+  console.log("AuthService >>>> googleLogin >>>> body====", body);
+  const { googleId, email, userName } = body;
+
+  // 기존 회원 가입 여부 확인
+  const userInfo = await this.selectUserInfoWhereUserId(googleId);
+
+  if (userInfo) {
+    return userInfo;
+  } else {
+    const params = {
+      TableName: "users",
+      Item: {
+        id: com.uuidv4(),
+        email,
+        user_id: googleId,
+        pwd: "googlePwd",
+        user_name: userName,
+        created_dt: com.krDate(),
+        login_type: "google",
+      },
+    };
+
+    const result = await ddbClient.send(new PutCommand(params));
+
+    if (result.$metadata.httpStatusCode === 200) {
+      return params.Item;
+    }
+  }
 };
 
 /********************************** 

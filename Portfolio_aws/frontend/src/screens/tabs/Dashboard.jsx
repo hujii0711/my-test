@@ -1,11 +1,9 @@
-import {useEffect} from 'react';
 import {StyleSheet, View} from 'react-native';
 import {useNavigation} from '@react-navigation/native';
 import {IconButton, Text} from 'react-native-paper';
 import Color from '../../commons/style/Color';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import {useUser} from '../../commons/hooks/useReduxState';
-import {GoogleSignin} from '@react-native-community/google-signin';
 
 const Dashboard = () => {
   const navigation = useNavigation();

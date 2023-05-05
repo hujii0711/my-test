@@ -113,3 +113,13 @@ exports.updateSessionExpires = catchAsync(async (req, res) => {
   const result = await AuthService.updateSessionExpires(req.sessionID);
   res.status(httpStatus.OK).json(result);
 });
+
+/********************************** 
+6. 구글 로그인 후처리
+**********************************/
+exports.googleLogin = catchAsync(async (req, res) => {
+  const body = req.body;
+  const result = await AuthService.googleLogin(body);
+  console.log("AuthController >>>>>> googleLogin >>>> result=====", result);
+  res.status(httpStatus.OK).json(result);
+});
