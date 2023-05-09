@@ -290,7 +290,7 @@ dependencies {
     }
     // Import the Firebase BoM
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
-
+    //implementation 'com.google.firebase:firebase-messaging' // 푸시알림(20230507)
 
     // TODO: Add the dependencies for Firebase products you want to use
     // When using the BoM, don't specify versions in Firebase dependencies
@@ -338,5 +338,5 @@ project.ext.vectoricons = [
 
 apply from: file("../../node_modules/react-native-vector-icons/fonts.gradle")
 
-//20230504 환경변수 설정 위해 추가
+// 환경변수 설정 위해 추가(20230504)
 apply from: project(':react-native-config').projectDir.getPath() + "/dotenv.gradle"
