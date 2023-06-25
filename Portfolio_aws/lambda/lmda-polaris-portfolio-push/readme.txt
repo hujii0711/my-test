@@ -15,7 +15,7 @@ exports.handler = async (event) => {
   const params = {
     MessageStructure: 'json',
     Message: JSON.stringify(payload),
-    TargetArn: "arn:aws:sns:ap-northeast-2:455569416380:app/GCM/polaris-portfolio-push",
+    TargetArn: ""
   };
 
   try {
@@ -35,9 +35,6 @@ exports.handler = async (event) => {
 };
 
 Amazon SNS로 앱에 알림을 푸시하려면 먼저 플랫폼 엔드포인트 생성 작업을 호출해 Amazon SNS에 해당 앱의 디바이스 토큰을 등록해야 합니다.
-
-AAAAhES0vjs:APA91bECXOziEk-MJwBKQmHmKz0IGpsnwQLXvoL64jwD6zktBV9F31eGOEhVzXCpCB4d8L8i_xOKQFoeM4dylLPeeC9uRnK-Guu7j1ccTsinnzaSpboWDCTPzc8bIcwY9dh1oS6xrkK0
-
 
 - Amazon SNS topic 역할
 Amazon SNS (Simple Notification Service)는 분산형 애플리케이션, 마이크로서비스, 서버리스 애플리케이션 및 기타 대규모 클라우드 애플리케이션에서
