@@ -7,6 +7,7 @@ import useAuthLoadEffect from '../commons/hooks/useAuthLoadEffect';
 import {useSelector} from 'react-redux';
 import {View} from 'react-native';
 import {Appbar, Menu, Divider, Provider, IconButton} from 'react-native-paper';
+
 const Stack = createStackNavigator();
 
 const RootNavigator = () => {

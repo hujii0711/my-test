@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {Text, View, StyleSheet, Button} from 'react-native';
 import CustomDialog from '../../commons/utils/CustomDialog';
+//import {usePush} from '../commons/hooks/usePush';
 
 const NotifyPushScreen = () => {
   const [visible, setVisible] = useState(false);
