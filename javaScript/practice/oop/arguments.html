@@ -1,37 +1,42 @@
 <!DOCTYPE html>
 <html>
-<head>
-<meta charset="EUC-KR">
-<title>Insert title here</title>
-<script>
-//callee
-// ÇÔ¼ö ¼±¾ğ¹®ÀÇ ÆÄ¶ó¹ÌÅÍ °³¼ö¿Í ÇÔ¼ö È£ÃâºÎÀÇ ÀÎÀÚ °³¼ö°¡ ´Ş¶óµµ ÇÔ¼ö°¡ µ¿ÀÛÇÑ´Ù.
-// arguments: ¾à¼ÓµÇ¾î ÀÖ´Â Æ¯¼öÇÑ ÀÌ¸§ÀÇ º¯¼ö¸í(À¯»ç¹è¿­) --> »ç¿ëÀÚ°¡ Àü´ŞÇÑ ÀÎÀÚµé¿¡ ´ëÇÑ Á¤º¸°¡ µé¾î ÀÖ´Ù.
-// arguments´Â »ç½Ç ¹è¿­Àº ¾Æ´Ï´Ù(À¯»ç¹è¿­), ½ÇÁ¦·Î´Â arguments °´Ã¼ÀÇ ÀÎ½ºÅÏ½º´Ù.
-function case1(){
-	console.log("arguments====", arguments)
-    var i, _sum = 0;    
-    for(i = 0; i < arguments.length; i++){
-        document.write(i+' : '+arguments[i]+'<br />');
-        _sum += arguments[i];
-    }
-    return _sum;
-}
-document.write('case1_result : ' + case1(1,2,3,4,5));
-//¸Å°³º¯¼ö: function sum(a): a°¡ ÆÄ¶ó¹ÌÅÍ(¸Å°³º¯¼ö)
-//ÀÎÀÚ: sum(a): a°¡ ÀÎÀÚ
+  <head>
+    <meta charset="EUC-KR" />
+    <title>Insert title here</title>
+    <script>
+      //callee
+      // í•¨ìˆ˜ ì„ ì–¸ë¬¸ì˜ íŒŒë¼ë¯¸í„° ê°œìˆ˜ì™€ í•¨ìˆ˜ í˜¸ì¶œë¶€ì˜ ì¸ì ê°œìˆ˜ê°€ ë‹¬ë¼ë„ í•¨ìˆ˜ê°€ ë™ì‘í•œë‹¤.
+      // arguments: ì•½ì†ë˜ì–´ ìˆëŠ” íŠ¹ìˆ˜í•œ ì´ë¦„ì˜ ë³€ìˆ˜ëª…(ìœ ì‚¬ë°°ì—´) --> ì‚¬ìš©ìê°€ ì „ë‹¬í•œ ì¸ìë“¤ì— ëŒ€í•œ ì •ë³´ê°€ ë“¤ì–´ ìˆë‹¤.
+      // argumentsëŠ” ì‚¬ì‹¤ ë°°ì—´ì€ ì•„ë‹ˆë‹¤(ìœ ì‚¬ë°°ì—´), ì‹¤ì œë¡œëŠ” arguments ê°ì²´ì˜ ì¸ìŠ¤í„´ìŠ¤ë‹¤.
+      function case1() {
+        console.log("arguments====", arguments);
+        var i,
+          _sum = 0;
+        for (i = 0; i < arguments.length; i++) {
+          document.write(i + " : " + arguments[i] + "<br />");
+          _sum += arguments[i];
+        }
+        return _sum;
+      }
+      document.write("case1_result : " + case1(1, 2, 3, 4, 5));
+      //ë§¤ê°œë³€ìˆ˜: function sum(a): aê°€ íŒŒë¼ë¯¸í„°(ë§¤ê°œë³€ìˆ˜)
+      //ì¸ì: sum(a): aê°€ ì¸ì
 
-function case2(arg1){
-    console.log('case2.length==', case2.length, 'arguments.length==', arguments.length);
-    //one.length : ÇÔ¼ö ¼±¾ğ¹®¿¡ ¸Å°³º¯¼ö °³¼ö
-    //arguments.length : ÇÔ¼ö È£ÃâºÎ¿¡ ÀÎÀÚ °³¼ö
-}
-document.write('case2_result : ' + case2('val1', 'val2'));// one.length 1 arguments 2
+      function case2(arg1) {
+        console.log(
+          "case2.length==",
+          case2.length,
+          "arguments.length==",
+          arguments.length
+        );
+        //one.length : í•¨ìˆ˜ ì„ ì–¸ë¬¸ì— ë§¤ê°œë³€ìˆ˜ ê°œìˆ˜
+        //arguments.length : í•¨ìˆ˜ í˜¸ì¶œë¶€ì— ì¸ì ê°œìˆ˜
+      }
+      document.write("case2_result : " + case2("val1", "val2")); // one.length 1 arguments 2
 
-// »ç¿ëÀÚ°¡ È£ÃâÇÒ¶§ ÀÎÀÚ °³¼ö¿Í ÇÔ¼ö ¼±¾ğºÎÀÇ ¸Å°³º¯¼ö °³¼ö°¡ ÀÏÄ¡ÇÏÁö ¾ÊÀ»¶§ ¿¡·¯¸¦ ³¾¼ö ÀÖ´Â ·ÎÁ÷À» ¸¸µé¼ö ÀÖ´Ù.
-// ES6ÀÇ arrow functionÀÎ È­»ìÇ¥ ÇÔ¼ö¿¡¼­´Â arguments °´Ã¼¸¦ °¡Áö°í ÀÖÁö ¾Ê½À´Ï´Ù. 
-</script>
-</head>
-<body>
-</body>
+      // ì‚¬ìš©ìê°€ í˜¸ì¶œí• ë•Œ ì¸ì ê°œìˆ˜ì™€ í•¨ìˆ˜ ì„ ì–¸ë¶€ì˜ ë§¤ê°œë³€ìˆ˜ ê°œìˆ˜ê°€ ì¼ì¹˜í•˜ì§€ ì•Šì„ë•Œ ì—ëŸ¬ë¥¼ ë‚¼ìˆ˜ ìˆëŠ” ë¡œì§ì„ ë§Œë“¤ìˆ˜ ìˆë‹¤.
+      // ES6ì˜ arrow functionì¸ í™”ì‚´í‘œ í•¨ìˆ˜ì—ì„œëŠ” arguments ê°ì²´ë¥¼ ê°€ì§€ê³  ìˆì§€ ì•ŠìŠµë‹ˆë‹¤.
+    </script>
+  </head>
+  <body></body>
 </html>

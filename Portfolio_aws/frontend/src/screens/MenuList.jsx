@@ -9,6 +9,7 @@ import ChatSocketMessage from './tabs/chat/ChatSocketMessage';
 
 import ShareScreen from './direct/ShareScreen';
 import NotifyPushScreen from './direct/NotifyPushScreen';
+import GallaryScreen from './direct/GallaryScreen';
 import FilmingScreen from './direct/FilmingScreen';
 import SendEmailScreen from './direct/SendEmailScreen';
 import CalendarScreen from './direct/CalendarScreen';
@@ -31,6 +32,7 @@ export const MenuList = [
   {id: 'ChatSocketMessage', component: ChatSocketMessage},
 
   {id: 'ShareScreen', component: ShareScreen},
+  {id: 'GallaryScreen', component: GallaryScreen},
   {id: 'NotifyPushScreen', component: NotifyPushScreen},
   {id: 'FilmingScreen', component: FilmingScreen},
   {id: 'SendEmailScreen', component: SendEmailScreen},
