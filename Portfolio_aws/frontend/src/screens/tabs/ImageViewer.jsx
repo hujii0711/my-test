@@ -7,18 +7,36 @@ import {
   Modal,
   View,
 } from 'react-native';
+import {useQuery} from 'react-query';
 import ImageViewer from 'react-native-image-zoom-viewer';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
+import {selectImageList} from '../../api/images';
 
 const ImageViewerAndZoom = ({route}) => {
-  const PHOTOS = Array(24)
-    .fill()
-    .map((_, i) => {
+  const selectImageListQuery = useQuery(['selectImageList'], () =>
+    selectImageList(),
+  );
+
+  let PHOTOS = [];
+  const images = selectImageListQuery.data;
+
+  if (images) {
+    PHOTOS = images.map(elem => {
       return {
-        url: `https://unsplash.it/300/300/?random&__id=${route.key}${i}`,
+        url: elem,
         freeHeight: true,
       };
     });
+  }
+  console.log('PHOTOS=======', PHOTOS);
+  // const PHOTOS = Array(24)
+  //   .fill()
+  //   .map((_, i) => {
+  //     return {
+  //       url: `https://unsplash.it/300/300/?random&__id=${route.key}${i}`,
+  //       freeHeight: true,
+  //     };
+  //   });
 
   const [modalVisible, setModalVisible] = React.useState(false);
   const [_index, setIndex] = React.useState(0);

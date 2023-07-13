@@ -18,8 +18,18 @@ const Dashboard = () => {
       onPress: () => navigation.navigate('ShareScreen'),
     },
     {id: 'notifyPush', text: '푸시 알림', icon: 'bell'},
-    {id: 'filming', text: '사진촬영', icon: 'camera'},
-    {id: 'gallay', text: '갤러리', icon: 'folder-pound-outline'},
+    {
+      id: 'filming',
+      text: '업로드(촬영)',
+      icon: 'camera',
+      onPress: () => navigation.navigate('ImageUploadTakePicture'),
+    },
+    {
+      id: 'gallay',
+      text: '업로드(갤러리)',
+      icon: 'folder-pound-outline',
+      onPress: () => navigation.navigate('ImageUploadGallary'),
+    },
     {
       id: 'calendar',
       text: '달력',

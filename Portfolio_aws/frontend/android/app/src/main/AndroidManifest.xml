@@ -2,6 +2,10 @@
   package="polaris.portfolio.frontend.dev">
 
     <uses-permission android:name="android.permission.INTERNET" />
+    <!--react-native-image-crop-picker 카메라 사용 권한 추가 20230708-->
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
 
     <application
       android:name=".MainApplication"

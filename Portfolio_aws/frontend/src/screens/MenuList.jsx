@@ -9,8 +9,8 @@ import ChatSocketMessage from './tabs/chat/ChatSocketMessage';
 
 import ShareScreen from './direct/ShareScreen';
 import NotifyPushScreen from './direct/NotifyPushScreen';
-import GallaryScreen from './direct/GallaryScreen';
-import FilmingScreen from './direct/FilmingScreen';
+import ImageUploadGallary from './direct/ImageUploadGallary';
+import ImageUploadTakePicture from './direct/ImageUploadTakePicture';
 import SendEmailScreen from './direct/SendEmailScreen';
 import CalendarScreen from './direct/CalendarScreen';
 import QRCodeScreen from './direct/QRCodeScreen';
@@ -32,9 +32,9 @@ export const MenuList = [
   {id: 'ChatSocketMessage', component: ChatSocketMessage},
 
   {id: 'ShareScreen', component: ShareScreen},
-  {id: 'GallaryScreen', component: GallaryScreen},
+  {id: 'ImageUploadGallary', component: ImageUploadGallary},
+  {id: 'ImageUploadTakePicture', component: ImageUploadTakePicture},
   {id: 'NotifyPushScreen', component: NotifyPushScreen},
-  {id: 'FilmingScreen', component: FilmingScreen},
   {id: 'SendEmailScreen', component: SendEmailScreen},
   {id: 'CalendarScreen', component: CalendarScreen},
   {id: 'QRCodeScreen', component: QRCodeScreen},

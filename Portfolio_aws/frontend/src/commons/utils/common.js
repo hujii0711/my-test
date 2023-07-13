@@ -97,8 +97,15 @@ com.formatDaysAgo = date => {
 /************************************
   date 포맷 출력 표현
 ************************************/
-com.formatDate = (date, format) => {
-  return format(new Date(date), format); //'yyyy-MM-dd'
+com.formatDate = (date, _format) => {
+  return format(new Date(date), _format); //'yyyy-MM-dd'
+};
+
+/************************************
+  현재 시간 출력
+************************************/
+com.currentFormatDate = _format => {
+  return format(new Date(), _format);
 };
 
 /************************************
