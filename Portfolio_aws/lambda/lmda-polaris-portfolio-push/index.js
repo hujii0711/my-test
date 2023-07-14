@@ -1,9 +1,14 @@
 const AWS = require("aws-sdk");
+
+// AWS SNS 클라이언트 생성
 const sns = new AWS.SNS();
 
 exports.handler = async (event, context) => {
   const body = JSON.parse(event.body);
   const deviceToken = body.token;
+  // body=========== {
+  //   token: 'dKfKEFy2RD2D9U77betPs1:APA91bFCOc0582Gw7NaOvsEIgHsp8aRoGrbcL5ICoZV99HbVYSHSLQ2-yoWl7shwRPUH_ntwkDlzWweZ9NRbZxFnn-fOSBLqMVkpE-nT6sP0Ol5On4XUZ3cxLzV5dixFnViwCHpsL7aS'
+  // }
 
   try {
     // 플랫폼 어플리케이션 생성
@@ -21,10 +26,7 @@ exports.handler = async (event, context) => {
       .promise();
     const platformApplicationArn =
       platformApplicationResponse.PlatformApplicationArn;
-    console.log(
-      "platformApplicationArn================",
-      platformApplicationArn
-    );
+    //platformApplicationArn================ arn:aws:sns:ap-northeast-2:455569416380:app/GCM/push_test
 
     // 플랫폼 엔드포인트 생성
     const endpointParams = {
@@ -32,13 +34,16 @@ exports.handler = async (event, context) => {
       Token: deviceToken, // 디바이스 토큰 또는 등록 ID
       CustomUserData: "CUSTOM_USER_DATA", // 사용자 지정 데이터 (옵션)
     };
-    console.log("endpointParams================", endpointParams);
-
+    // endpointParams================ {
+    //   PlatformApplicationArn: 'arn:aws:sns:ap-northeast-2:455569416380:app/GCM/push_test',
+    //   Token: 'dKfKEFy2RD2D9U77betPs1:APA91bFCOc0582Gw7NaOvsEIgHsp8aRoGrbcL5ICoZV99HbVYSHSLQ2-yoWl7shwRPUH_ntwkDlzWweZ9NRbZxFnn-fOSBLqMVkpE-nT6sP0Ol5On4XUZ3cxLzV5dixFnViwCHpsL7aS',
+    //   CustomUserData: 'CUSTOM_USER_DATA'
+    // }
     const endpointResponse = await sns
       .createPlatformEndpoint(endpointParams)
       .promise();
     const endpointArn = endpointResponse.EndpointArn;
-    console.log("endpointArn=========================", endpointArn);
+    // endpointArn========================= arn:aws:sns:ap-northeast-2:455569416380:endpoint/GCM/push_test/6e6f4a42-3a99-3441-a616-158944d4d01a
 
     // 푸시 알림 보내기
     const message = {
@@ -49,18 +54,18 @@ exports.handler = async (event, context) => {
         },
       }),
     };
-    console.log("message================", message);
-
     const publishParams = {
       Message: JSON.stringify(message),
       MessageStructure: "json",
       TargetArn: endpointArn,
     };
-
-    console.log("publishParams================", publishParams);
-
-    await sns.publish(publishParams).promise();
-    console.log("Push notification sent!!!!!!!!!!!!!");
+    // publishParams================ {
+    //   Message: '{"default":"Default message","GCM":"{\\"data\\":{\\"message\\":\\"Push notification message\\"}}"}',
+    //   MessageStructure: 'json',
+    //   TargetArn: 'arn:aws:sns:ap-northeast-2:455569416380:endpoint/GCM/push_test/6e6f4a42-3a99-3441-a616-158944d4d01a'
+    // }
+    const publish = await sns.publish(publishParams).promise();
+    console.log("publish===========", publish);
 
     const response = {
       isBase64Encoded: true,

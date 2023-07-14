@@ -1,5 +1,11 @@
 import * as React from 'react';
-import {ScrollView, StyleSheet, View} from 'react-native';
+import {
+  ScrollView,
+  StyleSheet,
+  View,
+  useState,
+  RefreshControl,
+} from 'react-native';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 
 export default function ScreenWrapper({
@@ -9,6 +15,7 @@ export default function ScreenWrapper({
   contentContainerStyle,
   ...rest
 }) {
+  const [refreshing, setRefreshing] = React.useState(false);
   const insets = useSafeAreaInsets();
 
   const containerStyle = [
@@ -21,6 +28,14 @@ export default function ScreenWrapper({
     },
   ];
 
+  const handleRefresh = () => {
+    setRefreshing(true);
+    // 리렌더링 로직 수행
+
+    // 리렌더링이 완료되면 refreshing 값을 false로 설정
+    setRefreshing(false);
+  };
+
   return (
     <>
       {withScrollView ? (
@@ -29,7 +44,10 @@ export default function ScreenWrapper({
           contentContainerStyle={contentContainerStyle}
           alwaysBounceVertical={false}
           showsVerticalScrollIndicator={false}
-          style={[containerStyle, style]}>
+          style={[containerStyle, style]}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={handleRefresh} />
+          }>
           {children}
         </ScrollView>
       ) : (

@@ -1,3 +1,7 @@
+/*
+  react-native에서는 react-native-image-crop-picker를 이용해서 서버 전송전 리사이징이 가능하여
+  해당 기능은 불필요하지만 웹에서는 쓸모 있음
+*/
 const AWS = require("aws-sdk");
 const sharp = require("sharp");
 

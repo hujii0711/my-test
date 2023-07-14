@@ -1,9 +1,9 @@
-import React, {useState, useEffect} from 'react';
-import {Text, View, StyleSheet, Button, ToastAndroid} from 'react-native';
-import CustomDialog from '../../commons/utils/CustomDialog';
-import PushNotification from 'react-native-push-notification';
+import React, {useState} from 'react';
+import {Text, View, StyleSheet, Button} from 'react-native';
 import axios from 'axios';
 import messaging from '@react-native-firebase/messaging';
+import Config from 'react-native-config';
+import CustomDialog from '../../commons/utils/CustomDialog';
 
 const NotifyPushScreen = () => {
   console.log('NotifyPushScreen 렌더링!!!!!!!!');
@@ -12,14 +12,10 @@ const NotifyPushScreen = () => {
 
   const goToPushMessage = async () => {
     const fcmToken = await messaging().getToken();
-    console.log('goToPushMessage >>>> fcmToken------', fcmToken);
     axios
-      .post(
-        `https://hv7bggeql9.execute-api.ap-northeast-2.amazonaws.com/dev/test`,
-        {
-          token: fcmToken,
-        },
-      )
+      .post(Config.API_GATEWAY_PUSH_URL, {
+        token: fcmToken,
+      })
       .then(resp => {
         // 성공한 경우 실행
         console.log('성공한 경우 실행 >>>> resp=======', resp.data);

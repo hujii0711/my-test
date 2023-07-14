@@ -7,8 +7,9 @@ import {
   Text,
   ToastAndroid,
 } from 'react-native';
-import ImagePicker from 'react-native-image-crop-picker';
 import axios from 'axios';
+import ImagePicker from 'react-native-image-crop-picker';
+import Config from 'react-native-config';
 import com from '../../commons/utils/common';
 
 const ImageUploadTakePicture = () => {
@@ -51,36 +52,26 @@ const ImageUploadTakePicture = () => {
     }
   };
 
-  const uploadImage = () => {
+  const uploadImage = async () => {
     if (selectedImages.length > 0) {
       try {
-        axios
-          .post(
-            'https://7k5z63s4tk.execute-api.ap-northeast-2.amazonaws.com/dev/upload',
-            {
-              fileInfo: selectedImages, //base64, mime, fileName, size, path
-              key: 'images/original',
-            },
-          )
-          .then(function (res) {
-            ToastAndroid.show(
-              '이미지 업로드가 정상 수행되었습니다.',
-              ToastAndroid.SHORT,
-            );
-            console.log('이미지 업로드 성공============', res);
-          })
-          .catch(function (err) {
-            ToastAndroid.show(
-              '이미지 업로드가 수행 도중 에러가 발생하였습니다.',
-              ToastAndroid.SHORT,
-            );
-            console.log('이미지 업로드 실패==========', err);
-          });
+        await axios.post(Config.API_GATEWAY_UPLOAD_URL, {
+          fileInfo: selectedImages,
+          key: 'images/original',
+        });
+        console.log('이미지 업로드 성공!!!!');
+        ToastAndroid.show(
+          '이미지 업로드가 정상 수행되었습니다.',
+          ToastAndroid.SHORT,
+        );
       } catch (error) {
+        ToastAndroid.show(
+          '이미지 업로드가 수행 도중 에러가 발생하였습니다.',
+          ToastAndroid.SHORT,
+        );
         console.log('에러가 발생했습니다:', error);
       }
     } else {
-      console.log('이미지를 선택해주세요.');
       ToastAndroid.show('이미지를 선택해주세요.', ToastAndroid.SHORT);
     }
   };

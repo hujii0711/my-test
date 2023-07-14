@@ -24,10 +24,10 @@ import {
   StyleSheet,
   FlatList,
 } from 'react-native';
+import Config from 'react-native-config';
 import Color from '../../../commons/style/Color';
 import {selectChatRoomMessagePagingList} from '../../../api/chat';
 import {useUser} from '../../../commons/hooks/useReduxState';
-import Config from 'react-native-config';
 
 const ChatSocketMessage = () => {
   console.log('ChatSocketMessage 렌더링##################');

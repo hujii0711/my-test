@@ -1,5 +1,5 @@
 import React, {useRef, useState} from 'react';
-//import RNFetchBlob from 'rn-fetch-blob';
+import RNFetchBlob from 'rn-fetch-blob';
 import {
   Pressable,
   Image,
@@ -10,6 +10,7 @@ import {
   Text,
   TouchableOpacity,
   NativeModules,
+  ToastAndroid,
 } from 'react-native';
 import {useQuery} from 'react-query';
 import ImageViewer from 'react-native-image-zoom-viewer';
@@ -17,9 +18,7 @@ import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import {selectImageList} from '../../api/images';
 import {ActivityIndicator} from 'react-native-paper';
 import Color from '../../commons/style/Color';
-
-const RNFetchBlob = NativeModules.RNFetchBlob;
-const path = RNFetchBlob.DownloadDir;
+import com from '../../commons/utils/common';
 
 const ImageViewerAndZoom = () => {
   console.log('ImageViewerAndZoom 렌더링!!!!!!!!!!!!');
@@ -27,8 +26,12 @@ const ImageViewerAndZoom = () => {
   const [_index, setIndex] = useState(0);
   const images = useRef([]);
 
-  const selectImageListQuery = useQuery(['selectImageList'], () =>
-    selectImageList(),
+  const selectImageListQuery = useQuery(
+    ['selectImageList'],
+    () => selectImageList(),
+    {
+      cacheTime: 1000,
+    },
   );
 
   if (!selectImageListQuery?.data) {
@@ -78,6 +81,10 @@ const ImageViewerAndZoom = () => {
 };
 
 const ImageZoom = ({modalVisible, setModalVisible, images, index}) => {
+  // 같은 이름이 반복되지 않게 작업이 필요하다. 같은 이름 반복되면 오류 발생됨
+  const savePath = `${
+    NativeModules.RNFetchBlob.DownloadDir
+  }/${com.currentFormatDate('yyyyMMddHHmmss')}.jpg`;
   const renderImage = ({source, style}) => {
     const _style = {
       ...style,
@@ -89,7 +96,8 @@ const ImageZoom = ({modalVisible, setModalVisible, images, index}) => {
         <Image source={source} style={_style} />
         <TouchableOpacity
           style={{position: 'absolute', bottom: 0, right: 0}}
-          onPress={() => saveImageToLocal(source.uri)}>
+          //onPress={() => saveImageToLocal(source.uri)}>
+          onPress={() => downloadImage(source.uri, savePath)}>
           <Text style={{color: 'red'}}>다운로드</Text>
         </TouchableOpacity>
       </View>
@@ -112,20 +120,17 @@ const ImageZoom = ({modalVisible, setModalVisible, images, index}) => {
   );
 };
 
-// 이미지를 로컬에 저장하는 함수
-const saveImageToLocal = async imageUrl => {
+const downloadImage = async (imageUrl, savePath) => {
   try {
     const response = await RNFetchBlob.config({
       fileCache: true,
+      appendExt: 'jsp',
+      path: savePath,
     }).fetch('GET', imageUrl);
-    const imagePath = response.path();
-
-    // 로컬에 이미지 저장
-    await RNFetchBlob.fs.cp(imagePath, path + '/image.jpg');
-
-    console.log('이미지 다운로드 완료:', path + '/image.jpg');
+    ToastAndroid.show('다운로드가 완료되었습니다.', ToastAndroid.SHORT);
+    return response.path();
   } catch (error) {
-    console.log('이미지 다운로드 실패:', error);
+    ToastAndroid.show('다운로드가 실패하였습니다.', ToastAndroid.SHORT);
   }
 };
 
@@ -166,4 +171,22 @@ export default ImageViewerAndZoom;
 //       </TouchableOpacity>
 //     </View>
 //   );
+// };
+
+// 이미지를 로컬에 저장하는 함수
+// const saveImageToLocal = async imageUrl => {
+//   try {
+//     const response = await RNFetchBlob_.config({
+//       fileCache: true,
+//     }).fetch('GET', imageUrl);
+//     const imagePath = response.path();
+//     console.log('imagePath============', imagePath);
+
+//     // 로컬에 이미지 저장
+//     await RNFetchBlob_.fs.cp(imagePath, path + '/image.jpg');
+
+//     console.log('이미지 다운로드 완료:', path + '/image.jpg');
+//   } catch (error) {
+//     console.log('이미지 다운로드 실패:', error);
+//   }
 // };
