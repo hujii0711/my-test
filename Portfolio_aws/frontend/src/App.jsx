@@ -8,12 +8,14 @@ import {QueryClient, QueryClientProvider} from 'react-query';
 import RootNavigator from './screens/RootNavigator';
 import DrawerItems from './screens/DrawerItems';
 import reducers from './commons/redux';
-
+import usePush from './commons/hooks/usePush';
 const Drawer = createDrawerNavigator();
 const queryClient = new QueryClient();
 const store = createStore(reducers);
 
 const App = () => {
+  // 푸시 알림
+  usePush();
   return (
     <SafeAreaProvider>
       <React.Fragment>

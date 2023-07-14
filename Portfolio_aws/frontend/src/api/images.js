@@ -8,7 +8,9 @@ export async function selectImageList() {
     const response = await client.get('/images/viewer', {
       params: {folder: 'images/original'},
     });
-    return response?.data;
+    const arr = response?.data;
+    arr.shift();
+    return arr;
   } catch (err) {
     console.log('err====', err);
   }

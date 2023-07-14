@@ -17,7 +17,12 @@ const Dashboard = () => {
       icon: 'share-variant-outline',
       onPress: () => navigation.navigate('ShareScreen'),
     },
-    {id: 'notifyPush', text: '푸시 알림', icon: 'bell'},
+    {
+      id: 'notifyPush',
+      text: '푸시 알림',
+      icon: 'bell',
+      onPress: () => navigation.navigate('NotifyPushScreen'),
+    },
     {
       id: 'filming',
       text: '업로드(촬영)',
