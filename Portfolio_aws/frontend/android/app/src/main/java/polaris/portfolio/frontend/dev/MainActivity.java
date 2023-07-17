@@ -3,6 +3,8 @@ package polaris.portfolio.frontend.dev;
 import com.facebook.react.ReactActivity;
 import com.facebook.react.ReactActivityDelegate;
 import com.facebook.react.ReactRootView;
+import android.os.Bundle;	// 20230715 Splash 화면
+import org.devio.rn.splashscreen.SplashScreen;	// 20230715 Splash 화면
 
 public class MainActivity extends ReactActivity {
 
@@ -22,6 +24,14 @@ public class MainActivity extends ReactActivity {
   @Override
   protected ReactActivityDelegate createReactActivityDelegate() {
     return new MainActivityDelegate(this, getMainComponentName());
+  }
+
+  // 20230715 Splash 화면
+  @Override
+  protected void onCreate(Bundle savedInstanceState) {
+      SplashScreen.show(this);
+      //SplashScreen.show(this, R.style.SplashScreenTheme);
+      super.onCreate(savedInstanceState);
   }
 
   public static class MainActivityDelegate extends ReactActivityDelegate {
