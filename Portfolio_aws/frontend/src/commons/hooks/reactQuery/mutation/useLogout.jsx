@@ -1,10 +1,10 @@
 import {useMutation} from 'react-query';
-import {logout} from '../../api/login';
-import useInform from './useInform';
-import authStorage from '../../commons/storage/authStorage';
-import {userDelete} from '../../commons/redux/users/reducers';
-import {useDispatch} from 'react-redux';
 import {useNavigation, DrawerActions} from '@react-navigation/native';
+import {useDispatch} from 'react-redux';
+import {logout} from '../../../../api/login';
+import useInform from '../../useInform';
+import authStorage from '../../../../commons/storage/authStorage';
+import {userDelete} from '../../../../commons/redux/users/reducers';
 
 const useLogout = () => {
   const inform = useInform();
@@ -18,7 +18,7 @@ const useLogout = () => {
     authStorage.clear('loginType');
   };
 
-  const mutation = useMutation(logout, {
+  return useMutation(logout, {
     onSuccess: data => {
       logoutCallback();
       inform({
@@ -34,7 +34,6 @@ const useLogout = () => {
       });
     },
   });
-  return mutation;
 };
 
 export default useLogout;

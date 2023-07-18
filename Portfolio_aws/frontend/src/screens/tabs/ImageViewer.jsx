@@ -21,18 +21,37 @@ import Color from '../../commons/style/Color';
 import com from '../../commons/utils/common';
 
 const ImageViewerAndZoom = () => {
-  console.log('ImageViewerAndZoom 렌더링!!!!!!!!!!!!');
+  console.log('ImageViewerAndZoom 렌더링@@@@@');
   const [modalVisible, setModalVisible] = useState(false);
   const [_index, setIndex] = useState(0);
   const images = useRef([]);
+  const [wapperRender, setWapperRender] = useState(false);
 
-  const selectImageListQuery = useQuery(
-    ['selectImageList'],
-    () => selectImageList(),
-    {
-      cacheTime: 1000,
-    },
-  );
+  const selectImageListQuery = useQuery('selectImageList', selectImageList, {
+    enabled: false,
+    //cacheTime: 0,
+    //staleTime: 0,
+    //cacheTime: 1000,
+    //refetchInterval: 1000,
+    //refetchOnmount: true, //default: true, 데이터가 유효하지 않을때 재요청하는 옵션
+  });
+
+  //console.log('data======', selectImageListQuery?.data.length);
+  //const queryClient = useQueryClient();
+  //const articleData = queryClient.getQueryData('selectImageList');
+  //console.log('articleData=============', articleData);
+  // queryClient.setQueryData('selectImageList', () => {
+  //   return {
+  //     pageParams: undefined,
+  //     pages: [refreshData],
+  //   };
+  // });
+  //queryClient.invalidateQueries('articles'); // articles 캐시 키를 만료시키기
+
+  const reRender = () => {
+    setWapperRender(!wapperRender);
+    selectImageListQuery.refetch();
+  };
 
   if (!selectImageListQuery?.data) {
     return (
@@ -53,7 +72,9 @@ const ImageViewerAndZoom = () => {
   }
 
   return (
-    <ScreenWrapper contentContainerStyle={styles.content}>
+    <ScreenWrapper
+      childComponentRender={reRender}
+      contentContainerStyle={styles.content}>
       {modalVisible && (
         <ImageZoom
           modalVisible={modalVisible}

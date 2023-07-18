@@ -9,7 +9,7 @@ import {
   IconButton,
   Avatar,
 } from 'react-native-paper';
-import useLogout from '../commons/hooks/useLogout';
+import useLogout from '../commons/hooks/reactQuery/mutation/useLogout';
 import useGoogleLogout from '../commons/hooks/useGoogleLogout';
 import Color from '../commons/style/Color';
 import {useUser} from '../commons/hooks/useReduxState';

@@ -2,9 +2,9 @@ import {useEffect} from 'react';
 import authStorage from '../storage/authStorage';
 import {useDispatch} from 'react-redux';
 import {userDelete} from '../redux/users/reducers';
-import useAutoLogin from './useAutoLogin';
+import useAutoLogin from './reactQuery/mutation/useAutoLogin';
 import {GoogleSignin} from '@react-native-community/google-signin';
-import useGoogleLogin from './useGoogleLogin';
+import useGoogleLogin from './reactQuery/mutation/useGoogleLogin';
 
 const useAuthLoadEffect = () => {
   const dispatch = useDispatch();

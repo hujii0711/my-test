@@ -104,7 +104,7 @@
 import React, {useState} from 'react';
 import {TextInput, Button, Checkbox} from 'react-native-paper';
 import {View, Text, Pressable} from 'react-native';
-import useRegister from '../../commons/hooks/useRegister';
+import useRegister from '../../commons/hooks/reactQuery/mutation/useRegister';
 import com from '../../commons/utils/common';
 import useInform from '../../commons/hooks/useInform';
 

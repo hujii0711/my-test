@@ -1,13 +1,13 @@
 import {useMutation} from 'react-query';
-import {autoLogin} from '../../api/login';
-import useInform from './useInform';
+import {autoLogin} from '../../../../api/login';
+import useInform from '../../useInform';
 import useLogin from './useLogin';
 
 const useAutoLogin = () => {
   const inform = useInform();
   const {mutate: mutateLogin} = useLogin();
 
-  const mutation = useMutation(autoLogin, {
+  return useMutation(autoLogin, {
     onSuccess: data => {
       // 로그인 수행 : 세션 취득, 토큰 재취득
       // jwt.verify decode 데이터
@@ -28,7 +28,6 @@ const useAutoLogin = () => {
       });
     },
   });
-  return mutation;
 };
 
 export default useAutoLogin;

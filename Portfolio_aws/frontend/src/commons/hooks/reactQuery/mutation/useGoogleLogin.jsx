@@ -1,17 +1,17 @@
 import {useMutation} from 'react-query';
 import {useDispatch} from 'react-redux';
-import {googleLogin} from '../../api/login';
-import authStorage from '../storage/authStorage';
-import useInform from './useInform';
-import {userSelect, userDelete} from '../redux/users/reducers';
 import {useNavigation} from '@react-navigation/native';
+import {userSelect, userDelete} from '../../../redux/users/reducers';
+import useInform from '../../useInform';
+import authStorage from '../../../storage/authStorage';
+import {googleLogin} from '../../../../api/login';
 
 const useGoogleLogin = () => {
   const dispatch = useDispatch();
   const inform = useInform();
   const navigation = useNavigation();
 
-  const mutation = useMutation(googleLogin, {
+  return useMutation(googleLogin, {
     onSuccess: async data => {
       if (data) {
         authStorage.set('loginType', data.login_type);
@@ -20,7 +20,7 @@ const useGoogleLogin = () => {
       }
     },
     onError: error => {
-      console.log('useGoogleLogin >>> onError >>>> error---------', error);
+      console.log('useGoogleLogin >>> onError >>> error---------', error);
       authStorage.clear('loginType');
       dispatch(userDelete());
       inform({
@@ -29,8 +29,6 @@ const useGoogleLogin = () => {
       });
     },
   });
-
-  return mutation;
 };
 
 export default useGoogleLogin;

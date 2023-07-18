@@ -1,13 +1,13 @@
 import {useMutation} from 'react-query';
-import {register} from '../../api/login';
 import {useNavigation} from '@react-navigation/core';
-import useInform from './useInform';
+import {register} from '../../../../api/login';
+import useInform from '../../useInform';
 
 const useRegister = () => {
   const navigation = useNavigation();
   const inform = useInform();
 
-  const mutation = useMutation(register, {
+  return useMutation(register, {
     onSuccess: data => {
       if (data.customResponse) {
         inform({
@@ -30,7 +30,6 @@ const useRegister = () => {
       });
     },
   });
-  return mutation;
 };
 
 export default useRegister;

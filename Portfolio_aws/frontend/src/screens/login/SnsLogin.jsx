@@ -4,7 +4,7 @@ import {Button, Chip} from 'react-native-paper';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import Color from '../../commons/style/Color';
 import useInform from '../../commons/hooks/useInform';
-import useGoogleLogin from '../../commons/hooks/useGoogleLogin';
+import useGoogleLogin from '../../commons/hooks/reactQuery/mutation/useGoogleLogin';
 import {GoogleSignin} from '@react-native-community/google-signin';
 import Config from 'react-native-config';
 

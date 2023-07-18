@@ -1,10 +1,10 @@
 import {useMutation} from 'react-query';
 import {useNavigation} from '@react-navigation/core';
 import {useDispatch} from 'react-redux';
-import {login, updateSessionExpires} from '../../api/login';
-import authStorage from '../storage/authStorage';
-import useInform from './useInform';
-import {userSelect, userDelete} from '../redux/users/reducers';
+import {login, updateSessionExpires} from '../../../../api/login';
+import authStorage from '../../../storage/authStorage';
+import useInform from '../../useInform';
+import {userSelect, userDelete} from '../../../redux/users/reducers';
 
 const useLogin = () => {
   const dispatch = useDispatch();
@@ -25,7 +25,20 @@ const useLogin = () => {
     mutateUpdateSessionExpires();
   };
 
-  const mutation = useMutation(login, {
+  const {mutate: mutateUpdateSessionExpires} = useMutation(
+    updateSessionExpires,
+    {
+      onSuccess: data => {},
+      onError: error => {
+        inform({
+          title: '오류',
+          message: '로그인 실패',
+        });
+      },
+    },
+  );
+
+  return useMutation(login, {
     onSuccess: async data => {
       if (data) {
         const autoLogin = await authStorage.get('autoLogin');
@@ -48,20 +61,6 @@ const useLogin = () => {
       });
     },
   });
-
-  const {mutate: mutateUpdateSessionExpires} = useMutation(
-    updateSessionExpires,
-    {
-      onSuccess: data => {},
-      onError: error => {
-        inform({
-          title: '오류',
-          message: '로그인 실패',
-        });
-      },
-    },
-  );
-  return mutation;
 };
 
 export default useLogin;

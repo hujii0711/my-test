@@ -9,15 +9,15 @@ import client from './client';
 /**********************************
   1. 로컬 전략 회원가입: register | /auth/local/register | post
 **********************************/
-export async function register(params) {
+export const register = async params => {
   const response = await client.post('/auth/local/register', params);
   return response?.data;
-}
+};
 
 /**********************************
   2. 로컬 전략 로그인 수행: login | /auth/local/login | post
 **********************************/
-export async function login(params) {
+export const login = async params => {
   //client.interceptors.response에서 에러에 걸리면 응답 값을 undefined가 됨
   const response = await client.post('/auth/local/login', params);
   return response?.data;
@@ -35,39 +35,39 @@ export async function login(params) {
     },
     "token":"eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjNkN2ZiMzgzLWYwZjctNDkwNC04ZjZjLWNmMmJiOTMyNDdmMSIsInVzZXJJZCI6IjEwNjMxNzE5NDMwMDAzNDA4NTAwNSIsImVtYWlsIjoiaHVqaWkwNzExQGdtYWlsLmNvbSIsImlhdCI6MTY4MTc4MDk2NywiZXhwIjoxNjg0MzcyOTY3fQ.QDUnXLXzxKDe-sIqAWIo27vbX-NynKjcY9CHIV4X9sg"
   }*/
-}
+};
 
 /**********************************
   3. 로컬 전략 로그아웃: logout | /auth/local/logout | get
 **********************************/
-export async function logout() {
+export const logout = async () => {
   const response = await client.get('/auth/local/logout');
   return response?.data;
-}
+};
 
 /**********************************
   4. 로컬 전략 자동로그인: autoLogin | /auth/local/autoLogin | get
 **********************************/
-export async function autoLogin(autoId) {
+export const autoLogin = async autoId => {
   const response = await client.get('/auth/local/autoLogin', {
     params: {autoId},
   });
   //console.log('api >>>> autoLogin >>>> response ====', response);
   return response?.data;
-}
+};
 
 /**********************************
   5. 구글 oauth2 로그인 수행: googleLogin | /auth/google/login | get
 **********************************/
-export async function googleLogin(params) {
+export const googleLogin = async autoId => {
   const response = await client.post('/auth/google/login', params);
   return response?.data;
-}
+};
 
 /**********************************
  6. 로그인 이후 session 저장소 expires 갱신: updateSessionExpires | /auth/local/updateSessionExpires | get
 **********************************/
-export async function updateSessionExpires() {
+export const updateSessionExpires = async () => {
   const response = await client.get('/auth/local/updateSessionExpires');
   return response?.data;
-}
+};

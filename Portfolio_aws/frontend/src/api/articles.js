@@ -17,22 +17,23 @@ import client from './client';
 
 /********************************** 
   1. 조회 페이징: selectArticlePagingList | /article/selectArticlePagingList | get
+  export async function selectArticlePagingList({nextCreatedDt = '1',prevCreatedDt = '1',}) {}
 **********************************/
-export async function selectArticlePagingList({
+export const selectArticlePagingList = async ({
   nextCreatedDt = '1',
   prevCreatedDt = '1',
-}) {
+}) => {
   const createdDt = nextCreatedDt;
   const response = await client.get('/article/selectArticlePagingList', {
     params: {createdDt},
   });
   return response?.data?.Items;
-}
+};
 
 /********************************** 
   2. 조회 상세: selectArticle | /article/selectArticle | get
 **********************************/
-export async function selectArticle(id) {
+export const selectArticle = async id => {
   const response = await client.get('/article/selectArticle', {
     params: {id},
   });
@@ -41,24 +42,24 @@ export async function selectArticle(id) {
     typeof response.data.Items[0],
   );
   return response?.data?.Items[0];
-}
+};
 
 /**********************************
   3. 등록: insertArticle | /article/insertArticle | post
 **********************************/
-export async function insertArticle(params) {
+export const insertArticle = async params => {
   const {title, contents} = params;
   const response = await client.post('/article/insertArticle', {
     title,
     contents,
   });
   return response?.data;
-}
+};
 
 /**********************************
   4. 수정: updateArticle | /article/updateArticle | patch
 **********************************/
-export async function updateArticle(params) {
+export const updateArticle = async params => {
   const {createdDt, title, contents} = params;
   const response = await client.patch('/article/updateArticle/', {
     createdDt,
@@ -66,12 +67,12 @@ export async function updateArticle(params) {
     contents,
   });
   return response?.data;
-}
+};
 
 /**********************************
   5. 삭제: deleteArticle | /article/deleteArticle | delete
 **********************************/
-export async function deleteArticle(createdDt) {
+export const deleteArticle = async createdDt => {
   // query, path 방식으로 보낼 때
   //await client.delete(`/article/deleteArticle/${aaa}`, {
   //  params: {createdDt},
@@ -81,33 +82,33 @@ export async function deleteArticle(createdDt) {
     data: {createdDt},
   });
   return response;
-}
+};
 
 /**********************************
   6. 조회수 up: updateArticleLookUpCnt | /article/updateArticleLookUpCnt | patch
 **********************************/
-export async function updateArticleLookUpCnt(createdDt) {
+export const updateArticleLookUpCnt = async createdDt => {
   const response = await client.patch('/article/updateArticleLookUpCnt', {
     createdDt,
   });
   return response;
-}
+};
 
 /**********************************
   7. 좋아요 싫어요 up, down: updateArticleLikeUpDown | /article/updateArticleLikeUpDown | patch // 좋아요 싫어요 하나로 묶은거 같음
 **********************************/
-export async function updateArticleLikeUpDown(createdDt, type) {
+export const updateArticleLikeUpDown = async (createdDt, type) => {
   const response = await client.patch('/article/updateArticleLikeUpDown', {
     createdDt,
     type,
   });
   return response;
-}
+};
 
 /**********************************
   8. 댓글 등록: insertArticleComment | /article/insertArticleComment | patch
 **********************************/
-export async function insertArticleComment(params) {
+export const insertArticleComment = async params => {
   const {articleCreatedDt, commentBody} = params;
   const response = await client.patch('/article/insertArticleComment', {
     articleCreatedDt,
@@ -115,12 +116,12 @@ export async function insertArticleComment(params) {
   });
   console.log('insertArticleComment >>>>> response========', response);
   return response?.data;
-}
+};
 
 /**********************************
   9. 댓글 수정: updateArticleComment | /article/updateArticleComment | patch
 **********************************/
-export async function updateArticleComment(params) {
+export const updateArticleComment = async params => {
   const {articleCreatedDt, commentBody} = params;
   const response = await client.patch('/article/updateArticleComment', {
     articleCreatedDt,
@@ -128,12 +129,12 @@ export async function updateArticleComment(params) {
   });
   console.log('updateArticleComment >>>>> response========', response);
   return response?.data;
-}
+};
 
 /**********************************
   10. 댓글 삭제: deleteArticleComment | /article/deleteArticleComment | patch
 **********************************/
-export async function deleteArticleComment(params) {
+export const deleteArticleComment = async params => {
   const {articleCreatedDt, commentBody} = params;
   const response = await client.patch('/article/deleteArticleComment', {
     articleCreatedDt,
@@ -141,12 +142,12 @@ export async function deleteArticleComment(params) {
   });
   console.log('deleteArticleComment >>>>> response========', response);
   return response?.data;
-}
+};
 
 /**********************************
   11. 댓글 좋아요 싫어요 up, down: updateArticleCommentLikeUpDown | /article/updateArticleCommentLikeUpDown | patch
 **********************************/
-export async function updateArticleCommentLikeUpDown(params) {
+export const updateArticleCommentLikeUpDown = async params => {
   const {articleCreatedDt, commentBody} = params;
   const response = await client.patch(
     '/article/updateArticleCommentLikeUpDown',
@@ -156,4 +157,4 @@ export async function updateArticleCommentLikeUpDown(params) {
     },
   );
   return response;
-}
+};

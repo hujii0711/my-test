@@ -3,7 +3,7 @@ import {View, Text, KeyboardAvoidingView} from 'react-native';
 import {Avatar, Button, TextInput, Switch} from 'react-native-paper';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';
 import Color from '../../commons/style/Color';
-import useLogin from '../../commons/hooks/useLogin';
+import useLogin from '../../commons/hooks/reactQuery/mutation/useLogin';
 import authStorage from '../../commons/storage/authStorage';
 
 const Login = ({navigation}) => {
