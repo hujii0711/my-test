@@ -22,6 +22,7 @@ import DialogScreen from './direct/DialogScreen';
 import MenuButton from '../commons/component/MenuButton';
 
 export const MenuList = [
+  // menuList 첫번째 객체가 RootNavigator의 첫번째 렌더링 메뉴가 됨
   {id: 'MainTab', component: MainTab},
   {id: 'ArticleView', component: ArticleView},
   {id: 'ArticleWrite', component: ArticleWrite},
@@ -30,9 +31,8 @@ export const MenuList = [
   {id: 'SnsLogin', component: SnsLogin},
   {id: 'ChatMain', component: ChatMain},
   {id: 'ChatSocketMessage', component: ChatSocketMessage},
-
-  {id: 'ShareScreen', component: ShareScreen},
   {id: 'ImageUploadGallary', component: ImageUploadGallary},
+  {id: 'ShareScreen', component: ShareScreen},
   {id: 'ImageUploadTakePicture', component: ImageUploadTakePicture},
   {id: 'NotifyPushScreen', component: NotifyPushScreen},
   {id: 'SendEmailScreen', component: SendEmailScreen},
