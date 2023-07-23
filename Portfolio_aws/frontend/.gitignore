@@ -1,5 +1,9 @@
 .env
 
+# package.json / yarn.lock
+package-lock.json
+yarn.lock
+
 # OSX
 #
 .DS_Store
@@ -61,7 +65,3 @@ buck-out/
 # Ruby / CocoaPods
 /ios/Pods/
 /vendor/bundle/
-
-# package.json / yarn.lock
-./package-lock.json
-./yarn.lock

@@ -59,7 +59,7 @@ export const autoLogin = async autoId => {
 /**********************************
   5. 구글 oauth2 로그인 수행: googleLogin | /auth/google/login | get
 **********************************/
-export const googleLogin = async autoId => {
+export const googleLogin = async params => {
   const response = await client.post('/auth/google/login', params);
   return response?.data;
 };

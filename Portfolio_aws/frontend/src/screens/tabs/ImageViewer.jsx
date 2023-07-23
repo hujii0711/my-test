@@ -28,7 +28,7 @@ const ImageViewerAndZoom = () => {
   const [wapperRender, setWapperRender] = useState(false);
 
   const selectImageListQuery = useQuery('selectImageList', selectImageList, {
-    enabled: false,
+    //enabled: false,
     //cacheTime: 0,
     //staleTime: 0,
     //cacheTime: 1000,
@@ -36,7 +36,7 @@ const ImageViewerAndZoom = () => {
     //refetchOnmount: true, //default: true, 데이터가 유효하지 않을때 재요청하는 옵션
   });
 
-  //console.log('data======', selectImageListQuery?.data.length);
+  console.log('data======', selectImageListQuery?.data?.length);
   //const queryClient = useQueryClient();
   //const articleData = queryClient.getQueryData('selectImageList');
   //console.log('articleData=============', articleData);

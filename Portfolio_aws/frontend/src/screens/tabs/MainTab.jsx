@@ -1,6 +1,9 @@
-import React from 'react';
+import * as React from 'react';
 import {createMaterialBottomTabNavigator} from '@react-navigation/material-bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import {createStackNavigator} from '@react-navigation/stack';
+import {View} from 'react-native';
+import {Appbar, Menu, Divider, Provider, IconButton} from 'react-native-paper';
 import Color from '../../commons/style/Color';
 import Dashboard from './Dashboard';
 import Faq from './Faq';
@@ -8,10 +11,84 @@ import ArticleList from './articles/ArticleList';
 import ArticleWrite from './articles/ArticleWrite';
 import ImageViewer from './ImageViewer';
 import ChatMain from './chat/ChatMain';
-
 const Tab = createMaterialBottomTabNavigator();
+const Stack = createStackNavigator();
 
 const MainTab = () => {
+  const [visible, setVisible] = React.useState(false);
+  const openMenu = () => setVisible(true);
+  const closeMenu = () => setVisible(false);
+
+  const setMainTabHeader = () => {
+    return {
+      header: ({navigation, options}) => {
+        const headerTitle = options?.headerTitle;
+        return (
+          <Appbar.Header elevated style={{backgroundColor: Color.background}}>
+            {navigation.openDrawer ? (
+              <Appbar.Action
+                icon="menu"
+                onPress={() => navigation.openDrawer()}
+              />
+            ) : null}
+            <Appbar.Content title={headerTitle} />
+            <Appbar.Action
+              icon="magnify"
+              style={{left: 75}}
+              onPress={() => {}}
+            />
+            <Provider>
+              <View
+                style={{
+                  flexDirection: 'row-reverse',
+                  justifyContent: 'flex-end',
+                  left: 65,
+                }}>
+                <Menu
+                  visible={visible}
+                  onDismiss={closeMenu}
+                  style={{marginTop: 50}}
+                  contentStyle={{backgroundColor: Color.background}}
+                  anchor={
+                    <IconButton
+                      onPress={openMenu}
+                      icon="dots-vertical"
+                      color="#000000"
+                      size={24}
+                    />
+                  }>
+                  <Menu.Item
+                    titleStyle={{fontSize: 14}}
+                    contentStyle={{}}
+                    style={{height: 30, marginBottom: 5}}
+                    onPress={() => {}}
+                    title="메뉴1"
+                  />
+                  <Divider />
+                  <Menu.Item
+                    titleStyle={{fontSize: 14}}
+                    contentStyle={{}}
+                    style={{height: 30, marginTop: 5}}
+                    onPress={() => {}}
+                    title="메뉴2"
+                  />
+                  <Divider />
+                  <Menu.Item
+                    titleStyle={{fontSize: 14}}
+                    contentStyle={{}}
+                    style={{height: 30, marginTop: 5}}
+                    onPress={() => {}}
+                    title="메뉴3"
+                  />
+                </Menu>
+              </View>
+            </Provider>
+          </Appbar.Header>
+        );
+      },
+    };
+  };
+
   return (
     <Tab.Navigator
       //labeled={false} //라벨 보일지 여부
@@ -20,68 +97,188 @@ const MainTab = () => {
       inactiveColor={Color.unactive_icon}
       barStyle={{backgroundColor: Color.white}}>
       <Tab.Screen
-        name="DashBoard"
-        component={Dashboard}
+        name="_DashBoard"
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="shape-outline" color={color} size={24} />
           ),
           tabBarLabel: '대시보드',
-        }}
-      />
+        }}>
+        {() => (
+          <Stack.Navigator screenOptions={setMainTabHeader}>
+            <Stack.Screen
+              name="DashBoard"
+              options={{headerTitle: '대시보드'}}
+              component={Dashboard}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
       <Tab.Screen
-        name="Board"
-        component={ArticleList}
+        name="_Board"
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="table" color={color} size={24} />
           ),
           tabBarLabel: '게시글',
-        }}
-      />
+        }}>
+        {() => (
+          <Stack.Navigator screenOptions={setMainTabHeader}>
+            <Stack.Screen
+              name="Board"
+              options={{headerTitle: '게시글'}}
+              component={ArticleList}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
       <Tab.Screen
-        name="Email"
-        component={ArticleWrite}
+        name="_ArticleWrite"
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="email-plus" color={color} size={24} />
           ),
-          tabBarLabel: '이메일 작성',
-        }}
-      />
+          tabBarLabel: '이메일',
+        }}>
+        {() => (
+          <Stack.Navigator screenOptions={setMainTabHeader}>
+            <Stack.Screen
+              name="ArticleWrite"
+              options={{headerTitle: '이메일'}}
+              component={ArticleWrite}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
       <Tab.Screen
-        name="ImageViewer"
-        component={ImageViewer}
+        name="_ImageViewer"
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="image-marker" color={color} size={24} />
           ),
-          tabBarLabel: '이미지 뷰어',
-        }}
-      />
+          tabBarLabel: '이미지뷰어',
+        }}>
+        {() => (
+          <Stack.Navigator screenOptions={setMainTabHeader}>
+            <Stack.Screen
+              name="ImageViewer"
+              options={{headerTitle: '이미지뷰어'}}
+              component={ImageViewer}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
       <Tab.Screen
-        name="ChatMain"
-        component={ChatMain}
+        name="_ChatMain"
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="chat-outline" color={color} size={24} />
           ),
           tabBarLabel: '채팅',
-        }}
-      />
+        }}>
+        {() => (
+          <Stack.Navigator screenOptions={setMainTabHeader}>
+            <Stack.Screen
+              name="ChatMain"
+              options={{headerTitle: '채팅'}}
+              component={ChatMain}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
       <Tab.Screen
-        name="FAQ"
-        component={Faq}
+        name="_Faq"
         options={{
           tabBarIcon: ({color}) => (
             <Icon name="gamepad-circle-outline" color={color} size={24} />
           ),
           tabBarLabel: 'FAQ',
-        }}
-      />
+        }}>
+        {() => (
+          <Stack.Navigator screenOptions={setMainTabHeader}>
+            <Stack.Screen
+              name="Faq"
+              options={{headerTitle: 'FAQ'}}
+              component={Faq}
+            />
+          </Stack.Navigator>
+        )}
+      </Tab.Screen>
     </Tab.Navigator>
   );
 };
+
+// const MainTab = () => {
+//   return (
+//     <Tab.Navigator
+//       //labeled={false} //라벨 보일지 여부
+//       initialRouteName="DashBoard"
+//       activeColor={Color.active_icon}
+//       inactiveColor={Color.unactive_icon}
+//       barStyle={{backgroundColor: Color.white}}>
+//       <Tab.Screen
+//         name="DashBoard"
+//         component={Dashboard}
+//         options={{
+//           tabBarIcon: ({color}) => (
+//             <Icon name="shape-outline" color={color} size={24} />
+//           ),
+//           tabBarLabel: '대시보드',
+//         }}
+//       />
+//       <Tab.Screen
+//         name="Board"
+//         component={ArticleList}
+//         options={{
+//           tabBarIcon: ({color}) => (
+//             <Icon name="table" color={color} size={24} />
+//           ),
+//           tabBarLabel: '게시글',
+//         }}
+//       />
+//       <Tab.Screen
+//         name="Email"
+//         component={ArticleWrite}
+//         options={{
+//           tabBarIcon: ({color}) => (
+//             <Icon name="email-plus" color={color} size={24} />
+//           ),
+//           tabBarLabel: '이메일 작성',
+//         }}
+//       />
+//       <Tab.Screen
+//         name="ImageViewer"
+//         component={ImageViewer}
+//         options={{
+//           tabBarIcon: ({color}) => (
+//             <Icon name="image-marker" color={color} size={24} />
+//           ),
+//           tabBarLabel: '이미지 뷰어',
+//         }}
+//       />
+//       <Tab.Screen
+//         name="ChatMain"
+//         component={ChatMain}
+//         options={{
+//           tabBarIcon: ({color}) => (
+//             <Icon name="chat-outline" color={color} size={24} />
+//           ),
+//           tabBarLabel: '채팅',
+//         }}
+//       />
+//       <Tab.Screen
+//         name="FAQ"
+//         component={Faq}
+//         options={{
+//           tabBarIcon: ({color}) => (
+//             <Icon name="gamepad-circle-outline" color={color} size={24} />
+//           ),
+//           tabBarLabel: 'FAQ',
+//         }}
+//       />
+//     </Tab.Navigator>
+//   );
+// };
 
 export default MainTab;
 

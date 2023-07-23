@@ -23,7 +23,7 @@ import MenuButton from '../commons/component/MenuButton';
 
 export const MenuList = [
   // menuList 첫번째 객체가 RootNavigator의 첫번째 렌더링 메뉴가 됨
-  {id: 'MainTab', component: MainTab},
+  {id: 'MainTab', component: MainTab, options: {headerShown: false}},
   {id: 'ArticleView', component: ArticleView},
   {id: 'ArticleWrite', component: ArticleWrite},
   {id: 'Login', component: Login, options: {headerShown: false}},
