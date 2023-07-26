@@ -5,7 +5,7 @@ import {createStackNavigator} from '@react-navigation/stack';
 import {View} from 'react-native';
 import {Appbar, Menu, Divider, Provider, IconButton} from 'react-native-paper';
 import Color from '../../commons/style/Color';
-import Dashboard from './Dashboard';
+import Dashboard from './dashboard/Dashboard';
 import Faq from './Faq';
 import ArticleList from './articles/ArticleList';
 import ArticleWrite from './articles/ArticleWrite';

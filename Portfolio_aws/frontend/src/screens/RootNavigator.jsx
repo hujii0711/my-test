@@ -5,8 +5,7 @@ import Color from '../commons/style/Color';
 import {MenuList} from './MenuList';
 import useAuthLoadEffect from '../commons/hooks/useAuthLoadEffect';
 import {useSelector} from 'react-redux';
-import {View} from 'react-native';
-import {Appbar, Menu, Divider, Provider, IconButton} from 'react-native-paper';
+import {Appbar} from 'react-native-paper';
 
 const Stack = createStackNavigator();
 
@@ -17,19 +16,13 @@ const RootNavigator = () => {
     users: userReducer.users,
   }));
 
-  const [visible, setVisible] = React.useState(false);
-  const openMenu = () => setVisible(true);
-  const closeMenu = () => setVisible(false);
-
   const setHeader = () => {
     return {
       header: ({navigation, route, options, back}) => {
-        console.log('RootNavigator >>> route=====', route);
+
         const title = getHeaderTitle(options, route.name);
-        console.log('RootNavigator >>> title=====', title);
-        const isChatSocketMessage = route.name === 'ChatSocketMessage';
         return (
-          <Appbar.Header elevated style={{backgroundColor: Color.background}}>
+          <Appbar.Header style={{backgroundColor: Color.background}}>
             {back ? (
               <Appbar.BackAction onPress={() => navigation.goBack()} />
             ) : navigation.openDrawer ? (
@@ -39,58 +32,17 @@ const RootNavigator = () => {
               />
             ) : null}
             <Appbar.Content title={title} />
-            <Appbar.Action icon="magnify" onPress={() => {}} />
+            <Appbar.Action icon="magnify" style={{position:"absolute", right:40}} onPress={() => {}} />
             <Appbar.Action
               icon="dots-vertical"
               onPress={() => {
                 console.log('userInfo===', users);
               }}
             />
-            {isChatSocketMessage && (
-              <Provider>
-                <View
-                  style={{
-                    flexDirection: 'row',
-                    justifyContent: 'flex-end',
-                  }}>
-                  <Menu
-                    visible={visible}
-                    onDismiss={closeMenu}
-                    style={{marginTop: 50}}
-                    contentStyle={{backgroundColor: '#f1f2f6'}}
-                    anchor={
-                      <IconButton
-                        onPress={openMenu}
-                        icon="folder-settings-outline"
-                        color="#ffffff"
-                        size={24}
-                      />
-                    }>
-                    <Menu.Item
-                      icon="folder-settings-outline"
-                      titleStyle={{fontSize: 14}}
-                      contentStyle={{}}
-                      style={{height: 30, marginBottom: 5}}
-                      onPress={() => {}}
-                      title="방나가기"
-                    />
-                    <Divider />
-                    <Menu.Item
-                      icon="folder-settings-outline"
-                      titleStyle={{fontSize: 14}}
-                      contentStyle={{}}
-                      style={{height: 30, marginTop: 5}}
-                      onPress={() => {}}
-                      title="차단"
-                    />
-                  </Menu>
-                </View>
-              </Provider>
-            )}
           </Appbar.Header>
-        ); //return
-      }, //header
-    }; //return
+        );
+      },
+    };
   };
 
   return (

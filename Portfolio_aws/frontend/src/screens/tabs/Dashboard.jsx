@@ -1,6 +1,5 @@
-import {StyleSheet, View} from 'react-native';
 import * as React from 'react';
-import {useNavigation} from '@react-navigation/native';
+import {StyleSheet, View} from 'react-native';
 import {IconButton, Text} from 'react-native-paper';
 import Color from '../../commons/style/Color';
 import ScreenWrapper from '../../commons/utils/ScreenWapper';

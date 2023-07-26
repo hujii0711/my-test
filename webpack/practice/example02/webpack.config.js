@@ -14,7 +14,7 @@ const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 module.exports = {
   // entry 포인트 지정
   entry: "./src/index.js",
-  // bundle라는 폴더의 index.js라는 이름의 파일로 번들링하겠다.
+  // bundle라는 폴더의 bundle.js라는 이름의 파일로 번들링하겠다.
   mode: "development",
   output: {
     path: path.resolve(__dirname, "bundle"),
@@ -26,12 +26,12 @@ module.exports = {
     rules: [
       {
         test: /\.js$/,
-        use: "babel-loader",
+        loader: "babel-loader", // use(X), loader(O)
         exclude: /node_modules/,
       },
       {
         test: /\.(png|jpe?g|gif)$/i,
-        use: "file-loader",
+        loader: "file-loader", // use(X), loader(O)
         exclude: /node_modules/,
         options: {
           name: "[name].[ext]?[hash]",
@@ -50,6 +50,7 @@ module.exports = {
   // plugin 설정
   plugins: [
     new HtmlWebpackPlugin({
+      filename: 'output.html', //index.html 기본 파일명 변경
       template: "./src/simple.html",
     }),
     new MiniCssExtractPlugin({

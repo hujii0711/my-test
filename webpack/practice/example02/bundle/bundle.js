@@ -16,7 +16,7 @@
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ \"./src/utils.js\");\n/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.css */ \"./src/style.css\");\n/* harmony import */ var _header_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./header.css */ \"./src/header.css\");\n/* harmony import */ var _image_test_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./image/test.png */ \"./src/image/test.png\");\n/* harmony import */ var _image_20221227_151033_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./image/20221227_151033.png */ \"./src/image/20221227_151033.png\");\n\n\n\n\n\nvar text = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.hello)(\"<p>나는 코딩앙마~~</p>\");\nvar num = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.add)(1, 2);\nvar img = \"<img src=\\\"\".concat(_image_test_png__WEBPACK_IMPORTED_MODULE_3__[\"default\"], \"\\\" alt=\\\"\\uCF54\\uB529\\uC559\\uB9C8\\\" />\");\nvar img2 = \"<img src=\\\"\".concat(_image_20221227_151033_png__WEBPACK_IMPORTED_MODULE_4__[\"default\"], \"\\\" alt=503\\\" />\");\n\nvar arrowFunc = function arrowFunc() {\n  return 1 + 1;\n};\n\ndocument.getElementById(\"root\").innerHTML = img + img2 + text + num;\n\n//# sourceURL=webpack://webpack_total/./src/index.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _utils__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./utils */ \"./src/utils.js\");\n/* harmony import */ var _style_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./style.css */ \"./src/style.css\");\n/* harmony import */ var _header_css__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./header.css */ \"./src/header.css\");\n/* harmony import */ var _image_test_png__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./image/test.png */ \"./src/image/test.png\");\n/* harmony import */ var _image_20221227_151033_png__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./image/20221227_151033.png */ \"./src/image/20221227_151033.png\");\n\n\n\n\n\nvar text = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.hello)(\"<p>나는 코딩앙마~~</p>\");\nvar num = (0,_utils__WEBPACK_IMPORTED_MODULE_0__.add)(1, 2);\nvar img = \"<img src=\\\"\".concat(_image_test_png__WEBPACK_IMPORTED_MODULE_3__[\"default\"], \"\\\" alt=\\\"\\uCF54\\uB529\\uC559\\uB9C8\\\" />\");\nvar img2 = \"<img src=\\\"\".concat(_image_20221227_151033_png__WEBPACK_IMPORTED_MODULE_4__[\"default\"], \"\\\" alt=503\\\" />\");\nvar arrowFunc = function arrowFunc() {\n  return 1 + 1;\n};\ndocument.getElementById(\"root\").innerHTML = img + img2 + text + num;\n\n//# sourceURL=webpack://webpack_total/./src/index.js?");
 
 /***/ }),
 
@@ -26,7 +26,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony import */ var _uti
   \**********************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"add\": () => (/* binding */ add),\n/* harmony export */   \"hello\": () => (/* binding */ hello)\n/* harmony export */ });\nvar add = function add(num1, num2) {\n  return num1 + num2;\n};\n\nfunction hello(name) {\n  return name;\n}\n\n\n\n//# sourceURL=webpack://webpack_total/./src/utils.js?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   add: () => (/* binding */ add),\n/* harmony export */   hello: () => (/* binding */ hello)\n/* harmony export */ });\nvar add = function add(num1, num2) {\n  return num1 + num2;\n};\nfunction hello(name) {\n  return name;\n}\n\n\n//# sourceURL=webpack://webpack_total/./src/utils.js?");
 
 /***/ }),
 
@@ -36,7 +36,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \***************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"9e51a6c153f7434f0c05d25c1358ac29.png\");\n\n//# sourceURL=webpack://webpack_total/./src/image/20221227_151033.png?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"20221227_151033.png?9e51a6c153f7434f0c05d25c1358ac29\");\n\n//# sourceURL=webpack://webpack_total/./src/image/20221227_151033.png?");
 
 /***/ }),
 
@@ -46,7 +46,7 @@ eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpac
   \****************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
-eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"2272e2a5d03aa91909e1dacb8a30ce16.png\");\n\n//# sourceURL=webpack://webpack_total/./src/image/test.png?");
+eval("__webpack_require__.r(__webpack_exports__);\n/* harmony export */ __webpack_require__.d(__webpack_exports__, {\n/* harmony export */   \"default\": () => (__WEBPACK_DEFAULT_EXPORT__)\n/* harmony export */ });\n/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (__webpack_require__.p + \"test.png?2272e2a5d03aa91909e1dacb8a30ce16\");\n\n//# sourceURL=webpack://webpack_total/./src/image/test.png?");
 
 /***/ }),
 
@@ -144,10 +144,13 @@ eval("__webpack_require__.r(__webpack_exports__);\n// extracted by mini-css-extr
 /******/ 		var document = __webpack_require__.g.document;
 /******/ 		if (!scriptUrl && document) {
 /******/ 			if (document.currentScript)
-/******/ 				scriptUrl = document.currentScript.src
+/******/ 				scriptUrl = document.currentScript.src;
 /******/ 			if (!scriptUrl) {
 /******/ 				var scripts = document.getElementsByTagName("script");
-/******/ 				if(scripts.length) scriptUrl = scripts[scripts.length - 1].src
+/******/ 				if(scripts.length) {
+/******/ 					var i = scripts.length - 1;
+/******/ 					while (i > -1 && !scriptUrl) scriptUrl = scripts[i--].src;
+/******/ 				}
 /******/ 			}
 /******/ 		}
 /******/ 		// When supporting browsers where an automatic publicPath is not supported you must specify an output.publicPath manually via configuration
