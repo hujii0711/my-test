@@ -1,90 +1,55 @@
 import * as React from 'react';
-import {StyleSheet, View} from 'react-native';
-import {IconButton, Text} from 'react-native-paper';
-import Color from '../../../commons/style/Color';
+import {StyleSheet, View, Text} from 'react-native';
+import {LineChart} from 'react-native-chart-kit';
 import ScreenWrapper from '../../../commons/utils/ScreenWapper';
 
-const ThirdTab = ({navigation}) =>{
-    const data = [
-        {
-          id: 'share',
-          text: '공유',
-          icon: 'share-variant-outline',
-          onPress: () => navigation.navigate('ShareScreen'),
-        },
-        {
-          id: 'notifyPush',
-          text: '푸시 알림',
-          icon: 'bell',
-          onPress: () => navigation.navigate('NotifyPushScreen'),
-        },
-        {
-          id: 'filming',
-          text: '업로드(촬영)',
-          icon: 'camera',
-          onPress: () => navigation.navigate('ImageUploadTakePicture'),
-        },
-        {
-          id: 'gallay',
-          text: '업로드(갤러리)',
-          icon: 'folder-pound-outline',
-          onPress: () => navigation.navigate('ImageUploadGallary'),
-        },
-        {
-          id: 'calendar',
-          text: '달력',
-          icon: 'calendar-month',
-          onPress: () => navigation.navigate('CalendarScreen'),
-        },
-        {id: 'qrcode', text: 'QR 코드', icon: 'qrcode'},
-        {id: 'map', text: '지도', icon: 'map-outline'},
-        {id: 'link', text: '링크', icon: 'link'},
-        {id: 'mapMarker', text: '위치 정보', icon: 'map-marker'},
-        {id: 'voice', text: '음성 인식', icon: 'voicemail'},
-    ];
+const ThirdTab = () => {
+  const data = {
+    labels: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun'],
+    datasets: [
+      {
+        data: [20, 45, 28, 80, 99, 43],
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`, // 그래프 색상 지정
+        strokeWidth: 2, // 그래프 선 두께
+      },
+    ],
+  };
 
-    return (
-        <ScreenWrapper>
-            <View style={styles.container}>
-            {data.map(elem => (
-                <View style={styles.items} key={elem.id}>
-                <View
-                    style={{
-                    backgroundColor: Color.red2,
-                    borderRadius: 20,
-                    borderWidth: 1,
-                    borderColor: Color.red2,
-                    }}>
-                    <IconButton
-                    icon={elem.icon}
-                    size={34}
-                    color={Color.white}
-                    onPress={elem.onPress}></IconButton>
-                </View>
-                <Text style={{fontSize: 12, marginTop: 7, color: '#3a3a3a'}}>
-                    {elem.text}
-                </Text>
-                </View>
-            ))}
-            </View>
-        </ScreenWrapper>
-    );
-  }
-  
-  const styles = StyleSheet.create({
-    container: {
-      flexDirection: 'row',
-      justifyContent: 'center',
-      alignItems: 'center',
-      flexWrap: 'wrap',
-      marginHorizontal: 20,
-      marginVertical: 15,
+  const chartConfig = {
+    backgroundGradientFrom: '#fff',
+    backgroundGradientTo: '#fff',
+    decimalPlaces: 0, // 소수점 자릿수
+    color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 라벨 텍스트 색상
+    labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`, // 라벨 텍스트 색상
+    style: {
+      borderRadius: 16,
     },
-    items: {
-      alignItems: 'center',
-      marginVertical: 20,
-      marginHorizontal: 30,
-    }
-  });
-  
-  export default ThirdTab;
+  };
+
+  return (
+    <ScreenWrapper>
+      <View style={styles.container}>
+        <Text style={styles.largeText}>Chart Demo</Text>
+        <LineChart
+          data={data}
+          width={300}
+          height={200}
+          chartConfig={chartConfig}
+        />
+      </View>
+    </ScreenWrapper>
+  );
+};
+
+const styles = StyleSheet.create({
+  container: {
+    padding: 10,
+  },
+  largeText: {
+    fontSize: 16,
+    marginVertical: 20, // 수직
+    marginHorizontal: 10, // 수평
+  },
+});
+
+export default ThirdTab;
