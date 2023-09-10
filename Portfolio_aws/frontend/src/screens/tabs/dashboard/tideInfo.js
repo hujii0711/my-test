@@ -5776,14 +5776,14 @@ const targetData = json.result.data;
 const copiedArray = [...targetData];
 
 //10분 간격으로 tide_level 자료
-const dataPerTenMinute = targetData.reduce((acc, cur, idx, arr) => {
-  if (idx % 10 === 0) {
-    acc.push(cur.tide_level);
-  }
-  return acc;
-}, []);
+// const dataPerTenMinute = targetData.reduce((acc, cur, idx, arr) => {
+//   if (idx % 10 === 0) {
+//     acc.push(cur.tide_level);
+//   }
+//   return acc;
+// }, []);
 
-console.log('dataPerTenMinute========', dataPerTenMinute);
+// console.log('dataPerTenMinute========', dataPerTenMinute);
 
 //AM: 0~719
 //PM: 720~1439
@@ -5841,8 +5841,10 @@ function getTideInfo(jsonObj) {
   }, {});
 }
 
-const resultAmInfo = getTideInfo(targetAmData);
-console.log('resultAmInfo::::::::::::::::::::::::::', resultAmInfo);
+//const resultAmInfo = getTideInfo(targetAmData);
+export const resultAmInfo = getTideInfo(targetAmData);
+//console.log('resultAmInfo::::::::::::::::::::::::::', resultAmInfo);
 
-const resultPmInfo = getTideInfo(targetPmData);
-console.log('resultPmInfo::::::::::::::::::::::::::', resultPmInfo);
+//const resultPmInfo = getTideInfo(targetPmData);
+export const resultPmInfo = getTideInfo(targetPmData);
+//console.log('resultPmInfo::::::::::::::::::::::::::', resultPmInfo);

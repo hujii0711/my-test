@@ -7,6 +7,7 @@ import FirstTab from './FirstTab';
 import SecondTab from './SecondTab';
 import ThirdTab from './ThirdTab';
 import ForthTab from './ForthTab';
+import TestTab from './TestTab';
 
 const Tabs = createMaterialTopTabNavigator();
 /**
@@ -53,6 +54,8 @@ const Dashboard = () => {
         <Tabs.Screen name="가로 스크롤" component={FirstTab} />
         <Tabs.Screen name="스와이프" component={SecondTab} />
         <Tabs.Screen name="차트" component={ThirdTab} />
+        <Tabs.Screen name="차트2" component={TestTab} />
+        {/* <Tabs.Screen name="차트3" component={TestTab2} /> */}
         <Tabs.Screen
           name="tab04"
           //options={{title: 'tab04'.toLowerCase()}}
