@@ -109,6 +109,13 @@ com.currentFormatDate = _format => {
 };
 
 /************************************
+  현재 한국 시간 출력
+************************************/
+com.currentKrFormatDate = _format => {
+  return format(new Date(com.krDate()), _format);
+};
+
+/************************************
   timestamp 한국 날짜 출력
 ************************************/
 com.krDate = () => {

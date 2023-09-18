@@ -1,5 +1,3 @@
-import com from '../../../commons/utils/common';
-
 const json = {
   result: {
     data: [
@@ -5785,18 +5783,7 @@ const copiedArray = [...targetData];
 //   return acc;
 // }, []);
 
-//1시간 간격으로 tide_level 자료
-const dataPerOneHour = targetData.reduce((acc, cur, idx) => {
-  if (idx % 60 === 0) {
-    acc.push({
-      time: cur.record_time.slice(11, 16),
-      tide: Number(cur.tide_level),
-    });
-  }
-  return acc;
-}, []);
-
-console.log('dataPerOneHour========', dataPerOneHour);
+// console.log('dataPerTenMinute========', dataPerTenMinute);
 
 //AM: 0~719
 //PM: 720~1439
@@ -5811,6 +5798,36 @@ function getTideInfo(jsonObj) {
   let minTime = jsonObj[0].record_time;
   let maxTime = jsonObj[0].record_time;
   let totTide = 0;
+
+  const findClosestValue = (arr, target) => {
+    return arr.reduce((closest, current) => {
+      const currentDiff = Math.abs(current.tide_level - target);
+      const closestDiff = Math.abs(closest.tide_level - target);
+
+      return currentDiff < closestDiff ? current : closest;
+    });
+  };
+
+  const findCurrentHMValue = (arr, target) => {
+    const data = json.result.data;
+    const currentDate = new Date();
+
+    let currentHour = currentDate.getHours();
+    let currentMinute = currentDate.getMinutes();
+    currentHour = (currentHour < 10 ? '0' : '') + currentHour;
+    currentMinute = (currentMinute < 10 ? '0' : '') + currentMinute;
+    const currentTime = currentHour + ':' + currentMinute;
+
+    return data.reduce((returnObj, cur) => {
+      if (cur.record_time.includes(currentTime)) {
+        returnObj = {
+          currentTide: cur.tide_level,
+          currentTime: cur.record_time,
+        };
+      }
+      return returnObj;
+    }, {});
+  };
 
   return jsonObj.reduce((_, cur, __, arr) => {
     const tideLevel = cur.tide_level;
@@ -5828,48 +5845,27 @@ function getTideInfo(jsonObj) {
       maxTime = cur.record_time;
     }
 
+    // 중위값(간조)
+    const avgTide = String(totTide / 720);
+
     return {
       min_info: {
-        min_time: minTime.slice(11, 16),
-        min_tide: Number(minTide),
+        min_time: minTime,
+        min_tide: minTide,
       },
       max_info: {
-        max_time: maxTime.slice(11, 16),
-        max_tide: Number(maxTide),
+        max_time: maxTime,
+        max_tide: maxTide,
       },
+      avg_info: findClosestValue(arr, avgTide),
     };
   }, {});
 }
 
-const findCurrentHMValue = () => {
-  const data = json.result.data;
-  const currentTime = com.currentKrFormatDate('HH:mm');
-
-  return data.reduce((returnObj, cur) => {
-    if (cur.record_time.includes(currentTime)) {
-      returnObj = {
-        currentTide: cur.tide_level,
-        currentTime: cur.record_time.slice(11, 16),
-      };
-    }
-    return returnObj;
-  }, {});
-};
-
-export const resultInfo = {
-  amData: getTideInfo(targetAmData),
-  pmData: getTideInfo(targetPmData),
-  fixedData: {
-    min_tide: Number(targetData[0].tide_level),
-    max_tide: Number(targetData[1439].tide_level),
-  },
-  curData: findCurrentHMValue(),
-};
-
 //const resultAmInfo = getTideInfo(targetAmData);
-//export const resultAmInfo = getTideInfo(targetAmData);
+export const resultAmInfo = getTideInfo(targetAmData);
 //console.log('resultAmInfo::::::::::::::::::::::::::', resultAmInfo);
 
 //const resultPmInfo = getTideInfo(targetPmData);
-//export const resultPmInfo = getTideInfo(targetPmData);
+export const resultPmInfo = getTideInfo(targetPmData);
 //console.log('resultPmInfo::::::::::::::::::::::::::', resultPmInfo);

@@ -2,51 +2,85 @@ import * as React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import ScreenWrapper from '../../../commons/utils/ScreenWapper';
-//import {resultInfo} from './TideInfo';
+//import {resultAmInfo, resultPmInfo} from './TideInfo';
 
-const resultInfo = [
-  {tide: 546, time: '00:00', type: 'A0'}, // 0시값
-  {tide: 651, time: '01:00', type: 'D0'},
-  {tide: 727, time: '02:00', type: 'D0'},
-  {tide: 758, time: '02:56', type: 'A2'}, //오전 만조값
-  {tide: 758, time: '03:00', type: 'D0'},
-  {tide: 736, time: '04:00', type: 'D0'},
-  {tide: 668, time: '05:00', type: 'D0'},
-  {tide: 572, time: '06:00', type: 'D0'},
-  {tide: 470, time: '07:00', type: 'D0'},
-  {tide: 380, time: '08:00', type: 'D0'},
-  {tide: 323, time: '09:00', type: 'D0'},
-  {tide: 314, time: '09:26', type: 'A1'}, //오전 간조값
-  {tide: 319, time: '10:00', type: 'D0'},
-  {tide: 370, time: '11:00', type: 'D0'},
-  {tide: 455, time: '12:00', type: 'D0'},
-  {tide: 546, time: '13:00', type: 'D0'},
-  {tide: 622, time: '14:00', type: 'D0'},
-  {tide: 662, time: '15:00', type: 'D0'},
-  {tide: 665, time: '15:11', type: 'P2'}, // 오후 만조값
-  {tide: 650, time: '16:00', type: 'D0'},
-  {tide: 583, time: '17:00', type: 'D0'},
-  {tide: 479, time: '18:00', type: 'D0'},
-  {tide: 368, time: '19:00', type: 'D0'},
-  {tide: 273, time: '20:00', type: 'D0'},
-  {tide: 230, time: '20:30', type: 'C0'}, // 현재시간값
-  {tide: 217, time: '21:00', type: 'D0'},
-  {tide: 211, time: '21:21', type: 'P1'}, // 오후 간조값
-  {tide: 223, time: '22:00', type: 'D0'},
-  {tide: 298, time: '23:00', type: 'D0'},
-  {tide: 420, time: '23:59', type: 'P0'}, // 24시값
-];
 const ThirdTab = () => {
   const [clickedData, setClickedData] = React.useState(null);
-  console.log('resultInfo==========', resultInfo);
+
+  //console.log('clickedData=========', clickedData);
+  //console.log('resultAmInfo=========', resultAmInfo);
+  //console.log('resultPmInfo=========', resultPmInfo);
+  const aaa = {
+    avg_info: {record_time: '2023-08-13 06:19:00', tide_level: '539'},
+    max_info: {max_tide: '758', max_time: '2023-08-13 02:56:00'},
+    min_info: {min_tide: '314', min_time: '2023-08-13 09:26:00'},
+  };
+  const bbb = {
+    avg_info: {record_time: '2023-08-13 18:17:00', tide_level: '447'},
+    max_info: {max_tide: '665', max_time: '2023-08-13 15:11:00'},
+    min_info: {min_tide: '211', min_time: '2023-08-13 21:21:00'},
+  };
+
+  const detailData = {
+    // xValue: [
+    //   {type: '0', value: '0'},
+    //   {type: '3', value: '02:56'},
+    //   {type: '2', value: '04:10'},
+    //   {type: '1', value: '09:26'},
+    //   {type: '2', value: '13:11'},
+    //   {type: '3', value: '15:11'},
+    //   {type: '2', value: '19:20'},
+    //   {type: '1', value: '21:21'},
+    //   {type: 'C', value: '23:46'},
+    //   {type: '4', value: '24'},
+    // ],
+    // yValue: [
+    //   {type: '0', value: 400},
+    //   {type: '3', value: 758},
+    //   {type: '2', value: 539},
+    //   {type: '1', value: 314},
+    //   {type: '2', value: 480},
+    //   {type: '3', value: 665},
+    //   {type: '2', value: 447},
+    //   {type: '1', value: 211},
+    //   {type: 'C', value: 430},
+    //   {type: '4', value: 420},
+    // ],
+
+    xValue: [
+      {type: '0', value: '0'},
+      {type: '1', value: '02:56'},
+      {type: '2', value: '04:10'},
+      {type: '3', value: '09:26'},
+      {type: '2', value: '13:11'},
+      {type: '1', value: '15:11'},
+      {type: 'C', value: '17:46'},
+      {type: '2', value: '19:20'},
+      {type: '3', value: '21:21'},
+      {type: '4', value: '24'},
+    ],
+
+    yValue: [
+      {type: '0', value: 546},
+      {type: '1', value: 314},
+      {type: '2', value: 539},
+      {type: '3', value: 758},
+      {type: '2', value: 480},
+      {type: '1', value: 211},
+      {type: 'C', value: 400},
+      {type: '2', value: 447},
+      {type: '3', value: 665},
+      {type: '4', value: 420},
+    ],
+  };
 
   const data = {
-    labels: resultInfo.map(elem => elem.time),
+    labels: detailData.xValue.map(elem => elem.value),
     datasets: [
       {
-        data: resultInfo.map(elem => elem.tide),
-        color: (opacity = 1) => `rgba(0, 57, 163, ${opacity})`,
-        strokeWidth: 3,
+        data: detailData.yValue.map(elem => elem.value),
+        color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
+        strokeWidth: 2,
         mode: 'linear',
       },
     ],
@@ -56,7 +90,7 @@ const ThirdTab = () => {
     backgroundGradientFrom: '#fff',
     backgroundGradientTo: '#fff',
     decimalPlaces: 0, // 소수점 자릿수
-    color: (opacity = 1) => `rgba(0, 82, 224, ${opacity})`,
+    color: (opacity = 1) => `rgba(134, 65, 244, ${opacity})`,
     labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
     style: {
       borderRadius: 10,
@@ -64,12 +98,11 @@ const ThirdTab = () => {
   };
 
   const CustomDot = ({x, y, index}) => {
-    const type = resultInfo[index].type;
-    const tide = resultInfo[index].tide;
-    const time = resultInfo[index].time;
+    const type = detailData.yValue[index].type;
+    const tide = detailData.yValue[index].value;
+    const time = detailData.xValue[index].value;
 
-    //만조값
-    if (type === 'A2' || type === 'P2') {
+    if (type === '3') {
       return (
         <View
           key={index}
@@ -77,11 +110,11 @@ const ThirdTab = () => {
             position: 'absolute',
             left: x - 27.5,
             top: y - 37,
-            backgroundColor: '#DE3163',
+            backgroundColor: 'red',
             width: 65,
             height: 30,
             borderWidth: 1,
-            borderColor: '#DE3163',
+            borderColor: 'red',
             borderRadius: 10,
           }}>
           <Text
@@ -104,8 +137,7 @@ const ThirdTab = () => {
           </Text>
         </View>
       );
-      //간조값
-    } else if (type === 'A1' || type === 'P1') {
+    } else if (type === '1') {
       return (
         <View
           key={index}
@@ -115,11 +147,11 @@ const ThirdTab = () => {
             top: y + 7,
             // left: x - 27.5,
             // top: y - 37,
-            backgroundColor: '#005A9C',
+            backgroundColor: 'blue',
             width: 65,
             height: 30,
             borderWidth: 1,
-            borderColor: '#005A9C',
+            borderColor: 'blue',
             borderRadius: 10,
           }}>
           <Text
@@ -142,8 +174,7 @@ const ThirdTab = () => {
           </Text>
         </View>
       );
-      // 현재시간
-    } else if (type === 'C0') {
+    } else if (type === 'C') {
       return (
         <View
           key={index}
@@ -153,7 +184,7 @@ const ThirdTab = () => {
             // top: y + 7,
             left: x - 37.5,
             top: -60,
-            backgroundColor: '#662d91',
+            backgroundColor: 'green',
             width: 78,
             height: 28,
           }}>
@@ -178,16 +209,17 @@ const ThirdTab = () => {
         </View>
       );
     } else {
+      const dotRadius = 1; // 인덱스에 따라 도트 반지름 설정
       return (
         <View
           key={index}
           style={{
             position: 'absolute',
-            left: x - 1,
-            top: y - 1,
-            backgroundColor: '#ccd7ed', //'#ccd7ed',
-            width: 2,
-            height: 2,
+            left: x - dotRadius,
+            top: y - dotRadius,
+            backgroundColor: 'red',
+            width: dotRadius * 2,
+            height: dotRadius * 2,
             borderRadius: 1,
           }}></View>
       );
@@ -198,14 +230,11 @@ const ThirdTab = () => {
     const clickedIndex = data.index;
     const y = data.y;
     const x = data.x;
-    const xValue = resultInfo[clickedIndex].time;
-    const yValue = resultInfo[clickedIndex].tide;
-    const type = resultInfo[clickedIndex].type;
+    const xValue = detailData.xValue[clickedIndex].value;
+    const yValue = detailData.yValue[clickedIndex].value;
+    const type = detailData.yValue[clickedIndex].type;
 
-    if (
-      clickedIndex > -1 &&
-      (type === 'A0' || type === 'P0' || type === 'D0')
-    ) {
+    if (clickedIndex > -1 && (type === '0' || type === '2' || type === '4')) {
       setClickedData({
         clickedIndex,
         x,
@@ -242,12 +271,12 @@ const ThirdTab = () => {
           //yLabelsOffset={0}
           //xLabelsOffset={0}
           chartConfig={chartConfig}
-          //bezier={true}
+          bezier={true}
           //withDots={false}
           //withShadow={false}
           //yAxisInterval={5}
           //withScrollableDot={false}
-          withInnerLines={false}
+          //withInnerLines={false}
           //withOuterLines={false}
           //withVerticalLines={false}
           //withHorizontalLines={false}
@@ -267,27 +296,33 @@ const ThirdTab = () => {
           //   }
           // }}
           getDotProps={(dataPoint, index) => {
-            const type = resultInfo[index].type;
+            const type = detailData.yValue[index].type;
 
-            if (type === 'A2' || type === 'P2') {
-              return {
-                r: 3,
-                fill: '#DE3163',
-              };
-            } else if (type === 'A1' || type === 'P1') {
-              return {
-                r: 3,
-                fill: '#005A9C',
-              };
-            } else if (type === 'C0') {
+            if (type === '3') {
               return {
                 r: 4,
-                fill: '#662d91',
+                fill: 'red',
+              };
+            } else if (type === '1') {
+              return {
+                r: 4,
+                fill: 'blue',
+              };
+            } else if (type === 'C') {
+              return {
+                r: 4,
+                fill: 'green',
+              };
+            } else if (type === '2') {
+              return {
+                r: 3,
+                fill: 'orange',
+                strokeWidth: 0, // 도트의 테두리 굵기 설정
               };
             } else {
               return {
-                r: 1,
-                fill: '#ccd7ed', // 도트의 색상 설정
+                r: 3,
+                fill: 'orange', // 도트의 색상 설정
                 //stroke: 'black', // 도트의 테두리 색상 설정
                 //strokeWidth: 2, // 도트의 테두리 굵기 설정
               };
@@ -298,23 +333,7 @@ const ThirdTab = () => {
           renderDotContent={CustomDot}
           //segments={4}
           //formatYLabel={yValue => yValue.replace('9', 'R')}
-          formatXLabel={value => {
-            if (
-              value.slice(0, 2) === '00' ||
-              value.slice(0, 2) === '06' ||
-              value.slice(0, 2) === '12' ||
-              value.slice(0, 2) === '18'
-            ) {
-              return value.substring(0, 2);
-            } else if (
-              value.slice(0, 2) === '23' &&
-              value.slice(3, 5) === '59'
-            ) {
-              return '24';
-            } else {
-              return '';
-            }
-          }}
+          formatXLabel={value => value.substring(0, 2)}
           //hidePointsAtIndex={[0]}
         />
         {clickedData?.clickedIndex > -1 ? (
@@ -322,11 +341,41 @@ const ThirdTab = () => {
             style={{
               position: 'absolute',
               //left: clickedData.x,
-              left: clickedData.x + 5,
-              top: clickedData.y + 90,
-              backgroundColor: '#5c5f66',
-              width: 62,
+              left:
+                clickedData.type === '4' ? clickedData.x - 67 : clickedData.x,
+              top:
+                clickedData.type === '0' || clickedData.type === '4'
+                  ? clickedData.y + 108
+                  : clickedData.y + 67,
+              backgroundColor:
+                clickedData.type === '0' || clickedData.type === '4'
+                  ? 'black'
+                  : 'orange',
+              width: 68,
             }}>
+            {clickedData.type === '2' && (
+              <Text
+                style={{
+                  fontSize: 10,
+                  paddingLeft: 5,
+                  color: '#fff',
+                  fontWeight: 'bold',
+                }}>
+                중간조: {clickedData.xValue}
+              </Text>
+            )}
+            {(clickedData.type === '0' || clickedData.type === '4') && (
+              <Text
+                style={{
+                  fontSize: 10,
+                  paddingLeft: 5,
+                  color: '#fff',
+                  fontWeight: 'bold',
+                }}>
+                {clickedData.xValue}:00
+              </Text>
+            )}
+
             <Text
               style={{
                 fontSize: 10,
@@ -334,7 +383,7 @@ const ThirdTab = () => {
                 color: '#fff',
                 fontWeight: 'bold',
               }}>
-              {clickedData.xValue} / {clickedData.yValue}
+              {clickedData.yValue} (▲350)
             </Text>
           </View>
         ) : (
