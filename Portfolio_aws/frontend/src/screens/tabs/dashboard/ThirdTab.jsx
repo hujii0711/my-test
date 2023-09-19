@@ -2,40 +2,8 @@ import * as React from 'react';
 import {StyleSheet, View, Text, Dimensions} from 'react-native';
 import {LineChart} from 'react-native-chart-kit';
 import ScreenWrapper from '../../../commons/utils/ScreenWapper';
-//import {resultInfo} from './TideInfo';
+import {resultInfo} from './chart_bak/TideInfo';
 
-const resultInfo = [
-  {tide: 546, time: '00:00', type: 'A0'}, // 0시값
-  {tide: 651, time: '01:00', type: 'D0'},
-  {tide: 727, time: '02:00', type: 'D0'},
-  {tide: 758, time: '02:56', type: 'A2'}, //오전 만조값
-  {tide: 758, time: '03:00', type: 'D0'},
-  {tide: 736, time: '04:00', type: 'D0'},
-  {tide: 668, time: '05:00', type: 'D0'},
-  {tide: 572, time: '06:00', type: 'D0'},
-  {tide: 470, time: '07:00', type: 'D0'},
-  {tide: 380, time: '08:00', type: 'D0'},
-  {tide: 323, time: '09:00', type: 'D0'},
-  {tide: 314, time: '09:26', type: 'A1'}, //오전 간조값
-  {tide: 319, time: '10:00', type: 'D0'},
-  {tide: 370, time: '11:00', type: 'D0'},
-  {tide: 455, time: '12:00', type: 'D0'},
-  {tide: 546, time: '13:00', type: 'D0'},
-  {tide: 622, time: '14:00', type: 'D0'},
-  {tide: 662, time: '15:00', type: 'D0'},
-  {tide: 665, time: '15:11', type: 'P2'}, // 오후 만조값
-  {tide: 650, time: '16:00', type: 'D0'},
-  {tide: 583, time: '17:00', type: 'D0'},
-  {tide: 479, time: '18:00', type: 'D0'},
-  {tide: 368, time: '19:00', type: 'D0'},
-  {tide: 273, time: '20:00', type: 'D0'},
-  {tide: 230, time: '20:30', type: 'C0'}, // 현재시간값
-  {tide: 217, time: '21:00', type: 'D0'},
-  {tide: 211, time: '21:21', type: 'P1'}, // 오후 간조값
-  {tide: 223, time: '22:00', type: 'D0'},
-  {tide: 298, time: '23:00', type: 'D0'},
-  {tide: 420, time: '23:59', type: 'P0'}, // 24시값
-];
 const ThirdTab = () => {
   const [clickedData, setClickedData] = React.useState(null);
   console.log('resultInfo==========', resultInfo);

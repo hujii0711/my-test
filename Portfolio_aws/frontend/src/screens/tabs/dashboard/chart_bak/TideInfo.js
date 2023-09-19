@@ -1,3 +1,5 @@
+import com from '../../../../commons/utils/common';
+
 const json = {
   result: {
     data: [
@@ -5772,100 +5774,122 @@ const json = {
   },
 };
 
-const targetData = json.result.data;
-const copiedArray = [...targetData];
-
-//10분 간격으로 tide_level 자료
-// const dataPerTenMinute = targetData.reduce((acc, cur, idx, arr) => {
-//   if (idx % 10 === 0) {
-//     acc.push(cur.tide_level);
-//   }
-//   return acc;
-// }, []);
-
-// console.log('dataPerTenMinute========', dataPerTenMinute);
-
 //AM: 0~719
 //PM: 720~1439
+const getInfo = () => {
+  const targetData = json.result.data;
+  const deepData = [...targetData];
+  const amData = deepData.splice(0, 720); //AM DATA
+  const pmData = deepData; //PM DATA
 
-// 배열의 인덱스 0부터 720개의 요소를 추출하고 원본 배열에서 제거
-const targetAmData = copiedArray.splice(0, 720);
-const targetPmData = copiedArray;
+  function dataPerOneHour() {
+    const currentTime = com.currentKrFormatDate('HH:mm');
 
-function getTideInfo(jsonObj) {
-  let minTide = jsonObj[0].tide_level;
-  let maxTide = jsonObj[0].tide_level;
-  let minTime = jsonObj[0].record_time;
-  let maxTime = jsonObj[0].record_time;
-  let totTide = 0;
+    return targetData.reduce((acc, cur, idx) => {
+      const obj = {
+        time: cur.record_time.slice(11, 16),
+        tide: Number(cur.tide_level),
+      };
 
-  const findClosestValue = (arr, target) => {
-    return arr.reduce((closest, current) => {
-      const currentDiff = Math.abs(current.tide_level - target);
-      const closestDiff = Math.abs(closest.tide_level - target);
-
-      return currentDiff < closestDiff ? current : closest;
-    });
-  };
-
-  const findCurrentHMValue = (arr, target) => {
-    const data = json.result.data;
-    const currentDate = new Date();
-
-    let currentHour = currentDate.getHours();
-    let currentMinute = currentDate.getMinutes();
-    currentHour = (currentHour < 10 ? '0' : '') + currentHour;
-    currentMinute = (currentMinute < 10 ? '0' : '') + currentMinute;
-    const currentTime = currentHour + ':' + currentMinute;
-
-    return data.reduce((returnObj, cur) => {
-      if (cur.record_time.includes(currentTime)) {
-        returnObj = {
-          currentTide: cur.tide_level,
-          currentTime: cur.record_time,
-        };
+      if (idx % 60 === 0) {
+        if (idx === 0) {
+          obj.type = 'A0';
+        } else {
+          obj.type = 'D0';
+        }
+        acc.push(obj);
       }
-      return returnObj;
-    }, {});
-  };
 
-  return jsonObj.reduce((_, cur, __, arr) => {
-    const tideLevel = cur.tide_level;
-    totTide += Number(cur.tide_level);
+      if (idx === 1439) {
+        obj.type = 'P0';
+        acc.push(obj);
+      }
 
-    // 최소값(간조)
-    if (tideLevel < minTide) {
-      minTide = tideLevel;
-      minTime = cur.record_time;
-    }
+      if (cur.record_time.includes(currentTime)) {
+        obj.type = 'C0';
+        acc.push(obj);
+      }
+      return acc;
+    }, []);
+  }
 
-    // 최대값(만조)
-    if (tideLevel > maxTide) {
-      maxTide = tideLevel;
-      maxTime = cur.record_time;
-    }
+  function getAmInfo(targetData) {
+    let minTide = targetData[0].tide_level;
+    let maxTide = targetData[0].tide_level;
+    let minTime = targetData[0].record_time;
+    let maxTime = targetData[0].record_time;
+    let totTide = 0;
 
-    // 중위값(간조)
-    const avgTide = String(totTide / 720);
+    return targetData.reduce((_, cur, __, arr) => {
+      const tideLevel = cur.tide_level;
 
-    return {
-      min_info: {
-        min_time: minTime,
-        min_tide: minTide,
-      },
-      max_info: {
-        max_time: maxTime,
-        max_tide: maxTide,
-      },
-      avg_info: findClosestValue(arr, avgTide),
-    };
-  }, {});
-}
+      totTide += Number(cur.tide_level);
 
-//const resultAmInfo = getTideInfo(targetAmData);
-export const resultAmInfo = getTideInfo(targetAmData);
-//console.log('resultAmInfo::::::::::::::::::::::::::', resultAmInfo);
+      // 최소값(간조)
+      if (tideLevel < minTide) {
+        minTide = tideLevel;
+        minTime = cur.record_time;
+      }
 
-//const resultPmInfo = getTideInfo(targetPmData);
-export const resultPmInfo = getTideInfo(targetPmData);
-//console.log('resultPmInfo::::::::::::::::::::::::::', resultPmInfo);
+      // 최대값(만조)
+      if (tideLevel > maxTide) {
+        maxTide = tideLevel;
+        maxTime = cur.record_time;
+      }
+
+      return [
+        {tide: Number(minTide), time: minTime.slice(11, 16), type: 'A1'},
+        {tide: Number(maxTide), time: maxTime.slice(11, 16), type: 'A2'},
+      ];
+    }, []);
+  }
+
+  function getPmInfo(targetData) {
+    let minTide = targetData[0].tide_level;
+    let maxTide = targetData[0].tide_level;
+    let minTime = targetData[0].record_time;
+    let maxTime = targetData[0].record_time;
+    let totTide = 0;
+
+    return targetData.reduce((_, cur, __, arr) => {
+      const tideLevel = cur.tide_level;
+      totTide += Number(cur.tide_level);
+
+      // 최소값(간조)
+      if (tideLevel < minTide) {
+        minTide = tideLevel;
+        minTime = cur.record_time;
+      }
+
+      // 최대값(만조)
+      if (tideLevel > maxTide) {
+        maxTide = tideLevel;
+        maxTime = cur.record_time;
+      }
+
+      return [
+        {tide: Number(minTide), time: minTime.slice(11, 16), type: 'A1'},
+        {tide: Number(maxTide), time: maxTime.slice(11, 16), type: 'A2'},
+      ];
+    }, []);
+  }
+
+  const resultArr = [
+    ...dataPerOneHour(),
+    ...getAmInfo(amData),
+    ...getPmInfo(pmData),
+  ];
+
+  const orderData = resultArr.sort((a, b) => {
+    const [hoursA, minutesA] = a.time.split(':').map(Number);
+    const [hoursB, minutesB] = b.time.split(':').map(Number);
+    const totalMinutesA = hoursA * 60 + minutesA;
+    const totalMinutesB = hoursB * 60 + minutesB;
+    return totalMinutesA - totalMinutesB;
+  });
+
+  return orderData;
+};
+
+export const resultInfo = getInfo();
+console.log(resultInfo);
