@@ -1,0 +1,434 @@
+<html>
+  <head>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      * {
+        margin: 0;
+      }
+      body {
+        margin: 0;
+      }
+      #topTooltipBox {
+        position: absolute;
+        display: none;
+        border-radius: 2px;
+        height: 20px;
+      }
+      #topTooltipBox.pointer_ct::before {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid #8854d0;
+      }
+      #topTooltipBox.pointer_ap1::before {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid #3867d6;
+      }
+      #topTooltipBox.pointer_ap2::before {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid #eb3b5a;
+      }
+      #topTooltipBox.pointer_else::before {
+        content: "";
+        position: absolute;
+        bottom: -4px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 0;
+        height: 0;
+        border-left: 4px solid transparent;
+        border-right: 4px solid transparent;
+        border-top: 5px solid #0a3d62;
+      }
+
+      #topTooltipText {
+        text-align: center;
+        font-size: 11px;
+        color: #ffffff;
+        padding: 3px 5px 3px 5px;
+      }
+      .pointer_min {
+        position: absolute;
+        background-color: #3867d6;
+        font-size: 10px;
+        color: #ffffff;
+        padding: 1px 3px 1px 3px;
+        border-radius: 2px;
+      }
+      .pointer_max {
+        position: absolute;
+        background-color: #eb3b5a;
+        font-size: 10px;
+        color: #ffffff;
+        padding: 1px 3px 1px 3px;
+        border-radius: 2px;
+      }
+      .pointer_current {
+        position: absolute;
+        background-color: #8854d0;
+        font-size: 10px;
+        color: white;
+        padding: 1px 3px 1px 3px;
+        font-weight: bold;
+        border-radius: 2px;
+      }
+
+      .fade-in-out {
+        opacity: 0;
+        animation: fadeInOut 2s infinite;
+      }
+
+      @keyframes fadeInOut {
+        0%,
+        100% {
+          opacity: 0;
+        }
+        50% {
+          opacity: 1;
+        }
+      }
+    </style>
+    <script
+      type="text/javascript"
+      src="https://www.gstatic.com/charts/loader.js"
+    ></script>
+    <script type="text/javascript" src="/tideInfo.js"></script>
+    <script>
+      /***************** 전역 설정 ****************/
+      // 만조 포인트: #eb3b5a
+      // 간조 포인트: #3867d6
+      // 현재 시간 포인트: #8854d0
+      // X축 곡선: #0A3D62
+      // type
+      // 1. AS: 첫시각
+      // 2. GS: 정시각
+      // 3. A1: 오전 간조
+      // 4. A2: 오전 만조
+      // 5. P1: 오후 간조
+      // 6. P2: 오후 만조
+      // 7. PE: 마지막 시각
+      // 8. CT: 현재시간
+      // circle: 원형
+      // triangle: 삼각형
+      // square: 사각형
+      // diamond: 다이아몬드(마름모)
+      // star: 별모양
+      /*******************************************/
+      const formatDate = (date, format) => {
+        if (format === "full") {
+          const year = date.getFullYear();
+          const month = (date.getMonth() + 1).toString().padStart(2, "0");
+          const day = date.getDate().toString().padStart(2, "0");
+          const hours = date.getHours().toString().padStart(2, "0");
+          const minutes = date.getMinutes().toString().padStart(2, "0");
+          const seconds = date.getSeconds().toString().padStart(2, "0");
+          return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+        } else if (format === "yyyyMMdd") {
+          const year = date.getFullYear();
+          const month = String(date.getMonth() + 1).padStart(2, "0");
+          const day = String(date.getDate()).padStart(2, "0");
+          return `${year}-${month}-${day}`;
+        } else if (format === "hhmm") {
+          const hours = date.getHours();
+          const minutes = date.getMinutes().toString().padStart(2, "0");
+          return `${hours}:${minutes}`;
+        }
+      };
+
+      const tideInfo = getTideInfo();
+
+      let maxTide = tideInfo[0].tide;
+      const tideInfoResult = tideInfo.reduce(
+        (acc, cur, idx) => {
+          const arr = [];
+          arr.push(new Date(cur.time));
+          arr.push(cur.tide);
+          acc.dataTable.push(arr);
+          const tideLevel = cur.tide;
+
+          if (tideLevel > maxTide) {
+            maxTide = tideLevel;
+            acc.maxTide = tideLevel;
+          }
+
+          if (cur.type === "CT") {
+            acc.ctIndex = idx;
+          }
+
+          if (idx === 0) {
+            const yyyymmdd = cur.time.slice(0, 10);
+            acc.currentDate = yyyymmdd;
+            const date = new Date(yyyymmdd);
+            date.setDate(date.getDate() + 1);
+            acc.nextDate = date;
+          }
+
+          return acc;
+        },
+        {
+          dataTable: [],
+          maxTide: 0,
+          ctIndex: -1,
+          currentDate: undefined,
+          nextDate: undefined,
+        }
+      );
+
+      const maxTideCeilNumber = Math.ceil(tideInfoResult.maxTide / 100) + 2;
+      const xTicks = [
+        new Date(`${tideInfoResult.currentDate} 00:00:00`),
+        new Date(`${tideInfoResult.currentDate} 06:00:00`),
+        new Date(`${tideInfoResult.currentDate} 12:00:00`),
+        new Date(`${tideInfoResult.currentDate} 18:00:00`),
+        new Date(`${formatDate(tideInfoResult.nextDate, "yyyyMMdd")} 00:00:00`),
+      ];
+
+      const yTicks = Array(maxTideCeilNumber)
+        .fill()
+        .map((elem, idx) => {
+          return idx * 100;
+        });
+
+      const setPointTitle = (chart) => {
+        const render = (time, tide, type) => {
+          const chartLayout = chart.getChartLayoutInterface();
+          const chartArea = chartLayout.getChartAreaBoundingBox();
+          const maxPixelX = chartLayout.getXLocation(time, 0);
+          const maxPixelY = chartLayout.getYLocation(tide, 0);
+          const label = document.createElement("div");
+
+          if (type === "CT") {
+            label.className = "pointer_current fade-in-out";
+            label.style.left = `${maxPixelX + 10}px`;
+            label.style.top = `${maxPixelY - 2}px`;
+            label.innerHTML = `${formatDate(time, "hhmm")} (${tide})`;
+          } else if (type === "A1" || type === "P1") {
+            label.className = "pointer_min";
+            label.style.left = `${maxPixelX - 20}px`;
+            label.style.top = `${maxPixelY + 5}px`;
+            label.innerHTML = `간조 ${formatDate(time, "hhmm")} (${tide})`;
+          } else if (type === "A2" || type === "P2") {
+            label.className = "pointer_max";
+            label.style.left = `${maxPixelX - 20}px`;
+            label.style.top = `${maxPixelY - 21}px`;
+            label.innerHTML = `만조 ${formatDate(time, "hhmm")} (${tide})`;
+          }
+
+          document.getElementById("chart_div").appendChild(label);
+        };
+
+        tideInfo.forEach((elem, idx) => {
+          const tide = elem.tide;
+          const time = new Date(elem.time);
+          const type = elem.type;
+          render(time, tide, type);
+        });
+      };
+
+      const setSelectedTopTooltipBoxCurrentTime = (chart, dataTable) => {
+        const ctRowIndex = tideInfoResult.ctIndex;
+
+        chart.setSelection([{ row: ctRowIndex, column: 1 }]);
+
+        const xValue = dataTable.getValue(ctRowIndex, 0);
+        const yValue = dataTable.getValue(ctRowIndex, 1);
+
+        topTooltipText.innerHTML = `${formatDate(
+          xValue,
+          "hhmm"
+        )} 조위: ${yValue}`;
+        topTooltipBox.style.display = "block";
+        topTooltipBox.className = "pointer_ct";
+
+        const chartLayout = chart.getChartLayoutInterface();
+        const chartArea = chartLayout.getChartAreaBoundingBox();
+
+        const leftOffset = chartLayout.getXLocation(
+          dataTable.getValue(ctRowIndex, 0),
+          0
+        );
+        const tooltipWidth = topTooltipBox.offsetWidth;
+        const tooltipLeft = leftOffset - tooltipWidth / 2;
+
+        topTooltipBox.style.top = `${chartArea.top - 23}px`;
+        topTooltipBox.style.left = `${tooltipLeft}px`;
+        topTooltipBox.style.fontSize = "11px";
+        topTooltipBox.style.backgroundColor = "#8854d0";
+      };
+
+      const setSelectedTopTooltipBox = (chart, dataTable, selectedItem) => {
+        const xValue = dataTable.getValue(selectedItem.row, 0);
+        const yValue = dataTable.getValue(selectedItem.row, 1);
+
+        const { type } = tideInfo.find((elem) => {
+          return elem.time === formatDate(xValue, "full");
+        });
+
+        topTooltipText.innerHTML = `${formatDate(
+          xValue,
+          "hhmm"
+        )} 조위: ${yValue}`;
+        topTooltipBox.style.display = "block";
+
+        const chartLayout = chart.getChartLayoutInterface();
+        const chartArea = chartLayout.getChartAreaBoundingBox();
+
+        const leftOffset = chartLayout.getXLocation(
+          dataTable.getValue(selectedItem.row, 0),
+          0
+        );
+        const tooltipWidth = topTooltipBox.offsetWidth;
+        const tooltipLeft = leftOffset - tooltipWidth / 2;
+
+        topTooltipBox.style.top = `${chartArea.top - 23}px`;
+        topTooltipBox.style.left = `${tooltipLeft}px`;
+
+        if (type === "CT") {
+          topTooltipBox.style.backgroundColor = "#8854d0";
+          topTooltipBox.className = "pointer_ct";
+        } else if (type === "A1" || type === "P1") {
+          topTooltipBox.style.backgroundColor = "#3867d6";
+          topTooltipBox.className = "pointer_ap1";
+        } else if (type === "A2" || type === "P2") {
+          topTooltipBox.style.backgroundColor = "#eb3b5a";
+          topTooltipBox.className = "pointer_ap2";
+        } else {
+          topTooltipBox.style.backgroundColor = "#0A3D62";
+          topTooltipBox.className = "pointer_else";
+        }
+      };
+
+      const onReady = () => {
+        const topTooltipBox = document.getElementById("topTooltipBox");
+        const topTooltipText = document.getElementById("topTooltipText");
+
+        const drawChart = () => {
+          /******************************
+           * 1. 데이터 영역
+           ******************************/
+          const dataTable = new google.visualization.DataTable();
+          dataTable.addColumn("date", "X"); //time
+          dataTable.addColumn("number", "Y"); //tide
+          dataTable.addRows(tideInfoResult.dataTable);
+
+          const dataView = new google.visualization.DataView(dataTable);
+          dataView.setColumns([
+            0,
+            1,
+            {
+              role: "style",
+              type: "string",
+              calc: (dt, row) => {
+                const type = tideInfo[row].type;
+                if (type === "CT") {
+                  return "point { size: 5; shape-type: diamond; fill-color: #8854d0; }"; //현재시간
+                } else if (type === "A1") {
+                  return "point { size: 4; shape-type: circle; fill-color: #3867d6; }"; //오전 간조
+                } else if (type === "A2") {
+                  return "point { size: 4; shape-type: circle; fill-color: #eb3b5a; }"; //오전 만조
+                } else if (type === "P1") {
+                  return "point { size: 4; shape-type: circle; fill-color: #3867d6; }"; //오후 간조
+                } else if (type === "P2") {
+                  return "point { size: 4; shape-type: circle; fill-color: #eb3b5a; }"; //오후 만조
+                } else {
+                  return "point { size: 2; }";
+                }
+              },
+            },
+          ]);
+
+          /******************************
+           * 2. 옵션 영역
+           ******************************/
+          const options = {
+            legend: "none",
+            //x축
+            hAxis: {
+              format: "H",
+              gridlines: { color: "transparent" },
+              textStyle: {
+                fontSize: 10,
+              },
+              ticks: xTicks,
+            },
+            //y축
+            vAxis: {
+              minValue: 0,
+              gridlines: {
+                color: "#CCC",
+              },
+              textStyle: {
+                fontSize: 10,
+              },
+              ticks: yTicks,
+            },
+            crosshair: { trigger: "both", orientation: "both" },
+            curveType: "function",
+            tooltip: { trigger: "none" },
+            pointSize: 3,
+            pointShape: "circle",
+            series: {
+              0: { color: "#0a3d62", lineWidth: 2 },
+            },
+          };
+
+          /******************************
+           * 3. 차트 영역
+           ******************************/
+          const chart = new google.visualization.AreaChart(
+            document.getElementById("chart_div")
+          );
+
+          /******************************
+           * 4. 이벤트 영역
+           ******************************/
+          // 1) ready
+          google.visualization.events.addListener(chart, "ready", () => {
+            setPointTitle(chart);
+            setSelectedTopTooltipBoxCurrentTime(chart, dataTable);
+          });
+
+          // 2) select
+          google.visualization.events.addListener(chart, "select", () => {
+            const selectedItem = chart.getSelection()[0];
+            if (selectedItem) {
+              setSelectedTopTooltipBox(chart, dataTable, selectedItem);
+            }
+          });
+
+          chart.draw(dataView, options);
+        }; // End: drawChart Func
+        google.charts.load("current", { packages: ["corechart"] });
+        google.charts.setOnLoadCallback(drawChart);
+      }; // End: onReady Func
+
+      document.addEventListener("DOMContentLoaded", onReady);
+    </script>
+  </head>
+  <body>
+    <div id="chart_div" style="width: 100%; height: 400px"></div>
+    <div id="topTooltipBox"><p id="topTooltipText"></p></div>
+  </body>
+</html>

@@ -1,99 +1,98 @@
 import * as React from 'react';
-import {StyleSheet, Text, View, Image, Button, Linking} from 'react-native';
-import {Card, Paragraph, Divider} from 'react-native-paper';
-import Swiper from 'react-native-swiper';
-import ScreenWrapper from '../../../commons/utils/ScreenWapper';
+import WebView from 'react-native-webview';
 
 const SecondTab = () => {
-  const handleOpenLink = () => {
-    const url = 'https://www.naver.com'; // 여기에 이동할 사이트의 URL을 입력하세요.
-    Linking.openURL(url).catch(err => console.error('An error occurred', err));
+  const handleMessage = event => {
+    // 외부 사이트에서 보낸 데이터를 수신합니다.
+    console.log('Received data from external site:', event.nativeEvent.data);
   };
+  const html = `<!DOCTYPE html>
+  <html>
+    <head>
+      <meta charset="utf-8" />
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <script type="text/javascript" src="https://dapi.kakao.com/v2/maps/sdk.js?appkey=6f7706763fa13bc2bcca34e5dd11d146"></script>
+      <script>
+        let KAKAO_MAP;
 
-  const PHOTOS = Array(5)
-    .fill()
-    .map((_, i) => {
-      return {
-        url: `https://unsplash.it/500/500/?random&__id=${i}`,
-      };
-    });
+        document.addEventListener("DOMContentLoaded", function () {
+          setMapView();
+          setMarker();
+          document.getElementById('sendButton').addEventListener('click', function() {
+            window.ReactNativeWebView.postMessage(getInfo());
+          });
+        });
+
+        function setMapView() {
+          const container = document.getElementById('kakaoMap');
+          const options = {
+              center: new kakao.maps.LatLng(37.53848082617048, 126.6210322605947),
+              level: 4
+          };
+          KAKAO_MAP = new kakao.maps.Map(container, options);
+        }
+
+        function getInfo() {
+          // 지도의 현재 중심좌표를 얻어옵니다 
+          const center = KAKAO_MAP.getCenter(); 
+          
+          // 지도의 현재 레벨을 얻어옵니다
+          const level = KAKAO_MAP.getLevel();
+          
+          // 지도타입을 얻어옵니다
+          const mapTypeId = KAKAO_MAP.getMapTypeId(); 
+          
+          // 지도의 현재 영역을 얻어옵니다 
+          const bounds = KAKAO_MAP.getBounds();
+          
+          // 영역의 남서쪽 좌표를 얻어옵니다 
+          const swLatLng = bounds.getSouthWest(); 
+          
+          // 영역의 북동쪽 좌표를 얻어옵니다 
+          const neLatLng = bounds.getNorthEast(); 
+          
+          // 영역정보를 문자열로 얻어옵니다. ((남,서), (북,동)) 형식입니다
+          const boundsStr = bounds.toString();
+          
+          let message = '지도 중심좌표는 위도 ' + center.getLat() + ', <br>';
+          message += '경도 ' + center.getLng() + ' 이고 <br>';
+          message += '지도 레벨은 ' + level + ' 입니다 <br> <br>';
+          message += '지도 타입은 ' + mapTypeId + ' 이고 <br> ';
+          message += '지도의 남서쪽 좌표는 ' + swLatLng.getLat() + ', ' + swLatLng.getLng() + ' 이고 <br>';
+          message += '북동쪽 좌표는 ' + neLatLng.getLat() + ', ' + neLatLng.getLng() + ' 입니다';
+          
+          return message;
+         }
+
+         function setMarker() {
+
+          // 마커가 표시될 위치입니다 
+          const markerPosition  = new kakao.maps.LatLng(37.53848082617048, 126.6210322605947); 
+          
+          // 마커를 생성합니다
+          const marker = new kakao.maps.Marker({
+              position: markerPosition
+          });
+          
+          // 마커가 지도 위에 표시되도록 설정합니다
+          marker.setMap(KAKAO_MAP);
+
+         }
+
+      </script>
+    </head>
+    <body>
+      <div id="kakaoMap" style="width: 100%; height: 400px"></div>
+      <button id="sendButton">Send Data to React Native</button>
+    </body>
+  </html>`;
   return (
-    <ScreenWrapper>
-      <View style={styles.container}>
-        <View style={styles.wrapper}>
-          <Text style={styles.largeText}>Swiper Demo</Text>
-          <Swiper>
-            {PHOTOS.map((elem, index) => {
-              const url_ = elem.url;
-              return (
-                <View key={index} style={styles.slide}>
-                  <Image
-                    key={index}
-                    source={{uri: url_}}
-                    style={styles.image}
-                  />
-                </View>
-              );
-            })}
-          </Swiper>
-        </View>
-      </View>
-      <Divider />
-      <View style={styles.wrapper2}>
-        <Text style={styles.largeText}>Card Demo</Text>
-        <Card style={styles.card} mode={'elevated'}>
-          <Card.Cover
-            source={require('../../../assets/images/santafe01.png')}
-          />
-          <Card.Title title="Ship" />
-          <Card.Content>
-            <Paragraph variant="bodyMedium">
-              The Abandoned Ship is a wrecked ship located on Route 108 in
-              Hoenn, originally being a ship named the S.S. Cactus. The second
-              part of the ship can only be accessed by using Dive and contains
-              the Scanner.
-            </Paragraph>
-          </Card.Content>
-        </Card>
-      </View>
-      <Divider />
-      <View>
-        <Text style={styles.largeText}>Link Demo</Text>
-        <Button title="Open Website_naver" onPress={handleOpenLink} />
-      </View>
-    </ScreenWrapper>
+    <WebView
+      source={{html: html}}
+      style={{flex: 1}}
+      onMessage={handleMessage}
+    />
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    flexWrap: 'wrap',
-    marginHorizontal: 20,
-    marginVertical: 15,
-  },
-  wrapper: {height: 300},
-  wrapper2: {height: 'auto'},
-  slide: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  image: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  largeText: {
-    fontSize: 16,
-    marginVertical: 20, // 수직
-    marginHorizontal: 10, // 수평
-  },
-  card: {
-    margin: 4,
-  },
-});
 
 export default SecondTab;
