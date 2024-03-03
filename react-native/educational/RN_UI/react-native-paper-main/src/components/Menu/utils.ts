@@ -1,6 +1,9 @@
+import type { ColorValue } from 'react-native';
+
 import color from 'color';
-import type { Theme } from '../../types';
-import { white, black } from '../../styles/themes/v2/colors';
+
+import { black, white } from '../../styles/themes/v2/colors';
+import type { InternalTheme } from '../../types';
 import type { IconSource } from '../Icon';
 
 export const MIN_WIDTH = 112;
@@ -14,11 +17,12 @@ type ContentProps = {
 };
 
 type ColorProps = {
-  theme: Theme;
+  theme: InternalTheme;
   disabled?: boolean;
+  customRippleColor?: ColorValue;
 };
 
-const getDisabledColor = (theme: Theme) => {
+const getDisabledColor = (theme: InternalTheme) => {
   if (theme.isV3) {
     return theme.colors.onSurfaceDisabled;
   }
@@ -53,13 +57,30 @@ const getIconColor = ({ theme, disabled }: ColorProps) => {
   return color(theme.colors.text).alpha(0.54).rgb().string();
 };
 
-export const getMenuItemColor = ({ theme, disabled }: ColorProps) => {
+const getRippleColor = ({
+  theme,
+  customRippleColor,
+}: Omit<ColorProps, 'disabled'>) => {
+  if (customRippleColor) {
+    return customRippleColor;
+  }
+
+  if (theme.isV3) {
+    return color(theme.colors.onSurfaceVariant).alpha(0.12).rgb().string();
+  }
+
+  return undefined;
+};
+
+export const getMenuItemColor = ({
+  theme,
+  disabled,
+  customRippleColor,
+}: ColorProps) => {
   return {
     titleColor: getTitleColor({ theme, disabled }),
     iconColor: getIconColor({ theme, disabled }),
-    underlayColor: theme.isV3
-      ? color(theme.colors.primary).alpha(0.12).rgb().string()
-      : undefined,
+    rippleColor: getRippleColor({ theme, customRippleColor }),
   };
 };
 

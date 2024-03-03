@@ -1,13 +1,9 @@
+import { Animated, ColorValue, I18nManager, ViewStyle } from 'react-native';
+
 import color from 'color';
-import {
-  Animated,
-  I18nManager,
-  StyleProp,
-  ViewStyle,
-  StyleSheet,
-} from 'react-native';
-import type { Theme } from '../../types';
-import { white, black } from '../../styles/themes/v2/colors';
+
+import { black, white } from '../../styles/themes/v2/colors';
+import type { InternalTheme } from '../../types';
 import getContrastingColor from '../../utils/getContrastingColor';
 
 type GetCombinedStylesProps = {
@@ -27,7 +23,7 @@ type Variant = 'primary' | 'secondary' | 'tertiary' | 'surface';
 
 type BaseProps = {
   isVariant: (variant: Variant) => boolean;
-  theme: Theme;
+  theme: InternalTheme;
   disabled?: boolean;
 };
 
@@ -165,11 +161,10 @@ const getBackgroundColor = ({
   theme,
   isVariant,
   disabled,
-  style,
-}: BaseProps & { style?: StyleProp<ViewStyle> }) => {
-  const { backgroundColor } = StyleSheet.flatten(style) || {};
-  if (backgroundColor && !disabled) {
-    return backgroundColor;
+  customBackgroundColor,
+}: BaseProps & { customBackgroundColor?: ColorValue }) => {
+  if (customBackgroundColor && !disabled) {
+    return customBackgroundColor;
   }
 
   if (theme.isV3) {
@@ -261,13 +256,15 @@ export const getFABColors = ({
   variant,
   disabled,
   customColor,
-  style,
+  customBackgroundColor,
+  customRippleColor,
 }: {
-  theme: Theme;
+  theme: InternalTheme;
   variant: string;
   disabled?: boolean;
   customColor?: string;
-  style?: StyleProp<ViewStyle>;
+  customBackgroundColor?: ColorValue;
+  customRippleColor?: ColorValue;
 }) => {
   const isVariant = (variantToCompare: Variant) => {
     return variant === variantToCompare;
@@ -277,7 +274,7 @@ export const getFABColors = ({
 
   const backgroundColor = getBackgroundColor({
     ...baseFABColorProps,
-    style,
+    customBackgroundColor,
   });
 
   const foregroundColor = getForegroundColor({
@@ -289,11 +286,12 @@ export const getFABColors = ({
   return {
     backgroundColor,
     foregroundColor,
-    rippleColor: color(foregroundColor).alpha(0.12).rgb().string(),
+    rippleColor:
+      customRippleColor || color(foregroundColor).alpha(0.12).rgb().string(),
   };
 };
 
-const getLabelColor = ({ theme }: { theme: Theme }) => {
+const getLabelColor = ({ theme }: { theme: InternalTheme }) => {
   if (theme.isV3) {
     return theme.colors.onSurface;
   }
@@ -309,7 +307,7 @@ const getBackdropColor = ({
   theme,
   customBackdropColor,
 }: {
-  theme: Theme;
+  theme: InternalTheme;
   customBackdropColor?: string;
 }) => {
   if (customBackdropColor) {
@@ -321,7 +319,7 @@ const getBackdropColor = ({
   return theme.colors?.backdrop;
 };
 
-const getStackedFABBackgroundColor = ({ theme }: { theme: Theme }) => {
+const getStackedFABBackgroundColor = ({ theme }: { theme: InternalTheme }) => {
   if (theme.isV3) {
     return theme.colors.elevation.level3;
   }
@@ -332,7 +330,7 @@ export const getFABGroupColors = ({
   theme,
   customBackdropColor,
 }: {
-  theme: Theme;
+  theme: InternalTheme;
   customBackdropColor?: string;
 }) => {
   return {
@@ -368,7 +366,7 @@ const v3LargeSize = {
 const getCustomFabSize = (customSize: number, roundness: number) => ({
   height: customSize,
   width: customSize,
-  borderRadius: customSize / roundness,
+  borderRadius: roundness === 0 ? 0 : customSize / roundness,
 });
 
 export const getFabStyle = ({
@@ -378,7 +376,7 @@ export const getFabStyle = ({
 }: {
   customSize?: number;
   size: 'small' | 'medium' | 'large';
-  theme: Theme;
+  theme: InternalTheme;
 }) => {
   const { isV3, roundness } = theme;
 
@@ -422,7 +420,7 @@ export const getExtendedFabStyle = ({
   theme,
 }: {
   customSize?: number;
-  theme: Theme;
+  theme: InternalTheme;
 }) => {
   if (customSize) return getExtendedFabDimensions(customSize);
 

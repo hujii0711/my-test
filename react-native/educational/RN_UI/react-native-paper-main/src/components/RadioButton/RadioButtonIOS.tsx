@@ -1,12 +1,13 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { GestureResponderEvent, StyleSheet, View } from 'react-native';
+
 import { RadioButtonContext, RadioButtonContextType } from './RadioButtonGroup';
 import { handlePress, isChecked } from './utils';
+import { useInternalTheme } from '../../core/theming';
+import type { $RemoveChildren, ThemeProp } from '../../types';
+import { getSelectionControlIOSColor } from '../Checkbox/utils';
 import MaterialCommunityIcon from '../MaterialCommunityIcon';
 import TouchableRipple from '../TouchableRipple/TouchableRipple';
-import { withTheme } from '../../core/theming';
-import type { $RemoveChildren, Theme } from '../../types';
-import { getSelectionControlIOSColor } from '../Checkbox/utils';
 
 export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
@@ -24,7 +25,7 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
   /**
    * Custom color for radio.
    */
@@ -32,7 +33,7 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
   /**
    * testID to be used on tests.
    */
@@ -44,26 +45,19 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
  * This component follows platform guidelines for iOS, but can be used
  * on any platform.
  *
- * <div class="screenshots">
- *   <figure>
- *     <img src="screenshots/radio-enabled.ios.png" />
- *     <figcaption>Enabled</figcaption>
- *   </figure>
- *   <figure>
- *     <img src="screenshots/radio-disabled.ios.png" />
- *     <figcaption>Disabled</figcaption>
- *   </figure>
- * </div>
+ * @extends TouchableRipple props https://callstack.github.io/react-native-paper/docs/components/TouchableRipple
  */
 const RadioButtonIOS = ({
   disabled,
   onPress,
-  theme,
+  theme: themeOverrides,
   status,
   value,
   testID,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
+
   return (
     <RadioButtonContext.Consumer>
       {(context?: RadioButtonContextType) => {
@@ -79,6 +73,7 @@ const RadioButtonIOS = ({
           disabled,
           customColor: rest.color,
         });
+        const opacity = checked ? 1 : 0;
 
         return (
           <TouchableRipple
@@ -88,11 +83,12 @@ const RadioButtonIOS = ({
             onPress={
               disabled
                 ? undefined
-                : () => {
+                : (event) => {
                     handlePress({
                       onPress,
                       value,
                       onValueChange: context?.onValueChange,
+                      event,
                     });
                   }
             }
@@ -101,8 +97,9 @@ const RadioButtonIOS = ({
             accessibilityLiveRegion="polite"
             style={styles.container}
             testID={testID}
+            theme={theme}
           >
-            <View style={{ opacity: checked ? 1 : 0 }}>
+            <View style={{ opacity }}>
               <MaterialCommunityIcon
                 allowFontScaling={false}
                 name="check"
@@ -127,9 +124,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(RadioButtonIOS);
+export default RadioButtonIOS;
 
 // @component-docs ignore-next-line
-const RadioButtonIOSWithTheme = withTheme(RadioButtonIOS);
-// @component-docs ignore-next-line
-export { RadioButtonIOSWithTheme as RadioButtonIOS };
+export { RadioButtonIOS };

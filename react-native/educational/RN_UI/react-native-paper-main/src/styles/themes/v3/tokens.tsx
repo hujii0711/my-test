@@ -1,4 +1,5 @@
 import { Platform } from 'react-native';
+
 import type { Font } from '../../../types';
 
 const ref = {
@@ -210,6 +211,10 @@ export const typescale = {
     letterSpacing: 0.4,
     lineHeight: 16,
     fontSize: 12,
+  },
+
+  default: {
+    ...regularType,
   },
 };
 

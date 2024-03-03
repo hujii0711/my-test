@@ -1,20 +1,22 @@
 import * as React from 'react';
 import {
-  View,
-  StyleSheet,
-  StyleProp,
-  ViewStyle,
   Animated,
-  TouchableWithoutFeedback,
+  GestureResponderEvent,
   NativeSyntheticEvent,
-  TextLayoutEventData,
   Platform,
+  Pressable,
+  StyleProp,
+  StyleSheet,
+  TextLayoutEventData,
+  View,
+  ViewStyle,
 } from 'react-native';
-import Text from '../Typography/Text';
-import Icon, { IconSource } from '../Icon';
-import { withTheme } from '../../core/theming';
-import type { Theme } from '../../types';
+
+import { useInternalTheme } from '../../core/theming';
+import type { ThemeProp } from '../../types';
 import Badge from '../Badge';
+import Icon, { IconSource } from '../Icon';
+import Text from '../Typography/Text';
 
 export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
@@ -22,9 +24,23 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
    */
   label?: string;
   /**
-   * Icon to display for the `DrawerCollapsedItem`.
+   * Badge to show on the icon, can be `true` to show a dot, `string` or `number` to show text.
    */
-  icon?: IconSource;
+  badge?: string | number | boolean;
+  /**
+   * Whether the item is disabled.
+   */
+  disabled?: boolean;
+  /**
+   * @renamed Renamed from 'icon' to 'focusedIcon' in v5.x
+   * Icon to use as the focused destination icon, can be a string, an image source or a react component
+   */
+  focusedIcon?: IconSource;
+  /**
+   * @renamed Renamed from 'icon' to 'focusedIcon' in v5.x
+   * Icon to use as the unfocused destination icon, can be a string, an image source or a react component
+   */
+  unfocusedIcon?: IconSource;
   /**
    * Whether to highlight the drawer item as active.
    */
@@ -32,7 +48,11 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
+  /**
+   * Specifies the largest possible scale a label font can reach.
+   */
+  labelMaxFontSizeMultiplier?: number;
   /**
    * Accessibility label for the button. This is read by the screen reader when the user taps the button.
    */
@@ -41,11 +61,12 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
+
   /**
-   * Badge to show on the icon, can be `true` to show a dot, `string` or `number` to show text.
+   * TestID used for testing purposes
    */
-  badge?: string | number | boolean;
+  testID?: string;
 };
 
 const badgeSize = 8;
@@ -54,14 +75,9 @@ const itemSize = 56;
 const outlineHeight = 32;
 
 /**
- * @supported Available in v5.x with theme version 3
- * Collapsed component used to show an action item with an icon and optionally label in a navigation drawer.
+ * Note: Available in v5.x with theme version 3
  *
- * <div class="screenshots">
- *   <figure>
- *     <img class="small" src="screenshots/drawer-collapsed.png" />
- *   </figure>
- * </div>
+ * Collapsed component used to show an action item with an icon and optionally label in a navigation drawer.
  *
  * ## Usage
  * ```js
@@ -70,7 +86,8 @@ const outlineHeight = 32;
  *
  * const MyComponent = () => (
  *    <Drawer.CollapsedItem
- *      icon="inbox"
+ *      focusedIcon="inbox"
+ *      unfocusedIcon="inbox-outline"
  *      label="Inbox"
  *    />
  * );
@@ -79,16 +96,21 @@ const outlineHeight = 32;
  * ```
  */
 const DrawerCollapsedItem = ({
-  icon,
+  focusedIcon,
+  unfocusedIcon,
   label,
   active,
-  theme,
+  theme: themeOverrides,
   style,
   onPress,
+  disabled,
   accessibilityLabel,
   badge = false,
+  testID = 'drawer-collapsed-item',
+  labelMaxFontSizeMultiplier,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { isV3 } = theme;
   const { scale } = theme.animation;
 
@@ -139,17 +161,28 @@ const DrawerCollapsedItem = ({
   const androidLetterSpacingStyle =
     Platform.OS === 'android' && numOfLines > 4 && styles.letterSpacing;
 
+  const labelTextStyle = {
+    color: labelColor,
+    ...(isV3 ? theme.fonts.labelMedium : {}),
+  };
+
+  const icon =
+    !active && unfocusedIcon !== undefined ? unfocusedIcon : focusedIcon;
+
   return (
     <View {...rest}>
-      <TouchableWithoutFeedback
+      {/* eslint-disable-next-line react-native-a11y/has-accessibility-props */}
+      <Pressable
         onPress={onPress}
         onPressOut={onPress ? handlePressOut : undefined}
+        disabled={disabled}
         // @ts-expect-error We keep old a11y props for backwards compat with old RN versions
         accessibilityTraits={active ? ['button', 'selected'] : 'button'}
         accessibilityComponentType="button"
         accessibilityRole="button"
         accessibilityState={{ selected: active }}
         accessibilityLabel={accessibilityLabel}
+        testID={testID}
       >
         <View style={styles.wrapper}>
           <Animated.View
@@ -168,9 +201,13 @@ const DrawerCollapsedItem = ({
               },
               style,
             ]}
+            testID={`${testID}-outline`}
           />
 
-          <View style={[styles.icon, { top: iconPadding }]}>
+          <View
+            style={[styles.icon, { top: iconPadding }]}
+            testID={`${testID}-container`}
+          >
             {badge && (
               <View style={styles.badgeContainer}>
                 {typeof badge === 'boolean' ? (
@@ -191,19 +228,14 @@ const DrawerCollapsedItem = ({
               selectable={false}
               numberOfLines={2}
               onTextLayout={onTextLayout}
-              style={[
-                styles.label,
-                androidLetterSpacingStyle,
-                {
-                  color: labelColor,
-                },
-              ]}
+              style={[styles.label, androidLetterSpacingStyle, labelTextStyle]}
+              maxFontSizeMultiplier={labelMaxFontSizeMultiplier}
             >
               {label}
             </Text>
           ) : null}
         </View>
-      </TouchableWithoutFeedback>
+      </Pressable>
     </View>
   );
 };
@@ -247,4 +279,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(DrawerCollapsedItem);
+export default DrawerCollapsedItem;

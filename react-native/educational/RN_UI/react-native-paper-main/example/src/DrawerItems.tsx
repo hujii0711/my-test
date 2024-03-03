@@ -1,29 +1,21 @@
 import * as React from 'react';
-import { View, StyleSheet, I18nManager } from 'react-native';
+import { I18nManager, StyleSheet, View, Platform } from 'react-native';
+
 import { DrawerContentScrollView } from '@react-navigation/drawer';
+import * as Updates from 'expo-updates';
 import {
   Badge,
   Drawer,
+  MD2Colors,
+  MD3Colors,
   Switch,
   Text,
   TouchableRipple,
-  MD2Colors,
-  useTheme,
-  MD3Colors,
 } from 'react-native-paper';
-import * as Updates from 'expo-updates';
-import { isWeb } from '../utils';
-import { PreferencesContext } from './';
 
-type Props = {
-  toggleTheme: () => void;
-  toggleRTL: () => void;
-  toggleThemeVersion: () => void;
-  toggleCollapsed: () => void;
-  collapsed: boolean;
-  isRTL: boolean;
-  isDarkTheme: boolean;
-};
+import { deviceColorsSupported, isWeb } from '../utils';
+
+import { PreferencesContext, useExampleTheme } from './';
 
 const DrawerItemsData = [
   {
@@ -57,44 +49,68 @@ const DrawerItemsData = [
 const DrawerCollapsedItemsData = [
   {
     label: 'Inbox',
-    icon: 'inbox',
+    focusedIcon: 'inbox',
+    unfocusedIcon: 'inbox-outline',
     key: 0,
     badge: 44,
   },
   {
     label: 'Starred',
-    icon: 'star',
+    focusedIcon: 'star',
+    unfocusedIcon: 'star-outline',
     key: 1,
   },
-  { label: 'Sent mail', icon: 'send', key: 2 },
+  {
+    label: 'Sent mail',
+    focusedIcon: 'send',
+    unfocusedIcon: 'send-outline',
+    key: 2,
+  },
   {
     label: 'A very long title that will be truncated',
-    icon: 'delete',
+    focusedIcon: 'delete',
+    unfocusedIcon: 'delete-outline',
     key: 3,
   },
-  { label: 'Full width', icon: 'arrow-all', key: 4 },
   {
-    icon: 'bell',
+    label: 'Full width',
+    focusedIcon: 'arrow-all',
+    key: 4,
+  },
+  {
+    focusedIcon: 'bell',
+    unfocusedIcon: 'bell-outline',
     key: 5,
     badge: true,
   },
 ];
 
-const DrawerItems = ({
-  toggleTheme,
-  toggleRTL,
-  toggleThemeVersion,
-  toggleCollapsed,
-  collapsed,
-  isRTL,
-  isDarkTheme,
-}: Props) => {
+function DrawerItems() {
   const [drawerItemIndex, setDrawerItemIndex] = React.useState<number>(0);
   const preferences = React.useContext(PreferencesContext);
 
   const _setDrawerItem = (index: number) => setDrawerItemIndex(index);
 
-  const { colors, isV3 } = useTheme();
+  const { isV3, colors } = useExampleTheme();
+  const isIOS = Platform.OS === 'ios';
+
+  if (!preferences) throw new Error('PreferencesContext not provided');
+
+  const {
+    toggleShouldUseDeviceColors,
+    toggleTheme,
+    toggleRtl: toggleRTL,
+    toggleThemeVersion,
+    toggleCollapsed,
+    toggleCustomFont,
+    toggleRippleEffect,
+    customFontLoaded,
+    rippleEffectEnabled,
+    collapsed,
+    rtl: isRTL,
+    theme: { dark: isDarkTheme },
+    shouldUseDeviceColors,
+  } = preferences;
 
   const _handleToggleRTL = () => {
     toggleRTL();
@@ -126,7 +142,7 @@ const DrawerItems = ({
       ]}
     >
       {isV3 && collapsed && (
-        <Drawer.Section>
+        <Drawer.Section style={styles.collapsedSection}>
           {DrawerCollapsedItemsData.map((props, index) => (
             <Drawer.CollapsedItem
               {...props}
@@ -134,7 +150,7 @@ const DrawerItems = ({
               active={drawerItemIndex === index}
               onPress={() => {
                 _setDrawerItem(index);
-                index === 4 && preferences.toggleCollapsed();
+                index === 4 && toggleCollapsed();
               }}
             />
           ))}
@@ -155,6 +171,16 @@ const DrawerItems = ({
           </Drawer.Section>
 
           <Drawer.Section title="Preferences">
+            {deviceColorsSupported && isV3 ? (
+              <TouchableRipple onPress={toggleShouldUseDeviceColors}>
+                <View style={[styles.preference, isV3 && styles.v3Preference]}>
+                  <Text variant="labelLarge">Use device colors *</Text>
+                  <View pointerEvents="none">
+                    <Switch value={shouldUseDeviceColors} />
+                  </View>
+                </View>
+              </TouchableRipple>
+            ) : null}
             <TouchableRipple onPress={toggleTheme}>
               <View style={[styles.preference, isV3 && styles.v3Preference]}>
                 <Text variant="labelLarge">Dark Theme</Text>
@@ -164,18 +190,20 @@ const DrawerItems = ({
               </View>
             </TouchableRipple>
 
-            <TouchableRipple onPress={_handleToggleRTL}>
-              <View style={[styles.preference, isV3 && styles.v3Preference]}>
-                <Text variant="labelLarge">RTL</Text>
-                <View pointerEvents="none">
-                  <Switch value={isRTL} />
+            {!isWeb && (
+              <TouchableRipple onPress={_handleToggleRTL}>
+                <View style={[styles.preference, isV3 && styles.v3Preference]}>
+                  <Text variant="labelLarge">RTL</Text>
+                  <View pointerEvents="none">
+                    <Switch value={isRTL} />
+                  </View>
                 </View>
-              </View>
-            </TouchableRipple>
+              </TouchableRipple>
+            )}
 
             <TouchableRipple onPress={toggleThemeVersion}>
               <View style={[styles.preference, isV3 && styles.v3Preference]}>
-                <Text variant="labelLarge">Switch back to Material 2</Text>
+                <Text variant="labelLarge">MD 2</Text>
                 <View pointerEvents="none">
                   <Switch value={!isV3} />
                 </View>
@@ -185,19 +213,50 @@ const DrawerItems = ({
             {isV3 && (
               <TouchableRipple onPress={toggleCollapsed}>
                 <View style={[styles.preference, isV3 && styles.v3Preference]}>
-                  <Text variant="labelLarge">Collapsed drawer</Text>
+                  <Text variant="labelLarge">Collapsed drawer *</Text>
                   <View pointerEvents="none">
                     <Switch value={collapsed} />
                   </View>
                 </View>
               </TouchableRipple>
             )}
+
+            {isV3 && (
+              <TouchableRipple onPress={toggleCustomFont}>
+                <View style={[styles.preference, isV3 && styles.v3Preference]}>
+                  <Text variant="labelLarge">Custom font *</Text>
+                  <View pointerEvents="none">
+                    <Switch value={customFontLoaded} />
+                  </View>
+                </View>
+              </TouchableRipple>
+            )}
+
+            <TouchableRipple onPress={toggleRippleEffect}>
+              <View style={[styles.preference, isV3 && styles.v3Preference]}>
+                <Text variant="labelLarge">
+                  {isIOS ? 'Highlight' : 'Ripple'} effect *
+                </Text>
+                <View pointerEvents="none">
+                  <Switch value={rippleEffectEnabled} />
+                </View>
+              </View>
+            </TouchableRipple>
           </Drawer.Section>
+          {isV3 && !collapsed && (
+            <Text variant="bodySmall" style={styles.annotation}>
+              * - available only for MD3
+            </Text>
+          )}
+          <Text variant="bodySmall" style={styles.annotation}>
+            React Native Paper Version{' '}
+            {require('react-native-paper/package.json').version}
+          </Text>
         </>
       )}
     </DrawerContentScrollView>
   );
-};
+}
 
 const styles = StyleSheet.create({
   drawerContent: {
@@ -216,6 +275,13 @@ const styles = StyleSheet.create({
   },
   badge: {
     alignSelf: 'center',
+  },
+  collapsedSection: {
+    marginTop: 16,
+  },
+  annotation: {
+    marginHorizontal: 24,
+    marginVertical: 6,
   },
 });
 

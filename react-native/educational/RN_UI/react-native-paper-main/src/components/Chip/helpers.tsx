@@ -1,10 +1,12 @@
-import color from 'color';
-import type { Theme } from '../../types';
-import { black, white } from '../../styles/themes/v2/colors';
 import type { ColorValue } from 'react-native';
 
+import color from 'color';
+
+import { black, white } from '../../styles/themes/v2/colors';
+import type { InternalTheme } from '../../types';
+
 type BaseProps = {
-  theme: Theme;
+  theme: InternalTheme;
   isOutlined: boolean;
   disabled?: boolean;
 };
@@ -222,13 +224,22 @@ const getIconColor = ({
   return color(theme.colors.text).alpha(0.54).rgb().string();
 };
 
-const getUnderlayColor = ({
+const getRippleColor = ({
   theme,
   isOutlined,
   disabled,
   selectedColor,
   selectedBackgroundColor,
-}: BaseProps & { selectedBackgroundColor: string; selectedColor?: string }) => {
+  customRippleColor,
+}: BaseProps & {
+  selectedBackgroundColor: string;
+  selectedColor?: string;
+  customRippleColor?: ColorValue;
+}) => {
+  if (customRippleColor) {
+    return customRippleColor;
+  }
+
   const isSelectedColor = selectedColor !== undefined;
   const textColor = getTextColor({
     theme,
@@ -259,11 +270,13 @@ export const getChipColors = ({
   showSelectedOverlay,
   customBackgroundColor,
   disabled,
+  customRippleColor,
 }: BaseProps & {
   customBackgroundColor?: ColorValue;
   disabled?: boolean;
   showSelectedOverlay?: boolean;
   selectedColor?: string;
+  customRippleColor?: ColorValue;
 }) => {
   const baseChipColorProps = { theme, isOutlined, disabled };
 
@@ -292,10 +305,11 @@ export const getChipColors = ({
       ...baseChipColorProps,
       selectedColor,
     }),
-    underlayColor: getUnderlayColor({
+    rippleColor: getRippleColor({
       ...baseChipColorProps,
       selectedColor,
       selectedBackgroundColor,
+      customRippleColor,
     }),
     backgroundColor,
     selectedBackgroundColor,

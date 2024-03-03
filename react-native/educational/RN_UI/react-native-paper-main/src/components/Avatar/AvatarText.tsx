@@ -1,16 +1,18 @@
 import * as React from 'react';
 import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
+  useWindowDimensions,
   View,
   ViewStyle,
-  StyleSheet,
-  StyleProp,
-  TextStyle,
 } from 'react-native';
-import Text from '../Typography/Text';
-import { withTheme } from '../../core/theming';
+
+import { useInternalTheme } from '../../core/theming';
 import { white } from '../../styles/themes/v2/colors';
+import type { ThemeProp } from '../../types';
 import getContrastingColor from '../../utils/getContrastingColor';
-import type { Theme } from '../../types';
+import Text from '../Typography/Text';
 
 const defaultSize = 64;
 
@@ -36,19 +38,17 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
    */
   labelStyle?: StyleProp<TextStyle>;
   /**
+   * Specifies the largest possible scale a text font can reach.
+   */
+  maxFontSizeMultiplier?: number;
+  /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
 };
 
 /**
  * Avatars can be used to represent people in a graphical way.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="medium" src="screenshots/avatar-text.png" />
- *   </figure>
- * </div>
  *
  * ## Usage
  * ```js
@@ -64,16 +64,19 @@ const AvatarText = ({
   label,
   size = defaultSize,
   style,
-  theme,
   labelStyle,
   color: customColor,
+  theme: themeOverrides,
+  maxFontSizeMultiplier,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { backgroundColor = theme.colors?.primary, ...restStyle } =
     StyleSheet.flatten(style) || {};
   const textColor =
     customColor ??
     getContrastingColor(backgroundColor, white, 'rgba(0, 0, 0, .54)');
+  const { fontScale } = useWindowDimensions();
 
   return (
     <View
@@ -95,11 +98,12 @@ const AvatarText = ({
           {
             color: textColor,
             fontSize: size / 2,
-            lineHeight: size,
+            lineHeight: size / fontScale,
           },
           labelStyle,
         ]}
         numberOfLines={1}
+        maxFontSizeMultiplier={maxFontSizeMultiplier}
       >
         {label}
       </Text>
@@ -120,4 +124,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(AvatarText);
+export default AvatarText;

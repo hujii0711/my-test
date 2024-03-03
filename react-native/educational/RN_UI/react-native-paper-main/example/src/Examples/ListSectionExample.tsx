@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { StyleSheet, Image, View } from 'react-native';
+
 import { Caption, List, Text, Chip, Divider } from 'react-native-paper';
+
 import ScreenWrapper from '../ScreenWrapper';
 const ListSectionExample = () => {
   return (
@@ -29,6 +31,7 @@ const ListSectionExample = () => {
             <Image
               source={require('../../assets/images/email-icon.png')}
               style={styles.image}
+              accessibilityIgnoresInvertColors
             />
           )}
           title="List item 1"
@@ -39,6 +42,7 @@ const ListSectionExample = () => {
             <Image
               source={require('../../assets/images/email-icon.png')}
               style={styles.image}
+              accessibilityIgnoresInvertColors
             />
           )}
           right={(props) => <List.Icon {...props} icon="information" />}
@@ -54,6 +58,7 @@ const ListSectionExample = () => {
             <Image
               source={require('../../assets/images/email-icon.png')}
               style={styles.image}
+              accessibilityIgnoresInvertColors
             />
           )}
           title="List item 1"
@@ -64,6 +69,7 @@ const ListSectionExample = () => {
             <Image
               source={require('../../assets/images/email-icon.png')}
               style={styles.image}
+              accessibilityIgnoresInvertColors
             />
           )}
           right={(props) => <List.Icon {...props} icon="star-outline" />}
@@ -79,6 +85,7 @@ const ListSectionExample = () => {
             <Image
               source={require('../../assets/images/email-icon.png')}
               style={styles.image}
+              accessibilityIgnoresInvertColors
             />
           )}
           right={(props) => <List.Icon {...props} icon="star-outline" />}
@@ -111,7 +118,7 @@ const ListSectionExample = () => {
               <View
                 style={[styles.container, styles.row, styles.additionalPadding]}
               >
-                <Chip icon="file-pdf" onPress={() => {}}>
+                <Chip icon="file-pdf-box" onPress={() => {}}>
                   DOCS.pdf
                 </Chip>
               </View>

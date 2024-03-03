@@ -1,6 +1,8 @@
 import * as React from 'react';
 import { View, StyleSheet } from 'react-native';
-import { TouchableRipple, Paragraph } from 'react-native-paper';
+
+import { Text, TouchableRipple } from 'react-native-paper';
+
 import ScreenWrapper from '../ScreenWrapper';
 
 const RippleExample = () => {
@@ -12,7 +14,7 @@ const RippleExample = () => {
         rippleColor="rgba(0, 0, 0, .32)"
       >
         <View pointerEvents="none">
-          <Paragraph>Press anywhere</Paragraph>
+          <Text variant="bodyMedium">Press anywhere</Text>
         </View>
       </TouchableRipple>
     </ScreenWrapper>

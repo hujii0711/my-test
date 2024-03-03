@@ -1,15 +1,16 @@
 import * as React from 'react';
 import {
   Animated,
-  StyleSheet,
   StyleProp,
+  StyleSheet,
   TextStyle,
   useWindowDimensions,
 } from 'react-native';
-import { white, black } from '../styles/themes/v2/colors';
-import { withTheme } from '../core/theming';
+
+import { useInternalTheme } from '../core/theming';
+import { black, white } from '../styles/themes/v2/colors';
+import type { ThemeProp } from '../types';
 import getContrastingColor from '../utils/getContrastingColor';
-import type { Theme } from '../types';
 
 const defaultSize = 20;
 
@@ -31,23 +32,12 @@ export type Props = React.ComponentProps<typeof Animated.Text> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
 };
 
 /**
  * Badges are small status descriptors for UI elements.
  * A badge consists of a small circle, typically containing a number or other short set of characters, that appears in proximity to another object.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="small" src="screenshots/badge-1.png" />
- *     <figcaption>Badge with content</figcaption>
- *   </figure>
- *   <figure>
- *     <img class="small" src="screenshots/badge-2.png" />
- *     <figcaption>Badge without content</figcaption>
- *   </figure>
- * </div>
  *
  * ## Usage
  * ```js
@@ -65,10 +55,11 @@ const Badge = ({
   children,
   size = defaultSize,
   style,
-  theme,
+  theme: themeOverrides,
   visible = true,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { current: opacity } = React.useRef<Animated.Value>(
     new Animated.Value(visible ? 1 : 0)
   );
@@ -135,7 +126,7 @@ const Badge = ({
   );
 };
 
-export default withTheme(Badge);
+export default Badge;
 
 const styles = StyleSheet.create({
   container: {

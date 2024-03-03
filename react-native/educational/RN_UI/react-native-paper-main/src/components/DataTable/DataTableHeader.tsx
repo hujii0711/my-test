@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
 import color from 'color';
-import { StyleSheet, StyleProp, View, ViewStyle } from 'react-native';
+
+import { useInternalTheme } from '../../core/theming';
 import { black, white } from '../../styles/themes/v2/colors';
-import { withTheme } from '../../core/theming';
-import type { Theme } from '../../types';
+import type { ThemeProp } from '../../types';
 
 export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
@@ -14,18 +16,11 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
 };
 
 /**
  * A component to display title in table header.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="medium" src="screenshots/data-table-header.png" />
- *   </figure>
- * </div>
- *
  *
  * ## Usage
  * ```js
@@ -50,7 +45,13 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
  * ```
  */
 
-const DataTableHeader = ({ children, style, theme, ...rest }: Props) => {
+const DataTableHeader = ({
+  children,
+  style,
+  theme: themeOverrides,
+  ...rest
+}: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const borderBottomColor = theme.isV3
     ? theme.colors.surfaceVariant
     : color(theme.dark ? white : black)
@@ -70,13 +71,12 @@ DataTableHeader.displayName = 'DataTable.Header';
 const styles = StyleSheet.create({
   header: {
     flexDirection: 'row',
-    height: 48,
     paddingHorizontal: 16,
     borderBottomWidth: StyleSheet.hairlineWidth * 2,
   },
 });
 
-export default withTheme(DataTableHeader);
+export default DataTableHeader;
 
 // @component-docs ignore-next-line
 export { DataTableHeader };

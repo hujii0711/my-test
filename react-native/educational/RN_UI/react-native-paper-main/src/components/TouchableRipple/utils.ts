@@ -1,13 +1,16 @@
+import type { ColorValue } from 'react-native';
+
 import color from 'color';
-import type { Theme } from '../../types';
+
+import type { InternalTheme } from '../../types';
 
 const getUnderlayColor = ({
   theme,
   calculatedRippleColor,
   underlayColor,
 }: {
-  theme: Theme;
-  calculatedRippleColor: string;
+  theme: InternalTheme;
+  calculatedRippleColor: ColorValue;
   underlayColor?: string;
 }) => {
   if (underlayColor != null) {
@@ -25,8 +28,8 @@ const getRippleColor = ({
   theme,
   rippleColor,
 }: {
-  theme: Theme;
-  rippleColor?: string;
+  theme: InternalTheme;
+  rippleColor?: ColorValue;
 }) => {
   if (rippleColor) {
     return rippleColor;
@@ -47,8 +50,8 @@ export const getTouchableRippleColors = ({
   rippleColor,
   underlayColor,
 }: {
-  theme: Theme;
-  rippleColor?: string;
+  theme: InternalTheme;
+  rippleColor?: ColorValue;
   underlayColor?: string;
 }) => {
   const calculatedRippleColor = getRippleColor({ theme, rippleColor });

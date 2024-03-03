@@ -1,9 +1,11 @@
 import * as React from 'react';
-import { StyleSheet, View, ViewStyle, Image, StyleProp } from 'react-native';
-import { withTheme } from '../../core/theming';
-import { grey200 } from '../../styles/themes/v2/colors';
-import type { Theme } from '../../types';
+import { Image, StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
 import { getCardCoverStyle } from './utils';
+import { useInternalTheme } from '../../core/theming';
+import { grey200 } from '../../styles/themes/v2/colors';
+import type { ThemeProp } from '../../types';
+import { splitStyles } from '../../utils/splitStyles';
 
 export type Props = React.ComponentPropsWithRef<typeof Image> & {
   /**
@@ -18,17 +20,11 @@ export type Props = React.ComponentPropsWithRef<typeof Image> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
 };
 
 /**
  * A component to show a cover image inside a Card.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="small" src="screenshots/card-cover.png" />
- *   </figure>
- * </div>
  *
  * ## Usage
  * ```js
@@ -46,12 +42,35 @@ export type Props = React.ComponentPropsWithRef<typeof Image> & {
  *
  * @extends Image props https://reactnative.dev/docs/image#props
  */
-const CardCover = ({ index, total, style, theme, ...rest }: Props) => {
-  const coverStyle = getCardCoverStyle({ theme, index, total });
+const CardCover = ({
+  index,
+  total,
+  style,
+  theme: themeOverrides,
+  ...rest
+}: Props) => {
+  const theme = useInternalTheme(themeOverrides);
+
+  const flattenedStyles = (StyleSheet.flatten(style) || {}) as ViewStyle;
+  const [, borderRadiusStyles] = splitStyles(
+    flattenedStyles,
+    (style) => style.startsWith('border') && style.endsWith('Radius')
+  );
+
+  const coverStyle = getCardCoverStyle({
+    theme,
+    index,
+    total,
+    borderRadiusStyles,
+  });
 
   return (
     <View style={[styles.container, coverStyle, style]}>
-      <Image {...rest} style={[styles.image, coverStyle]} />
+      <Image
+        {...rest}
+        style={[styles.image, coverStyle]}
+        accessibilityIgnoresInvertColors
+      />
     </View>
   );
 };
@@ -72,7 +91,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(CardCover);
+export default CardCover;
 
 // @component-docs ignore-next-line
 export { CardCover };

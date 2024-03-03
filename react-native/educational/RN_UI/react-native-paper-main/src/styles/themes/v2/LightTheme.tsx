@@ -1,7 +1,8 @@
 import color from 'color';
-import type { MD2Theme } from '../../../types';
-import configureFonts from '../../fonts';
+
 import { black, pinkA400, white } from './colors';
+import type { Fonts, MD2Theme } from '../../../types';
+import configureFonts from '../../fonts';
 
 export const MD2LightTheme: MD2Theme = {
   dark: false,
@@ -20,8 +21,9 @@ export const MD2LightTheme: MD2Theme = {
     placeholder: color(black).alpha(0.54).rgb().string(),
     backdrop: color(black).alpha(0.5).rgb().string(),
     notification: pinkA400,
+    tooltip: 'rgba(28, 27, 31, 1)',
   },
-  fonts: configureFonts(),
+  fonts: configureFonts({ isV3: false }) as Fonts,
   animation: {
     scale: 1.0,
   },

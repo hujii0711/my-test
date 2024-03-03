@@ -1,15 +1,19 @@
 import * as React from 'react';
-import { StyleSheet } from 'react-native';
-import { Button, useTheme } from 'react-native-paper';
-import ScreenWrapper from '../ScreenWrapper';
+import { Platform, StyleSheet } from 'react-native';
+
+import { Button } from 'react-native-paper';
+
 import {
   DialogWithCustomColors,
+  DialogWithDismissableBackButton,
+  DialogWithIcon,
   DialogWithLoadingIndicator,
   DialogWithLongText,
   DialogWithRadioBtns,
   UndismissableDialog,
-  DialogWithIcon,
 } from './Dialogs';
+import { useExampleTheme } from '..';
+import ScreenWrapper from '../ScreenWrapper';
 
 type ButtonVisibility = {
   [key: string]: boolean | undefined;
@@ -17,7 +21,7 @@ type ButtonVisibility = {
 
 const DialogExample = () => {
   const [visible, setVisible] = React.useState<ButtonVisibility>({});
-  const { isV3 } = useTheme();
+  const { isV3 } = useExampleTheme();
 
   const _toggleDialog = (name: string) => () =>
     setVisible({ ...visible, [name]: !visible[name] });
@@ -70,6 +74,15 @@ const DialogExample = () => {
           With icon
         </Button>
       )}
+      {Platform.OS === 'android' && (
+        <Button
+          mode="outlined"
+          onPress={_toggleDialog('dialog7')}
+          style={styles.button}
+        >
+          Dismissable back button
+        </Button>
+      )}
       <DialogWithLongText
         visible={_getVisible('dialog1')}
         close={_toggleDialog('dialog1')}
@@ -96,6 +109,10 @@ const DialogExample = () => {
           close={_toggleDialog('dialog6')}
         />
       )}
+      <DialogWithDismissableBackButton
+        visible={_getVisible('dialog7')}
+        close={_toggleDialog('dialog7')}
+      />
     </ScreenWrapper>
   );
 };

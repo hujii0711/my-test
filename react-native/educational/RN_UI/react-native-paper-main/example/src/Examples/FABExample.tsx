@@ -1,6 +1,10 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
-import { FAB, Portal, useTheme, Text } from 'react-native-paper';
+import { Alert, StyleSheet, View } from 'react-native';
+
+import { FAB, Portal, Text } from 'react-native-paper';
+
+import { useExampleTheme } from '..';
+import { isWeb } from '../../utils';
 import ScreenWrapper from '../ScreenWrapper';
 
 type FABVariant = 'primary' | 'secondary' | 'tertiary' | 'surface';
@@ -9,8 +13,10 @@ type FABMode = 'flat' | 'elevated';
 
 const FABExample = () => {
   const [visible, setVisible] = React.useState<boolean>(true);
+  const [toggleStackOnLongPress, setToggleStackOnLongPress] =
+    React.useState<boolean>(false);
   const [open, setOpen] = React.useState<boolean>(false);
-  const { isV3 } = useTheme();
+  const { isV3 } = useExampleTheme();
 
   const variants = ['primary', 'secondary', 'tertiary', 'surface'];
   const sizes = ['small', 'medium', 'large'];
@@ -139,6 +145,7 @@ const FABExample = () => {
           <FAB.Group
             open={open}
             icon={open ? 'calendar-today' : 'plus'}
+            toggleStackOnLongPress={toggleStackOnLongPress}
             actions={[
               { icon: 'plus', onPress: () => {} },
               { icon: 'star', label: 'Star', onPress: () => {} },
@@ -149,10 +156,34 @@ const FABExample = () => {
                 onPress: () => {},
                 size: isV3 ? 'small' : 'medium',
               },
+              {
+                icon: toggleStackOnLongPress
+                  ? 'gesture-tap'
+                  : 'gesture-tap-hold',
+                label: toggleStackOnLongPress
+                  ? 'Toggle on Press'
+                  : 'Toggle on Long Press',
+                onPress: () => {
+                  setToggleStackOnLongPress(!toggleStackOnLongPress);
+                },
+              },
             ]}
+            enableLongPressWhenStackOpened
             onStateChange={({ open }: { open: boolean }) => setOpen(open)}
             onPress={() => {
-              if (open) {
+              if (toggleStackOnLongPress) {
+                isWeb ? alert('Fab is Pressed') : Alert.alert('Fab is Pressed');
+                // do something on press when the speed dial is closed
+              } else if (open) {
+                isWeb ? alert('Fab is Pressed') : Alert.alert('Fab is Pressed');
+                // do something if the speed dial is open
+              }
+            }}
+            onLongPress={() => {
+              if (!toggleStackOnLongPress || open) {
+                isWeb
+                  ? alert('Fab is Long Pressed')
+                  : Alert.alert('Fab is Long Pressed');
                 // do something if the speed dial is open
               }
             }}

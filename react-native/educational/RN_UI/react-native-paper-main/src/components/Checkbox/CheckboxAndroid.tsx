@@ -1,10 +1,16 @@
 import * as React from 'react';
-import { Animated, View, StyleSheet } from 'react-native';
+import {
+  Animated,
+  GestureResponderEvent,
+  StyleSheet,
+  View,
+} from 'react-native';
+
+import { getAndroidSelectionControlColor } from './utils';
+import { useInternalTheme } from '../../core/theming';
+import type { $RemoveChildren, ThemeProp } from '../../types';
 import MaterialCommunityIcon from '../MaterialCommunityIcon';
 import TouchableRipple from '../TouchableRipple/TouchableRipple';
-import { withTheme } from '../../core/theming';
-import type { $RemoveChildren, Theme } from '../../types';
-import { getAndroidSelectionControlColor } from './utils';
 
 export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
@@ -18,7 +24,7 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
   /**
    * Custom color for unchecked checkbox.
    */
@@ -30,7 +36,7 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
   /**
    * testID to be used on tests.
    */
@@ -45,25 +51,17 @@ const ANIMATION_DURATION = 100;
  * This component follows platform guidelines for Android, but can be used
  * on any platform.
  *
- * <div class="screenshots">
- *   <figure>
- *     <img src="screenshots/checkbox-enabled.android.png" />
- *     <figcaption>Enabled</figcaption>
- *   </figure>
- *   <figure>
- *     <img src="screenshots/checkbox-disabled.android.png" />
- *     <figcaption>Disabled</figcaption>
- *   </figure>
- * </div>
+ * @extends TouchableRipple props https://callstack.github.io/react-native-paper/docs/components/TouchableRipple
  */
 const CheckboxAndroid = ({
   status,
-  theme,
+  theme: themeOverrides,
   disabled,
   onPress,
   testID,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { current: scaleAnim } = React.useRef<Animated.Value>(
     new Animated.Value(1)
   );
@@ -133,6 +131,7 @@ const CheckboxAndroid = ({
       accessibilityLiveRegion="polite"
       style={styles.container}
       testID={testID}
+      theme={theme}
     >
       <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
         <MaterialCommunityIcon
@@ -175,9 +174,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(CheckboxAndroid);
+export default CheckboxAndroid;
 
 // @component-docs ignore-next-line
-const CheckboxAndroidWithTheme = withTheme(CheckboxAndroid);
-// @component-docs ignore-next-line
-export { CheckboxAndroidWithTheme as CheckboxAndroid };
+export { CheckboxAndroid };

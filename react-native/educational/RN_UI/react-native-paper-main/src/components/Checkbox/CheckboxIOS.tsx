@@ -1,10 +1,11 @@
 import * as React from 'react';
-import { StyleSheet, View } from 'react-native';
+import { GestureResponderEvent, StyleSheet, View } from 'react-native';
+
+import { getSelectionControlIOSColor } from './utils';
+import { useInternalTheme } from '../../core/theming';
+import type { $RemoveChildren, ThemeProp } from '../../types';
 import MaterialCommunityIcon from '../MaterialCommunityIcon';
 import TouchableRipple from '../TouchableRipple/TouchableRipple';
-import { withTheme } from '../../core/theming';
-import type { $RemoveChildren, Theme } from '../../types';
-import { getSelectionControlIOSColor } from './utils';
 
 export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
@@ -18,7 +19,7 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
   /**
    * Custom color for checkbox.
    */
@@ -26,7 +27,7 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
   /**
    * testID to be used on tests.
    */
@@ -38,25 +39,17 @@ export type Props = $RemoveChildren<typeof TouchableRipple> & {
  * This component follows platform guidelines for iOS, but can be used
  * on any platform.
  *
- * <div class="screenshots">
- *   <figure>
- *     <img src="screenshots/checkbox-enabled.ios.png" />
- *     <figcaption>Enabled</figcaption>
- *   </figure>
- *   <figure>
- *     <img src="screenshots/checkbox-disabled.ios.png" />
- *     <figcaption>Disabled</figcaption>
- *   </figure>
- * </div>
+ * @extends TouchableRipple props https://callstack.github.io/react-native-paper/docs/components/TouchableRipple
  */
 const CheckboxIOS = ({
   status,
   disabled,
   onPress,
-  theme,
+  theme: themeOverrides,
   testID,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const checked = status === 'checked';
   const indeterminate = status === 'indeterminate';
 
@@ -67,6 +60,7 @@ const CheckboxIOS = ({
   });
 
   const icon = indeterminate ? 'minus' : 'check';
+  const opacity = indeterminate || checked ? 1 : 0;
 
   return (
     <TouchableRipple
@@ -80,8 +74,9 @@ const CheckboxIOS = ({
       accessibilityLiveRegion="polite"
       style={styles.container}
       testID={testID}
+      theme={theme}
     >
-      <View style={{ opacity: indeterminate || checked ? 1 : 0 }}>
+      <View style={{ opacity }}>
         <MaterialCommunityIcon
           allowFontScaling={false}
           name={icon}
@@ -103,9 +98,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(CheckboxIOS);
+export default CheckboxIOS;
 
 // @component-docs ignore-next-line
-const CheckboxIOSWithTheme = withTheme(CheckboxIOS);
-// @component-docs ignore-next-line
-export { CheckboxIOSWithTheme as CheckboxIOS };
+export { CheckboxIOS };

@@ -1,22 +1,27 @@
 import * as React from 'react';
 import {
+  AccessibilityState,
+  ColorValue,
+  GestureResponderEvent,
+  PressableAndroidRippleConfig,
   StyleProp,
   StyleSheet,
   TextStyle,
   View,
   ViewStyle,
 } from 'react-native';
-import Icon, { IconSource } from '../Icon';
-import TouchableRipple from '../TouchableRipple/TouchableRipple';
-import Text from '../Typography/Text';
-import { withTheme } from '../../core/theming';
-import type { Theme } from '../../types';
+
 import {
   getContentMaxWidth,
   getMenuItemColor,
   MAX_WIDTH,
   MIN_WIDTH,
 } from './utils';
+import { useInternalTheme } from '../../core/theming';
+import type { ThemeProp } from '../../types';
+import Icon, { IconSource } from '../Icon';
+import TouchableRipple from '../TouchableRipple/TouchableRipple';
+import Text from '../Typography/Text';
 
 export type Props = {
   /**
@@ -46,9 +51,18 @@ export type Props = {
    */
   dense?: boolean;
   /**
+   * Type of background drawabale to display the feedback (Android).
+   * https://reactnative.dev/docs/pressable#rippleconfig
+   */
+  background?: PressableAndroidRippleConfig;
+  /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
+  /**
+   * Specifies the largest possible scale a title font can reach.
+   */
+  titleMaxFontSizeMultiplier?: number;
   /**
    * @optional
    */
@@ -56,9 +70,13 @@ export type Props = {
   contentStyle?: StyleProp<ViewStyle>;
   titleStyle?: StyleProp<TextStyle>;
   /**
+   * Color of the ripple effect.
+   */
+  rippleColor?: ColorValue;
+  /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
   /**
    * TestID used for testing purposes
    */
@@ -67,16 +85,14 @@ export type Props = {
    * Accessibility label for the Touchable. This is read by the screen reader when the user taps the component.
    */
   accessibilityLabel?: string;
+  /**
+   * Accessibility state for the Touchable. This is read by the screen reader when the user taps the component.
+   */
+  accessibilityState?: AccessibilityState;
 };
 
 /**
  * A component to show a single list item inside a Menu.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="medium" src="screenshots/menu-item.png" />
- *   </figure>
- * </div>
  *
  * ## Usage
  * ```js
@@ -103,17 +119,23 @@ const MenuItem = ({
   dense,
   title,
   disabled,
+  background,
   onPress,
   style,
   contentStyle,
-  testID,
   titleStyle,
+  rippleColor: customRippleColor,
+  testID = 'menu-item',
   accessibilityLabel,
-  theme,
+  accessibilityState,
+  theme: themeOverrides,
+  titleMaxFontSizeMultiplier = 1.5,
 }: Props) => {
-  const { titleColor, iconColor, underlayColor } = getMenuItemColor({
+  const theme = useInternalTheme(themeOverrides);
+  const { titleColor, iconColor, rippleColor } = getMenuItemColor({
     theme,
     disabled,
+    customRippleColor,
   });
   const { isV3 } = theme;
 
@@ -130,6 +152,13 @@ const MenuItem = ({
     trailingIcon,
   });
 
+  const titleTextStyle = {
+    color: titleColor,
+    ...(isV3 ? theme.fonts.bodyLarge : {}),
+  };
+
+  const newAccessibilityState = { ...accessibilityState, disabled };
+
   return (
     <TouchableRipple
       style={[
@@ -141,10 +170,11 @@ const MenuItem = ({
       onPress={onPress}
       disabled={disabled}
       testID={testID}
+      background={background}
       accessibilityLabel={accessibilityLabel}
       accessibilityRole="menuitem"
-      accessibilityState={{ disabled }}
-      underlayColor={underlayColor}
+      accessibilityState={newAccessibilityState}
+      rippleColor={rippleColor}
     >
       <View style={styles.row}>
         {leadingIcon ? (
@@ -172,7 +202,9 @@ const MenuItem = ({
             variant="bodyLarge"
             selectable={false}
             numberOfLines={1}
-            style={[!isV3 && styles.title, { color: titleColor }, titleStyle]}
+            testID={`${testID}-title`}
+            style={[!isV3 && styles.title, titleTextStyle, titleStyle]}
+            maxFontSizeMultiplier={titleMaxFontSizeMultiplier}
           >
             {title}
           </Text>
@@ -222,4 +254,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(MenuItem);
+export default MenuItem;

@@ -1,11 +1,14 @@
 import React from 'react';
-import { StyleSheet, View, FlatList } from 'react-native';
-import { Paragraph, RadioButton, Text, useTheme } from 'react-native-paper';
+import { FlatList, ListRenderItemInfo, StyleSheet, View } from 'react-native';
+
+import { TouchableOpacity } from 'react-native-gesture-handler';
 import type {
   AnimatedFABAnimateFrom,
   AnimatedFABIconMode,
 } from 'react-native-paper';
-import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Paragraph, RadioButton, Text } from 'react-native-paper';
+
+import { useExampleTheme } from '../..';
 
 export type Controls = {
   iconMode: AnimatedFABIconMode;
@@ -37,14 +40,15 @@ const CustomControl = ({
   value,
   onChange,
 }: CustomControlProps) => {
-  const { isV3 } = useTheme();
+  const { isV3 } = useExampleTheme();
 
   const _renderItem = React.useCallback(
-    ({ item }) => {
+    ({ item }: ListRenderItemInfo<(typeof options)[number]>) => {
       const TextComponent = isV3 ? Text : Paragraph;
 
       return (
         <TouchableOpacity
+          accessibilityRole="button"
           onPress={() => onChange(item)}
           style={styles.controlItem}
         >
@@ -60,7 +64,10 @@ const CustomControl = ({
     [value, onChange, isV3]
   );
 
-  const _keyExtractor = React.useCallback((item) => item, []);
+  const _keyExtractor = React.useCallback(
+    (item: (typeof options)[number]) => item,
+    []
+  );
   const TextComponent = isV3 ? Text : Paragraph;
 
   return (
@@ -83,7 +90,7 @@ const CustomFABControls = ({
   setControls,
   controls: { animateFrom, iconMode },
 }: Props) => {
-  const { colors } = useTheme();
+  const { colors } = useExampleTheme();
 
   const setIconMode = (newIconMode: AnimatedFABIconMode) =>
     setControls((state) => ({ ...state, iconMode: newIconMode }));

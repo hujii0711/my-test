@@ -1,31 +1,26 @@
 import * as React from 'react';
 import {
-  StyleSheet,
+  ColorValue,
+  I18nManager,
   StyleProp,
+  StyleSheet,
   View,
   ViewStyle,
-  I18nManager,
 } from 'react-native';
+
 import color from 'color';
+import type { ThemeProp } from 'src/types';
+
+import { useInternalTheme } from '../../core/theming';
+import Button from '../Button/Button';
 import IconButton from '../IconButton/IconButton';
-import Text from '../Typography/Text';
-import { withTheme, useTheme } from '../../core/theming';
 import MaterialCommunityIcon from '../MaterialCommunityIcon';
 import Menu from '../Menu/Menu';
-import Button from '../Button/Button';
-import type { Theme } from '../../types';
+import Text from '../Typography/Text';
 
 export type Props = React.ComponentPropsWithRef<typeof View> &
   PaginationControlsProps &
   PaginationDropdownProps & {
-    /**
-     * Label text to display which indicates current pagination.
-     */
-    label?: React.ReactNode;
-    /**
-     * AccessibilityLabel for `label`.
-     */
-    accessibilityLabel?: string;
     /**
      * Label text for select page dropdown to display.
      */
@@ -34,11 +29,19 @@ export type Props = React.ComponentPropsWithRef<typeof View> &
      * AccessibilityLabel for `selectPageDropdownLabel`.
      */
     selectPageDropdownAccessibilityLabel?: string;
+    /**
+     * Label text to display which indicates current pagination.
+     */
+    label?: React.ReactNode;
+    /**
+     * AccessibilityLabel for `label`.
+     */
+    accessibilityLabel?: string;
     style?: StyleProp<ViewStyle>;
     /**
      * @optional
      */
-    theme: Theme;
+    theme?: ThemeProp;
   };
 
 type PaginationDropdownProps = {
@@ -54,6 +57,18 @@ type PaginationDropdownProps = {
    * The function to set the number of rows per page.
    */
   onItemsPerPageChange?: (numberOfItemsPerPage: number) => void;
+  /**
+   * Color of the dropdown item ripple effect.
+   */
+  dropdownItemRippleColor?: ColorValue;
+  /**
+   * Color of the select page dropdown ripple effect.
+   */
+  selectPageDropdownRippleColor?: ColorValue;
+  /**
+   * @optional
+   */
+  theme?: ThemeProp;
 };
 
 type PaginationControlsProps = {
@@ -73,6 +88,14 @@ type PaginationControlsProps = {
    * Whether to show fast forward and fast rewind buttons in pagination. False by default.
    */
   showFastPaginationControls?: boolean;
+  /**
+   * Color of the pagination control ripple effect.
+   */
+  paginationControlRippleColor?: ColorValue;
+  /**
+   * @optional
+   */
+  theme?: ThemeProp;
 };
 
 const PaginationControls = ({
@@ -80,8 +103,10 @@ const PaginationControls = ({
   numberOfPages,
   onPageChange,
   showFastPaginationControls,
+  theme: themeOverrides,
+  paginationControlRippleColor,
 }: PaginationControlsProps) => {
-  const theme = useTheme();
+  const theme = useInternalTheme(themeOverrides);
 
   const textColor = theme.isV3 ? theme.colors.onSurface : theme.colors.text;
 
@@ -94,13 +119,15 @@ const PaginationControls = ({
               name="page-first"
               color={color}
               size={size}
-              direction={I18nManager.isRTL ? 'rtl' : 'ltr'}
+              direction={I18nManager.getConstants().isRTL ? 'rtl' : 'ltr'}
             />
           )}
           iconColor={textColor}
+          rippleColor={paginationControlRippleColor}
           disabled={page === 0}
           onPress={() => onPageChange(0)}
           accessibilityLabel="page-first"
+          theme={theme}
         />
       ) : null}
       <IconButton
@@ -109,13 +136,15 @@ const PaginationControls = ({
             name="chevron-left"
             color={color}
             size={size}
-            direction={I18nManager.isRTL ? 'rtl' : 'ltr'}
+            direction={I18nManager.getConstants().isRTL ? 'rtl' : 'ltr'}
           />
         )}
         iconColor={textColor}
+        rippleColor={paginationControlRippleColor}
         disabled={page === 0}
         onPress={() => onPageChange(page - 1)}
         accessibilityLabel="chevron-left"
+        theme={theme}
       />
       <IconButton
         icon={({ size, color }) => (
@@ -123,13 +152,15 @@ const PaginationControls = ({
             name="chevron-right"
             color={color}
             size={size}
-            direction={I18nManager.isRTL ? 'rtl' : 'ltr'}
+            direction={I18nManager.getConstants().isRTL ? 'rtl' : 'ltr'}
           />
         )}
         iconColor={textColor}
+        rippleColor={paginationControlRippleColor}
         disabled={numberOfPages === 0 || page === numberOfPages - 1}
         onPress={() => onPageChange(page + 1)}
         accessibilityLabel="chevron-right"
+        theme={theme}
       />
       {showFastPaginationControls ? (
         <IconButton
@@ -138,13 +169,15 @@ const PaginationControls = ({
               name="page-last"
               color={color}
               size={size}
-              direction={I18nManager.isRTL ? 'rtl' : 'ltr'}
+              direction={I18nManager.getConstants().isRTL ? 'rtl' : 'ltr'}
             />
           )}
           iconColor={textColor}
+          rippleColor={paginationControlRippleColor}
           disabled={numberOfPages === 0 || page === numberOfPages - 1}
           onPress={() => onPageChange(numberOfPages - 1)}
           accessibilityLabel="page-last"
+          theme={theme}
         />
       ) : null}
     </>
@@ -155,14 +188,19 @@ const PaginationDropdown = ({
   numberOfItemsPerPageList,
   numberOfItemsPerPage,
   onItemsPerPageChange,
+  theme: themeOverrides,
+  selectPageDropdownRippleColor,
+  dropdownItemRippleColor,
 }: PaginationDropdownProps) => {
-  const { colors } = useTheme();
+  const theme = useInternalTheme(themeOverrides);
+  const { colors } = theme;
   const [showSelect, toggleSelect] = React.useState<boolean>(false);
 
   return (
     <Menu
       visible={showSelect}
       onDismiss={() => toggleSelect(!showSelect)}
+      theme={theme}
       anchor={
         <Button
           mode="outlined"
@@ -170,6 +208,8 @@ const PaginationDropdown = ({
           style={styles.button}
           icon="menu-down"
           contentStyle={styles.contentStyle}
+          theme={theme}
+          rippleColor={selectPageDropdownRippleColor}
         >
           {`${numberOfItemsPerPage}`}
         </Button>
@@ -187,7 +227,9 @@ const PaginationDropdown = ({
             onItemsPerPageChange?.(option);
             toggleSelect(false);
           }}
+          rippleColor={dropdownItemRippleColor}
           title={option}
+          theme={theme}
         />
       ))}
     </Menu>
@@ -196,13 +238,6 @@ const PaginationDropdown = ({
 
 /**
  * A component to show pagination for data table.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="medium" src="screenshots/data-table-pagination.png" />
- *   </figure>
- * </div>
- *
  *
  * ## Usage
  * ```js
@@ -263,15 +298,18 @@ const DataTablePagination = ({
   numberOfPages,
   onPageChange,
   style,
-  theme,
   showFastPaginationControls = false,
   numberOfItemsPerPageList,
   numberOfItemsPerPage,
   onItemsPerPageChange,
   selectPageDropdownLabel,
   selectPageDropdownAccessibilityLabel,
+  selectPageDropdownRippleColor,
+  dropdownItemRippleColor,
+  theme: themeOverrides,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const labelColor = color(
     theme.isV3 ? theme.colors.onSurface : theme?.colors.text
   )
@@ -306,6 +344,9 @@ const DataTablePagination = ({
               numberOfItemsPerPageList={numberOfItemsPerPageList}
               numberOfItemsPerPage={numberOfItemsPerPage}
               onItemsPerPageChange={onItemsPerPageChange}
+              selectPageDropdownRippleColor={selectPageDropdownRippleColor}
+              dropdownItemRippleColor={dropdownItemRippleColor}
+              theme={theme}
             />
           </View>
         )}
@@ -322,6 +363,7 @@ const DataTablePagination = ({
           onPageChange={onPageChange}
           page={page}
           numberOfPages={numberOfPages}
+          theme={theme}
         />
       </View>
     </View>
@@ -359,7 +401,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(DataTablePagination);
+export default DataTablePagination;
 
 // @component-docs ignore-next-line
 export { DataTablePagination };

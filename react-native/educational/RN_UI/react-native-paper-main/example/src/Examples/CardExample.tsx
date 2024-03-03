@@ -1,23 +1,24 @@
 import * as React from 'react';
 import { Alert, ScrollView, StyleSheet, View } from 'react-native';
+
 import {
   Avatar,
-  Paragraph,
-  Card,
   Button,
-  IconButton,
-  useTheme,
+  Card,
   Chip,
+  IconButton,
+  Paragraph,
   Text,
 } from 'react-native-paper';
-import { PreferencesContext } from '..';
-import ScreenWrapper from '../ScreenWrapper';
+
+import { PreferencesContext, useExampleTheme } from '..';
 import { isWeb } from '../../utils';
+import ScreenWrapper from '../ScreenWrapper';
 
 type Mode = 'elevated' | 'outlined' | 'contained';
 
 const CardExample = () => {
-  const { colors, isV3 } = useTheme();
+  const { colors, isV3 } = useExampleTheme();
   const [selectedMode, setSelectedMode] = React.useState('elevated' as Mode);
   const [isSelected, setIsSelected] = React.useState(false);
   const preferences = React.useContext(PreferencesContext);
@@ -105,6 +106,33 @@ const CardExample = () => {
         </Card>
         <Card style={styles.card} mode={selectedMode}>
           <Card.Cover
+            source={require('../../assets/images/restaurant-1.jpg')}
+          />
+          <Card.Title title="Custom Button styles" />
+          <Card.Actions>
+            <Button style={styles.button} onPress={() => {}}>
+              Share
+            </Button>
+            <Button style={styles.button} onPress={() => {}}>
+              Explore
+            </Button>
+          </Card.Actions>
+        </Card>
+        <Card
+          style={[styles.card, styles.customCardRadius]}
+          mode={selectedMode}
+        >
+          <Card.Title
+            title="Custom border radius"
+            subtitle="... for card and cover"
+          />
+          <Card.Cover
+            source={require('../../assets/images/artist-2.jpg')}
+            style={styles.customCoverRadius}
+          />
+        </Card>
+        <Card style={styles.card} mode={selectedMode}>
+          <Card.Cover
             source={require('../../assets/images/strawberries.jpg')}
           />
           <Card.Title
@@ -160,7 +188,7 @@ const CardExample = () => {
         <Card
           style={styles.card}
           onPress={() => {
-            preferences.toggleTheme();
+            preferences?.toggleTheme();
           }}
           mode={selectedMode}
         >
@@ -199,6 +227,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     paddingVertical: 12,
     paddingHorizontal: 8,
+  },
+  button: {
+    borderRadius: 12,
+  },
+  customCardRadius: {
+    borderTopLeftRadius: 24,
+    borderBottomRightRadius: 24,
+  },
+  customCoverRadius: {
+    borderTopLeftRadius: 0,
+    borderTopRightRadius: 0,
+    borderBottomRightRadius: 24,
   },
 });
 

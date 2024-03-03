@@ -1,27 +1,24 @@
 import * as React from 'react';
 import {
-  View,
-  Image,
   Dimensions,
-  StyleSheet,
-  Platform,
   Easing,
+  Image,
+  Platform,
+  StyleSheet,
+  View,
 } from 'react-native';
-import { Appbar, BottomNavigation, Menu, useTheme } from 'react-native-paper';
-import ScreenWrapper from '../ScreenWrapper';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import type { StackNavigationProp } from '@react-navigation/stack';
 
-type RoutesState = Array<{
-  key: string;
-  title: string;
-  focusedIcon: string;
-  unfocusedIcon?: string;
-  color?: string;
-  badge?: boolean;
-  getAccessibilityLabel?: string;
-  getTestID?: string;
-}>;
+import type { StackNavigationProp } from '@react-navigation/stack';
+import {
+  Appbar,
+  BottomNavigation,
+  BottomNavigationRoute,
+  Menu,
+} from 'react-native-paper';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
+
+import { useExampleTheme } from '..';
+import ScreenWrapper from '../ScreenWrapper';
 
 type Route = { route: { key: string } };
 
@@ -40,7 +37,11 @@ const PhotoGallery = ({ route }: Route) => {
     <ScreenWrapper contentContainerStyle={styles.content}>
       {PHOTOS.map((uri) => (
         <View key={uri} style={styles.item}>
-          <Image source={{ uri }} style={styles.photo} />
+          <Image
+            source={{ uri }}
+            style={styles.photo}
+            accessibilityIgnoresInvertColors
+          />
         </View>
       ))}
     </ScreenWrapper>
@@ -48,7 +49,7 @@ const PhotoGallery = ({ route }: Route) => {
 };
 
 const BottomNavigationExample = ({ navigation }: Props) => {
-  const { isV3 } = useTheme();
+  const { isV3 } = useExampleTheme();
   const insets = useSafeAreaInsets();
   const [index, setIndex] = React.useState(0);
   const [menuVisible, setMenuVisible] = React.useState(false);
@@ -57,7 +58,7 @@ const BottomNavigationExample = ({ navigation }: Props) => {
       React.ComponentProps<typeof BottomNavigation>['sceneAnimationType']
     >();
 
-  const [routes] = React.useState<RoutesState>([
+  const [routes] = React.useState<BottomNavigationRoute[]>([
     {
       key: 'album',
       title: 'Album',
@@ -155,6 +156,7 @@ const BottomNavigationExample = ({ navigation }: Props) => {
         sceneAnimationEnabled={sceneAnimation !== undefined}
         sceneAnimationType={sceneAnimation}
         sceneAnimationEasing={Easing.ease}
+        getLazy={({ route }) => route.key !== 'album'}
       />
     </View>
   );

@@ -1,9 +1,11 @@
 import * as React from 'react';
+import { StyleProp, StyleSheet, View, ViewStyle } from 'react-native';
+
 import color from 'color';
-import { StyleSheet, View, ViewStyle, StyleProp } from 'react-native';
-import { withTheme } from '../core/theming';
+
+import { useInternalTheme } from '../core/theming';
 import { black, white } from '../styles/themes/v2/colors';
-import type { $RemoveChildren, Theme } from '../types';
+import type { $RemoveChildren, ThemeProp } from '../types';
 
 export type Props = $RemoveChildren<typeof View> & {
   /**
@@ -25,17 +27,11 @@ export type Props = $RemoveChildren<typeof View> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
 };
 
 /**
  * A divider is a thin, lightweight separator that groups content in lists and page layouts.
- *
- * <div class="screenshots">
- *  <figure>
- *    <img class="medium" src="screenshots/divider.png" />
- *  </figure>
- * </div>
  *
  * ## Usage
  * ```js
@@ -59,14 +55,15 @@ const Divider = ({
   leftInset,
   horizontalInset = false,
   style,
-  theme,
+  theme: themeOverrides,
   bold = false,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { dark: isDarkTheme, isV3 } = theme;
 
   const dividerColor = isV3
-    ? theme.colors.surfaceVariant
+    ? theme.colors.outlineVariant
     : color(isDarkTheme ? white : black)
         .alpha(0.12)
         .rgb()
@@ -77,7 +74,7 @@ const Divider = ({
       {...rest}
       style={[
         { height: StyleSheet.hairlineWidth, backgroundColor: dividerColor },
-        leftInset && styles.leftInset,
+        leftInset && (isV3 ? styles.v3LeftInset : styles.leftInset),
         isV3 && horizontalInset && styles.horizontalInset,
         isV3 && bold && styles.bold,
         style,
@@ -90,13 +87,16 @@ const styles = StyleSheet.create({
   leftInset: {
     marginLeft: 72,
   },
+  v3LeftInset: {
+    marginLeft: 16,
+  },
   horizontalInset: {
-    marginLeft: 28,
-    marginRight: 28,
+    marginLeft: 16,
+    marginRight: 16,
   },
   bold: {
     height: 1,
   },
 });
 
-export default withTheme(Divider);
+export default Divider;

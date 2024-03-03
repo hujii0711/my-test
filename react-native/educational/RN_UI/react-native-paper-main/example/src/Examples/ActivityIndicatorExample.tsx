@@ -1,17 +1,20 @@
 import * as React from 'react';
-import { View, StyleSheet } from 'react-native';
+import { StyleSheet, View } from 'react-native';
+
 import {
   ActivityIndicator,
-  MD2Colors,
   FAB,
-  useTheme,
+  List,
+  MD2Colors,
   MD3Colors,
 } from 'react-native-paper';
+
+import { useExampleTheme } from '..';
 import ScreenWrapper from '../ScreenWrapper';
 
 const ActivityIndicatorExample = () => {
   const [animating, setAnimating] = React.useState<boolean>(true);
-  const { isV3 } = useTheme();
+  const { isV3 } = useExampleTheme();
 
   return (
     <ScreenWrapper style={styles.container}>
@@ -23,24 +26,33 @@ const ActivityIndicatorExample = () => {
         />
       </View>
 
-      <View style={styles.row}>
-        <ActivityIndicator animating={animating} />
-      </View>
-
-      <View style={styles.row}>
+      <List.Section title="Default">
         <ActivityIndicator animating={animating} hidesWhenStopped={false} />
-      </View>
+      </List.Section>
 
-      <View style={styles.row}>
-        <ActivityIndicator animating={animating} size="large" />
-      </View>
+      <List.Section title="Large">
+        <ActivityIndicator
+          animating={animating}
+          size="large"
+          hidesWhenStopped={false}
+        />
+      </List.Section>
 
-      <View style={styles.row}>
+      <List.Section title="Custom size">
+        <ActivityIndicator
+          animating={animating}
+          size={100}
+          hidesWhenStopped={false}
+        />
+      </List.Section>
+
+      <List.Section title="Custom color">
         <ActivityIndicator
           animating={animating}
           color={isV3 ? MD3Colors.error20 : MD2Colors.red500}
+          hidesWhenStopped={false}
         />
-      </View>
+      </List.Section>
     </ScreenWrapper>
   );
 };

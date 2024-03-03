@@ -1,16 +1,20 @@
 import * as React from 'react';
 import {
-  Text as NativeText,
-  TextStyle,
+  I18nManager,
   StyleProp,
   StyleSheet,
-  I18nManager,
-  Platform,
+  Text as NativeText,
+  TextStyle,
 } from 'react-native';
-import { useTheme } from '../../core/theming';
-import { Font, MD3TypescaleKey, ThemeProp } from '../../types';
 
-export type Props = React.ComponentProps<typeof NativeText> & {
+import AnimatedText from './AnimatedText';
+import type { VariantProp } from './types';
+import StyledText from './v2/StyledText';
+import { useInternalTheme } from '../../core/theming';
+import type { ThemeProp } from '../../types';
+import { forwardRef } from '../../utils/forwardRef';
+
+export type Props<T> = React.ComponentProps<typeof NativeText> & {
   /**
    * @supported Available in v5.x with theme version 3
    *
@@ -27,20 +31,20 @@ export type Props = React.ComponentProps<typeof NativeText> & {
    *
    *  Body: `bodyLarge`, `bodyMedium`, `bodySmall`
    */
-  variant?: keyof typeof MD3TypescaleKey;
+  variant?: VariantProp<T>;
   children: React.ReactNode;
   theme?: ThemeProp;
   style?: StyleProp<TextStyle>;
 };
 
+export type TextRef = React.ForwardedRef<{
+  setNativeProps(args: Object): void;
+}>;
+
 // @component-group Typography
 
 /**
  * Typography component showing styles complied with passed `variant` prop and supported by the type system.
- *
- * <div class="screenshots">
- *   <img class="small" src="screenshots/typography.png" />
- * </div>
  *
  * ## Usage
  * ```js
@@ -76,70 +80,88 @@ export type Props = React.ComponentProps<typeof NativeText> & {
  *
  * @extends Text props https://reactnative.dev/docs/text#props
  */
-
-const Text: React.ForwardRefRenderFunction<{}, Props> = (
-  { style, variant, theme: initialTheme, ...rest }: Props,
-  ref
+const Text = (
+  { style, variant, theme: initialTheme, ...rest }: Props<string>,
+  ref: TextRef
 ) => {
   const root = React.useRef<NativeText | null>(null);
   // FIXME: destructure it in TS 4.6+
-  const theme = useTheme(initialTheme);
-  const writingDirection = I18nManager.isRTL ? 'rtl' : 'ltr';
+  const theme = useInternalTheme(initialTheme);
+  const writingDirection = I18nManager.getConstants().isRTL ? 'rtl' : 'ltr';
 
   React.useImperativeHandle(ref, () => ({
     setNativeProps: (args: Object) => root.current?.setNativeProps(args),
   }));
 
   if (theme.isV3 && variant) {
-    const stylesByVariant = Object.keys(MD3TypescaleKey).reduce(
-      (acc, key) => {
-        const { fontSize, fontWeight, lineHeight, letterSpacing, fontFamily } =
-          theme.typescale[key as keyof typeof MD3TypescaleKey];
+    let font = theme.fonts[variant];
+    let textStyle = [font, style];
 
-        return {
-          ...acc,
-          [key]: {
-            ...(Platform.OS === 'android' && { fontFamily }),
-            fontSize,
-            fontWeight,
-            lineHeight,
-            letterSpacing,
-            color: theme.colors.onSurface,
-          },
-        };
-      },
-      {} as {
-        [key in MD3TypescaleKey]: {
-          fontSize: number;
-          fontWeight: Font['fontWeight'];
-          lineHeight: number;
-          letterSpacing: number;
-        };
+    if (
+      React.isValidElement(rest.children) &&
+      (rest.children.type === Component ||
+        rest.children.type === AnimatedText ||
+        rest.children.type === StyledText)
+    ) {
+      const { props } = rest.children;
+
+      // Context:   Some components have the built-in `Text` component with a predefined variant,
+      //            that also accepts `children` as a `React.Node`. This can result in a situation,
+      //            where another `Text` component is rendered within the built-in `Text` component.
+      //            By doing that, we assume that user doesn't want to consume pre-defined font properties.
+      // Case one:  Nested `Text` has different `variant` that specified in parent. For example:
+      //              <Chip>
+      //                <Text variant="displayMedium">Nested</Text>
+      //              </Chip>
+      // Solution:  To address the following scenario, the code below overrides the `variant`
+      //            specified in a parent in favor of children's variant:
+      if (props.variant) {
+        font = theme.fonts[props.variant as VariantProp<typeof props.variant>];
+        textStyle = [style, font];
       }
-    );
 
-    const styleForVariant = stylesByVariant[variant];
+      // Case two:  Nested `Text` has specified `styles` which intefere
+      //            with font properties, from the parent's `variant`. For example:
+      //              <Chip>
+      //                <Text style={{fontSize: 30}}>Nested</Text>
+      //              </Chip>
+      // Solution:  To address the following scenario, the code below overrides the
+      //            parent's style with children's style:
+      if (!props.variant) {
+        textStyle = [style, props.style];
+      }
+    }
+
+    if (typeof font !== 'object') {
+      throw new Error(
+        `Variant ${variant} was not provided properly. Valid variants are ${Object.keys(
+          theme.fonts
+        ).join(', ')}.`
+      );
+    }
 
     return (
       <NativeText
         ref={root}
-        style={[styleForVariant, styles.text, { writingDirection }, style]}
+        style={[
+          styles.text,
+          { writingDirection, color: theme.colors.onSurface },
+          textStyle,
+        ]}
         {...rest}
       />
     );
   } else {
+    const font = theme.isV3 ? theme.fonts.default : theme.fonts?.regular;
+    const textStyle = {
+      ...font,
+      color: theme.isV3 ? theme.colors?.onSurface : theme.colors.text,
+    };
     return (
       <NativeText
         {...rest}
         ref={root}
-        style={[
-          {
-            ...(!theme.isV3 && theme.fonts?.regular),
-            color: theme.isV3 ? theme.colors?.onSurface : theme.colors.text,
-          },
-          styles.text,
-          style,
-        ]}
+        style={[styles.text, textStyle, { writingDirection }, style]}
       />
     );
   }
@@ -151,4 +173,12 @@ const styles = StyleSheet.create({
   },
 });
 
-export default React.forwardRef(Text);
+type TextComponent<T> = (
+  props: Props<T> & { ref?: React.RefObject<TextRef> }
+) => JSX.Element;
+
+const Component = forwardRef(Text) as TextComponent<never>;
+
+export const customText = <T,>() => Component as unknown as TextComponent<T>;
+
+export default Component;

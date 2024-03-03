@@ -1,14 +1,15 @@
 import * as React from 'react';
 import {
+  StyleProp,
+  StyleSheet,
+  TextStyle,
   View,
   ViewStyle,
-  StyleSheet,
-  StyleProp,
-  TextStyle,
 } from 'react-native';
+
 import ListSubheader from './ListSubheader';
-import { withTheme } from '../../core/theming';
-import type { Theme } from '../../types';
+import { useInternalTheme } from '../../core/theming';
+import type { ThemeProp } from '../../types';
 
 export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
@@ -22,7 +23,7 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
   /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
   /**
    * Style that is passed to Title element.
    */
@@ -32,10 +33,6 @@ export type Props = React.ComponentPropsWithRef<typeof View> & {
 
 /**
  * A component used to group list items.
- *
- * <div class="screenshots">
- *   <img src="screenshots/list-section.png" />
- * </div>
  *
  * ## Usage
  * ```js
@@ -61,13 +58,23 @@ const ListSection = ({
   title,
   titleStyle,
   style,
+  theme: themeOverrides,
   ...rest
-}: Props) => (
-  <View {...rest} style={[styles.container, style]}>
-    {title ? <ListSubheader style={titleStyle}>{title}</ListSubheader> : null}
-    {children}
-  </View>
-);
+}: Props) => {
+  const theme = useInternalTheme(themeOverrides);
+  const viewProps = { ...rest, theme };
+
+  return (
+    <View {...viewProps} style={[styles.container, style]}>
+      {title ? (
+        <ListSubheader style={titleStyle} theme={theme}>
+          {title}
+        </ListSubheader>
+      ) : null}
+      {children}
+    </View>
+  );
+};
 
 ListSection.displayName = 'List.Section';
 
@@ -77,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(ListSection);
+export default ListSection;

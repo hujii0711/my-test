@@ -1,23 +1,23 @@
 import * as React from 'react';
 import {
   Animated,
+  GestureResponderEvent,
+  I18nManager,
+  Pressable,
   StyleProp,
   StyleSheet,
-  TouchableWithoutFeedback,
-  View,
-  ViewStyle,
-  I18nManager,
   TextStyle,
+  ViewStyle,
 } from 'react-native';
+
 import color from 'color';
+
+import { useInternalTheme } from '../../core/theming';
+import type { ThemeProp } from '../../types';
 import MaterialCommunityIcon from '../MaterialCommunityIcon';
 import Text from '../Typography/Text';
-import { withTheme } from '../../core/theming';
-import type { Theme } from '../../types';
 
-export type Props = React.ComponentPropsWithRef<
-  typeof TouchableWithoutFeedback
-> & {
+export type Props = React.ComponentPropsWithRef<typeof Pressable> & {
   /**
    * Text content of the `DataTableTitle`.
    */
@@ -37,27 +37,24 @@ export type Props = React.ComponentPropsWithRef<
   /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
   style?: StyleProp<ViewStyle>;
   /**
    * Text content style of the `DataTableTitle`.
    */
   textStyle?: StyleProp<TextStyle>;
   /**
+   * Specifies the largest possible scale a text font can reach.
+   */
+  maxFontSizeMultiplier?: number;
+  /**
    * @optional
    */
-  theme: Theme;
+  theme?: ThemeProp;
 };
 
 /**
  * A component to display title in table header.
- *
- * <div class="screenshots">
- *   <figure>
- *     <img class="medium" src="screenshots/data-table-header.png" />
- *   </figure>
- * </div>
- *
  *
  * ## Usage
  * ```js
@@ -87,12 +84,14 @@ const DataTableTitle = ({
   children,
   onPress,
   sortDirection,
-  theme,
   textStyle,
   style,
+  theme: themeOverrides,
   numberOfLines = 1,
+  maxFontSizeMultiplier,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { current: spinAnim } = React.useRef<Animated.Value>(
     new Animated.Value(sortDirection === 'ascending' ? 0 : 1)
   );
@@ -120,38 +119,42 @@ const DataTableTitle = ({
         name="arrow-up"
         size={16}
         color={textColor}
-        direction={I18nManager.isRTL ? 'rtl' : 'ltr'}
+        direction={I18nManager.getConstants().isRTL ? 'rtl' : 'ltr'}
       />
     </Animated.View>
   ) : null;
 
   return (
-    <TouchableWithoutFeedback disabled={!onPress} onPress={onPress} {...rest}>
-      <View style={[styles.container, numeric && styles.right, style]}>
-        {icon}
+    <Pressable
+      disabled={!onPress}
+      onPress={onPress}
+      {...rest}
+      style={[styles.container, numeric && styles.right, style]}
+    >
+      {icon}
 
-        <Text
-          style={[
-            styles.cell,
-            // height must scale with numberOfLines
-            { maxHeight: 24 * numberOfLines },
-            // if numberOfLines causes wrap, center is lost. Align directly, sensitive to numeric and RTL
-            numberOfLines > 1
-              ? numeric
-                ? I18nManager.isRTL
-                  ? styles.leftText
-                  : styles.rightText
-                : styles.centerText
-              : {},
-            sortDirection ? styles.sorted : { color: alphaTextColor },
-            textStyle,
-          ]}
-          numberOfLines={numberOfLines}
-        >
-          {children}
-        </Text>
-      </View>
-    </TouchableWithoutFeedback>
+      <Text
+        style={[
+          styles.cell,
+          // height must scale with numberOfLines
+          { maxHeight: 24 * numberOfLines },
+          // if numberOfLines causes wrap, center is lost. Align directly, sensitive to numeric and RTL
+          numberOfLines > 1
+            ? numeric
+              ? I18nManager.getConstants().isRTL
+                ? styles.leftText
+                : styles.rightText
+              : styles.centerText
+            : {},
+          sortDirection ? styles.sorted : { color: alphaTextColor },
+          textStyle,
+        ]}
+        numberOfLines={numberOfLines}
+        maxFontSizeMultiplier={maxFontSizeMultiplier}
+      >
+        {children}
+      </Text>
+    </Pressable>
   );
 };
 
@@ -198,7 +201,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(DataTableTitle);
+export default DataTableTitle;
 
 // @component-docs ignore-next-line
 export { DataTableTitle };

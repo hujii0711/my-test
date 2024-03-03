@@ -1,10 +1,13 @@
 import * as React from 'react';
-import { View, StyleSheet, Image } from 'react-native';
-import { Button, List, useTheme } from 'react-native-paper';
+import { Image, StyleSheet, View } from 'react-native';
+
+import { Button, List, Text } from 'react-native-paper';
+
+import { useExampleTheme } from '..';
 import ScreenWrapper from '../ScreenWrapper';
 
 const ButtonExample = () => {
-  const theme = useTheme();
+  const theme = useExampleTheme();
 
   const color = theme.isV3 ? theme.colors.inversePrimary : theme.colors.accent;
 
@@ -263,6 +266,7 @@ const ButtonExample = () => {
               <Image
                 source={require('../../assets/images/chameleon.jpg')}
                 style={{ width: size, height: size, borderRadius: size / 2 }}
+                accessibilityIgnoresInvertColors
               />
             )}
             onPress={() => {}}
@@ -279,6 +283,64 @@ const ButtonExample = () => {
           >
             Custom Font
           </Button>
+          <Button mode="outlined" onPress={() => {}} style={styles.button}>
+            <Text variant="titleLarge">Custom text</Text>
+          </Button>
+          <Button
+            mode="outlined"
+            onPress={() => {}}
+            style={styles.customRadius}
+          >
+            Custom radius
+          </Button>
+          <Button mode="contained" onPress={() => {}} style={styles.noRadius}>
+            Without radius
+          </Button>
+        </View>
+
+        <View style={styles.row}>
+          <Button
+            mode="contained"
+            onPress={() => {}}
+            style={styles.flexGrow1Button}
+          >
+            flex-grow: 1
+          </Button>
+        </View>
+        <View style={styles.row}>
+          <Button
+            mode="contained"
+            onPress={() => {}}
+            style={styles.width100PercentButton}
+          >
+            width: 100%
+          </Button>
+        </View>
+      </List.Section>
+      <List.Section title="Compact">
+        <View style={styles.row}>
+          {(
+            [
+              'text',
+              'outlined',
+              'contained',
+              'elevated',
+              'contained-tonal',
+            ] as const
+          ).map((mode) => {
+            return (
+              <Button
+                key={mode}
+                mode={mode}
+                compact
+                onPress={() => {}}
+                style={styles.button}
+                icon="camera"
+              >
+                Compact {mode}
+              </Button>
+            );
+          })}
         </View>
       </List.Section>
     </ScreenWrapper>
@@ -306,6 +368,23 @@ const styles = StyleSheet.create({
   fontStyles: {
     fontWeight: '800',
     fontSize: 24,
+  },
+  flexGrow1Button: {
+    flexGrow: 1,
+    marginTop: 10,
+  },
+  width100PercentButton: {
+    width: '100%',
+    marginTop: 10,
+  },
+  customRadius: {
+    borderTopLeftRadius: 16,
+    borderTopRightRadius: 0,
+    borderBottomLeftRadius: 0,
+    borderBottomRightRadius: 16,
+  },
+  noRadius: {
+    borderRadius: 0,
   },
 });
 

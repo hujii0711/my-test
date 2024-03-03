@@ -1,10 +1,13 @@
+import type { ColorValue } from 'react-native';
+
 import color from 'color';
-import type { Theme } from '../../types';
+
+import type { InternalTheme } from '../../types';
 
 type IconButtonMode = 'outlined' | 'contained' | 'contained-tonal';
 
 type BaseProps = {
-  theme: Theme;
+  theme: InternalTheme;
   isMode: (mode: IconButtonMode) => boolean;
   disabled?: boolean;
   selected?: boolean;
@@ -14,7 +17,7 @@ const getBorderColor = ({
   theme,
   disabled,
 }: {
-  theme: Theme;
+  theme: InternalTheme;
   disabled?: boolean;
 }) => {
   if (theme.isV3) {
@@ -127,10 +130,15 @@ const getIconColor = ({
 const getRippleColor = ({
   theme,
   iconColor,
+  customRippleColor,
 }: {
-  theme: Theme;
+  theme: InternalTheme;
   iconColor: string;
+  customRippleColor?: ColorValue;
 }) => {
+  if (customRippleColor) {
+    return customRippleColor;
+  }
   if (theme.isV3) {
     return color(iconColor).alpha(0.12).rgb().string();
   }
@@ -144,13 +152,15 @@ export const getIconButtonColor = ({
   selected,
   customIconColor,
   customContainerColor,
+  customRippleColor,
 }: {
-  theme: Theme;
+  theme: InternalTheme;
   disabled?: boolean;
   selected?: boolean;
   mode?: IconButtonMode;
   customIconColor?: string;
   customContainerColor?: string;
+  customRippleColor?: ColorValue;
 }) => {
   const isMode = (modeToCompare: IconButtonMode) => {
     return mode === modeToCompare;
@@ -174,7 +184,7 @@ export const getIconButtonColor = ({
       ...baseIconColorProps,
       customContainerColor,
     }),
-    rippleColor: getRippleColor({ theme, iconColor }),
+    rippleColor: getRippleColor({ theme, iconColor, customRippleColor }),
     borderColor: getBorderColor({ theme, disabled }),
   };
 };

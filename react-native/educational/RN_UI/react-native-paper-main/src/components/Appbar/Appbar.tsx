@@ -1,23 +1,32 @@
 import * as React from 'react';
-import { View, ViewStyle, Platform, StyleSheet, StyleProp } from 'react-native';
+import {
+  Animated,
+  Platform,
+  StyleProp,
+  StyleSheet,
+  View,
+  ViewStyle,
+  ColorValue,
+} from 'react-native';
+
 import color from 'color';
 
 import AppbarContent from './AppbarContent';
-import AppbarAction from './AppbarAction';
-import AppbarBackAction from './AppbarBackAction';
-import Surface from '../Surface';
-import { withTheme } from '../../core/theming';
-import type { MD3Elevation, Theme } from '../../types';
 import {
-  getAppbarColor,
-  renderAppbarContent,
-  DEFAULT_APPBAR_HEIGHT,
-  modeAppbarHeight,
   AppbarModes,
+  DEFAULT_APPBAR_HEIGHT,
+  getAppbarBackgroundColor,
+  modeAppbarHeight,
+  renderAppbarContent,
 } from './utils';
-import AppbarHeader from './AppbarHeader';
+import { useInternalTheme } from '../../core/theming';
+import type { MD3Elevation, ThemeProp } from '../../types';
+import Surface from '../Surface';
 
-export type Props = Partial<React.ComponentPropsWithRef<typeof View>> & {
+export type Props = Omit<
+  Partial<React.ComponentPropsWithRef<typeof View>>,
+  'style'
+> & {
   /**
    * Whether the background color is a dark color. A dark appbar will render light text and vice-versa.
    */
@@ -42,7 +51,6 @@ export type Props = Partial<React.ComponentPropsWithRef<typeof View>> & {
    */
   elevated?: boolean;
   /**
-   * @supported Available in v5.x
    * Safe area insets for the Appbar. This can be used to avoid elements like the navigation bar on Android and bottom safe area on iOS.
    */
   safeAreaInsets?: {
@@ -54,8 +62,8 @@ export type Props = Partial<React.ComponentPropsWithRef<typeof View>> & {
   /**
    * @optional
    */
-  theme: Theme;
-  style?: StyleProp<ViewStyle>;
+  theme?: ThemeProp;
+  style?: Animated.WithAnimatedValue<StyleProp<ViewStyle>>;
 };
 
 /**
@@ -63,9 +71,8 @@ export type Props = Partial<React.ComponentPropsWithRef<typeof View>> & {
  * The top bar usually contains the screen title, controls such as navigation buttons, menu button etc.
  * The bottom bar usually provides access to a drawer and up to four actions.
  *
- * <div class="screenshots">
- *   <img class="small" src="screenshots/appbar.png" />
- * </div>
+ * By default Appbar uses primary color as a background, in dark theme with `adaptive` mode it will use surface colour instead.
+ * See [Dark Theme](https://callstack.github.io/react-native-paper/docs/guides/theming#dark-theme) for more informations
  *
  * ## Usage
  * ### Top bar
@@ -149,22 +156,25 @@ const Appbar = ({
   children,
   dark,
   style,
-  theme,
   mode = 'small',
   elevated,
   safeAreaInsets,
+  theme: themeOverrides,
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { isV3 } = theme;
+  const flattenedStyle = StyleSheet.flatten(style);
   const {
     backgroundColor: customBackground,
     elevation = isV3 ? (elevated ? 2 : 0) : 4,
     ...restStyle
-  }: ViewStyle = StyleSheet.flatten(style) || {};
+  } = (flattenedStyle || {}) as Exclude<typeof flattenedStyle, number> & {
+    elevation?: number;
+    backgroundColor?: ColorValue;
+  };
 
-  let isDark: boolean;
-
-  const backgroundColor = getAppbarColor(
+  const backgroundColor = getAppbarBackgroundColor(
     theme,
     elevation,
     customBackground,
@@ -175,9 +185,11 @@ const Appbar = ({
     return isV3 && mode === modeToCompare;
   };
 
+  let isDark = false;
+
   if (typeof dark === 'boolean') {
     isDark = dark;
-  } else {
+  } else if (!isV3) {
     isDark =
       backgroundColor === 'transparent'
         ? false
@@ -254,6 +266,7 @@ const Appbar = ({
         renderAppbarContent({
           children,
           isDark,
+          theme,
           isV3,
           shouldCenterContent: isV3CenterAlignedMode || shouldCenterContent,
         })}
@@ -271,14 +284,14 @@ const Appbar = ({
               children,
               isDark,
               isV3,
-              renderOnly: [AppbarBackAction],
+              renderOnly: ['Appbar.BackAction'],
               mode,
             })}
             {renderAppbarContent({
               children: filterAppbarActions(true),
               isDark,
               isV3,
-              renderOnly: [AppbarAction],
+              renderOnly: ['Appbar.Action'],
               mode,
             })}
             {/* Right side of row container, can contain other AppbarAction if they are not leading icons */}
@@ -288,10 +301,10 @@ const Appbar = ({
                 isDark,
                 isV3,
                 renderExcept: [
-                  Appbar,
-                  AppbarBackAction,
-                  AppbarContent,
-                  AppbarHeader,
+                  'Appbar',
+                  'Appbar.BackAction',
+                  'Appbar.Content',
+                  'Appbar.Header',
                 ],
                 mode,
               })}
@@ -302,7 +315,7 @@ const Appbar = ({
             children,
             isDark,
             isV3,
-            renderOnly: [AppbarContent],
+            renderOnly: ['Appbar.Content'],
             mode,
           })}
         </View>
@@ -345,9 +358,7 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(Appbar);
+export default Appbar;
 
 // @component-docs ignore-next-line
-const AppbarWithTheme = withTheme(Appbar);
-// @component-docs ignore-next-line
-export { AppbarWithTheme as Appbar };
+export { Appbar };

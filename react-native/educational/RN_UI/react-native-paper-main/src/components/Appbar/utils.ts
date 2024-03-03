@@ -1,18 +1,23 @@
 import React from 'react';
-import color from 'color';
-import { StyleSheet } from 'react-native';
 import type { ColorValue, StyleProp, ViewStyle } from 'react-native';
-import AppbarContent from './AppbarContent';
-import AppbarAction from './AppbarAction';
-import AppbarBackAction from './AppbarBackAction';
+import { StyleSheet, Animated } from 'react-native';
+
 import overlay from '../../styles/overlay';
-import type { Theme } from '../../types';
 import { black, white } from '../../styles/themes/v2/colors';
+import type { InternalTheme, ThemeProp } from '../../types';
 
 export type AppbarModes = 'small' | 'medium' | 'large' | 'center-aligned';
 
-export const getAppbarColor = (
-  theme: Theme,
+const borderStyleProperties = [
+  'borderRadius',
+  'borderTopLeftRadius',
+  'borderTopRightRadius',
+  'borderBottomRightRadius',
+  'borderBottomLeftRadius',
+];
+
+export const getAppbarBackgroundColor = (
+  theme: InternalTheme,
   elevation: number,
   customBackground?: ColorValue,
   elevated?: boolean
@@ -32,23 +37,63 @@ export const getAppbarColor = (
   }
 
   if (elevated) {
-    return color(colors.surface)
-      .mix(color(colors.primary), 0.08)
-      .rgb()
-      .string();
+    return theme.colors.elevation.level2;
   }
 
   return colors.surface;
 };
 
-type RenderAppbarContentProps = {
-  children: React.ReactNode;
+export const getAppbarColor = ({
+  color,
+  isDark,
+  isV3,
+}: BaseProps & { color: string }) => {
+  if (typeof color !== 'undefined') {
+    return color;
+  }
+
+  if (isDark) {
+    return white;
+  }
+
+  if (isV3) {
+    return undefined;
+  }
+
+  return black;
+};
+
+export const getAppbarBorders = (
+  style:
+    | Animated.Value
+    | Animated.AnimatedInterpolation<string | number>
+    | Animated.WithAnimatedObject<ViewStyle>
+) => {
+  const borders: Record<string, number> = {};
+
+  for (const property of borderStyleProperties) {
+    const value = style[property as keyof typeof style];
+    if (value) {
+      borders[property] = value;
+    }
+  }
+
+  return borders;
+};
+
+type BaseProps = {
   isDark: boolean;
+  isV3: boolean;
+};
+
+type RenderAppbarContentProps = BaseProps & {
+  children: React.ReactNode;
   shouldCenterContent?: boolean;
   isV3: boolean;
-  renderOnly?: React.ReactNode[];
-  renderExcept?: React.ReactNode[];
+  renderOnly?: (string | boolean)[];
+  renderExcept?: string[];
   mode?: AppbarModes;
+  theme?: ThemeProp;
 };
 
 export const DEFAULT_APPBAR_HEIGHT = 56;
@@ -66,7 +111,7 @@ export const modeTextVariant = {
   medium: 'headlineSmall',
   large: 'headlineMedium',
   'center-aligned': 'titleLarge',
-};
+} as const;
 
 export const renderAppbarContent = ({
   children,
@@ -76,54 +121,58 @@ export const renderAppbarContent = ({
   renderOnly,
   renderExcept,
   mode = 'small',
+  theme,
 }: RenderAppbarContentProps) => {
-  return (
-    React.Children.toArray(children)
-      .filter((child) => child != null && typeof child !== 'boolean')
-      .filter((child) =>
-        // @ts-expect-error: TypeScript complains about the type of type but it doesn't matter
-        renderExcept ? !renderExcept.includes(child.type) : child
-      )
+  return React.Children.toArray(children as React.ReactNode | React.ReactNode[])
+    .filter((child) => child != null && typeof child !== 'boolean')
+    .filter((child) =>
       // @ts-expect-error: TypeScript complains about the type of type but it doesn't matter
-      .filter((child) => (renderOnly ? renderOnly.includes(child.type) : child))
-      .map((child, i) => {
-        if (
-          !React.isValidElement(child) ||
-          ![AppbarContent, AppbarAction, AppbarBackAction].includes(
-            // @ts-expect-error: TypeScript complains about the type of type but it doesn't matter
-            child.type
-          )
-        ) {
-          return child;
-        }
+      renderExcept ? !renderExcept.includes(child.type.displayName) : child
+    )
+    .filter((child) =>
+      // @ts-expect-error: TypeScript complains about the type of type but it doesn't matter
+      renderOnly ? renderOnly.includes(child.type.displayName) : child
+    )
+    .map((child, i) => {
+      if (
+        !React.isValidElement(child) ||
+        ![
+          'Appbar.Content',
+          'Appbar.Action',
+          'Appbar.BackAction',
+          'Tooltip',
+        ].includes(
+          // @ts-expect-error: TypeScript complains about the type of type but it doesn't matter
+          child.type.displayName
+        )
+      ) {
+        return child;
+      }
 
-        const props: {
-          color?: string;
-          style?: StyleProp<ViewStyle>;
-          mode?: AppbarModes;
-        } = {
-          color: isV3
-            ? undefined
-            : typeof child.props.color !== 'undefined'
-            ? child.props.color
-            : isDark
-            ? white
-            : black,
-        };
+      const props: {
+        color?: string;
+        style?: StyleProp<ViewStyle>;
+        mode?: AppbarModes;
+        theme?: ThemeProp;
+      } = {
+        theme,
+        color: getAppbarColor({ color: child.props.color, isDark, isV3 }),
+      };
 
-        if (child.type === AppbarContent) {
-          props.mode = mode;
-          props.style = [
-            isV3
-              ? i === 0 && !shouldCenterContent && styles.v3Spacing
-              : i !== 0 && styles.v2Spacing,
-            shouldCenterContent && styles.centerAlignedContent,
-            child.props.style,
-          ];
-        }
-        return React.cloneElement(child, props);
-      })
-  );
+      // @ts-expect-error: TypeScript complains about the type of type but it doesn't matter
+      if (child.type.displayName === 'Appbar.Content') {
+        props.mode = mode;
+        props.style = [
+          isV3
+            ? i === 0 && !shouldCenterContent && styles.v3Spacing
+            : i !== 0 && styles.v2Spacing,
+          shouldCenterContent && styles.centerAlignedContent,
+          child.props.style,
+        ];
+        props.color;
+      }
+      return React.cloneElement(child, props);
+    });
 };
 
 const styles = StyleSheet.create({

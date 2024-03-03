@@ -1,6 +1,9 @@
 import * as React from 'react';
 import { StyleSheet, View } from 'react-native';
-import { useTheme } from '../../core/theming';
+
+import type { ThemeProp } from 'src/types';
+
+import { useInternalTheme } from '../../core/theming';
 import Icon, { IconSource } from '../Icon';
 
 export type Props = {
@@ -16,21 +19,21 @@ export type Props = {
    * Optional icon size.
    */
   size?: number;
+  /**
+   * @optional
+   */
+  theme?: ThemeProp;
 };
 
 /**
  * @supported Available in v5.x with theme version 3
  * A component to show an icon in a Dialog.
  *
- *  <div class="screenshots">
- *   <img class="small" src="screenshots/dialog-icon.png" />
- * </div>
- *
  * ## Usage
  * ```js
  * import * as React from 'react';
  * import { StyleSheet } from 'react-native';
- * import { Paragraph, Dialog, Portal } from 'react-native-paper';
+ * import { Dialog, Portal, Text } from 'react-native-paper';
  *
  * const MyComponent = () => {
  *   const [visible, setVisible] = React.useState(false);
@@ -43,7 +46,7 @@ export type Props = {
  *         <Dialog.Icon icon="alert" />
  *         <Dialog.Title style={styles.title}>This is a title</Dialog.Title>
  *         <Dialog.Content>
- *           <Paragraph>This is simple dialog</Paragraph>
+ *           <Text variant="bodyMedium">This is simple dialog</Text>
  *         </Dialog.Content>
  *       </Dialog>
  *     </Portal>
@@ -59,8 +62,13 @@ export type Props = {
  * export default MyComponent;
  * ```
  */
-const DialogIcon = ({ size = 24, color, icon }: Props) => {
-  const theme = useTheme();
+const DialogIcon = ({
+  size = 24,
+  color,
+  icon,
+  theme: themeOverrides,
+}: Props) => {
+  const theme = useInternalTheme(themeOverrides);
 
   if (!theme.isV3) {
     return null;

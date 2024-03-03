@@ -1,21 +1,23 @@
 import * as React from 'react';
-import { View, StyleSheet, FlatList, Animated, Platform } from 'react-native';
-import type { NativeSyntheticEvent, NativeScrollEvent } from 'react-native';
+import type { NativeScrollEvent, NativeSyntheticEvent } from 'react-native';
+import { Animated, FlatList, Platform, StyleSheet, View } from 'react-native';
+
 import {
+  Avatar,
   MD2Colors,
   MD3Colors,
-  useTheme,
-  Avatar,
   Paragraph,
   Text,
 } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import { animatedFABExampleData } from '../../../utils';
+
 import CustomFAB from './CustomFAB';
 import CustomFABControls, {
   Controls,
   initialControls,
 } from './CustomFABControls';
+import { useExampleTheme } from '../..';
+import { animatedFABExampleData } from '../../../utils';
 
 type Item = {
   id: string;
@@ -30,7 +32,7 @@ type Item = {
 };
 
 const AnimatedFABExample = () => {
-  const { colors, isV3 } = useTheme();
+  const { colors, isV3 } = useExampleTheme();
 
   const isIOS = Platform.OS === 'ios';
 

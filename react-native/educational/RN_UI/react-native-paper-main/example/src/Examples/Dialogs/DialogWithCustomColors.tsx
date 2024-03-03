@@ -1,13 +1,16 @@
 import * as React from 'react';
+
 import {
   Button,
   Portal,
   Dialog,
   MD2Colors,
-  useTheme,
   MD3Colors,
 } from 'react-native-paper';
+
 import { TextComponent } from './DialogTextComponent';
+import { useExampleTheme } from '../..';
+
 const DialogWithCustomColors = ({
   visible,
   close,
@@ -15,7 +18,7 @@ const DialogWithCustomColors = ({
   visible: boolean;
   close: () => void;
 }) => {
-  const { isV3 } = useTheme();
+  const { isV3 } = useExampleTheme();
 
   return (
     <Portal>

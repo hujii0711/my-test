@@ -1,40 +1,47 @@
 import * as React from 'react';
 import {
+  AccessibilityRole,
+  GestureResponderEvent,
   Platform,
   StyleProp,
   StyleSheet,
   TextStyle,
-  TouchableWithoutFeedback,
+  Pressable,
   View,
   ViewStyle,
+  ViewProps,
 } from 'react-native';
+
 import color from 'color';
 
-import Text from '../Typography/Text';
-
-import { withTheme } from '../../core/theming';
-import { white } from '../../styles/themes/v2/colors';
-
-import type { $RemoveChildren, MD3TypescaleKey, Theme } from '../../types';
 import { modeTextVariant } from './utils';
+import { useInternalTheme } from '../../core/theming';
+import { white } from '../../styles/themes/v2/colors';
+import type { $RemoveChildren, MD3TypescaleKey, ThemeProp } from '../../types';
+import Text, { TextRef } from '../Typography/Text';
+
+type TitleString = {
+  title: string;
+  titleStyle?: StyleProp<TextStyle>;
+};
+
+type TitleElement = { title: React.ReactNode; titleStyle?: never };
 
 export type Props = $RemoveChildren<typeof View> & {
+  // For `title` and `titleStyle` props their types are duplicated due to the generation of documentation.
+  // Appropriate type for them are either `TitleString` or `TitleElement`, depends on `title` type.
   /**
-   * Custom color for the text.
-   */
-  color?: string;
-  /**
-   * Text for the title.
+   * Text or component for the title.
    */
   title: React.ReactNode;
   /**
-   * Style for the title.
+   * Style for the title, if `title` is a string.
    */
   titleStyle?: StyleProp<TextStyle>;
   /**
    * Reference for the title.
    */
-  titleRef?: React.RefObject<Text>;
+  titleRef?: React.RefObject<TextRef>;
   /**
    * @deprecated Deprecated in v5.x
    * Text for the subtitle.
@@ -48,7 +55,19 @@ export type Props = $RemoveChildren<typeof View> & {
   /**
    * Function to execute on press.
    */
-  onPress?: () => void;
+  onPress?: (e: GestureResponderEvent) => void;
+  /**
+   * If true, disable all interactions for this component.
+   */
+  disabled?: boolean;
+  /**
+   * Custom color for the text.
+   */
+  color?: string;
+  /**
+   * Specifies the largest possible scale a title font can reach.
+   */
+  titleMaxFontSizeMultiplier?: number;
   /**
    * @internal
    */
@@ -57,15 +76,15 @@ export type Props = $RemoveChildren<typeof View> & {
   /**
    * @optional
    */
-  theme: Theme;
-};
+  theme?: ThemeProp;
+  /**
+   * testID to be used on tests.
+   */
+  testID?: string;
+} & (TitleString | TitleElement);
 
 /**
  * A component used to display a title and optional subtitle in an appbar.
- *
- * <div class="screenshots">
- *   <img class="small" src="screenshots/appbar-content.png" />
- * </div>
  *
  * ## Usage
  * ```js
@@ -86,14 +105,18 @@ const AppbarContent = ({
   subtitle,
   subtitleStyle,
   onPress,
+  disabled,
   style,
   titleRef,
   titleStyle,
-  theme,
   title,
+  titleMaxFontSizeMultiplier,
   mode = 'small',
+  theme: themeOverrides,
+  testID = 'appbar-content',
   ...rest
 }: Props) => {
+  const theme = useInternalTheme(themeOverrides);
   const { isV3, colors } = theme;
 
   const titleTextColor = titleColor
@@ -113,13 +136,16 @@ const AppbarContent = ({
 
   const variant = modeTextVariant[mode] as MD3TypescaleKey;
 
-  return (
-    <TouchableWithoutFeedback onPress={onPress} disabled={!onPress}>
-      <View
-        pointerEvents="box-none"
-        style={[styles.container, isV3 && modeContainerStyles[mode], style]}
-        {...rest}
-      >
+  const contentWrapperProps = {
+    pointerEvents: 'box-none' as ViewProps['pointerEvents'],
+    style: [styles.container, isV3 && modeContainerStyles[mode], style],
+    testID,
+    ...rest,
+  };
+
+  const content = (
+    <>
+      {typeof title === 'string' ? (
         <Text
           {...(isV3 && { variant })}
           ref={titleRef}
@@ -127,7 +153,7 @@ const AppbarContent = ({
             {
               color: titleTextColor,
               ...(isV3
-                ? theme.typescale[variant]
+                ? theme.fonts[variant]
                 : Platform.OS === 'ios'
                 ? theme.fonts.regular
                 : theme.fonts.medium),
@@ -137,22 +163,52 @@ const AppbarContent = ({
           ]}
           numberOfLines={1}
           accessible
-          // @ts-ignore Type '"heading"' is not assignable to type ...
-          accessibilityRole={Platform.OS === 'web' ? 'heading' : 'header'}
+          accessibilityRole={
+            onPress
+              ? 'none'
+              : Platform.OS === 'web'
+              ? ('heading' as 'header')
+              : 'header'
+          }
+          // @ts-expect-error We keep old a11y props for backwards compat with old RN versions
+          accessibilityTraits="header"
+          testID={`${testID}-title-text`}
+          maxFontSizeMultiplier={titleMaxFontSizeMultiplier}
         >
           {title}
         </Text>
-        {!isV3 && subtitle ? (
-          <Text
-            style={[styles.subtitle, { color: subtitleColor }, subtitleStyle]}
-            numberOfLines={1}
-          >
-            {subtitle}
-          </Text>
-        ) : null}
-      </View>
-    </TouchableWithoutFeedback>
+      ) : (
+        title
+      )}
+      {!isV3 && subtitle ? (
+        <Text
+          style={[styles.subtitle, { color: subtitleColor }, subtitleStyle]}
+          numberOfLines={1}
+        >
+          {subtitle}
+        </Text>
+      ) : null}
+    </>
   );
+
+  if (onPress) {
+    return (
+      // eslint-disable-next-line react-native-a11y/has-accessibility-props
+      <Pressable
+        accessibilityRole={touchableRole}
+        // @ts-expect-error We keep old a11y props for backwards compat with old RN versions
+        accessibilityTraits={touchableRole}
+        accessibilityComponentType="button"
+        onPress={onPress}
+        disabled={disabled}
+        {...contentWrapperProps}
+      >
+        {content}
+      </Pressable>
+    );
+  }
+
+  return <View {...contentWrapperProps}>{content}</View>;
 };
 
 AppbarContent.displayName = 'Appbar.Content';
@@ -184,9 +240,13 @@ const styles = StyleSheet.create({
   },
 });
 
-export default withTheme(AppbarContent);
+const iosTouchableRole: readonly AccessibilityRole[] = ['button', 'header'];
+const touchableRole: AccessibilityRole = Platform.select({
+  ios: iosTouchableRole as unknown as 'button',
+  default: iosTouchableRole[0],
+});
+
+export default AppbarContent;
 
 // @component-docs ignore-next-line
-const AppbarContentWithTheme = withTheme(AppbarContent);
-// @component-docs ignore-next-line
-export { AppbarContentWithTheme as AppbarContent };
+export { AppbarContent };
