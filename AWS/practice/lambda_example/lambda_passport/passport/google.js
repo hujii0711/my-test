@@ -1,23 +1,22 @@
-const passport = require("passport");
-const GoogleStrategy = require("passport-google-oauth2").Strategy;
-const AWS = require("aws-sdk");
-const session = require("express-session");
-const DynamoDBStore = require("dynamodb-store");
+const passport = require('passport');
+const GoogleStrategy = require('passport-google-oauth2').Strategy;
+const AWS = require('aws-sdk');
+const session = require('express-session');
+const DynamoDBStore = require('dynamodb-store');
 
 // AWS 자격 증명 설정
 AWS.config.update({
-  accessKeyId: "",
-  secretAccessKey: "",
-  region: "ap-northeast-2", // 사용하려는 AWS 리전 설정
+  accessKeyId: '',
+  secretAccessKey: '',
+  region: 'ap-northeast-2', // 사용하려는 AWS 리전 설정
 });
 
 const dynamoDBClient = new AWS.DynamoDB.DocumentClient();
 
 // 구글 OAuth2 설정
-const GOOGLE_CLIENT_ID =
-  "568088378939-jemtupaj1rsvcdasr82t8llc677d21j4.apps.googleusercontent.com";
-const GOOGLE_CLIENT_SECRET = "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";
-const CALLBACK_URL = "/auth/google/callback"; // 구글 로그인 후 콜백 URL
+const GOOGLE_CLIENT_ID = '';
+const GOOGLE_CLIENT_SECRET = '';
+const CALLBACK_URL = '/auth/google/callback'; // 구글 로그인 후 콜백 URL
 
 // 전체 과정 요약
 // 1. 로그인 요청이 들어옴
@@ -35,9 +34,9 @@ const CALLBACK_URL = "/auth/google/callback"; // 구글 로그인 후 콜백 URL
 // 4. 라우터에서 request.user 객체 사용 가능
 
 const uuidv4 = () => {
-  return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, function (c) {
+  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function (c) {
     var r = (Math.random() * 16) | 0,
-      v = c == "x" ? r : (r & 0x3) | 0x8;
+      v = c == 'x' ? r : (r & 0x3) | 0x8;
     return v.toString(16);
   });
 };
@@ -50,13 +49,13 @@ const passportConfig = () => {
   // Passport 세션 시리얼라이즈 및 디시리얼라이즈 설정
   passport.serializeUser((user, done) => {
     // 사용자 정보를 세션에 저장
-    console.log("serializeUser >>> user=====", user);
+    console.log('serializeUser >>> user=====', user);
     done(null, user);
   });
 
   passport.deserializeUser((user, done) => {
     // 세션에 저장된 사용자 정보를 복원
-    console.log("deserializeUser >>> user=====", user);
+    console.log('deserializeUser >>> user=====', user);
     done(null, user);
   });
 
@@ -69,8 +68,8 @@ const passportConfig = () => {
         callbackURL: CALLBACK_URL,
       },
       (accessToken, refreshToken, profile, done) => {
-        console.log("GoogleStrategy >>> profile=====", profile);
-        console.log("GoogleStrategy >>> accessToken=====", accessToken);
+        console.log('GoogleStrategy >>> profile=====', profile);
+        console.log('GoogleStrategy >>> accessToken=====', accessToken);
         // Google 로그인 성공 시 호출되는 콜백 함수
         // 사용자 인증 로직 및 세션 데이터 저장 등을 처리할 수 있습니다.
         // profile에는 구글 사용자 정보가 들어있습니다.
@@ -79,25 +78,25 @@ const passportConfig = () => {
           id: uuidv4(), // 삽입할 데이터의 고유 식별자
           email: profile.email,
           user_id: profile.id, // 삽입할 데이터의 고유 식별자
-          pwd: "1234",
+          pwd: '1234',
           user_name: profile.displayName, // 삽입할 데이터의 속성 값
           language: profile.language,
           token: accessToken,
           created_dt: krDate(),
-          type: "google",
+          type: 'google',
         };
 
         // DynamoDB에 데이터 삽입
         const params = {
-          TableName: "users", // 삽입할 테이블 이름
+          TableName: 'users', // 삽입할 테이블 이름
           Item: item, // 삽입할 데이터 객체
         };
 
         dynamoDBClient.put(params, (err, data) => {
           if (err) {
-            console.error("Error inserting data:", err);
+            console.error('Error inserting data:', err);
           } else {
-            console.log("Data inserted successfully:", data);
+            console.log('Data inserted successfully:', data);
           }
         });
         return done(null, profile);
@@ -107,7 +106,7 @@ const passportConfig = () => {
 };
 
 const sessionMiddleware = session({
-  secret: "hj@1560813", // 세션 데이터를 암호화하기 위한 비밀 키
+  secret: 'hj@1560813', // 세션 데이터를 암호화하기 위한 비밀 키
   resave: false,
   saveUninitialized: false,
   /*store: new (require("connect-dynamodb"))({
@@ -120,7 +119,7 @@ const sessionMiddleware = session({
       }),*/
   store: new DynamoDBStore({
     AWS: AWS,
-    tableName: "users", // 사용할 DynamoDB 테이블 이름
+    tableName: 'users', // 사용할 DynamoDB 테이블 이름
   }),
 });
 
